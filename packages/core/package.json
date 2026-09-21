@@ -1,11 +1,11 @@
 {
-  "name": "@puckeditor/core",
-  "version": "0.23.0",
-  "description": "The open-source visual editor for React",
+  "name": "@cityos/puck",
+  "version": "0.23.0-cityos.0",
+  "description": "CityOS-owned Puck runtime with a native-session integration boundary",
   "author": "Chris Villa <chris@puckeditor.com>",
-  "repository": "puckeditor/puck",
-  "bugs": "https://github.com/puckeditor/puck/issues",
-  "homepage": "https://puckeditor.com",
+  "repository": "dakkah-core/cityos-puck",
+  "bugs": "https://github.com/dakkah-core/cityos-puck/issues",
+  "homepage": "https://github.com/dakkah-core/cityos-puck",
   "keywords": [
     "puck",
     "visual",
@@ -53,7 +53,12 @@
     "./puck.css": "./dist/index.css",
     "./no-external.css": "./dist/no-external.css",
     "./dist/index.css": "./dist/index.css",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./cityos": {
+      "types": "./dist/cityos.d.ts",
+      "import": "./dist/cityos.mjs",
+      "require": "./dist/cityos.js"
+    }
   },
   "typesVersions": {
     "*": {
@@ -68,7 +73,7 @@
   },
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
-    "build": "rm -rf dist && tsup bundle/index.ts bundle/rsc.tsx bundle/no-external.ts bundle/internal.ts",
+    "build": "rm -rf dist && tsup bundle/index.ts bundle/rsc.tsx bundle/no-external.ts bundle/internal.ts cityos.ts",
     "test": "jest",
     "prepare": "cp ../../README.md . && pnpm build",
     "postpublish": "rm README.md"
