@@ -25,34 +25,34 @@
     "WYSIWYG"
   ],
   "private": false,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/bundle/index.js",
+  "types": "./dist/bundle/index.d.ts",
   "exports": {
     ".": {
       "react-server": {
-        "types": "./dist/rsc.d.ts",
-        "import": "./dist/rsc.mjs",
-        "require": "./dist/rsc.js"
+        "types": "./dist/bundle/rsc.d.ts",
+        "import": "./dist/bundle/rsc.mjs",
+        "require": "./dist/bundle/rsc.js"
       },
       "default": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.mjs",
-        "require": "./dist/index.js"
+        "types": "./dist/bundle/index.d.ts",
+        "import": "./dist/bundle/index.mjs",
+        "require": "./dist/bundle/index.js"
       }
     },
     "./rsc": {
-      "types": "./dist/rsc.d.ts",
-      "import": "./dist/rsc.mjs",
-      "require": "./dist/rsc.js"
+      "types": "./dist/bundle/rsc.d.ts",
+      "import": "./dist/bundle/rsc.mjs",
+      "require": "./dist/bundle/rsc.js"
     },
     "./internal": {
-      "types": "./dist/internal.d.ts",
-      "import": "./dist/internal.mjs",
-      "require": "./dist/internal.js"
+      "types": "./dist/bundle/internal.d.ts",
+      "import": "./dist/bundle/internal.mjs",
+      "require": "./dist/bundle/internal.js"
     },
-    "./puck.css": "./dist/index.css",
-    "./no-external.css": "./dist/no-external.css",
-    "./dist/index.css": "./dist/index.css",
+    "./puck.css": "./dist/bundle/index.css",
+    "./no-external.css": "./dist/bundle/no-external.css",
+    "./dist/index.css": "./dist/bundle/index.css",
     "./package.json": "./package.json",
     "./cityos": {
       "types": "./dist/cityos.d.ts",
@@ -63,7 +63,7 @@
   "typesVersions": {
     "*": {
       "rsc": [
-        "./dist/rsc.js"
+        "./dist/bundle/rsc.d.ts"
       ]
     }
   },
@@ -73,10 +73,10 @@
   },
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
-    "build": "rm -rf dist && tsup bundle/index.ts bundle/rsc.tsx bundle/no-external.ts bundle/internal.ts cityos.ts && cp dist/full-*.mjs dist/index.mjs",
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsup bundle/index.ts bundle/rsc.tsx bundle/no-external.ts bundle/internal.ts cityos.ts",
     "test": "jest",
-    "prepare": "cp ../../README.md . && pnpm build",
-    "postpublish": "rm README.md"
+    "prepare": "node -e \"require('fs').copyFileSync('../../README.md','README.md')\" && pnpm build",
+    "postpublish": "node -e \"require('fs').rmSync('README.md',{force:true})\""
   },
   "files": [
     "dist"
