@@ -73,7 +73,7 @@
   },
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
-    "build": "rm -rf dist && tsup bundle/index.ts bundle/rsc.tsx bundle/no-external.ts bundle/internal.ts cityos.ts",
+    "build": "rm -rf dist && tsup bundle/index.ts bundle/rsc.tsx bundle/no-external.ts bundle/internal.ts cityos.ts && cp dist/full-*.mjs dist/index.mjs",
     "test": "jest",
     "prepare": "cp ../../README.md . && pnpm build",
     "postpublish": "rm README.md"
