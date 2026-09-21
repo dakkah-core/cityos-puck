@@ -23,4 +23,4 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @cityos-core/puck build
       - working-directory: packages/core
-        run: npm publish --access public --provenance --ignore-scripts
+        run: npm publish --access public --tag cityos --provenance --ignore-scripts
