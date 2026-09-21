@@ -25,4 +25,4 @@ jobs:
       - name: Publish package (bootstrap token)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm --filter @cityos-core/puck publish --access public --no-git-checks --provenance
+        run: pnpm --filter @cityos-core/puck publish --access public --no-git-checks
