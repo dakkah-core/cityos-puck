@@ -25,4 +25,4 @@ jobs:
       - name: Publish package (bootstrap token)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: cd packages/core && npm publish --access public --provenance=false
+        run: cd packages/core && npm publish --access public --tag cityos --provenance=false
