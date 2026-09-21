@@ -1,6 +1,6 @@
 {
   "name": "@cityos-core/puck",
-  "version": "0.23.0-cityos.0",
+  "version": "0.23.0-cityos.1",
   "description": "CityOS-owned Puck runtime with a native-session integration boundary",
   "author": "Chris Villa <chris@puckeditor.com>",
   "repository": "dakkah-core/cityos-puck",
