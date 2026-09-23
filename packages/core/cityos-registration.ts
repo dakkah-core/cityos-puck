@@ -3,19 +3,38 @@ import type { Field } from "./types/Fields";
 
 /** A target artifact, not a CityOS owner/capability/permission registry. */
 export const CITYOS_PUCK_REGISTRATION_VERSION = "cityos.puck.registration.v1";
+export const CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION =
+  "cityos.puck.registration.v2";
 export const CITYOS_PUCK_REGISTRATION_PROFILE =
   "cityos.puck-slots.v0.23.native-screen.v2";
+export const CITYOS_PUCK_STRUCTURED_FIELD_LIMITS = Object.freeze({
+  depth: 4,
+  fieldsPerEntry: 512,
+  arrayItems: 1000,
+});
 
 type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
 export type CityOSPuckField =
   | { type: "text" | "textarea"; label: string }
   | { type: "number"; label: string; min: number; max: number; step?: number }
   | {
-      type: "select";
+      type: "select" | "radio";
       label: string;
       options: { label: string; value: string | number | boolean | null }[];
     }
-  | { type: "slot"; label: string; allow: string[] };
+  | { type: "slot"; label: string; allow: string[] }
+  | {
+      type: "object";
+      label: string;
+      objectFields: Record<string, CityOSPuckField>;
+    }
+  | {
+      type: "array";
+      label: string;
+      min: number;
+      max: number;
+      arrayFields: Record<string, CityOSPuckField>;
+    };
 export interface CityOSPuckRendererRef {
   key: string;
   version: string;
@@ -28,7 +47,9 @@ export interface CityOSPuckRegistrationEntry {
   fields: Record<string, CityOSPuckField>;
 }
 export interface CityOSPuckRegistrationManifest {
-  schemaVersion: typeof CITYOS_PUCK_REGISTRATION_VERSION;
+  schemaVersion:
+    | typeof CITYOS_PUCK_REGISTRATION_VERSION
+    | typeof CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION;
   dataProfile: typeof CITYOS_PUCK_REGISTRATION_PROFILE;
   source: {
     ownerId: string;
@@ -52,6 +73,7 @@ export type CityOSPuckRendererResolver = (
 
 const digestPattern = /^sha256:[a-f0-9]{64}$/;
 const keyPattern = /^[a-zA-Z][a-zA-Z0-9_.-]{0,127}$/;
+const fieldNamePattern = /^[a-zA-Z][a-zA-Z0-9_]{0,127}$/;
 const unsafeKeys = new Set(["__proto__", "prototype", "constructor"]);
 function fail(code: string): never {
   throw new Error(`CITYOS_PUCK_${code}`);
@@ -92,10 +114,7 @@ function copyData(input: unknown): Json {
         (array && !/^(0|[1-9][0-9]*)$/.test(key))
       )
         fail("DATA_ONLY");
-      (result as Record<string, Json>)[key] = visit(
-        descriptor.value,
-        depth + 1
-      );
+      (result as Record<string, Json>)[key] = visit(descriptor.value, depth + 1);
     }
     if (array && Object.keys(result).length !== value.length) fail("DATA_ONLY");
     ancestors.delete(value);
@@ -113,9 +132,7 @@ function object(
     typeof value !== "object" ||
     Array.isArray(value) ||
     keys.some((key) => !Object.prototype.hasOwnProperty.call(value, key)) ||
-    Object.keys(value).some(
-      (key) => !keys.includes(key) && !optional.includes(key)
-    )
+    Object.keys(value).some((key) => !keys.includes(key) && !optional.includes(key))
   )
     fail("SHAPE");
   return value as Record<string, Json>;
@@ -136,38 +153,37 @@ function key(value: Json): asserts value is string {
 function hash(value: Json): void {
   if (typeof value !== "string" || !digestPattern.test(value)) fail("DIGEST");
 }
-function validateEntry(
-  value: Json,
-  component: boolean,
-  knownTypes: Set<string>
+
+/** Validate the schema tree, not authored values or the user's authority. */
+function validateFields(
+  input: Json,
+  knownTypes: Set<string>,
+  structured: boolean,
+  depth = 0,
+  budget = { count: 0 }
 ): void {
-  const entry = object(
-    value,
-    component
-      ? ["type", "label", "renderer", "fields"]
-      : ["label", "renderer", "fields"]
-  );
-  if (component) key(entry.type);
-  text(entry.label);
-  const renderer = object(entry.renderer, ["key", "version", "digest"]);
-  key(renderer.key);
-  text(renderer.version, 128);
-  hash(renderer.digest);
-  const fields = entry.fields;
   if (
-    !fields ||
-    typeof fields !== "object" ||
-    Array.isArray(fields) ||
-    Object.keys(fields).length > 128
+    !input ||
+    typeof input !== "object" ||
+    Array.isArray(input) ||
+    Object.keys(input).length > 128 ||
+    (depth > 0 && Object.keys(input).length === 0)
   )
     fail("FIELDS");
-  for (const [name, raw] of Object.entries(fields)) {
+  if (depth > CITYOS_PUCK_STRUCTURED_FIELD_LIMITS.depth) fail("FIELD_DEPTH");
+  for (const [name, raw] of Object.entries(input)) {
+    if (++budget.count > CITYOS_PUCK_STRUCTURED_FIELD_LIMITS.fieldsPerEntry)
+      fail("FIELD_COUNT");
     key(name);
-    if (["id", "type", "puck", "editMode"].includes(name)) fail("SYSTEM_FIELD");
+    // V2 names are path segments, not paths interpreted by Puck's nested editor.
+    // Keep the existing V1 identifier contract unchanged.
+    if (structured && !fieldNamePattern.test(name)) fail("FIELD_NAME");
+    if (depth === 0 && ["id", "type", "puck", "editMode"].includes(name))
+      fail("SYSTEM_FIELD");
     const field = object(
       raw,
       ["type", "label"],
-      ["min", "max", "step", "options", "allow"]
+      ["min", "max", "step", "options", "allow", "objectFields", "arrayFields"]
     );
     text(field.label);
     switch (field.type) {
@@ -187,7 +203,9 @@ function validateEntry(
           fail("NUMBER_BOUNDS");
         break;
       }
+      case "radio":
       case "select": {
+        if (field.type === "radio" && !structured) fail("UNSUPPORTED_FIELD");
         object(raw, ["type", "label", "options"]);
         if (
           !Array.isArray(field.options) ||
@@ -212,6 +230,7 @@ function validateEntry(
       }
       case "slot": {
         object(raw, ["type", "label", "allow"]);
+        if (depth > 0) fail("NESTED_SLOT");
         if (
           !Array.isArray(field.allow) ||
           field.allow.length > 1024 ||
@@ -224,10 +243,55 @@ function validateEntry(
         }
         break;
       }
+      case "object":
+      case "array": {
+        if (!structured) fail("UNSUPPORTED_FIELD");
+        const array = field.type === "array";
+        const childKey = array ? "arrayFields" : "objectFields";
+        object(
+          raw,
+          array
+            ? ["type", "label", childKey, "min", "max"]
+            : ["type", "label", childKey]
+        );
+        if (
+          array &&
+          (typeof field.min !== "number" ||
+            typeof field.max !== "number" ||
+            !Number.isSafeInteger(field.min) ||
+            !Number.isSafeInteger(field.max) ||
+            field.min < 0 ||
+            field.min > field.max ||
+            field.max > CITYOS_PUCK_STRUCTURED_FIELD_LIMITS.arrayItems)
+        )
+          fail("ARRAY_BOUNDS");
+        validateFields(field[childKey], knownTypes, true, depth + 1, budget);
+        break;
+      }
       default:
         fail("UNSUPPORTED_FIELD");
     }
   }
+}
+function validateEntry(
+  value: Json,
+  component: boolean,
+  knownTypes: Set<string>,
+  structured: boolean
+): void {
+  const entry = object(
+    value,
+    component
+      ? ["type", "label", "renderer", "fields"]
+      : ["label", "renderer", "fields"]
+  );
+  if (component) key(entry.type);
+  text(entry.label);
+  const renderer = object(entry.renderer, ["key", "version", "digest"]);
+  key(renderer.key);
+  text(renderer.version, 128);
+  hash(renderer.digest);
+  validateFields(entry.fields, knownTypes, structured);
 }
 function canonical(value: Json): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
@@ -254,8 +318,10 @@ export function parseCityOSPuckRegistration(
     ["schemaVersion", "dataProfile", "source", "components"],
     ["root"]
   );
+  const structured =
+    manifest.schemaVersion === CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION;
   if (
-    manifest.schemaVersion !== CITYOS_PUCK_REGISTRATION_VERSION ||
+    (!structured && manifest.schemaVersion !== CITYOS_PUCK_REGISTRATION_VERSION) ||
     manifest.dataProfile !== CITYOS_PUCK_REGISTRATION_PROFILE
   )
     fail("PROFILE");
@@ -267,11 +333,7 @@ export function parseCityOSPuckRegistration(
   text(source.ownerId, 128);
   text(source.registryRevision, 128);
   hash(source.definitionDigest);
-  if (
-    !/^(core|shared|vertical)\.[a-z0-9]+(?:[.-][a-z0-9]+)*$/.test(
-      source.ownerId
-    )
-  )
+  if (!/^(core|shared|vertical)\.[a-z0-9]+(?:[.-][a-z0-9]+)*$/.test(source.ownerId))
     fail("OWNER_REFERENCE");
   if (!Array.isArray(manifest.components) || manifest.components.length > 1024)
     fail("COMPONENT_LIMIT");
@@ -282,8 +344,11 @@ export function parseCityOSPuckRegistration(
     if (types.has(entry.type)) fail("DUPLICATE_COMPONENT");
     types.add(entry.type);
   }
-  manifest.components.forEach((entry) => validateEntry(entry, true, types));
-  if (manifest.root !== undefined) validateEntry(manifest.root, false, types);
+  manifest.components.forEach((entry) =>
+    validateEntry(entry, true, types, structured)
+  );
+  if (manifest.root !== undefined)
+    validateEntry(manifest.root, false, types, structured);
   if (new TextEncoder().encode(canonical(snapshot)).byteLength > 1_048_576)
     fail("INPUT_LIMIT");
   return freeze(snapshot as unknown as CityOSPuckRegistrationManifest);
@@ -336,12 +401,31 @@ function cloneFields(
         case "number":
           return [name, { ...field }];
         case "select":
-          return [
-            name,
-            { ...field, options: field.options.map((o) => ({ ...o })) },
-          ];
+          return [name, { ...field, options: field.options.map((o) => ({ ...o })) }];
+        case "radio":
+          return [name, { ...field, options: field.options.map((o) => ({ ...o })) }];
         case "slot":
           return [name, { ...field, allow: [...field.allow] }];
+        case "object":
+          return [
+            name,
+            {
+              type: "object",
+              label: field.label,
+              objectFields: cloneFields(field.objectFields),
+            },
+          ];
+        case "array":
+          return [
+            name,
+            {
+              type: "array",
+              label: field.label,
+              min: field.min,
+              max: field.max,
+              arrayFields: cloneFields(field.arrayFields),
+            },
+          ];
       }
     })
   );
@@ -374,7 +458,6 @@ export async function bindCityOSPuckRegistration(
       label: entry.label,
       fields: cloneFields(entry.fields),
       render: ((props: Parameters<typeof render>[0]) => {
-        // A disabled/replaced implementation must not keep executing through a cached config.
         const current = resolveRenderer(entry.renderer, kind, resolver);
         if (current.render !== render) fail("RENDERER_CHANGED");
         return render(props);

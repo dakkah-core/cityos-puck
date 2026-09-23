@@ -18,6 +18,8 @@ export interface CityOSPuckEditorBoundary {
 
 export {
   CITYOS_PUCK_REGISTRATION_VERSION,
+  CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION,
+  CITYOS_PUCK_STRUCTURED_FIELD_LIMITS,
   CITYOS_PUCK_REGISTRATION_PROFILE,
   parseCityOSPuckRegistration,
   digestCityOSPuckRegistration,
