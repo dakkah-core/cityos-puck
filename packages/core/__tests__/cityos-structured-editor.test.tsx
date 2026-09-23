@@ -2,6 +2,8 @@
 import "../__helpers__/cityos-editor-environment";
 import React from "react";
 import { webcrypto } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { TextEncoder } from "node:util";
 import {
   act,
@@ -79,14 +81,25 @@ async function fixture(readOnly = false, type = "GeneratedProfile") {
       </Puck>
     );
   });
+  // Jest mocks CSS modules. In the real host, this exact stylesheet rule
+  // reveals the shell after styles load. Model only that missing CSS effect;
+  // do not change production visibility, permission checks or field behavior.
+  const css = readFileSync(
+    join(__dirname, "../components/Puck/components/Layout/styles.module.css"),
+    "utf8"
+  );
+  expect(css).toMatch(/\.Puck\s*\{[^}]*visibility:\s*visible\s*!important/);
+  const editor = document.querySelector<HTMLElement>(".Puck");
+  if (!editor) throw new Error("Puck editor fixture did not mount");
+  editor.style.visibility = "visible";
   return { config, data, change };
 }
 
-/** Actual editor fields: nested paths and option values are native aria-labels. */
+/** Real controls, queried by their accessible labels; not browser/CSS proof. */
 describe("generated structured fields in the actual editor", () => {
   it("edits a nested property without replacing other values or node IDs", async () => {
     const f = await fixture();
-    const input = await screen.findByRole("textbox", { name: "profile.name" });
+    const input = await screen.findByRole("textbox", { name: "Display name" });
     fireEvent.change(input, { target: { value: "نص جديد" } });
     await waitFor(() => {
       const calls = f.change.mock.calls;
@@ -119,7 +132,7 @@ describe("generated structured fields in the actual editor", () => {
 
   it("renders a boolean radio field without stringifying the emitted value", async () => {
     const f = await fixture();
-    fireEvent.click(await screen.findByRole("radio", { name: "false" }));
+    fireEvent.click(await screen.findByRole("radio", { name: "No" }));
     await waitFor(() => {
       const calls = f.change.mock.calls;
       expect(calls[calls.length - 1]?.[0].content[0].props.enabled).toBe(false);
@@ -129,7 +142,7 @@ describe("generated structured fields in the actual editor", () => {
   it("honors the host read-only state on nested controls", async () => {
     await fixture(true);
     const input = (await screen.findByRole("textbox", {
-      name: "profile.name",
+      name: "Display name",
     })) as HTMLInputElement;
     expect(input.disabled || input.readOnly).toBe(true);
     expect(screen.queryByRole("button", { name: /add/i })).toBeNull();
@@ -138,7 +151,7 @@ describe("generated structured fields in the actual editor", () => {
   it("uses the same field editor for a newly named registered component", async () => {
     const f = await fixture(false, "FutureConfigOnlyProfile");
     fireEvent.change(
-      await screen.findByRole("textbox", { name: "profile.id" }),
+      await screen.findByRole("textbox", { name: "Business ID" }),
       {
         target: { value: "domain-next" },
       }
