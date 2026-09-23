@@ -58,7 +58,9 @@ describe("versioned compiler-generated structured fields", () => {
     const source = structuredRegistration();
     const parsed = parseCityOSPuckRegistration(source);
     const config = await bind(source);
-    expect(parsed.schemaVersion).toBe(CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION);
+    expect(parsed.schemaVersion).toBe(
+      CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION
+    );
     expect(config.components.GeneratedProfile.fields).toEqual(fixtureFields());
     expect(Object.isFrozen(parsed.components[0].fields)).toBe(true);
     expect(config.components.GeneratedProfile.defaultProps).toBeUndefined();
@@ -108,19 +110,22 @@ describe("versioned compiler-generated structured fields", () => {
     ).toThrow("SYSTEM_FIELD");
   });
 
-  it.each(["object", "array"])("rejects slots nested inside %s data", (type) => {
-    const slot = { type: "slot", label: "Slot", allow: [] };
-    const raw = {
-      type,
-      label: "Nested",
-      ...(type === "array"
-        ? { min: 0, max: 2, arrayFields: { child: slot } }
-        : { objectFields: { child: slot } }),
-    };
-    const source = structuredRegistration();
-    Object.assign(source.components[0].fields, { nested: raw });
-    expect(() => parseCityOSPuckRegistration(source)).toThrow("NESTED_SLOT");
-  });
+  it.each(["object", "array"])(
+    "rejects slots nested inside %s data",
+    (type) => {
+      const slot = { type: "slot", label: "Slot", allow: [] };
+      const raw = {
+        type,
+        label: "Nested",
+        ...(type === "array"
+          ? { min: 0, max: 2, arrayFields: { child: slot } }
+          : { objectFields: { child: slot } }),
+      };
+      const source = structuredRegistration();
+      Object.assign(source.components[0].fields, { nested: raw });
+      expect(() => parseCityOSPuckRegistration(source)).toThrow("NESTED_SLOT");
+    }
+  );
 
   it.each([
     [-1, 2],
@@ -209,7 +214,9 @@ describe("versioned compiler-generated structured fields", () => {
       enumerable: true,
       get: accessor,
     });
-    Object.assign(source.components[0].fields.profile, { objectFields: fields });
+    Object.assign(source.components[0].fields.profile, {
+      objectFields: fields,
+    });
     expect(() => parseCityOSPuckRegistration(source)).toThrow("DATA_ONLY");
     expect(accessor).not.toHaveBeenCalled();
   });
@@ -217,7 +224,9 @@ describe("versioned compiler-generated structured fields", () => {
   it("does not pretend to implement rich-text registration", () => {
     const source = structuredRegistration();
     Object.assign(source.components[0].fields.profile, { type: "richtext" });
-    expect(() => parseCityOSPuckRegistration(source)).toThrow("UNSUPPORTED_FIELD");
+    expect(() => parseCityOSPuckRegistration(source)).toThrow(
+      "UNSUPPORTED_FIELD"
+    );
   });
 
   it("isolates nested editor config from its verified input", async () => {
@@ -257,7 +266,10 @@ describe("versioned compiler-generated structured fields", () => {
     const config = await bind(structuredRegistration(), renderer);
     renderer.enabled = false;
     expect(() =>
-      config.components.GeneratedProfile.render({ id: "node", puck: {} } as never)
+      config.components.GeneratedProfile.render({
+        id: "node",
+        puck: {},
+      } as never)
     ).toThrow("RENDERER_UNAVAILABLE");
   });
 
