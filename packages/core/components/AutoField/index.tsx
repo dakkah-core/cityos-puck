@@ -73,6 +73,14 @@ function AutoFieldInternal<
   const dispatch = useAppStore((s) => s.dispatch);
   const overrides = useAppStore((s) => s.overrides);
   const readOnly = useAppStore(useShallow((s) => s.selectedItem?.readOnly));
+  const canEdit = useAppStore(
+    (s) => s.permissions.getPermissions({ item: s.selectedItem }).edit
+  );
+  const dictionary = useAppStore((s) => s.dictionary);
+  const editorContext = useMemo(
+    () => Object.freeze({ canEdit: canEdit === true, dictionary }),
+    [canEdit, dictionary]
+  );
   const nestedFieldContext = useContext(NestedFieldContext);
 
   const { id, Label = FieldLabelInternal } = props;
@@ -148,8 +156,21 @@ function AutoFieldInternal<
       id: resolvedId,
       value: fieldValue,
       onChange,
+      // A custom control may live in a different package entry/bundle. Pass
+      // presentation context explicitly instead of relying on store identity.
+      editorContext,
     }),
-    [props, field, label, labelIcon, Label, resolvedId, fieldValue, onChange]
+    [
+      props,
+      field,
+      label,
+      labelIcon,
+      Label,
+      resolvedId,
+      fieldValue,
+      onChange,
+      editorContext,
+    ]
   );
 
   const onFocus = useCallback(

@@ -5,9 +5,10 @@ import { resolve } from "node:path";
 const coreRoot = resolve(__dirname, "..");
 
 /**
- * Use a separate Node process so both public entries and React resolve as they
- * do for consumers, rather than through Jest's source transforms/module cache.
- * The DOM fixture supports rendering only, not browser layout acceptance.
+ * Separate consumers resolve actual prepared public entries and React, without
+ * Jest source transforms. Mount the client and flush its effects: server-only
+ * rendering does not initialize Puck's existing permission-registration effect.
+ * Happy DOM does not establish browser geometry, accessibility or Next.js proof.
  */
 describe("CityOS built scalar-list consumer boundary", () => {
   for (const mode of ["require", "import"]) {
@@ -33,13 +34,14 @@ describe("CityOS built scalar-list consumer boundary", () => {
         globalThis.IntersectionObserver = class {
           observe() {} unobserve() {} disconnect() {} takeRecords() { return []; }
         };
+        globalThis.IS_REACT_ACT_ENVIRONMENT = true;
         const React = require('react');
-        const { renderToString } = require('react-dom/server');
+        const { createRoot } = require('react-dom/client');
         const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
         const load = async (entry) => ${JSON.stringify(mode)} === 'require'
           ? require(resolve(entry.require))
           : import(pathToFileURL(resolve(entry.import)).href);
-        const { Puck, AutoField } = await load(manifest.exports['.'].default);
+        const { Puck } = await load(manifest.exports['.'].default);
         const api = await load(manifest.exports['./cityos']);
         const source = {
           schemaVersion: 'cityos.puck.registration.v3',
@@ -57,26 +59,40 @@ describe("CityOS built scalar-list consumer boundary", () => {
             digest: 'sha256:' + 'a'.repeat(64), render: () => null }));
         const data = { root: { props: {} }, content: [{ type: 'BuiltList',
           props: { id: 'built-list', items: ['first', 'second'] } }] };
-        const field = config.components.BuiltList.fields.items;
-        const render = (canEdit) => renderToString(React.createElement(Puck, {
-          config, data, ui: { itemSelector: { index: 0 } },
-          dictionary: { 'field-arrayitem-add': 'Active editor add' },
-          permissions: { edit: canEdit }, iframe: { enabled: false },
-        }, React.createElement(AutoField, { field, id: 'built-field',
-          name: 'items', onChange() {} })));
-        const html = render(true);
-        assert.match(html, /data-cityos-string-list="true"/);
-        assert.match(html, /aria-label="Active editor add"/,
-          'The field must read the mounted editor dictionary, not another bundle store');
-        assert.doesNotMatch(render(false), /aria-label="Active editor add"/,
-          'A disabled mounted editor must not expose the list mutation control');
-        const styleMatch = html.match(/class="([^"]+)" data-cityos-string-list="true"/);
-        assert.ok(styleMatch, 'The built field must retain its class');
-        const css = readFileSync(resolve(manifest.exports['./puck.css']), 'utf8');
-        for (const name of styleMatch[1].split(/\\s+/)) {
-          assert.ok(css.includes('.' + name), 'Public puck.css omits the built field style: ' + name);
+        const container = document.createElement('div');
+        document.body.append(container);
+        const root = createRoot(container);
+        const draw = async (canEdit) => {
+          await React.act(async () => {
+            root.render(React.createElement(Puck, {
+              config, data, ui: { itemSelector: { index: 0 } },
+              dictionary: { 'field-arrayitem-add': 'Active editor add' },
+              permissions: { edit: canEdit }, iframe: { enabled: false },
+            }, React.createElement(Puck.Fields)));
+          });
+        };
+        try {
+          await draw(true);
+          for (let attempt = 0; attempt < 100 && container.querySelectorAll('textarea').length !== 2; attempt++) {
+            await React.act(async () => { await new Promise(r => setTimeout(r, 10)); });
+          }
+          assert.ok(container.querySelector('[data-cityos-string-list="true"]'));
+          assert.deepEqual([...container.querySelectorAll('textarea')].map(i => i.value), ['first', 'second']);
+          assert.ok(container.querySelector('[aria-label="Active editor add"]'),
+            'The field must read the mounted editor dictionary, not another bundle store');
+          await draw(false);
+          assert.equal(container.querySelector('[aria-label="Active editor add"]'), null,
+            'A disabled mounted editor must not expose the list mutation control');
+          assert.ok([...container.querySelectorAll('textarea')].every(i => i.readOnly));
+          const field = container.querySelector('[data-cityos-string-list="true"]');
+          const css = readFileSync(resolve(manifest.exports['./puck.css']), 'utf8');
+          for (const name of field.classList) {
+            assert.ok(css.includes('.' + name), 'Public puck.css omits the built field style: ' + name);
+          }
+        } finally {
+          await React.act(async () => { root.unmount(); });
+          await window.happyDOM.close();
         }
-        await window.happyDOM.close();
         console.log('BUILT_SCALAR_LIST_OK');
       `;
       const output = execFileSync(

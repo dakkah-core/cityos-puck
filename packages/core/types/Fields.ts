@@ -1,6 +1,7 @@
 import { CSSProperties, ReactElement, ReactNode } from "react";
 import { DefaultComponentProps, FieldMetadata, UiState } from ".";
 import type { Editor, Extensions } from "@tiptap/react";
+import type { Dictionary } from "../lib/dictionary";
 import {
   EditorState,
   RichTextSelector,
@@ -151,6 +152,16 @@ export interface ExternalField<Props extends any = { [key: string]: any }>
   initialFilters?: Record<string, any>;
 }
 
+/**
+ * Presentation context supplied by the mounted AutoField host. Custom controls
+ * must not import a second bundled editor store to obtain these values.
+ * These UI hints do not grant native-owner or runtime-operation authority.
+ */
+export interface CustomFieldEditorContext {
+  readonly canEdit: boolean;
+  readonly dictionary: Readonly<Dictionary>;
+}
+
 export type CustomFieldRender<Value extends any> = (props: {
   field: CustomField<Value>;
   name: string;
@@ -158,6 +169,7 @@ export type CustomFieldRender<Value extends any> = (props: {
   value: Value;
   onChange: (value: Value, uiState?: Partial<UiState>) => void;
   readOnly?: boolean;
+  editorContext?: CustomFieldEditorContext;
 }) => ReactElement;
 
 export interface CustomField<Value extends any> extends BaseField {

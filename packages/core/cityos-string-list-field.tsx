@@ -1,14 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Plus, Trash } from "lucide-react";
-import type { CustomField } from "./types/Fields";
+import type { CustomField, CustomFieldEditorContext } from "./types/Fields";
 import type { CityOSPuckStringListField } from "./cityos-registration";
 import {
   editCityOSStringList,
   snapshotCityOSStringList,
   type CityOSStringListEdit,
 } from "./cityos-string-list";
-import { useMessage } from "./lib/use-message";
-import { useAppStore } from "./store";
+import { getMessage, type Dictionary } from "./lib/dictionary";
 import { IconButton } from "./components/IconButton";
 import getClassNameFactory from "./lib/get-class-name-factory";
 import inputStyles from "./components/AutoField/styles.module.css";
@@ -28,6 +27,7 @@ function ListRow({
   maximum,
   edit,
   inputRef,
+  dictionary,
 }: {
   id: string;
   index: number;
@@ -38,11 +38,14 @@ function ListRow({
   maximum: number;
   edit: (operation: CityOSStringListEdit, focus?: number) => void;
   inputRef: (node: HTMLTextAreaElement | null) => void;
+  dictionary: Readonly<Dictionary>;
 }) {
-  const item = useMessage("field-arrayitem-summary", { index: index + 1 });
-  const remove = useMessage("field-arrayitem-delete");
-  const up = useMessage("field-stringlist-moveup");
-  const down = useMessage("field-stringlist-movedown");
+  const item = getMessage(dictionary, "field-arrayitem-summary", {
+    index: index + 1,
+  });
+  const remove = getMessage(dictionary, "field-arrayitem-delete");
+  const up = getMessage(dictionary, "field-stringlist-moveup");
+  const down = getMessage(dictionary, "field-stringlist-movedown");
   const fieldId = `${id}-item-${index}`;
   return (
     <li className={styles.row}>
@@ -104,20 +107,21 @@ function StringListEditor({
   readOnly: fieldReadOnly,
   id,
   definition,
+  editorContext,
 }: {
   value: unknown;
   onChange: (value: string[]) => void;
   readOnly?: boolean;
   id: string;
   definition: Readonly<CityOSPuckStringListField>;
+  editorContext?: CustomFieldEditorContext;
 }) {
-  const canEdit = useAppStore(
-    (state) =>
-      state.permissions.getPermissions({ item: state.selectedItem }).edit
-  );
-  const readOnly = fieldReadOnly === true || canEdit !== true;
-  const addLabel = useMessage("field-arrayitem-add");
-  const invalidLabel = useMessage("field-stringlist-invalid");
+  // Context crosses the field boundary explicitly, including in independently
+  // bundled CJS/ESM entries. Missing host context never enables mutation.
+  const readOnly = fieldReadOnly === true || editorContext?.canEdit !== true;
+  const dictionary = editorContext?.dictionary ?? {};
+  const addLabel = getMessage(dictionary, "field-arrayitem-add");
+  const invalidLabel = getMessage(dictionary, "field-stringlist-invalid");
   const [editError, setEditError] = useState(false);
   const priorInput = useRef({ id, value });
   const current = useRef(value);
@@ -157,7 +161,6 @@ function StringListEditor({
       setEditError(true);
       return;
     }
-    // Keep consecutive edits coherent before React's next render/owner echo.
     current.current = result;
     focus.current = nextFocus;
     setEditError(false);
@@ -179,6 +182,7 @@ function StringListEditor({
                 value={item}
                 label={definition.label}
                 readOnly={readOnly}
+                dictionary={dictionary}
                 last={index === items.length - 1}
                 maximum={definition.maxItemLength}
                 edit={edit}
