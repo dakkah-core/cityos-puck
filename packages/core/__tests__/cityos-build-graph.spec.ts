@@ -17,16 +17,16 @@ const coreBuild = `${manifest.name}#build`;
  * The real dry-run catches indirect cycles that inspecting one edge would miss.
  */
 describe("CityOS core build ordering", () => {
-  it("orders consumer builds after the actual fork package", () => {
+  it("orders consumers after the actual fork package", () => {
     expect(manifest.name).toBe("@cityos-core/puck");
     expect(configuration.tasks.build.dependsOn).toContain(coreBuild);
   });
 
-  it("retains normal dependency ordering for other packages", () => {
+  it("retains normal dependency ordering", () => {
     expect(configuration.tasks.build.dependsOn).toContain("^build");
   });
 
-  it("gives core an explicit override without a self-dependency", () => {
+  it("gives core an override without a self-dependency", () => {
     expect(configuration.tasks[coreBuild].dependsOn).toEqual(["^build"]);
     expect(configuration.tasks[coreBuild].dependsOn).not.toContain(coreBuild);
   });
@@ -36,14 +36,15 @@ describe("CityOS core build ordering", () => {
   });
 
   it.each(["tsconfig", "tsup-config", "eslint-config-custom"])(
-    "keeps the %s transit task below core without disabling dependencies",
+    "keeps the %s transit task below core",
     (name) => {
-      expect(configuration.tasks[`${name}#build`].dependsOn).toEqual(["^build"]);
-      expect(configuration.tasks[`${name}#build`].outputs).toEqual([]);
+      const task = configuration.tasks[`${name}#build`];
+      expect(task.dependsOn).toEqual(["^build"]);
+      expect(task.outputs).toEqual([]);
     }
   );
 
-  it("resolves the actual Turbo graph and orders the failing aliased recipe", () => {
+  it("evaluates the actual Turbo graph", () => {
     // Constant command only. Dry-run evaluates the installed tool's full task
     // graph without running a build, generating files, or publishing packages.
     const output = execSync("pnpm exec turbo run build --dry=json", {
@@ -53,10 +54,9 @@ describe("CityOS core build ordering", () => {
       stdio: ["ignore", "pipe", "pipe"],
     });
     const graph = JSON.parse(output);
-    const recipe = graph.tasks.find(
-      (task: { taskId: string }) =>
-        task.taskId === "react-router-ai-recipe#build"
-    );
+    const recipe = graph.tasks.find((task: { taskId: string }) => {
+      return task.taskId === "react-router-ai-recipe#build";
+    });
     expect(recipe).toBeDefined();
     expect(recipe.dependencies).toContain(coreBuild);
   });
