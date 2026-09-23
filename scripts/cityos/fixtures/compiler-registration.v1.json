@@ -1,0 +1,64 @@
+{
+  "components": [
+    {
+      "fields": {
+        "level": {
+          "label": "المستوى",
+          "max": 6,
+          "min": 1,
+          "step": 1,
+          "type": "number"
+        },
+        "title": {
+          "label": "العنوان",
+          "type": "text"
+        },
+        "tone": {
+          "label": "النبرة",
+          "options": [
+            {
+              "label": "معلومات",
+              "value": "information"
+            },
+            {
+              "label": "تنبيه",
+              "value": "warning"
+            }
+          ],
+          "type": "select"
+        }
+      },
+      "label": "رسالة",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.message",
+        "version": "1"
+      },
+      "type": "FixtureMessage"
+    }
+  ],
+  "dataProfile": "cityos.puck-slots.v0.23.native-screen.v2",
+  "root": {
+    "fields": {
+      "content": {
+        "allow": [
+          "FixtureMessage"
+        ],
+        "label": "content",
+        "type": "slot"
+      }
+    },
+    "label": "الشاشة",
+    "renderer": {
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "key": "fixture.root",
+      "version": "1"
+    }
+  },
+  "schemaVersion": "cityos.puck.registration.v1",
+  "source": {
+    "definitionDigest": "sha256:7380c56947ad0566a6f7260f846946f9d0aefbf3d97594212b8e19d4571c638d",
+    "ownerId": "core.cms",
+    "registryRevision": "fixture-registry-v1"
+  }
+}
