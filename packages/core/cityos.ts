@@ -5,7 +5,7 @@
 export const CITYOS_PUCK_PACKAGE = Object.freeze({
   packageName: "@cityos-core/puck",
   upstreamVersion: "0.23.0",
-  forkRevision: "449f42df3abd2193ad3e740287dc0bcf044b2bfb",
+  forkRevision: "e006f18f9b9f613d0dbf11cfad8325552bf9fd56",
   nativeDataProfile: "cityos.puck-slots.v0.23.native-screen.v2",
 } as const);
 
