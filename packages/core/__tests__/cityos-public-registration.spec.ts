@@ -57,7 +57,7 @@ function metadata(type: string) {
 }
 
 describe("CityOS public registration entry", () => {
-  it("re-exports the canonical implementation without a second registry", () => {
+  it("re-exports the canonical registration API", () => {
     for (const [name, value] of Object.entries(registration)) {
       const descriptor = Object.getOwnPropertyDescriptor(publicApi, name);
       expect(descriptor).toBeDefined();
@@ -65,7 +65,7 @@ describe("CityOS public registration entry", () => {
     }
   });
 
-  it("keeps package metadata and prepared export versions consistent", () => {
+  it("preserves metadata in the prepared export", () => {
     expect(compiled.CITYOS_PUCK_PACKAGE).toEqual(publicApi.CITYOS_PUCK_PACKAGE);
     expect(compiled.CITYOS_PUCK_REGISTRATION_VERSION).toBe(
       registration.CITYOS_PUCK_REGISTRATION_VERSION
@@ -76,7 +76,7 @@ describe("CityOS public registration entry", () => {
     expect(typeof compiled.bindCityOSPuckRegistration).toBe("function");
   });
 
-  it("binds a new supported name through source and prepared entrypoints", async () => {
+  it("binds supported names through both entrypoints", async () => {
     const installed: registration.CityOSPuckInstalledRenderer = {
       kind: "component",
       version: "1",
@@ -100,7 +100,7 @@ describe("CityOS public registration entry", () => {
     }
   });
 
-  it("does not turn missing installed code into a working declaration", async () => {
+  it("denies missing installed implementations", async () => {
     const source = metadata("UnavailableComponent");
     const expected = await registration.digestCityOSPuckRegistration(source);
     for (const api of [publicApi, compiled]) {
@@ -110,7 +110,7 @@ describe("CityOS public registration entry", () => {
     }
   });
 
-  it("requires the independently pinned digest through both entries", async () => {
+  it("requires a pinned digest at both entrypoints", async () => {
     const source = metadata("IntegrityBoundComponent");
     for (const api of [publicApi, compiled]) {
       await expect(
