@@ -1,0 +1,16 @@
+{
+  "qualificationOnly": true,
+  "producerRepository": "dakkah-core/dakkah-cityos-cms",
+  "compilerBaseCommit": "d4262b2d828303ff173bf09d987b20f922433b1b",
+  "compilerPath": "packages/cityos-compiler/src/universal/targets/studio-puck.ts",
+  "compilerSourceBlob": "1d25995219598d78650993bef9de6bfaf98fdcb5",
+  "sourceFixture": "packages/cityos-compiler/tests/engineering-compiler/studio-puck-string-list.cases.ts#nativeCatalogPuckFixture",
+  "fixtureLocale": "ar",
+  "sourceHash": "sha256:cac51c546c0fabc3379a740752bddaef71c0252172164d7b91d91fbde3099272",
+  "registrationDigest": "sha256:374065689f22e82d46ceeb0019ae373dd5af32b1917dc41d2d03873d681959fa",
+  "artifactDigest": "sha256:70f818e701c0ae79f9e62a00a3fecd090d02da923a2700febe9342f32b9fa3c1",
+  "nonClaims": [
+    "Synthetic owner and renderer admission, not a runtime release.",
+    "The fixture proves a data protocol, not installed package, owner permissions, browser or persistence."
+  ]
+}

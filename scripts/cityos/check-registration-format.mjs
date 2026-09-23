@@ -14,6 +14,12 @@ const paths = [
   'packages/core/__helpers__/cityos-structured-registration.ts',
   'packages/core/__helpers__/cityos-editor-environment.ts',
   'docs/cityos-registration.md',
+  'packages/core/cityos-string-list.ts',
+  'packages/core/cityos-string-list-field.tsx',
+  'packages/core/cityos-string-list-field.module.css',
+  'packages/core/lib/dictionary.ts',
+  'packages/core/__tests__/cityos-string-list-editor.test.tsx',
+  'docs/cityos-string-list-registration.md',
 ];
 for (const path of paths) {
   const source = readFileSync(path, 'utf8');

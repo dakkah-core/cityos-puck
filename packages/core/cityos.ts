@@ -19,3 +19,19 @@ export interface CityOSPuckEditorBoundary {
 // Registration owns its versioned runtime and type exports. The public entry
 // must not maintain a competing symbol list or reference nonexistent adapters.
 export * from "./cityos-registration";
+
+// The public fork entry binds the verified built-in editor adapter. The data-only
+// registration module stays importable by compiler/protocol verification tools.
+import { bindCityOSPuckRegistration as bindRegistration } from "./cityos-registration";
+import type { CityOSPuckRendererResolver } from "./cityos-registration";
+import { createCityOSStringListField } from "./cityos-string-list-field";
+
+export function bindCityOSPuckRegistration(
+  input: unknown,
+  expectedManifestDigest: string,
+  resolver: CityOSPuckRendererResolver
+) {
+  return bindRegistration(input, expectedManifestDigest, resolver, {
+    stringList: createCityOSStringListField,
+  });
+}

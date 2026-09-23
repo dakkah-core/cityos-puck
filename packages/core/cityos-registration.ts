@@ -1,10 +1,12 @@
 import type { Config } from "./types/Config";
-import type { Field } from "./types/Fields";
+import type { CustomField, Field } from "./types/Fields";
 
 /** A target artifact, not a CityOS owner/capability/permission registry. */
 export const CITYOS_PUCK_REGISTRATION_VERSION = "cityos.puck.registration.v1";
 export const CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION =
   "cityos.puck.registration.v2";
+export const CITYOS_PUCK_STRING_LIST_REGISTRATION_VERSION =
+  "cityos.puck.registration.v3";
 export const CITYOS_PUCK_REGISTRATION_PROFILE =
   "cityos.puck-slots.v0.23.native-screen.v2";
 export const CITYOS_PUCK_STRUCTURED_FIELD_LIMITS = Object.freeze({
@@ -14,7 +16,20 @@ export const CITYOS_PUCK_STRUCTURED_FIELD_LIMITS = Object.freeze({
 });
 
 type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
+export interface CityOSPuckStringListField {
+  type: "string-list";
+  label: string;
+  maxItems: number;
+  maxItemLength: number;
+}
+/** Executable adapters come from the installed fork, never registration metadata. */
+export interface CityOSPuckFieldAdapters {
+  readonly stringList?: (
+    field: Readonly<CityOSPuckStringListField>
+  ) => CustomField<string[]>;
+}
 export type CityOSPuckField =
+  | CityOSPuckStringListField
   | { type: "text" | "textarea"; label: string }
   | { type: "number"; label: string; min: number; max: number; step?: number }
   | {
@@ -49,7 +64,8 @@ export interface CityOSPuckRegistrationEntry {
 export interface CityOSPuckRegistrationManifest {
   schemaVersion:
     | typeof CITYOS_PUCK_REGISTRATION_VERSION
-    | typeof CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION;
+    | typeof CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION
+    | typeof CITYOS_PUCK_STRING_LIST_REGISTRATION_VERSION;
   dataProfile: typeof CITYOS_PUCK_REGISTRATION_PROFILE;
   source: {
     ownerId: string;
@@ -166,7 +182,8 @@ function validateFields(
   knownTypes: Set<string>,
   structured: boolean,
   depth = 0,
-  budget = { count: 0 }
+  budget = { count: 0 },
+  scalarLists = false
 ): void {
   if (
     !input ||
@@ -189,7 +206,7 @@ function validateFields(
     const field = object(
       raw,
       ["type", "label"],
-      ["min", "max", "step", "options", "allow", "objectFields", "arrayFields"]
+      ["min", "max", "step", "options", "allow", "objectFields", "arrayFields", "maxItems", "maxItemLength"]
     );
     text(field.label);
     switch (field.type) {
@@ -197,6 +214,22 @@ function validateFields(
       case "textarea":
         object(raw, ["type", "label"]);
         break;
+      case "string-list": {
+        if (!scalarLists) fail("UNSUPPORTED_FIELD");
+        object(raw, ["type", "label", "maxItems", "maxItemLength"]);
+        if (
+          typeof field.maxItems !== "number" ||
+          !Number.isSafeInteger(field.maxItems) ||
+          field.maxItems < 0 ||
+          field.maxItems > CITYOS_PUCK_STRUCTURED_FIELD_LIMITS.arrayItems ||
+          typeof field.maxItemLength !== "number" ||
+          !Number.isSafeInteger(field.maxItemLength) ||
+          field.maxItemLength < 0 ||
+          field.maxItemLength > 100_000
+        )
+          fail("LIST_BOUNDS");
+        break;
+      }
       case "number": {
         object(raw, ["type", "label", "min", "max"], ["step"]);
         if (
@@ -271,7 +304,9 @@ function validateFields(
             field.max > CITYOS_PUCK_STRUCTURED_FIELD_LIMITS.arrayItems)
         )
           fail("ARRAY_BOUNDS");
-        validateFields(field[childKey], knownTypes, true, depth + 1, budget);
+        validateFields(
+          field[childKey], knownTypes, true, depth + 1, budget, scalarLists
+        );
         break;
       }
       default:
@@ -283,7 +318,8 @@ function validateEntry(
   value: Json,
   component: boolean,
   knownTypes: Set<string>,
-  structured: boolean
+  structured: boolean,
+  scalarLists = false
 ): void {
   const entry = object(
     value,
@@ -297,7 +333,7 @@ function validateEntry(
   key(renderer.key);
   text(renderer.version, 128);
   hash(renderer.digest);
-  validateFields(entry.fields, knownTypes, structured);
+  validateFields(entry.fields, knownTypes, structured, 0, { count: 0 }, scalarLists);
 }
 function canonical(value: Json): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
@@ -324,7 +360,9 @@ export function parseCityOSPuckRegistration(
     ["schemaVersion", "dataProfile", "source", "components"],
     ["root"]
   );
-  const structured =
+  const scalarLists =
+    manifest.schemaVersion === CITYOS_PUCK_STRING_LIST_REGISTRATION_VERSION;
+  const structured = scalarLists ||
     manifest.schemaVersion === CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION;
   if (
     (!structured &&
@@ -356,10 +394,10 @@ export function parseCityOSPuckRegistration(
     types.add(entry.type);
   }
   manifest.components.forEach((entry) =>
-    validateEntry(entry, true, types, structured)
+    validateEntry(entry, true, types, structured, scalarLists)
   );
   if (manifest.root !== undefined)
-    validateEntry(manifest.root, false, types, structured);
+    validateEntry(manifest.root, false, types, structured, scalarLists);
   if (new TextEncoder().encode(canonical(snapshot)).byteLength > 1_048_576)
     fail("INPUT_LIMIT");
   return freeze(snapshot as unknown as CityOSPuckRegistrationManifest);
@@ -400,11 +438,20 @@ function resolveRenderer(
 }
 /** Construct mutable Puck fields from validated metadata without a JSON cast. */
 function cloneFields(
-  fields: Record<string, CityOSPuckField>
+  fields: Record<string, CityOSPuckField>,
+  adapters: CityOSPuckFieldAdapters
 ): Record<string, Field> {
   return Object.fromEntries(
     Object.entries(fields).map(([name, field]): [string, Field] => {
       switch (field.type) {
+        case "string-list": {
+          if (typeof adapters.stringList !== "function")
+            fail("FIELD_ADAPTER_UNAVAILABLE");
+          const bound = adapters.stringList(Object.freeze({ ...field }));
+          if (!bound || bound.type !== "custom" || typeof bound.render !== "function")
+            fail("FIELD_ADAPTER_UNAVAILABLE");
+          return [name, bound];
+        }
         case "text":
           return [name, { type: "text", label: field.label }];
         case "textarea":
@@ -429,7 +476,7 @@ function cloneFields(
             {
               type: "object",
               label: field.label,
-              objectFields: cloneFields(field.objectFields),
+              objectFields: cloneFields(field.objectFields, adapters),
             },
           ];
         case "array":
@@ -440,7 +487,7 @@ function cloneFields(
               label: field.label,
               min: field.min,
               max: field.max,
-              arrayFields: cloneFields(field.arrayFields),
+              arrayFields: cloneFields(field.arrayFields, adapters),
             },
           ];
       }
@@ -455,13 +502,15 @@ function cloneFields(
 export async function bindCityOSPuckRegistration(
   input: unknown,
   expectedManifestDigest: string,
-  resolver: CityOSPuckRendererResolver
+  resolver: CityOSPuckRendererResolver,
+  fieldAdapters: CityOSPuckFieldAdapters = {}
 ): Promise<Config> {
   if (
     !digestPattern.test(expectedManifestDigest) ||
     typeof resolver !== "function"
   )
     fail("ADMISSION_REQUIRED");
+  const adapters = Object.freeze({ stringList: fieldAdapters.stringList });
   const manifest = parseCityOSPuckRegistration(input);
   if ((await sha256(manifest as unknown as Json)) !== expectedManifestDigest)
     fail("MANIFEST_MISMATCH");
@@ -473,7 +522,7 @@ export async function bindCityOSPuckRegistration(
     const render = installed.render;
     return {
       label: entry.label,
-      fields: cloneFields(entry.fields),
+      fields: cloneFields(entry.fields, adapters),
       render: ((props: Parameters<typeof render>[0]) => {
         const current = resolveRenderer(entry.renderer, kind, resolver);
         if (current.render !== render) fail("RENDERER_CHANGED");

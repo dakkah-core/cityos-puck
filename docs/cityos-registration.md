@@ -76,3 +76,10 @@ Platform Engineering: emit the versioned target artifact from canonical componen
 All 32 Studio capability families and 64 scenarios in the expansion reference, the separately preserved original Studio register and v2.1 overlay, four backend behavior kinds, six Studio flow classes, L0-L9 composition, Studio A/B/C, core/shared E01-E08 and vertical A-I remain in scope. This field implementation does not mark their full capability obligations complete.
 
 The platform [expansion index](https://github.com/dakkah-core/dakkah-cityos-cms/blob/main/docs/delivery/cityos-expansion/README.md), [owner handoffs](https://github.com/dakkah-core/dakkah-cityos-cms/blob/main/docs/delivery/cityos-expansion/owner-notes.md) and [coordination issue #256](https://github.com/dakkah-core/dakkah-cityos-cms/issues/256) retain programme tracking. Work directly on each repository's main branch, preserve concurrent changes, publish non-forced updates, and record the exact verified source/package pair. No owner acknowledgement, operational activation or release approval is implied by this note.
+
+## Scalar string-list extension
+
+The explicit v3 contract and its fork-owned control are documented in
+[scalar string-list registration](cityos-string-list-registration.md). V1/v2
+keep their existing semantics; v3 is not automatically available in previously
+published packages or the platform host.

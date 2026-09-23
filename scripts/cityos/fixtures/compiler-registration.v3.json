@@ -1,0 +1,366 @@
+{
+  "components": [
+    {
+      "fields": {
+        "level": {
+          "label": "مستوى العنوان",
+          "max": 6,
+          "min": 1,
+          "step": 1,
+          "type": "number"
+        },
+        "text": {
+          "label": "النص",
+          "type": "textarea"
+        }
+      },
+      "label": "عنوان",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.heading",
+        "version": "1"
+      },
+      "type": "StudioHeading"
+    },
+    {
+      "fields": {
+        "text": {
+          "label": "النص",
+          "type": "textarea"
+        }
+      },
+      "label": "نص",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.text",
+        "version": "1"
+      },
+      "type": "StudioText"
+    },
+    {
+      "fields": {
+        "content": {
+          "allow": [
+            "StudioCallout",
+            "StudioCard",
+            "StudioCode",
+            "StudioContainer",
+            "StudioDivider",
+            "StudioGrid",
+            "StudioHeading",
+            "StudioList",
+            "StudioQuote",
+            "StudioSpacer",
+            "StudioText"
+          ],
+          "label": "content",
+          "type": "slot"
+        }
+      },
+      "label": "حاوية",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.container",
+        "version": "1"
+      },
+      "type": "StudioContainer"
+    },
+    {
+      "fields": {
+        "columns": {
+          "label": "الحد الأقصى للأعمدة",
+          "max": 4,
+          "min": 1,
+          "step": 1,
+          "type": "number"
+        },
+        "content": {
+          "allow": [
+            "StudioCallout",
+            "StudioCard",
+            "StudioCode",
+            "StudioContainer",
+            "StudioDivider",
+            "StudioGrid",
+            "StudioHeading",
+            "StudioList",
+            "StudioQuote",
+            "StudioSpacer",
+            "StudioText"
+          ],
+          "label": "content",
+          "type": "slot"
+        },
+        "gap": {
+          "label": "المسافة بالبكسل",
+          "max": 48,
+          "min": 0,
+          "step": 1,
+          "type": "number"
+        },
+        "minimumWidth": {
+          "label": "الحد الأدنى لعرض العمود",
+          "max": 640,
+          "min": 120,
+          "step": 1,
+          "type": "number"
+        }
+      },
+      "label": "شبكة متجاوبة",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.grid",
+        "version": "1"
+      },
+      "type": "StudioGrid"
+    },
+    {
+      "fields": {
+        "content": {
+          "allow": [
+            "StudioCallout",
+            "StudioCard",
+            "StudioCode",
+            "StudioContainer",
+            "StudioDivider",
+            "StudioGrid",
+            "StudioHeading",
+            "StudioList",
+            "StudioQuote",
+            "StudioSpacer",
+            "StudioText"
+          ],
+          "label": "content",
+          "type": "slot"
+        },
+        "description": {
+          "label": "الوصف",
+          "type": "textarea"
+        },
+        "title": {
+          "label": "عنوان البطاقة",
+          "type": "text"
+        },
+        "variant": {
+          "label": "المظهر",
+          "options": [
+            {
+              "label": "بإطار",
+              "value": "outlined"
+            },
+            {
+              "label": "بخلفية",
+              "value": "filled"
+            }
+          ],
+          "type": "select"
+        }
+      },
+      "label": "بطاقة",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.card",
+        "version": "1"
+      },
+      "type": "StudioCard"
+    },
+    {
+      "fields": {
+        "text": {
+          "label": "الشرح",
+          "type": "textarea"
+        },
+        "title": {
+          "label": "عنوان اللوحة",
+          "type": "text"
+        },
+        "tone": {
+          "label": "النبرة التحريرية",
+          "options": [
+            {
+              "label": "معلومات",
+              "value": "information"
+            },
+            {
+              "label": "ملاحظة",
+              "value": "note"
+            },
+            {
+              "label": "تنبيه",
+              "value": "warning"
+            }
+          ],
+          "type": "select"
+        }
+      },
+      "label": "لوحة معلومات",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.callout",
+        "version": "1"
+      },
+      "type": "StudioCallout"
+    },
+    {
+      "fields": {},
+      "label": "فاصل",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.divider",
+        "version": "1"
+      },
+      "type": "StudioDivider"
+    },
+    {
+      "fields": {
+        "size": {
+          "label": "الارتفاع بالبكسل",
+          "max": 128,
+          "min": 0,
+          "step": 1,
+          "type": "number"
+        }
+      },
+      "label": "مسافة",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.spacer",
+        "version": "1"
+      },
+      "type": "StudioSpacer"
+    },
+    {
+      "fields": {
+        "items": {
+          "label": "عناصر القائمة",
+          "maxItemLength": 2000,
+          "maxItems": 100,
+          "type": "string-list"
+        },
+        "style": {
+          "label": "نمط القائمة",
+          "options": [
+            {
+              "label": "نقطية",
+              "value": "unordered"
+            },
+            {
+              "label": "مرقمة",
+              "value": "ordered"
+            }
+          ],
+          "type": "select"
+        }
+      },
+      "label": "قائمة",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.list",
+        "version": "1"
+      },
+      "type": "StudioList"
+    },
+    {
+      "fields": {
+        "attribution": {
+          "label": "نسبة الاقتباس",
+          "type": "text"
+        },
+        "text": {
+          "label": "نص الاقتباس",
+          "type": "textarea"
+        }
+      },
+      "label": "اقتباس",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.quote",
+        "version": "1"
+      },
+      "type": "StudioQuote"
+    },
+    {
+      "fields": {
+        "language": {
+          "label": "اسم اللغة",
+          "options": [
+            {
+              "label": "نص عادي",
+              "value": "plain"
+            },
+            {
+              "label": "TypeScript",
+              "value": "typescript"
+            },
+            {
+              "label": "JavaScript",
+              "value": "javascript"
+            },
+            {
+              "label": "JSON",
+              "value": "json"
+            },
+            {
+              "label": "Python",
+              "value": "python"
+            },
+            {
+              "label": "SQL",
+              "value": "sql"
+            }
+          ],
+          "type": "select"
+        },
+        "text": {
+          "label": "الشيفرة كنص",
+          "type": "textarea"
+        }
+      },
+      "label": "مثال برمجي",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.code",
+        "version": "1"
+      },
+      "type": "StudioCode"
+    }
+  ],
+  "dataProfile": "cityos.puck-slots.v0.23.native-screen.v2",
+  "root": {
+    "fields": {
+      "content": {
+        "allow": [
+          "StudioCallout",
+          "StudioCard",
+          "StudioCode",
+          "StudioContainer",
+          "StudioDivider",
+          "StudioGrid",
+          "StudioHeading",
+          "StudioList",
+          "StudioQuote",
+          "StudioSpacer",
+          "StudioText"
+        ],
+        "label": "content",
+        "type": "slot"
+      },
+      "title": {
+        "label": "عنوان الشاشة",
+        "type": "text"
+      }
+    },
+    "label": "الشاشة",
+    "renderer": {
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "key": "fixture.root",
+      "version": "1"
+    }
+  },
+  "schemaVersion": "cityos.puck.registration.v3",
+  "source": {
+    "definitionDigest": "sha256:0a83279c7572b6be24cf3487354940cf7e0ad20c221ccf47dd96f2aab69a677f",
+    "ownerId": "core.cms",
+    "registryRevision": "fixture-registry-v3"
+  }
+}
