@@ -114,7 +114,10 @@ function copyData(input: unknown): Json {
         (array && !/^(0|[1-9][0-9]*)$/.test(key))
       )
         fail("DATA_ONLY");
-      (result as Record<string, Json>)[key] = visit(descriptor.value, depth + 1);
+      (result as Record<string, Json>)[key] = visit(
+        descriptor.value,
+        depth + 1
+      );
     }
     if (array && Object.keys(result).length !== value.length) fail("DATA_ONLY");
     ancestors.delete(value);
@@ -132,7 +135,9 @@ function object(
     typeof value !== "object" ||
     Array.isArray(value) ||
     keys.some((key) => !Object.prototype.hasOwnProperty.call(value, key)) ||
-    Object.keys(value).some((key) => !keys.includes(key) && !optional.includes(key))
+    Object.keys(value).some(
+      (key) => !keys.includes(key) && !optional.includes(key)
+    )
   )
     fail("SHAPE");
   return value as Record<string, Json>;
@@ -321,7 +326,8 @@ export function parseCityOSPuckRegistration(
   const structured =
     manifest.schemaVersion === CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION;
   if (
-    (!structured && manifest.schemaVersion !== CITYOS_PUCK_REGISTRATION_VERSION) ||
+    (!structured &&
+      manifest.schemaVersion !== CITYOS_PUCK_REGISTRATION_VERSION) ||
     manifest.dataProfile !== CITYOS_PUCK_REGISTRATION_PROFILE
   )
     fail("PROFILE");
@@ -333,7 +339,11 @@ export function parseCityOSPuckRegistration(
   text(source.ownerId, 128);
   text(source.registryRevision, 128);
   hash(source.definitionDigest);
-  if (!/^(core|shared|vertical)\.[a-z0-9]+(?:[.-][a-z0-9]+)*$/.test(source.ownerId))
+  if (
+    !/^(core|shared|vertical)\.[a-z0-9]+(?:[.-][a-z0-9]+)*$/.test(
+      source.ownerId
+    )
+  )
     fail("OWNER_REFERENCE");
   if (!Array.isArray(manifest.components) || manifest.components.length > 1024)
     fail("COMPONENT_LIMIT");
@@ -401,9 +411,15 @@ function cloneFields(
         case "number":
           return [name, { ...field }];
         case "select":
-          return [name, { ...field, options: field.options.map((o) => ({ ...o })) }];
+          return [
+            name,
+            { ...field, options: field.options.map((o) => ({ ...o })) },
+          ];
         case "radio":
-          return [name, { ...field, options: field.options.map((o) => ({ ...o })) }];
+          return [
+            name,
+            { ...field, options: field.options.map((o) => ({ ...o })) },
+          ];
         case "slot":
           return [name, { ...field, allow: [...field.allow] }];
         case "object":

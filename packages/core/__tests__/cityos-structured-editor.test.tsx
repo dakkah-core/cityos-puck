@@ -3,7 +3,13 @@ import "../__helpers__/cityos-editor-environment";
 import React from "react";
 import { webcrypto } from "node:crypto";
 import { TextEncoder } from "node:util";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { Puck } from "../components/Puck";
 import { Render } from "../components/Render";
 import type { Data } from "../types";
@@ -126,9 +132,12 @@ describe("generated structured fields in the actual editor", () => {
 
   it("uses the same field editor for a newly named registered component", async () => {
     const f = await fixture(false, "FutureConfigOnlyProfile");
-    fireEvent.change(await screen.findByRole("textbox", { name: "Business ID" }), {
-      target: { value: "domain-next" },
-    });
+    fireEvent.change(
+      await screen.findByRole("textbox", { name: "Business ID" }),
+      {
+        target: { value: "domain-next" },
+      }
+    );
     await waitFor(() => {
       const calls = f.change.mock.calls;
       expect(calls[calls.length - 1]?.[0].content[0].type).toBe(
