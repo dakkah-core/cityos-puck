@@ -1,4 +1,4 @@
-# This workflow will run all checks required for a PR to be merged.
+# This workflow runs the complete maintained checks without reducing their scope.
 name: Build and Test ci
 on:
   push:
@@ -50,23 +50,29 @@ jobs:
         with:
           node-version: 24
           cache: "pnpm"
+      - name: Record exact verification inputs
+        shell: bash
+        run: |
+          bash -n .github/scripts/run-recorded-check.sh
+          mkdir -p .build/cityos-ci
+          git rev-parse HEAD > .build/cityos-ci/source-sha.txt
+          sha256sum pnpm-lock.yaml packages/core/package.json packages/core/cityos.ts packages/core/cityos-registration.ts packages/core/tsup.config.ts apps/demo/tsconfig.json .github/workflows/ci.yml .github/scripts/run-recorded-check.sh > .build/cityos-ci/input-sha256.txt
+          node --version > .build/cityos-ci/node-version.txt
+          pnpm --version > .build/cityos-ci/pnpm-version.txt
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bash .github/scripts/run-recorded-check.sh install
       - name: Run tests
-        run: pnpm test
+        run: bash .github/scripts/run-recorded-check.sh test
       - name: Check linting and formatting
         run: |
-          if pnpm lint && pnpm format:check; then
-            echo "Linting and formatting checks passed."
-          else
-            echo "Linting or formatting checks failed. Please fix the issues."
-            exit 1
-          fi
+          bash .github/scripts/run-recorded-check.sh lint
+          bash .github/scripts/run-recorded-check.sh format
       - name: Build everything
-        run: pnpm build
-      - name: Check for build failures
-        run: |
-          if [ $? -ne 0 ]; then
-            echo "Build failed. Please fix the issues."
-            exit 1
-          fi
+        run: bash .github/scripts/run-recorded-check.sh build
+      - name: Preserve exact verification output, including failures
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: cityos-full-verification-${{ github.sha }}-${{ github.run_attempt }}
+          path: .build/cityos-ci/
+          retention-days: 7
