@@ -16,6 +16,7 @@ import {
 import { Puck } from "../components/Puck";
 import { Render } from "../components/Render";
 import type { Data } from "../types";
+import type { Dictionary } from "../lib/dictionary";
 import {
   bindCityOSPuckRegistration,
   digestCityOSPuckRegistration,
@@ -38,7 +39,11 @@ beforeAll(() => {
 });
 afterEach(cleanup);
 
-async function fixture(readOnly = false, type = "GeneratedProfile") {
+async function fixture(
+  readOnly = false,
+  type = "GeneratedProfile",
+  dictionary: Dictionary = {}
+) {
   const source = structuredRegistration(undefined, type);
   const installed: CityOSPuckInstalledRenderer = {
     kind: "component",
@@ -73,6 +78,7 @@ async function fixture(readOnly = false, type = "GeneratedProfile") {
         config={config}
         data={data}
         onChange={change}
+        dictionary={dictionary}
         ui={{ itemSelector: { index: 0 } }}
         permissions={{ edit: !readOnly }}
         iframe={{ enabled: false }}
@@ -128,6 +134,36 @@ describe("generated structured fields in the actual editor", () => {
     const latest = f.change.mock.calls[f.change.mock.calls.length - 1][0];
     expect(latest.content[0].props.rows[0]).toEqual({ value: "Existing text" });
     expect(latest.content[0].props.profile.id).toBe("domain-id");
+  });
+
+  it("localizes the add control without changing its registered bound", async () => {
+    const f = await fixture(false, "FutureConfigOnlyProfile", {
+      "field-arrayitem-add": "إضافة عنصر",
+    });
+    const add = await screen.findByRole("button", { name: "إضافة عنصر" });
+    expect(add.getAttribute("title")).toBe("إضافة عنصر");
+    expect(add.getAttribute("type")).toBe("button");
+    fireEvent.click(add);
+    await waitFor(() => {
+      const calls = f.change.mock.calls;
+      expect(calls[calls.length - 1]?.[0].content[0].props.rows).toHaveLength(
+        2
+      );
+    });
+    expect(screen.queryByRole("button", { name: "إضافة عنصر" })).toBeNull();
+    const latest = f.change.mock.calls[f.change.mock.calls.length - 1][0];
+    expect(latest.content[0].type).toBe("FutureConfigOnlyProfile");
+    expect(latest.content[0].props.id).toBe("stable-component");
+    expect(latest.content[0].props.rows[0]).toEqual({ value: "Existing text" });
+    expect(f.data.content[0].props.rows).toHaveLength(1);
+  });
+
+  it("keeps the localized add control unavailable to read-only authors", async () => {
+    await fixture(true, "GeneratedProfile", {
+      "field-arrayitem-add": "إضافة عنصر",
+    });
+    expect(screen.queryByRole("button", { name: "إضافة عنصر" })).toBeNull();
+    expect(screen.queryByRole("button", { name: /add/i })).toBeNull();
   });
 
   it("renders a boolean radio field without stringifying the emitted value", async () => {

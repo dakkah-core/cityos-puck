@@ -37,6 +37,7 @@ export const defaultDictionary = {
   // Fields
   "field-readonly": "Read-only",
   "field-arrayitem-summary": "Item #{index}",
+  "field-arrayitem-add": "Add item",
   "field-arrayitem-duplicate": "Duplicate",
   "field-arrayitem-delete": "Delete",
   "field-external-selectdata": "Select data",
