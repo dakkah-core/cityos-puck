@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "cityos.puck.compiler-fixture.v1",
+  "qualificationOnly": true,
+  "sourceHash": "sha256:f55d4e1129ee89c05b26d3a1e5b2a8f2744190e86999a6bf6f1e473a7ae167af",
+  "registrationDigest": "sha256:ae2ab88b189df893893e88ebb3db1cab9d79849de199b6742ff3cc41d883da41",
+  "artifactDigest": "sha256:46b5d83ee1a6f9b5c858203590d9a3631851cd958bce03e2803de37450f47771",
+  "compilerBaseCommit": "6d1b0d8443480ac94b453d994971da6413d96251",
+  "compilerSourcePath": "packages/cityos-compiler/src/universal/targets/studio-puck.ts",
+  "compilerSourceBlob": "9c00eb70fd2afd7d38d570f29d0ad3a164a941ce",
+  "dependencyBlobs": {
+    "canonical": "01a59d082945de14255dfa7fc2bbd0f95fb888d3",
+    "ownerProfilePolicy": "bd33e11fe7c511eafba10e723d7464df5809837c"
+  },
+  "nonClaims": [
+    "Fixture-only owner and renderer admission",
+    "No host, database, provider, deployment or runtime authorization"
+  ]
+}

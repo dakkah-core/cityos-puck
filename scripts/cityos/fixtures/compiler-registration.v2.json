@@ -1,0 +1,58 @@
+{
+  "components": [
+    {
+      "fields": {
+        "details": {
+          "label": "التفاصيل",
+          "objectFields": {
+            "title": {
+              "label": "العنوان",
+              "type": "text"
+            }
+          },
+          "type": "object"
+        },
+        "items": {
+          "arrayFields": {
+            "title": {
+              "label": "العنوان",
+              "type": "text"
+            },
+            "visible": {
+              "label": "ظاهر",
+              "options": [
+                {
+                  "label": "نعم",
+                  "value": true
+                },
+                {
+                  "label": "لا",
+                  "value": false
+                }
+              ],
+              "type": "radio"
+            }
+          },
+          "label": "العناصر",
+          "max": 3,
+          "min": 1,
+          "type": "array"
+        }
+      },
+      "label": "بطاقة مركبة",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "cityos.StructuredCard",
+        "version": "1.0.0"
+      },
+      "type": "StructuredCard"
+    }
+  ],
+  "dataProfile": "cityos.puck-slots.v0.23.native-screen.v2",
+  "schemaVersion": "cityos.puck.registration.v2",
+  "source": {
+    "definitionDigest": "sha256:716f9c2a10f1f4654193a0fd38b9aa3e29c0de95dd6050ffa27ed2b510c95106",
+    "ownerId": "core.cms",
+    "registryRevision": "fixture-r1"
+  }
+}

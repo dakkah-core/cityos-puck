@@ -85,7 +85,8 @@ function copyData(input: unknown): Json {
   let nodes = 0;
   const visit = (value: unknown, depth: number): Json => {
     if (++nodes > 30_000 || depth > 24) fail("INPUT_LIMIT");
-    if (value === null || typeof value === "boolean") return value;
+    if (value === null) return null;
+    if (typeof value === "boolean") return value;
     if (typeof value === "string") {
       if (value.length > 131_072) fail("INPUT_LIMIT");
       return value;
