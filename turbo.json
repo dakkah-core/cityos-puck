@@ -11,8 +11,12 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "@cityos-core/puck#build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+    },
+    "@cityos-core/puck#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
     },
     "lint": {},
     "test": {},
