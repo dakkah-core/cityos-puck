@@ -16,20 +16,6 @@ export interface CityOSPuckEditorBoundary {
   readonly direction?: "rtl" | "ltr";
 }
 
-export {
-  CITYOS_PUCK_REGISTRATION_VERSION,
-  CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION,
-  CITYOS_PUCK_STRUCTURED_FIELD_LIMITS,
-  CITYOS_PUCK_REGISTRATION_PROFILE,
-  parseCityOSPuckRegistration,
-  digestCityOSPuckRegistration,
-  bindCityOSPuckRegistration,
-} from "./cityos-registration";
-export type {
-  CityOSPuckField,
-  CityOSPuckRendererRef,
-  CityOSPuckRegistrationEntry,
-  CityOSPuckRegistrationManifest,
-  CityOSPuckInstalledRenderer,
-  CityOSPuckRendererResolver,
-} from "./cityos-registration";
+// Registration owns its versioned runtime and type exports. The public entry
+// must not maintain a competing symbol list or reference nonexistent adapters.
+export * from "./cityos-registration";
