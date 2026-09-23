@@ -58,9 +58,7 @@ describe("versioned compiler-generated structured fields", () => {
     const source = structuredRegistration();
     const parsed = parseCityOSPuckRegistration(source);
     const config = await bind(source);
-    expect(parsed.schemaVersion).toBe(
-      CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION
-    );
+    expect(parsed.schemaVersion).toBe(CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION);
     expect(config.components.GeneratedProfile.fields).toEqual(fixtureFields());
     expect(Object.isFrozen(parsed.components[0].fields)).toBe(true);
     expect(config.components.GeneratedProfile.defaultProps).toBeUndefined();
@@ -219,9 +217,7 @@ describe("versioned compiler-generated structured fields", () => {
   it("does not pretend to implement rich-text registration", () => {
     const source = structuredRegistration();
     Object.assign(source.components[0].fields.profile, { type: "richtext" });
-    expect(() => parseCityOSPuckRegistration(source)).toThrow(
-      "UNSUPPORTED_FIELD"
-    );
+    expect(() => parseCityOSPuckRegistration(source)).toThrow("UNSUPPORTED_FIELD");
   });
 
   it("isolates nested editor config from its verified input", async () => {

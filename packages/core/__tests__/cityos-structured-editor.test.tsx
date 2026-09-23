@@ -4,6 +4,7 @@ import React from "react";
 import { webcrypto } from "node:crypto";
 import { TextEncoder } from "node:util";
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -64,26 +65,28 @@ async function fixture(readOnly = false, type = "GeneratedProfile") {
     ],
   };
   const change = jest.fn<void, [Data]>();
-  render(
-    <Puck
-      config={config}
-      data={data}
-      onChange={change}
-      ui={{ itemSelector: { index: 0 } }}
-      permissions={{ edit: !readOnly }}
-      iframe={{ enabled: false }}
-    >
-      <Puck.Fields />
-    </Puck>
-  );
+  await act(async () => {
+    render(
+      <Puck
+        config={config}
+        data={data}
+        onChange={change}
+        ui={{ itemSelector: { index: 0 } }}
+        permissions={{ edit: !readOnly }}
+        iframe={{ enabled: false }}
+      >
+        <Puck.Fields />
+      </Puck>
+    );
+  });
   return { config, data, change };
 }
 
-/** Actual Puck editor fields and emitted data; no CMS, database or BFF fixture. */
+/** Actual editor fields: nested paths and option values are native aria-labels. */
 describe("generated structured fields in the actual editor", () => {
   it("edits a nested property without replacing other values or node IDs", async () => {
     const f = await fixture();
-    const input = await screen.findByRole("textbox", { name: "Display name" });
+    const input = await screen.findByRole("textbox", { name: "profile.name" });
     fireEvent.change(input, { target: { value: "نص جديد" } });
     await waitFor(() => {
       const calls = f.change.mock.calls;
@@ -104,7 +107,9 @@ describe("generated structured fields in the actual editor", () => {
     fireEvent.click(add);
     await waitFor(() => {
       const calls = f.change.mock.calls;
-      expect(calls[calls.length - 1]?.[0].content[0].props.rows).toHaveLength(2);
+      expect(calls[calls.length - 1]?.[0].content[0].props.rows).toHaveLength(
+        2
+      );
     });
     expect(screen.queryByRole("button", { name: /add/i })).toBeNull();
     const latest = f.change.mock.calls[f.change.mock.calls.length - 1][0];
@@ -114,7 +119,7 @@ describe("generated structured fields in the actual editor", () => {
 
   it("renders a boolean radio field without stringifying the emitted value", async () => {
     const f = await fixture();
-    fireEvent.click(await screen.findByRole("radio", { name: "No" }));
+    fireEvent.click(await screen.findByRole("radio", { name: "false" }));
     await waitFor(() => {
       const calls = f.change.mock.calls;
       expect(calls[calls.length - 1]?.[0].content[0].props.enabled).toBe(false);
@@ -124,7 +129,7 @@ describe("generated structured fields in the actual editor", () => {
   it("honors the host read-only state on nested controls", async () => {
     await fixture(true);
     const input = (await screen.findByRole("textbox", {
-      name: "Display name",
+      name: "profile.name",
     })) as HTMLInputElement;
     expect(input.disabled || input.readOnly).toBe(true);
     expect(screen.queryByRole("button", { name: /add/i })).toBeNull();
@@ -133,7 +138,7 @@ describe("generated structured fields in the actual editor", () => {
   it("uses the same field editor for a newly named registered component", async () => {
     const f = await fixture(false, "FutureConfigOnlyProfile");
     fireEvent.change(
-      await screen.findByRole("textbox", { name: "Business ID" }),
+      await screen.findByRole("textbox", { name: "profile.id" }),
       {
         target: { value: "domain-next" },
       }
