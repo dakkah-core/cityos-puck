@@ -195,7 +195,10 @@ function StringListEditor({
               aria-label={addLabel}
               className={arrayClass("addButton")}
               onClick={() =>
-                edit({ type: "insert", index: items.length, value: "" }, items.length)
+                edit(
+                  { type: "insert", index: items.length, value: "" },
+                  items.length
+                )
               }
             >
               <Plus size={21} aria-hidden="true" />
@@ -214,8 +217,6 @@ export function createCityOSStringListField(
   return {
     type: "custom",
     label: field.label,
-    render: (props) => (
-      <StringListEditor {...props} definition={field} />
-    ),
+    render: (props) => <StringListEditor {...props} definition={field} />,
   };
 }

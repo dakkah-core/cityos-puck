@@ -38,7 +38,7 @@ test('older target versions still reject string-list metadata',()=>{
  assert.throws(()=>parseCityOSPuckRegistration(m),/UNSUPPORTED_FIELD/);}
 });
 test('missing installed field implementation does not produce a dummy control',async()=>{
- await assert.rejects(bindCityOSPuckRegistration(fixture(),proof.registrationDigest,key=>installed(key==='fixture.root'?'root':'component')),/FIELD_ADAPTER_UNAVAILABLE/);
+ await assert.rejects(bindCityOSPuckRegistration(fixture(),proof.registrationDigest,key=>installed(key==='fixture.root'?'root':'component'),{}),/FIELD_ADAPTER_UNAVAILABLE/);
 });
 test('target rejects source callbacks and invalid list limits',()=>{
  for(const change of [f=>{f.maxItems=1001;},f=>{f.maxItemLength=-1;},f=>{f.maxItems=1.5;},f=>{delete f.maxItems;},f=>{f.render='arbitrary';}]){
@@ -100,4 +100,10 @@ test('invalid indices cannot create sparse arrays or splice an unintended item',
  for(const index of [-1,1,NaN,0.5])assert.throws(()=>editCityOSStringList(['a'],bounds,{type:'set',index,value:'b'}),/INDEX/);
  assert.throws(()=>editCityOSStringList([],bounds,{type:'remove',index:0}),/INDEX/);
  assert.throws(()=>editCityOSStringList(['a'],bounds,{type:'move',from:0,to:1}),/INDEX/);
+});
+
+test('v3 without scalar-list controls stays data-only and preserves the canonical binder',async()=>{
+ const m=fixture();m.components=m.components.filter(x=>x.type==='StudioText');delete m.root;
+ const config=await bindCityOSPuckRegistration(m,await digestCityOSPuckRegistration(m),()=>installed());
+ assert.equal(config.components.StudioText.fields.text.type,'textarea');
 });

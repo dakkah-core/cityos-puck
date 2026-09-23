@@ -206,7 +206,17 @@ function validateFields(
     const field = object(
       raw,
       ["type", "label"],
-      ["min", "max", "step", "options", "allow", "objectFields", "arrayFields", "maxItems", "maxItemLength"]
+      [
+        "min",
+        "max",
+        "step",
+        "options",
+        "allow",
+        "objectFields",
+        "arrayFields",
+        "maxItems",
+        "maxItemLength",
+      ]
     );
     text(field.label);
     switch (field.type) {
@@ -305,7 +315,12 @@ function validateFields(
         )
           fail("ARRAY_BOUNDS");
         validateFields(
-          field[childKey], knownTypes, true, depth + 1, budget, scalarLists
+          field[childKey],
+          knownTypes,
+          true,
+          depth + 1,
+          budget,
+          scalarLists
         );
         break;
       }
@@ -333,7 +348,14 @@ function validateEntry(
   key(renderer.key);
   text(renderer.version, 128);
   hash(renderer.digest);
-  validateFields(entry.fields, knownTypes, structured, 0, { count: 0 }, scalarLists);
+  validateFields(
+    entry.fields,
+    knownTypes,
+    structured,
+    0,
+    { count: 0 },
+    scalarLists
+  );
 }
 function canonical(value: Json): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
@@ -362,7 +384,8 @@ export function parseCityOSPuckRegistration(
   );
   const scalarLists =
     manifest.schemaVersion === CITYOS_PUCK_STRING_LIST_REGISTRATION_VERSION;
-  const structured = scalarLists ||
+  const structured =
+    scalarLists ||
     manifest.schemaVersion === CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION;
   if (
     (!structured &&
@@ -448,7 +471,11 @@ function cloneFields(
           if (typeof adapters.stringList !== "function")
             fail("FIELD_ADAPTER_UNAVAILABLE");
           const bound = adapters.stringList(Object.freeze({ ...field }));
-          if (!bound || bound.type !== "custom" || typeof bound.render !== "function")
+          if (
+            !bound ||
+            bound.type !== "custom" ||
+            typeof bound.render !== "function"
+          )
             fail("FIELD_ADAPTER_UNAVAILABLE");
           return [name, bound];
         }
@@ -494,26 +521,52 @@ function cloneFields(
     })
   );
 }
+function needsStringList(fields: Record<string, CityOSPuckField>): boolean {
+  return Object.values(fields).some((field) => {
+    if (field.type === "string-list") return true;
+    if (field.type === "object") return needsStringList(field.objectFields);
+    if (field.type === "array") return needsStringList(field.arrayFields);
+    return false;
+  });
+}
 /**
- * Bind only installed, admitted functions. This never imports code, fills hidden
- * defaults, grants permissions, saves documents or calls an owner operation.
+ * Bind only installed, admitted functions. The optional built-in field is loaded
+ * by a fixed internal import, never a metadata URL. No hidden defaults,
+ * permissions, document writes or owner operations are created.
  * The BFF must authorize the source; the owner must reauthorize every mutation.
  */
 export async function bindCityOSPuckRegistration(
   input: unknown,
   expectedManifestDigest: string,
   resolver: CityOSPuckRendererResolver,
-  fieldAdapters: CityOSPuckFieldAdapters = {}
+  fieldAdapters?: CityOSPuckFieldAdapters
 ): Promise<Config> {
   if (
     !digestPattern.test(expectedManifestDigest) ||
     typeof resolver !== "function"
   )
     fail("ADMISSION_REQUIRED");
-  const adapters = Object.freeze({ stringList: fieldAdapters.stringList });
+  // Snapshot explicit tool adapters before digest work; an explicit empty set
+  // means no field implementation is available and must fail closed.
+  let adapters = fieldAdapters
+    ? Object.freeze({ stringList: fieldAdapters.stringList })
+    : undefined;
   const manifest = parseCityOSPuckRegistration(input);
   if ((await sha256(manifest as unknown as Json)) !== expectedManifestDigest)
     fail("MANIFEST_MISMATCH");
+  if (
+    adapters === undefined &&
+    (manifest.components.some((entry) => needsStringList(entry.fields)) ||
+      (manifest.root && needsStringList(manifest.root.fields)))
+  ) {
+    // V1/V2 and data-only projections never load the editor. This qualified
+    // first-party module ships with the fork and is statically identifiable.
+    const { createCityOSStringListField } = await import(
+      "./cityos-string-list-field"
+    );
+    adapters = Object.freeze({ stringList: createCityOSStringListField });
+  }
+  const resolvedAdapters = adapters ?? {};
   const bind = (
     entry: Omit<CityOSPuckRegistrationEntry, "type">,
     kind: "component" | "root"
@@ -522,7 +575,7 @@ export async function bindCityOSPuckRegistration(
     const render = installed.render;
     return {
       label: entry.label,
-      fields: cloneFields(entry.fields, adapters),
+      fields: cloneFields(entry.fields, resolvedAdapters),
       render: ((props: Parameters<typeof render>[0]) => {
         const current = resolveRenderer(entry.renderer, kind, resolver);
         if (current.render !== render) fail("RENDERER_CHANGED");

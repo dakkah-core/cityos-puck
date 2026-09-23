@@ -22,12 +22,14 @@ omitting the List entry. A newly named supported component still uses an admitte
 renderer; neither compiler nor fork obtains authority from an arbitrary folder,
 URL, callback or author-provided permission.
 
-The public `@cityos-core/puck/cityos` binder installs the fork-owned list control
-through Puck's existing custom-field interface. The data-only registration module
-accepts a separately supplied trusted field adapter for tools/hosts that use it
-directly; missing adapters fail instead of returning a fake working control.
-Executable adapters do not enter serialized manifests. Existing v1/v2 clients
-remain compatible and never automatically opt into v3.
+The public `@cityos-core/puck/cityos` entry re-exports the canonical binder
+without a wrapper or changed function identity. When a verified manifest needs a
+scalar-list control, that binder lazy-loads the fork-owned implementation through
+a fixed internal import. V1/v2 and metadata without scalar lists remain data-only.
+An explicitly supplied adapter set supports isolated compiler/protocol tools; an
+explicit empty set fails closed when the field is needed. Executable adapters
+never enter serialized manifests. Previously published packages do not gain v3
+semantics merely because the source repository advances.
 
 ## Editing and ownership
 
