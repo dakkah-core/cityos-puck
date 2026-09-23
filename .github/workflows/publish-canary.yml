@@ -13,8 +13,9 @@ jobs:
   tag-and-publish-to-npm:
     runs-on: ubuntu-latest
 
-    # Don't run on regular releases
-    if: "!startsWith(github.event.head_commit.message, 'release: ')"
+    # Keep upstream automatic publishing out of the CityOS fork's source workflow.
+    # CityOS package publication uses publish-cityos.yml via explicit workflow_dispatch.
+    if: "github.repository == 'puckeditor/puck' && !startsWith(github.event.head_commit.message, 'release: ')"
     steps:
       - uses: actions/checkout@v7.0.1
         with:
