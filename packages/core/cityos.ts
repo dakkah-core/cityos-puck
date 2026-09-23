@@ -15,3 +15,19 @@ export interface CityOSPuckEditorBoundary {
   readonly readOnly?: boolean;
   readonly direction?: "rtl" | "ltr";
 }
+
+export {
+  CITYOS_PUCK_REGISTRATION_VERSION,
+  CITYOS_PUCK_REGISTRATION_PROFILE,
+  parseCityOSPuckRegistration,
+  digestCityOSPuckRegistration,
+  bindCityOSPuckRegistration,
+} from "./cityos-registration";
+export type {
+  CityOSPuckField,
+  CityOSPuckRendererRef,
+  CityOSPuckRegistrationEntry,
+  CityOSPuckRegistrationManifest,
+  CityOSPuckInstalledRenderer,
+  CityOSPuckRendererResolver,
+} from "./cityos-registration";

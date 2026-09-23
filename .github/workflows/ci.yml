@@ -1,36 +1,59 @@
 # This workflow will run all checks required for a PR to be merged.
-
 name: Build and Test ci
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
+  workflow_call:
+permissions:
+  contents: read
 jobs:
+  cityos-registration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Verify data-only registration and revocation
+        shell: bash
+        run: |
+          mkdir -p .build/cityos-registration
+          node --experimental-strip-types --test scripts/cityos/registration.test.mjs | tee .build/cityos-registration/results.tap
+      - name: Check registration formatting with pinned tool
+        shell: bash
+        run: |
+          npm install --prefix "$RUNNER_TEMP/cityos-format" --ignore-scripts --no-audit --no-fund prettier@2.8.8
+          node scripts/cityos/check-registration-format.mjs "$RUNNER_TEMP/cityos-format"
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: cityos-registration-${{ github.sha }}
+          path: .build/cityos-registration/
+          retention-days: 7
   build-and-test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v7.0.1
-
+        with:
+          persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@v6
-
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: "pnpm"
-
       - name: Install dependencies
-        run: pnpm install
-
+        run: pnpm install --frozen-lockfile
       - name: Run tests
         run: pnpm test
-
       - name: Check linting and formatting
         run: |
           if pnpm lint && pnpm format:check; then
@@ -39,11 +62,8 @@ jobs:
             echo "Linting or formatting checks failed. Please fix the issues."
             exit 1
           fi
-
       - name: Build everything
-        run: |
-          pnpm build
-
+        run: pnpm build
       - name: Check for build failures
         run: |
           if [ $? -ne 0 ]; then
