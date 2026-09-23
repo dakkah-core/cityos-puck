@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "fixtureOnly": true,
+  "producerRepository": "dakkah-core/dakkah-cityos-cms",
+  "producerPath": "packages/cityos-compiler/src/universal/targets/studio-puck.ts",
+  "producerBaseCommit": "8c77d109ba7a07202d936ae122f70bb758d4f029",
+  "producerBlob": "99e2d1e49440dc483165bb2fa54ddf68c00814e8",
+  "sourceFixture": "packages/cityos-compiler/tests/engineering-compiler/studio-puck-defaults.cases.ts#defaultsPuckFixture",
+  "sourceHash": "sha256:b4f5d4e5331ce9938412813dbe0f145c18dd2fa1caefc0fe617244919252ebcf",
+  "registrationDigest": "sha256:012867ac4d50fcf938ab8cac9be5e1d811e772a702e395da66fe740dce7c3816",
+  "artifactDigest": "sha256:6855f24f8f50460edbfcceab8fed3ac0041068dc15db3ceb5e4bc459d787a68c",
+  "evidenceScope": "Generated synthetic registration; no owner admission, installation or activation."
+}

@@ -1,0 +1,134 @@
+{
+  "components": [
+    {
+      "defaultProps": {
+        "alignment": "end",
+        "count": 0,
+        "enabled": false,
+        "metadata": {},
+        "rows": [
+          {
+            "text": "الأولى"
+          }
+        ],
+        "tags": [
+          "",
+          "أ\nب",
+          "أ\nب"
+        ],
+        "title": "بطاقة جديدة"
+      },
+      "fields": {
+        "alignment": {
+          "label": "Alignment",
+          "options": [
+            {
+              "label": "Start",
+              "value": "start"
+            },
+            {
+              "label": "End",
+              "value": "end"
+            }
+          ],
+          "type": "select"
+        },
+        "children": {
+          "allow": [
+            "Card"
+          ],
+          "label": "children",
+          "type": "slot"
+        },
+        "count": {
+          "label": "Count",
+          "max": 8,
+          "min": -8,
+          "step": 1,
+          "type": "number"
+        },
+        "enabled": {
+          "label": "Enabled",
+          "options": [
+            {
+              "label": "Yes",
+              "value": true
+            },
+            {
+              "label": "No",
+              "value": false
+            }
+          ],
+          "type": "radio"
+        },
+        "metadata": {
+          "label": "Metadata",
+          "objectFields": {
+            "note": {
+              "label": "Note",
+              "type": "textarea"
+            }
+          },
+          "type": "object"
+        },
+        "rows": {
+          "arrayFields": {
+            "text": {
+              "label": "Text",
+              "type": "text"
+            }
+          },
+          "label": "Rows",
+          "max": 2,
+          "min": 0,
+          "type": "array"
+        },
+        "tags": {
+          "label": "Tags",
+          "maxItemLength": 10,
+          "maxItems": 3,
+          "type": "string-list"
+        },
+        "title": {
+          "label": "العنوان",
+          "type": "text"
+        }
+      },
+      "label": "بطاقة",
+      "renderer": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "fixture.Card",
+        "version": "1"
+      },
+      "type": "Card"
+    }
+  ],
+  "dataProfile": "cityos.puck-slots.v0.23.native-screen.v2",
+  "root": {
+    "fields": {
+      "content": {
+        "allow": [
+          "Card"
+        ],
+        "label": "content",
+        "type": "slot"
+      },
+      "title": {
+        "label": "العنوان",
+        "type": "text"
+      }
+    },
+    "label": "صفحة",
+    "renderer": {
+      "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "key": "fixture.Root",
+      "version": "1"
+    }
+  },
+  "schemaVersion": "cityos.puck.registration.v4",
+  "source": {
+    "definitionDigest": "sha256:a245a97f734c991b22c62a6271169d31b2b9b6976fd1690cf5c07a30c7ebc802",
+    "ownerId": "core.cms",
+    "registryRevision": "synthetic-defaults-1"
+  }
+}

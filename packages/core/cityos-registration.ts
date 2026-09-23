@@ -7,6 +7,8 @@ export const CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION =
   "cityos.puck.registration.v2";
 export const CITYOS_PUCK_STRING_LIST_REGISTRATION_VERSION =
   "cityos.puck.registration.v3";
+export const CITYOS_PUCK_DEFAULTS_REGISTRATION_VERSION =
+  "cityos.puck.registration.v4";
 export const CITYOS_PUCK_REGISTRATION_PROFILE =
   "cityos.puck-slots.v0.23.native-screen.v2";
 export const CITYOS_PUCK_STRUCTURED_FIELD_LIMITS = Object.freeze({
@@ -60,12 +62,15 @@ export interface CityOSPuckRegistrationEntry {
   label: string;
   renderer: CityOSPuckRendererRef;
   fields: Record<string, CityOSPuckField>;
+  /** V4 component creation only; never merged into existing document values. */
+  defaultProps?: Record<string, Json>;
 }
 export interface CityOSPuckRegistrationManifest {
   schemaVersion:
     | typeof CITYOS_PUCK_REGISTRATION_VERSION
     | typeof CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION
-    | typeof CITYOS_PUCK_STRING_LIST_REGISTRATION_VERSION;
+    | typeof CITYOS_PUCK_STRING_LIST_REGISTRATION_VERSION
+    | typeof CITYOS_PUCK_DEFAULTS_REGISTRATION_VERSION;
   dataProfile: typeof CITYOS_PUCK_REGISTRATION_PROFILE;
   source: {
     ownerId: string;
@@ -73,7 +78,7 @@ export interface CityOSPuckRegistrationManifest {
     definitionDigest: string;
   };
   components: CityOSPuckRegistrationEntry[];
-  root?: Omit<CityOSPuckRegistrationEntry, "type">;
+  root?: Omit<CityOSPuckRegistrationEntry, "type" | "defaultProps">;
 }
 export interface CityOSPuckInstalledRenderer {
   kind: "component" | "root";
@@ -329,17 +334,87 @@ function validateFields(
     }
   }
 }
+/** Creation templates are data, not imported documents or owner-state repairs. */
+function validateDefaultProps(
+  value: Json,
+  fields: Record<string, CityOSPuckField>
+): void {
+  const values = object(value, [], Object.keys(fields));
+  for (const [name, item] of Object.entries(values)) {
+    const field = fields[name];
+    switch (field.type) {
+      case "text":
+      case "textarea":
+        if (
+          typeof item !== "string" ||
+          /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(item)
+        )
+          fail("DEFAULT_VALUE");
+        break;
+      case "number":
+        if (
+          typeof item !== "number" ||
+          !Number.isSafeInteger(item) ||
+          item < field.min ||
+          item > field.max
+        )
+          fail("DEFAULT_VALUE");
+        break;
+      case "select":
+      case "radio":
+        if (!field.options.some((option) => option.value === item))
+          fail("DEFAULT_VALUE");
+        break;
+      case "string-list":
+        if (
+          !Array.isArray(item) ||
+          item.length > field.maxItems ||
+          item.some(
+            (entry) =>
+              typeof entry !== "string" ||
+              entry.length > field.maxItemLength ||
+              /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(entry)
+          )
+        )
+          fail("DEFAULT_VALUE");
+        break;
+      case "object":
+        validateDefaultProps(item, field.objectFields);
+        break;
+      case "array":
+        if (
+          !Array.isArray(item) ||
+          item.length < field.min ||
+          item.length > field.max
+        )
+          fail("DEFAULT_VALUE");
+        for (const record of item)
+          validateDefaultProps(record, field.arrayFields);
+        break;
+      case "slot":
+        // Slot instances carry identity and topology, not scalar defaults.
+        fail("DEFAULT_SLOT");
+    }
+  }
+}
 function validateEntry(
   value: Json,
   component: boolean,
   knownTypes: Set<string>,
   structured: boolean,
-  scalarLists = false
+  scalarLists = false,
+  creationDefaults = false
 ): void {
   const entry = object(
     value,
     component
-      ? ["type", "label", "renderer", "fields"]
+      ? [
+          "type",
+          "label",
+          "renderer",
+          "fields",
+          ...(creationDefaults ? ["defaultProps"] : []),
+        ]
       : ["label", "renderer", "fields"]
   );
   if (component) key(entry.type);
@@ -356,6 +431,11 @@ function validateEntry(
     { count: 0 },
     scalarLists
   );
+  if (component && creationDefaults)
+    validateDefaultProps(
+      entry.defaultProps,
+      entry.fields as unknown as Record<string, CityOSPuckField>
+    );
 }
 function canonical(value: Json): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
@@ -382,7 +462,10 @@ export function parseCityOSPuckRegistration(
     ["schemaVersion", "dataProfile", "source", "components"],
     ["root"]
   );
+  const creationDefaults =
+    manifest.schemaVersion === CITYOS_PUCK_DEFAULTS_REGISTRATION_VERSION;
   const scalarLists =
+    creationDefaults ||
     manifest.schemaVersion === CITYOS_PUCK_STRING_LIST_REGISTRATION_VERSION;
   const structured =
     scalarLists ||
@@ -411,16 +494,29 @@ export function parseCityOSPuckRegistration(
     fail("COMPONENT_LIMIT");
   const types = new Set<string>();
   for (const raw of manifest.components) {
-    const entry = object(raw, ["type", "label", "renderer", "fields"]);
+    const entry = object(raw, [
+      "type",
+      "label",
+      "renderer",
+      "fields",
+      ...(creationDefaults ? ["defaultProps"] : []),
+    ]);
     key(entry.type);
     if (types.has(entry.type)) fail("DUPLICATE_COMPONENT");
     types.add(entry.type);
   }
   manifest.components.forEach((entry) =>
-    validateEntry(entry, true, types, structured, scalarLists)
+    validateEntry(entry, true, types, structured, scalarLists, creationDefaults)
   );
   if (manifest.root !== undefined)
-    validateEntry(manifest.root, false, types, structured, scalarLists);
+    validateEntry(
+      manifest.root,
+      false,
+      types,
+      structured,
+      scalarLists,
+      creationDefaults
+    );
   if (new TextEncoder().encode(canonical(snapshot)).byteLength > 1_048_576)
     fail("INPUT_LIMIT");
   return freeze(snapshot as unknown as CityOSPuckRegistrationManifest);
@@ -531,8 +627,9 @@ function needsStringList(fields: Record<string, CityOSPuckField>): boolean {
 }
 /**
  * Bind only installed, admitted functions. The optional built-in field is loaded
- * by a fixed internal import, never a metadata URL. No hidden defaults,
- * permissions, document writes or owner operations are created.
+ * by a fixed internal import, never a metadata URL. V4 explicitly supplies
+ * creation defaults for components, never repairs existing values or root data.
+ * No permissions, document writes or owner operations are created.
  * The BFF must authorize the source; the owner must reauthorize every mutation.
  */
 export async function bindCityOSPuckRegistration(
@@ -576,6 +673,9 @@ export async function bindCityOSPuckRegistration(
     return {
       label: entry.label,
       fields: cloneFields(entry.fields, resolvedAdapters),
+      ...(kind === "component" && entry.defaultProps !== undefined
+        ? { defaultProps: copyData(entry.defaultProps) as Record<string, Json> }
+        : {}),
       render: ((props: Parameters<typeof render>[0]) => {
         const current = resolveRenderer(entry.renderer, kind, resolver);
         if (current.render !== render) fail("RENDERER_CHANGED");
