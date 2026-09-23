@@ -4,7 +4,7 @@
     "strict": true,
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@/core-dist": ["../../packages/core/dist"],
+      "@/core-dist": ["../../packages/core/dist/bundle/index.mjs"],
       "@/core": ["../../packages/core/index.ts"],
       "@/core/*": ["../../packages/core/*"],
       "@puckeditor/core": ["../../packages/core/index.ts"],
