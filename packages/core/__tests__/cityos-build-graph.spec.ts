@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -11,9 +12,9 @@ const configuration = JSON.parse(
 const coreBuild = `${manifest.name}#build`;
 
 /**
- * Existing upstream recipes and third-party plugin peers use the upstream alias.
- * Turbo must wait for the renamed core's real build, not race its dist cleanup.
- * The full CI build is the execution proof; these checks prevent graph regression.
+ * Aliased consumers must wait for the renamed core's real bundles. Configuration
+ * packages are core prerequisites, including Turbo transit tasks with no script.
+ * The real dry-run catches indirect cycles that inspecting one edge would miss.
  */
 describe("CityOS core build ordering", () => {
   it("orders consumer builds after the actual fork package", () => {
@@ -32,5 +33,31 @@ describe("CityOS core build ordering", () => {
 
   it("restores all emitted core bundles on cache hits", () => {
     expect(configuration.tasks[coreBuild].outputs).toContain("dist/**");
+  });
+
+  it.each(["tsconfig", "tsup-config", "eslint-config-custom"])(
+    "keeps the %s transit task below core without disabling dependencies",
+    (name) => {
+      expect(configuration.tasks[`${name}#build`].dependsOn).toEqual(["^build"]);
+      expect(configuration.tasks[`${name}#build`].outputs).toEqual([]);
+    }
+  );
+
+  it("resolves the actual Turbo graph and orders the failing aliased recipe", () => {
+    // Constant command only. Dry-run evaluates the installed tool's full task
+    // graph without running a build, generating files, or publishing packages.
+    const output = execSync("pnpm exec turbo run build --dry=json", {
+      cwd: repositoryRoot,
+      encoding: "utf8",
+      timeout: 20_000,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    const graph = JSON.parse(output);
+    const recipe = graph.tasks.find(
+      (task: { taskId: string }) =>
+        task.taskId === "react-router-ai-recipe#build"
+    );
+    expect(recipe).toBeDefined();
+    expect(recipe.dependencies).toContain(coreBuild);
   });
 });

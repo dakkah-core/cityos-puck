@@ -18,6 +18,18 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "tsconfig#build": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "tsup-config#build": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "eslint-config-custom#build": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
     "lint": {},
     "test": {},
     "dev": {
