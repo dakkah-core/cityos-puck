@@ -39,7 +39,7 @@ describe("CityOS built scalar-list consumer boundary", () => {
         const load = async (entry) => ${JSON.stringify(mode)} === 'require'
           ? require(resolve(entry.require))
           : import(pathToFileURL(resolve(entry.import)).href);
-        const { Puck } = await load(manifest.exports['.'].default);
+        const { Puck, AutoField } = await load(manifest.exports['.'].default);
         const api = await load(manifest.exports['./cityos']);
         const source = {
           schemaVersion: 'cityos.puck.registration.v3',
@@ -58,13 +58,18 @@ describe("CityOS built scalar-list consumer boundary", () => {
         const data = { root: { props: {} }, content: [{ type: 'BuiltList',
           props: { id: 'built-list', items: ['first', 'second'] } }] };
         const field = config.components.BuiltList.fields.items;
-        const { AutoField } = await load(manifest.exports['.'].default);
-        const html = renderToString(React.createElement(Puck, {
+        const render = (canEdit) => renderToString(React.createElement(Puck, {
           config, data, ui: { itemSelector: { index: 0 } },
-          permissions: { edit: true }, iframe: { enabled: false },
+          dictionary: { 'field-arrayitem-add': 'Active editor add' },
+          permissions: { edit: canEdit }, iframe: { enabled: false },
         }, React.createElement(AutoField, { field, id: 'built-field',
           name: 'items', onChange() {} })));
+        const html = render(true);
         assert.match(html, /data-cityos-string-list="true"/);
+        assert.match(html, /aria-label="Active editor add"/,
+          'The field must read the mounted editor dictionary, not another bundle store');
+        assert.doesNotMatch(render(false), /aria-label="Active editor add"/,
+          'A disabled mounted editor must not expose the list mutation control');
         const styleMatch = html.match(/class="([^"]+)" data-cityos-string-list="true"/);
         assert.ok(styleMatch, 'The built field must retain its class');
         const css = readFileSync(resolve(manifest.exports['./puck.css']), 'utf8');
