@@ -63,7 +63,7 @@ export const defaultDictionary = {
   "field-richtext-horizontalrule": "Horizontal rule",
   "field-richtext-align-left": "Align left",
   "field-richtext-align-center": "Center",
-  "field-richtext-align-right": "Right",
+  "field-richtext-align-right": "Align right",
   "field-richtext-align-justify": "Justify",
   "field-richtext-select": "Select",
   "field-richtext-headingselect-1": "Heading 1",

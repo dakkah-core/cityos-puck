@@ -112,7 +112,8 @@ function StringListEditor({
   definition: Readonly<CityOSPuckStringListField>;
 }) {
   const canEdit = useAppStore(
-    (state) => state.permissions.getPermissions({ item: state.selectedItem }).edit
+    (state) =>
+      state.permissions.getPermissions({ item: state.selectedItem }).edit
   );
   const readOnly = fieldReadOnly === true || canEdit !== true;
   const addLabel = useMessage("field-arrayitem-add");
