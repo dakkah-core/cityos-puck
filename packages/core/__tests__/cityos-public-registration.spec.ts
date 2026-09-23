@@ -112,11 +112,13 @@ describe("CityOS public registration entry", () => {
 
   it("requires a pinned digest at both entrypoints", async () => {
     const source = metadata("IntegrityBoundComponent");
+    const wrongDigest = "sha256:" + "0".repeat(64);
+    const rejectLookup = () => {
+      throw new Error("Renderer lookup must not precede integrity checks");
+    };
     for (const api of [publicApi, compiled]) {
       await expect(
-        api.bindCityOSPuckRegistration(source, "sha256:" + "0".repeat(64), () => {
-          throw new Error("Renderer lookup must not precede integrity checks");
-        })
+        api.bindCityOSPuckRegistration(source, wrongDigest, rejectLookup)
       ).rejects.toThrow("CITYOS_PUCK_MANIFEST_MISMATCH");
     }
   });
