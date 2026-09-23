@@ -3,7 +3,7 @@ import {
   CITYOS_PUCK_REGISTRATION_PROFILE,
   type CityOSPuckField,
   type CityOSPuckRegistrationManifest,
-} from "../../cityos-registration";
+} from "../cityos-registration";
 
 export const fixtureDigest = "sha256:" + "a".repeat(64);
 

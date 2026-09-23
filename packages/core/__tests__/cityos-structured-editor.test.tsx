@@ -1,4 +1,5 @@
 /** @jest-environment jsdom */
+import "../__helpers__/cityos-editor-environment";
 import React from "react";
 import { webcrypto } from "node:crypto";
 import { TextEncoder } from "node:util";
@@ -14,7 +15,7 @@ import {
 import {
   fixtureDigest,
   structuredRegistration,
-} from "./fixtures/cityos-structured-registration";
+} from "../__helpers__/cityos-structured-registration";
 
 beforeAll(() => {
   Object.defineProperty(globalThis, "crypto", {

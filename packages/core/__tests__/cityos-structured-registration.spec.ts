@@ -14,7 +14,7 @@ import {
   fixtureDigest,
   fixtureFields,
   structuredRegistration,
-} from "./fixtures/cityos-structured-registration";
+} from "../__helpers__/cityos-structured-registration";
 
 beforeAll(() => {
   Object.defineProperty(globalThis, "crypto", {
@@ -100,10 +100,12 @@ describe("versioned compiler-generated structured fields", () => {
     expect(parseCityOSPuckRegistration(source)).toEqual(source);
   });
 
-  it("allows domain IDs inside objects but never replaces the node ID", () => {
-    expect(() => parseCityOSPuckRegistration(structuredRegistration())).not.toThrow();
-    const source = structuredRegistration({ id: text() });
-    expect(() => parseCityOSPuckRegistration(source)).toThrow("SYSTEM_FIELD");
+  it("allows nested domain IDs without replacing the node ID", () => {
+    const source = structuredRegistration();
+    expect(() => parseCityOSPuckRegistration(source)).not.toThrow();
+    expect(() =>
+      parseCityOSPuckRegistration(structuredRegistration({ id: text() }))
+    ).toThrow("SYSTEM_FIELD");
   });
 
   it.each(["object", "array"])(
@@ -136,7 +138,7 @@ describe("versioned compiler-generated structured fields", () => {
     expect(() => parseCityOSPuckRegistration(source)).toThrow("ARRAY_BOUNDS");
   });
 
-  it("requires both array bounds instead of silently allowing unlimited data", () => {
+  it("requires explicit array bounds", () => {
     const source = structuredRegistration();
     Reflect.deleteProperty(source.components[0].fields.rows, "max");
     expect(() => parseCityOSPuckRegistration(source)).toThrow("SHAPE");
@@ -162,7 +164,7 @@ describe("versioned compiler-generated structured fields", () => {
     expect(() => parseCityOSPuckRegistration(source)).toThrow("FIELDS");
   });
 
-  it("bounds schema depth independently of the general JSON budget", () => {
+  it("bounds schema depth independently of the JSON budget", () => {
     expect(() =>
       parseCityOSPuckRegistration(structuredRegistration({ value: nested(4) }))
     ).not.toThrow();
@@ -182,9 +184,10 @@ describe("versioned compiler-generated structured fields", () => {
         ),
       };
     }
-    expect(() => parseCityOSPuckRegistration(structuredRegistration(fields))).not.toThrow();
+    const source = structuredRegistration(fields);
+    expect(() => parseCityOSPuckRegistration(source)).not.toThrow();
     fields.extra = text();
-    expect(() => parseCityOSPuckRegistration(structuredRegistration(fields))).toThrow("FIELD_COUNT");
+    expect(() => parseCityOSPuckRegistration(source)).toThrow("FIELD_COUNT");
   });
 
   it.each(["defaultItemProps", "getItemSummary", "render", "permissions"])(
@@ -208,13 +211,13 @@ describe("versioned compiler-generated structured fields", () => {
     expect(accessor).not.toHaveBeenCalled();
   });
 
-  it("still rejects rich text and external code without an implementation", () => {
+  it("does not pretend to implement rich-text registration", () => {
     const source = structuredRegistration();
     Object.assign(source.components[0].fields.profile, { type: "richtext" });
     expect(() => parseCityOSPuckRegistration(source)).toThrow("UNSUPPORTED_FIELD");
   });
 
-  it("isolates nested mutable editor config from its verified input", async () => {
+  it("isolates nested editor config from its verified input", async () => {
     const source = structuredRegistration();
     const before = JSON.stringify(source);
     const first = await bind(source);
@@ -226,7 +229,7 @@ describe("versioned compiler-generated structured fields", () => {
     expect(second.components.GeneratedProfile.fields).toEqual(fixtureFields());
   });
 
-  it("binds the captured source when input changes during hashing", async () => {
+  it("captures source before asynchronous hashing", async () => {
     const source = structuredRegistration();
     const digest = await digestCityOSPuckRegistration(source);
     const pending = bindCityOSPuckRegistration(source, digest, installed);
@@ -246,7 +249,7 @@ describe("versioned compiler-generated structured fields", () => {
     expect(resolver).not.toHaveBeenCalled();
   });
 
-  it("continues checking renderer revocation on cached structured configs", async () => {
+  it("rechecks renderer revocation with structured configs", async () => {
     const renderer = installed();
     const config = await bind(structuredRegistration(), renderer);
     renderer.enabled = false;
@@ -255,7 +258,7 @@ describe("versioned compiler-generated structured fields", () => {
     ).toThrow("RENDERER_UNAVAILABLE");
   });
 
-  it("rejects changed field metadata under an earlier digest", async () => {
+  it("rejects changed fields under an earlier digest", async () => {
     const source = structuredRegistration();
     const digest = await digestCityOSPuckRegistration(source);
     const rows = source.components[0].fields.rows;
@@ -266,7 +269,7 @@ describe("versioned compiler-generated structured fields", () => {
     ).rejects.toThrow("MANIFEST_MISMATCH");
   });
 
-  it("exports the new contract through the actual prepared package", () => {
+  it("exports the new contract in the prepared package", () => {
     const built = require("../dist/cityos.js");
     expect(built.CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION).toBe(
       CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION
