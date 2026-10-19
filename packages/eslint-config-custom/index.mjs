@@ -1,6 +1,7 @@
 import nextConfig from "eslint-config-next";
 import turboConfig from "eslint-config-turbo/flat";
 import prettierConfig from "eslint-config-prettier/flat";
+import { fixupConfigRules } from "@eslint/compat";
 
 // The following react-hooks/* rules were introduced by eslint-plugin-react-hooks
 // v6 (pulled in via eslint-config-next@16). They didn't exist in the pre-migration
@@ -24,8 +25,10 @@ const newReactHooksRules = {
 };
 
 const config = [
-  ...nextConfig,
-  ...turboConfig,
+  // Next's context shim does not restore the SourceCode methods removed in
+  // ESLint 10. The official adapter covers those calls before Next's shim runs.
+  ...fixupConfigRules(nextConfig),
+  ...fixupConfigRules(turboConfig),
   prettierConfig,
   {
     rules: {

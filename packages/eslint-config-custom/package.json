@@ -8,6 +8,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@eslint/compat": "catalog:",
     "eslint-config-next": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-config-turbo": "catalog:"

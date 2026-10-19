@@ -58,10 +58,43 @@ test("ts-jest performs an actual isolated TSX transformation with its configured
 });
 
 test("ESLint's TypeScript parser can parse a typed fixture through its scoped API", () => {
-  const eslintRequire = createRequire(rootRequire.resolve("eslint-config-next"));
-  const parser = eslintRequire("@typescript-eslint/parser");
+  const configRequire = createRequire(new URL("../../packages/eslint-config-custom/package.json", import.meta.url));
+  const eslintRequire = createRequire(configRequire.resolve("eslint-config-next"));
+  const toolingRequire = createRequire(eslintRequire.resolve("typescript-eslint"));
+  assert.equal(loadManifest(toolingRequire, "typescript-eslint").value.version, catalog["typescript-eslint"]);
+  const parser = toolingRequire("@typescript-eslint/parser");
   const result = parser.parseForESLint("const value: number = 42;", { ecmaVersion: "latest", sourceType: "module" });
   assert.equal(result.ast.body[0].type, "VariableDeclaration");
-  const parserRequire = createRequire(eslintRequire.resolve("@typescript-eslint/parser"));
-  assert.equal(typeof parserRequire("typescript").createProgram, "function");
+  const parserRequire = createRequire(toolingRequire.resolve("@typescript-eslint/parser"));
+  for (const apiRequire of [toolingRequire, parserRequire]) {
+    const api = apiRequire("typescript");
+    assert.equal(`npm:@typescript/typescript6@${api.version}`, toolchain.typescriptApi.package);
+    assert.equal(typeof api.createProgram, "function");
+  }
+  const estreeRequire = createRequire(parserRequire.resolve("@typescript-eslint/typescript-estree"));
+  const apiUtilsRequire = createRequire(estreeRequire.resolve("ts-api-utils"));
+  assert.equal(`npm:@typescript/typescript6@${apiUtilsRequire("typescript").version}`, toolchain.typescriptApi.package);
+});
+
+test("the complete Next/Turbo flat config runs legacy rule paths under catalog ESLint", async () => {
+  const { ESLint } = rootRequire("eslint");
+  const { default: config } = await import("../../packages/eslint-config-custom/index.mjs");
+  assert.equal(loadManifest(rootRequire, "eslint").value.version, catalog.eslint);
+  const fixtures = [
+    ["react/jsx-equals-spacing", 'export const A = () => <span aria-label = "label" />;', ["error", "never"]],
+    ["import/no-anonymous-default-export", "export default {};", "error"],
+    ["import/order", 'import z from "zeta";\nimport a from "alpha";\nexport {z, a};', ["error", { alphabetize: { order: "asc" } }]],
+    ["jsx-a11y/alt-text", "export const A = () => <img />;", "error"],
+    ["jsx-a11y/aria-props", 'export const A = () => <div aria-unknown="x" />;', "error"],
+    ["jsx-a11y/aria-proptypes", 'export const A = () => <div aria-hidden="invalid" />;', "error"],
+    ["jsx-a11y/aria-unsupported-elements", 'export const A = () => <meta aria-label="x" />;', "error"],
+    ["jsx-a11y/role-has-required-aria-props", 'export const A = () => <div role="checkbox" />;', "error"],
+    ["jsx-a11y/role-supports-aria-props", 'export const A = () => <div role="button" aria-checked="true" />;', "error"],
+  ];
+  for (const [rule, source, setting] of fixtures) {
+    const linter = new ESLint({ cwd: fileURLToPath(new URL("../../", import.meta.url)), overrideConfigFile: true, overrideConfig: [...config, { rules: { [rule]: setting } }] });
+    const [result] = await linter.lintText(source, { filePath: "compatibility.tsx" });
+    assert.equal(result.fatalErrorCount, 0, JSON.stringify(result.messages));
+    assert.ok(result.messages.some((message) => message.ruleId === rule), `${rule}: ${JSON.stringify(result.messages)}`);
+  }
 });

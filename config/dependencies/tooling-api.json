@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "cityos.puck-third-party-tooling-api.v1",
+  "status": "source-adaptation-awaiting-install-and-validation",
+  "compilerApi": {
+    "catalog": "typescript-api",
+    "bindings": {
+      "ts-jest": "ts-jest",
+      "tsup": "tsup",
+      "typescript-eslint": "typescript-eslint",
+      "@typescript-eslint/eslint-plugin": "typescript-eslint",
+      "@typescript-eslint/parser": "typescript-eslint",
+      "@typescript-eslint/project-service": "typescript-eslint",
+      "@typescript-eslint/tsconfig-utils": "typescript-eslint",
+      "@typescript-eslint/type-utils": "typescript-eslint",
+      "@typescript-eslint/typescript-estree": "typescript-eslint",
+      "@typescript-eslint/utils": "typescript-eslint",
+      "ts-api-utils": "ts-api-utils"
+    },
+    "authority": "User-approved exact third-party TypeScript 6 API compatibility until the tools support the stable TypeScript 7 API. First-party checks remain on the TypeScript 7 CLI."
+  },
+  "eslint": {
+    "catalog": "eslint",
+    "adapterCatalog": "@eslint/compat",
+    "config": "packages/eslint-config-custom/index.mjs",
+    "peerBindings": {
+      "eslint-plugin-react": {"versionCatalog": "eslint-plugin-react", "upstreamRange": "^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9.7"},
+      "eslint-plugin-import": {"versionCatalog": "eslint-plugin-import", "upstreamRange": "^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8 || ^9"},
+      "eslint-plugin-jsx-a11y": {"versionCatalog": "eslint-plugin-jsx-a11y", "upstreamRange": "^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9"}
+    },
+    "adaptation": "Wrap the imported Next and Turbo flat configs with the official compatibility utilities. Next 16.4.2 restores legacy context getters for React/import but does not restore removed SourceCode methods; the outer adapter supplies both. Preserve every existing rule and exception.",
+    "qualification": "The exact selected ESLint peer additions are local source adaptations awaiting real rule fixtures. They do not assert upstream support or validated compatibility."
+  }
+}

@@ -84,7 +84,7 @@ test("TypeScript API compatibility stays inside exact third-party consumers", ()
   const workspace = read("pnpm-workspace.yaml");
   const scoped = [...workspace.matchAll(/^  "([^"\n]+)>typescript": "catalog:typescript-api"$/gmu)];
   assert.ok(scoped.length > 0);
-  for (const [, selector] of scoped) assert.match(selector, /^(?:ts-jest|tsup|@typescript-eslint\/[a-z-]+)@\d+\.\d+\.\d+$/u);
+  for (const [, selector] of scoped) assert.match(selector, /^(?:ts-jest|tsup|typescript-eslint|ts-api-utils|@typescript-eslint\/[a-z-]+)@\d+\.\d+\.\d+$/u);
   assert.doesNotMatch(workspace, /^  (?:"typescript"|typescript): "catalog:typescript-api"$/mu);
   const require = createRequire(import.meta.url);
   const config = require("../../packages/core/jest.config.cjs");

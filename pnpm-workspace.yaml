@@ -79,10 +79,14 @@ catalog:
   "css-box-model": "1.2.1"
   "deep-diff": "1.0.2"
   "esbuild": "0.28.2"
+  "@eslint/compat": "2.1.1"
   "eslint": "10.13.0"
   "eslint-config-next": "16.4.2"
   "eslint-config-prettier": "10.1.8"
   "eslint-config-turbo": "2.11.9"
+  "eslint-plugin-react": "7.37.5"
+  "eslint-plugin-import": "2.32.0"
+  "eslint-plugin-jsx-a11y": "6.10.2"
   "fast-equals": "6.2.1"
   "flat": "6.0.1"
   "form-data": "4.0.6"
@@ -119,9 +123,11 @@ catalog:
   "standard-changelog": "8.1.0"
   "tar": "7.5.22"
   "tmp": "0.2.7"
+  "ts-api-utils": "2.5.0"
   "ts-jest": "29.4.15"
   "tsup": "9.0.0"
   "turbo": "2.11.9"
+  "typescript-eslint": "8.72.0"
   "typescript": "7.0.2"
   "typescript-api": "npm:@typescript/typescript6@6.0.2"
   "use-debounce": "10.1.1"
@@ -157,46 +163,62 @@ overrides:
   "@xmldom/xmldom": "catalog:"
   "pacote": "catalog:"
 
+# Keep Next's API consumers on the catalog-selected family and reviewed rule plugins.
+  "eslint-config-next@16.4.2>typescript-eslint": "catalog:"
+  "eslint-config-next@16.4.2>eslint-plugin-react": "catalog:"
+  "eslint-config-next@16.4.2>eslint-plugin-import": "catalog:"
+  "eslint-config-next@16.4.2>eslint-plugin-jsx-a11y": "catalog:"
+
 # Exact third-party API consumers only; never override TypeScript globally.
+  "typescript-eslint@8.72.0>typescript": "catalog:typescript-api"
+  "ts-api-utils@2.5.0>typescript": "catalog:typescript-api"
   "ts-jest@29.4.15>typescript": "catalog:typescript-api"
   "tsup@9.0.0>typescript": "catalog:typescript-api"
-  "@typescript-eslint/eslint-plugin@8.71.2>typescript": "catalog:typescript-api"
-  "@typescript-eslint/parser@8.71.2>typescript": "catalog:typescript-api"
-  "@typescript-eslint/project-service@8.71.2>typescript": "catalog:typescript-api"
-  "@typescript-eslint/tsconfig-utils@8.71.2>typescript": "catalog:typescript-api"
-  "@typescript-eslint/type-utils@8.71.2>typescript": "catalog:typescript-api"
-  "@typescript-eslint/typescript-estree@8.71.2>typescript": "catalog:typescript-api"
-  "@typescript-eslint/utils@8.71.2>typescript": "catalog:typescript-api"
+  "@typescript-eslint/eslint-plugin@8.72.0>typescript": "catalog:typescript-api"
+  "@typescript-eslint/parser@8.72.0>typescript": "catalog:typescript-api"
+  "@typescript-eslint/project-service@8.72.0>typescript": "catalog:typescript-api"
+  "@typescript-eslint/tsconfig-utils@8.72.0>typescript": "catalog:typescript-api"
+  "@typescript-eslint/type-utils@8.72.0>typescript": "catalog:typescript-api"
+  "@typescript-eslint/typescript-estree@8.72.0>typescript": "catalog:typescript-api"
+  "@typescript-eslint/utils@8.72.0>typescript": "catalog:typescript-api"
 
 packageExtensions:
+  "typescript-eslint@8.72.0":
+    dependencies:
+      typescript: "catalog:typescript-api"
+  "ts-api-utils@2.5.0":
+    dependencies:
+      typescript: "catalog:typescript-api"
   "ts-jest@29.4.15":
     dependencies:
       typescript: "catalog:typescript-api"
   "tsup@9.0.0":
     dependencies:
       typescript: "catalog:typescript-api"
-  "@typescript-eslint/eslint-plugin@8.71.2":
+  "@typescript-eslint/eslint-plugin@8.72.0":
     dependencies:
       typescript: "catalog:typescript-api"
-  "@typescript-eslint/parser@8.71.2":
+  "@typescript-eslint/parser@8.72.0":
     dependencies:
       typescript: "catalog:typescript-api"
-  "@typescript-eslint/project-service@8.71.2":
+  "@typescript-eslint/project-service@8.72.0":
     dependencies:
       typescript: "catalog:typescript-api"
-  "@typescript-eslint/tsconfig-utils@8.71.2":
+  "@typescript-eslint/tsconfig-utils@8.72.0":
     dependencies:
       typescript: "catalog:typescript-api"
-  "@typescript-eslint/type-utils@8.71.2":
+  "@typescript-eslint/type-utils@8.72.0":
     dependencies:
       typescript: "catalog:typescript-api"
-  "@typescript-eslint/typescript-estree@8.71.2":
+  "@typescript-eslint/typescript-estree@8.72.0":
     dependencies:
       typescript: "catalog:typescript-api"
-  "@typescript-eslint/utils@8.71.2":
+  "@typescript-eslint/utils@8.72.0":
     dependencies:
       typescript: "catalog:typescript-api"
 
 # Exact upstream integration patch; core identity and source version remain unchanged.
 patchedDependencies:
   "@puckeditor/plugin-ai@0.8.3": "patches/@puckeditor__plugin-ai@0.8.3.patch"
+minimumReleaseAgeExclude:
+  - postcss@8.5.31
