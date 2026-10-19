@@ -1,5 +1,6 @@
 /** @jest-environment node */
 import { webcrypto } from "node:crypto";
+import { createElement, Fragment } from "react";
 import {
   CITYOS_PUCK_REGISTRATION_VERSION,
   CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION,
@@ -39,7 +40,7 @@ function installed(): CityOSPuckInstalledRenderer {
     enabled: true,
     version: "1",
     digest: fixtureDigest,
-    render: () => null,
+    render: () => createElement(Fragment),
   };
 }
 async function bind(
@@ -66,7 +67,9 @@ describe("versioned compiler-generated structured fields", () => {
     expect(config.components.GeneratedProfile.defaultProps).toBeUndefined();
     const rows = config.components.GeneratedProfile.fields?.rows;
     expect(rows?.type).toBe("array");
-    if (rows?.type !== "array") throw new Error("Expected native array");
+    if (rows?.type !== "array" || !("arrayFields" in rows)) {
+      throw new Error("Expected native array");
+    }
     expect(rows.defaultItemProps).toBeUndefined();
     expect(rows.getItemSummary).toBeUndefined();
   });
@@ -235,7 +238,9 @@ describe("versioned compiler-generated structured fields", () => {
     const first = await bind(source);
     const second = await bind(source);
     const profile = first.components.GeneratedProfile.fields?.profile;
-    if (profile?.type !== "object") throw new Error("Expected object");
+    if (profile?.type !== "object" || !("objectFields" in profile)) {
+      throw new Error("Expected object");
+    }
     profile.objectFields.name.label = "Local edit";
     expect(JSON.stringify(source)).toBe(before);
     expect(second.components.GeneratedProfile.fields).toEqual(fixtureFields());

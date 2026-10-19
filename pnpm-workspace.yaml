@@ -231,6 +231,7 @@ packageExtensions:
 
 # Exact upstream integration patch; core identity and source version remain unchanged.
 patchedDependencies:
+  "twoslash@0.3.9": "patches/twoslash@0.3.9.patch"
   "@puckeditor/plugin-ai@0.8.3": "patches/@puckeditor__plugin-ai@0.8.3.patch"
 minimumReleaseAgeExclude:
   - postcss@8.5.31

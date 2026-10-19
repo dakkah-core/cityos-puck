@@ -79,11 +79,12 @@ test("documentation and recipe API tools use their exact isolated compiler bindi
     const api = assertIsolatedApi(require);
     assert.equal(typeof api.createProgram, "function", name);
   }
-  const { createTwoslasher } = await import("twoslash");
-  const result = createTwoslasher({ compilerOptions: { types: [] } })(
-    '// @errors: 2322\nconst value: number = "wrong";', "ts"
-  );
-  assert.ok(result.errors.some((error) => error.code === 2322));
+  for (const createTwoslasher of [(await import("twoslash")).createTwoslasher, rootRequire("twoslash").createTwoslasher]) {
+    const result = createTwoslasher({ compilerOptions: { types: [] } })(
+      '// @errors: 2322\nconst values: number[] = [1];\nconst copy: number[] = values.map(value => value + 1);\nconst value: number = "wrong";', "ts"
+    );
+    assert.deepEqual(result.errors.map((error) => error.code), [2322]);
+  }
   const directory = mkdtempSync(join(tmpdir(), "puck-tsconfck-api-"));
   try {
     const config = join(directory, "tsconfig.json");

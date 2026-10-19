@@ -3,6 +3,7 @@ import { webcrypto } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { resolve } from "node:path";
+import { createElement, Fragment } from "react";
 import * as publicApi from "../cityos";
 import * as registration from "../cityos-registration";
 
@@ -82,7 +83,7 @@ describe("CityOS public registration entry", () => {
       version: "1",
       digest: rendererDigest,
       enabled: true,
-      render: () => null,
+      render: () => createElement(Fragment),
     };
     const source = metadata("FutureConfiguredText");
     const expected = await registration.digestCityOSPuckRegistration(source);

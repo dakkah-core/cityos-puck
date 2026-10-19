@@ -1,0 +1,26 @@
+diff --git a/dist/core.cjs b/dist/core.cjs
+index b504d7a..7243a3b 100644
+--- a/dist/core.cjs
++++ b/dist/core.cjs
+@@ -55,7 +55,7 @@ function createTwoslasher(createOptions = {}) {
+   const useFS = !!createOptions.fsMap;
+   const _root = createOptions.vfsRoot.replace(/\\/g, "/");
+   const vfs$1 = createOptions.fsMap || /* @__PURE__ */ new Map();
+-  const system = useFS ? vfs.createSystem(vfs$1) : createCacheableFSBackedSystem(vfs$1, _root, ts, createOptions.tsLibDirectory, createOptions.fsCache);
++  const system = useFS ? vfs.createSystem(vfs$1) : createCacheableFSBackedSystem(vfs$1, _root, ts, createOptions.tsLibDirectory ?? ts.getDefaultLibFilePath({}).replace(/[/\\][^/\\]+$/, ""), createOptions.fsCache);
+   const fsRoot = useFS ? "/" : `${_root}/`;
+   const cache = createOptions.cache === false ? void 0 : createOptions.cache instanceof Map ? createOptions.cache : /* @__PURE__ */ new Map();
+   function getEnv(compilerOptions) {
+diff --git a/dist/core.mjs b/dist/core.mjs
+index a7b02c6..8c34a17 100644
+--- a/dist/core.mjs
++++ b/dist/core.mjs
+@@ -54,7 +54,7 @@ function createTwoslasher(createOptions = {}) {
+   const useFS = !!createOptions.fsMap;
+   const _root = createOptions.vfsRoot.replace(/\\/g, "/");
+   const vfs = createOptions.fsMap || /* @__PURE__ */ new Map();
+-  const system = useFS ? createSystem(vfs) : createCacheableFSBackedSystem(vfs, _root, ts, createOptions.tsLibDirectory, createOptions.fsCache);
++  const system = useFS ? createSystem(vfs) : createCacheableFSBackedSystem(vfs, _root, ts, createOptions.tsLibDirectory ?? ts.getDefaultLibFilePath({}).replace(/[/\\][^/\\]+$/, ""), createOptions.fsCache);
+   const fsRoot = useFS ? "/" : `${_root}/`;
+   const cache = createOptions.cache === false ? void 0 : createOptions.cache instanceof Map ? createOptions.cache : /* @__PURE__ */ new Map();
+   function getEnv(compilerOptions) {

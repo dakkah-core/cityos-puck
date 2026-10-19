@@ -274,7 +274,7 @@ describe("resolve-data", () => {
         },
       },
       root: {
-        resolveData: async ({ props }) => ({
+        resolveData: async ({ props }: RootData) => ({
           props: { ...props, title: "Resolved title" },
         }),
       },

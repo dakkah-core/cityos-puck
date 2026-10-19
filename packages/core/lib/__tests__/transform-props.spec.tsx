@@ -1,3 +1,4 @@
+import type { RootData, Slot } from "../../types";
 import { transformProps } from "../transform-props";
 
 jest.spyOn(console, "warn").mockImplementation(() => {});
@@ -97,6 +98,17 @@ describe("transformProps method", () => {
   });
 
   it("should migrate props for slots", () => {
+    const root: RootData<{ title?: string; content: Slot }> = {
+      props: {
+        content: [
+          {
+            type: "HeadingBlock",
+            props: { title: "Hello, other world", id: "456" },
+          },
+        ],
+      },
+    };
+
     expect(
       transformProps(
         {
@@ -114,16 +126,7 @@ describe("transformProps method", () => {
               },
             },
           ],
-          root: {
-            props: {
-              content: [
-                {
-                  type: "HeadingBlock",
-                  props: { title: "Hello, other world", id: "456" },
-                },
-              ],
-            },
-          },
+          root,
         },
         {
           HeadingBlock: (props) => ({

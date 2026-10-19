@@ -59,7 +59,7 @@ export const flattenNode = <
     ...node,
     props: encodeEmptyObjects(
       flatten<Record<string, any>, Record<string, any>>(
-        stripSlots(node, config).props
+        stripSlots(node, config).props ?? {}
       )
     ),
   };

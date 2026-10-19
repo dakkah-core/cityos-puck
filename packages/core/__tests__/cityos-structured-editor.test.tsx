@@ -15,7 +15,7 @@ import {
 } from "@testing-library/react";
 import { Puck } from "../components/Puck";
 import { Render } from "../components/Render";
-import type { Data } from "../types";
+import type { Data, DefaultComponents } from "../types";
 import type { Dictionary } from "../lib/dictionary";
 import {
   bindCityOSPuckRegistration,
@@ -57,7 +57,7 @@ async function fixture(
     await digestCityOSPuckRegistration(source),
     () => installed
   );
-  const data: Data = {
+  const data: Data<DefaultComponents, { id: string }> = {
     root: { props: { id: "root" } },
     content: [
       {
