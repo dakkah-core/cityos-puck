@@ -7,6 +7,6 @@
   "typescriptApi": {
     "identifier": "typescript-api",
     "package": "npm:@typescript/typescript6@6.0.2",
-    "purpose": "Accepted third-party compiler API compatibility until TypeScript 7.1; bindings remain restricted to the exact ts-jest, tsup, typescript-eslint and its ts-api-utils consumers. Versions come from the owning catalog and config/dependencies/tooling-api.json selects only these consumers. First-party checking uses the TypeScript 7 CLI."
+    "purpose": "Accepted third-party compiler API compatibility until TypeScript 7.1; bindings remain restricted to the exact ts-jest, tsup, typescript-eslint, ts-api-utils, twoslash and tsconfck consumers. Versions come from the owning catalog and config/dependencies/tooling-api.json selects only these consumers. First-party checking uses the TypeScript 7 CLI."
   }
 }

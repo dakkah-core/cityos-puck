@@ -10,6 +10,7 @@ fi
 check="$1"
 case "$check" in
   install) command=(node scripts/toolchains/run-pinned-pnpm.mjs install --frozen-lockfile) ;;
+  compatibility) command=(node scripts/toolchains/run-pinned-pnpm.mjs test:compatibility) ;;
   test) command=(node scripts/toolchains/run-pinned-pnpm.mjs test) ;;
   lint) command=(node scripts/toolchains/run-pinned-pnpm.mjs lint) ;;
   format) command=(node scripts/toolchains/run-pinned-pnpm.mjs format:check) ;;

@@ -17,6 +17,7 @@
     "changelog": "node scripts/create-changelog",
     "typecheck": "turbo run typecheck",
     "test:source": "node --test scripts/cityos/*.test.mjs",
+    "test:compatibility": "node --test scripts/toolchains/installed-compatibility.test.mjs",
     "toolchain:check": "node scripts/toolchains/project-toolchain.mjs --check",
     "toolchain:project": "node scripts/toolchains/project-toolchain.mjs --write"
   },

@@ -14,7 +14,9 @@
       "@typescript-eslint/type-utils": "typescript-eslint",
       "@typescript-eslint/typescript-estree": "typescript-eslint",
       "@typescript-eslint/utils": "typescript-eslint",
-      "ts-api-utils": "ts-api-utils"
+      "ts-api-utils": "ts-api-utils",
+      "twoslash": "twoslash",
+      "tsconfck": "tsconfck"
     },
     "authority": "User-approved exact third-party TypeScript 6 API compatibility until the tools support the stable TypeScript 7 API. First-party checks remain on the TypeScript 7 CLI."
   },

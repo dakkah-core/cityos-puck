@@ -78,13 +78,26 @@ test("all public dependency declarations use their owning catalogs", () => {
   }
 });
 
+test("React Router framework packages and both recipe consumers use one catalog family", () => {
+  for (const name of ["@react-router/dev", "@react-router/node", "@react-router/serve"]) {
+    assert.equal(catalog[name], catalog["react-router"], name);
+  }
+  for (const recipe of ["react-router", "react-router-ai"]) {
+    const manifest = json(`recipes/${recipe}/package.json`);
+    assert.equal(manifest.dependencies["react-router"], "catalog:");
+    for (const name of ["@react-router/dev", "@react-router/node", "@react-router/serve"]) {
+      assert.equal(manifest.dependencies?.[name] ?? manifest.devDependencies?.[name], "catalog:", `${recipe}/${name}`);
+    }
+  }
+});
+
 test("TypeScript API compatibility stays inside exact third-party consumers", () => {
   assert.match(catalog.typescript, /^7\.\d+\.\d+$/u);
   assert.match(catalog["typescript-api"], /^npm:@typescript\/typescript6@6\./u);
   const workspace = read("pnpm-workspace.yaml");
   const scoped = [...workspace.matchAll(/^  "([^"\n]+)>typescript": "catalog:typescript-api"$/gmu)];
   assert.ok(scoped.length > 0);
-  for (const [, selector] of scoped) assert.match(selector, /^(?:ts-jest|tsup|typescript-eslint|ts-api-utils|@typescript-eslint\/[a-z-]+)@\d+\.\d+\.\d+$/u);
+  for (const [, selector] of scoped) assert.match(selector, /^(?:ts-jest|tsup|typescript-eslint|ts-api-utils|twoslash|tsconfck|@typescript-eslint\/[a-z-]+)@\d+\.\d+\.\d+$/u);
   assert.doesNotMatch(workspace, /^  (?:"typescript"|typescript): "catalog:typescript-api"$/mu);
   const require = createRequire(import.meta.url);
   const config = require("../../packages/core/jest.config.cjs");

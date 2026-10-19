@@ -56,7 +56,7 @@ function fixture(run) {
   }
 }
 
-for (const check of ["install", "test", "lint", "format", "build"]) {
+for (const check of ["install", "compatibility", "test", "lint", "format", "build"]) {
   for (const status of [0, 7]) {
     test(`${check} preserves exit ${status} with SHA-bound output`, () => {
       fixture(({ root, execute }) => {
