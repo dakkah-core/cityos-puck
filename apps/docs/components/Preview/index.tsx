@@ -1,3 +1,5 @@
+"use client";
+
 import React, {
   createContext,
   CSSProperties,
@@ -158,9 +160,9 @@ export const PuckPreview = ({
   renderInfo,
   renderDrawer,
   ...puckProps
-}: React.ComponentProps<typeof Puck> & {
-  label: string;
-  disableOnClick: boolean;
+}: Partial<React.ComponentProps<typeof Puck>> & {
+  label?: string;
+  disableOnClick?: boolean;
   disableContentStyles?: boolean;
   children?: ReactNode;
   style?: CSSProperties;
@@ -192,7 +194,7 @@ const ConfigPreviewInner = ({
   componentConfig,
 }: {
   children?: ReactNode;
-  componentConfig: ComponentConfig;
+  componentConfig: Partial<ComponentConfig>;
 }) => {
   const appState = usePuck((s) => s.appState);
 
@@ -233,13 +235,13 @@ export const ConfigPreview = ({
   label,
 }: {
   children?: ReactNode;
-  componentConfig: ComponentConfig;
+  componentConfig: Partial<ComponentConfig>;
   label: string;
 }) => {
   return (
     <PuckPreview
       label={label}
-      config={{ components: { Example: componentConfig } }}
+      config={{ components: { Example: { render: () => null, ...componentConfig } } }}
       data={{
         content: [
           {

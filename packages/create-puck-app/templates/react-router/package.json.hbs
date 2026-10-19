@@ -7,27 +7,28 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc --noEmit"
   },
   "dependencies": {
     "@puckeditor/core": "{{puckVersion}}",
-    "@react-router/node": "^7.5.3",
-    "@react-router/serve": "^7.5.3",
-    "isbot": "^5",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
-    "react-router": "^7.5.3"
+    "@react-router/node": "catalog:",
+    "@react-router/serve": "catalog:",
+    "isbot": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-router": "catalog:"
   },
   "devDependencies": {
-    "@react-router/dev": "^7.5.3",
-    "@types/node": "^20",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
-    "typescript": "^5.8.3",
-    "vite": "^6.3.3",
-    "vite-tsconfig-paths": "^5.1.4"
+    "@react-router/dev": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-tsconfig-paths": "catalog:"
   },
   "engines": {
-    "node": ">=20.0.0"
-  }
+    "node": "{{nodeEngine}}"
+  },
+  "packageManager": "{{packageManager}}"
 }

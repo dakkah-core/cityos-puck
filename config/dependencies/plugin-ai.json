@@ -1,0 +1,49 @@
+{
+  "upstreamPackage": "@puckeditor/plugin-ai",
+  "upstreamVersion": "0.8.3",
+  "registryTarball": "https://registry.npmjs.org/@puckeditor/plugin-ai/-/plugin-ai-0.8.3.tgz",
+  "registryIntegrity": "sha512-t4ptEhF9dEj3ohjrfIBmIECVqBQ6ba2wDEtc3Ztzwv+a/zkS3JcHLCng8sykGfpxcOgzhybs+NA0QrHmBjhAiA==",
+  "corePackage": "@cityos-core/puck",
+  "coreSourceVersion": "0.23.0-cityos.3",
+  "patchPath": "patches/@puckeditor__plugin-ai@0.8.3.patch",
+  "patchSha256": "0b8cb4d091a56b1c1339f6cf6221a9fc10a963c8aed2ef691ab9c2e5b46a18bf",
+  "runtimeCoreExports": [
+    "AutoField",
+    "FieldLabel",
+    "createUsePuck",
+    "registerOverlayPortal",
+    "setDeep",
+    "useGetPuck",
+    "walkTree"
+  ],
+  "augmentations": [
+    "ComponentMetadata",
+    "ComponentConfigExtensions",
+    "FieldMetadata",
+    "BaseField"
+  ],
+  "files": {
+    "package.json": {
+      "originalSha256": "1c6d466d5e36833d12426bb9a1a49f43cae68d14e7e28813127a3d6a5afff418",
+      "adaptedSha256": "e75a37d6891d5ec1fd666144e1238a3cae54a21d8012b51c3a7cfb0467b9abe0"
+    },
+    "dist/index.js": {
+      "originalSha256": "a08391223bc45c230290a09b90e46a83514d0c54a8687731f488b53e0dd20feb",
+      "adaptedSha256": "2d02e348d567278fc748f855012c4774b2d297c09d6137254ee40d9a475ec1ff"
+    },
+    "dist/index.mjs": {
+      "originalSha256": "9b1dad83454e87fea578067df8c8db15c1d81a655affaaa72021c69c6018763a",
+      "adaptedSha256": "784bf717d95216590335edfa849b343a2becbb9988e044fb31a21d842d9e9a0b"
+    },
+    "dist/index.d.ts": {
+      "originalSha256": "cceac4dc43cac152498dbe5c8148379d265ac52aa687a05e6c0001b30ab852a2",
+      "adaptedSha256": "9723823cca4b7b33dfed091a7ed0bf8911889509f83d0f0bab832353a75edac3"
+    },
+    "dist/index.d.mts": {
+      "originalSha256": "cceac4dc43cac152498dbe5c8148379d265ac52aa687a05e6c0001b30ab852a2",
+      "adaptedSha256": "9723823cca4b7b33dfed091a7ed0bf8911889509f83d0f0bab832353a75edac3"
+    }
+  },
+  "evidenceBoundary": "Inspected published package source and authored an exact dependency/namespace patch. Patch application, installed identity, semantic checks, build and runtime behavior await the parent validation slot.",
+  "upstreamCorePeer": "^0"
+}

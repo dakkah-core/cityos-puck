@@ -1,0 +1,174 @@
+diff --git a/package.json b/package.json
+--- a/package.json
++++ b/package.json
+@@ -60,8 +60,8 @@
+     "tsup-config": "0.8.3"
+   },
+   "peerDependencies": {
+-    "@puckeditor/core": "^0",
+-    "react": "^18.0.0 || ^19.0.0"
++    "react": "^18.0.0 || ^19.0.0",
++    "@cityos-core/puck": "0.23.0-cityos.3"
+   },
+   "scripts": {
+     "lint": "eslint \"**/*.ts*\"",
+diff --git a/dist/index.js b/dist/index.js
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -993,7 +993,7 @@
+ }
+ 
+ // src/components/Chat/index.tsx
+-var import_core5 = require("@puckeditor/core");
++var import_core5 = require("@cityos-core/puck");
+ var import_ai5 = require("ai");
+ var import_react27 = require("react");
+ var import_ulid = require("ulid");
+@@ -1372,7 +1372,7 @@
+ 
+ // ../platform-client/components/AutoForm/AutoForm.tsx
+ init_react_import();
+-var import_core = require("@puckeditor/core");
++var import_core = require("@cityos-core/puck");
+ var import_react11 = require("react");
+ 
+ // css-module:/home/runner/work/platform/platform/packages/platform-client/components/AutoForm/AutoForm.module.css#css-module
+@@ -2540,11 +2540,11 @@
+ 
+ // src/lib/design/runtime.tsx
+ init_react_import();
+-var import_core4 = require("@puckeditor/core");
++var import_core4 = require("@cityos-core/puck");
+ 
+ // src/lib/design/component.tsx
+ init_react_import();
+-var import_core3 = require("@puckeditor/core");
++var import_core3 = require("@cityos-core/puck");
+ var import_react24 = require("react");
+ 
+ // src/lib/morph-html.ts
+@@ -3407,7 +3407,7 @@
+ 
+ // src/lib/design/inline-editing.ts
+ init_react_import();
+-var import_core2 = require("@puckeditor/core");
++var import_core2 = require("@cityos-core/puck");
+ var CONTENT_EDITABLE_ATTR = "data-puck-content-editable";
+ var isInlineEditingDisabled = (el) => el.closest(`[${CONTENT_EDITABLE_ATTR}="false"]`) !== null;
+ var cssEscape = (value) => typeof CSS !== "undefined" && CSS.escape ? CSS.escape(value) : value.replace(/["\\]/g, "\\$&");
+@@ -5620,11 +5620,11 @@
+ 
+ // src/components/Drawer/index.tsx
+ init_react_import();
+-var import_core7 = require("@puckeditor/core");
++var import_core7 = require("@cityos-core/puck");
+ 
+ // src/components/ManageComponents/index.tsx
+ init_react_import();
+-var import_core6 = require("@puckeditor/core");
++var import_core6 = require("@cityos-core/puck");
+ var import_react30 = require("react");
+ 
+ // css-module:/home/runner/work/platform/platform/packages/plugin-ai/src/components/ManageComponents/styles.module.css#css-module
+diff --git a/dist/index.mjs b/dist/index.mjs
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -993,7 +993,7 @@
+ import {
+   createUsePuck,
+   useGetPuck as useGetPuck4
+-} from "@puckeditor/core";
++} from "@cityos-core/puck";
+ import {
+   DefaultChatTransport as DefaultChatTransport2
+ } from "ai";
+@@ -1387,7 +1387,7 @@
+ 
+ // ../platform-client/components/AutoForm/AutoForm.tsx
+ init_react_import();
+-import { AutoField, FieldLabel } from "@puckeditor/core";
++import { AutoField, FieldLabel } from "@cityos-core/puck";
+ import { useEffect as useEffect5, useRef as useRef5, useState as useState5 } from "react";
+ 
+ // css-module:/home/runner/work/platform/platform/packages/platform-client/components/AutoForm/AutoForm.module.css#css-module
+@@ -2562,13 +2562,13 @@
+ init_react_import();
+ import {
+   walkTree
+-} from "@puckeditor/core";
++} from "@cityos-core/puck";
+ 
+ // src/lib/design/component.tsx
+ init_react_import();
+ import {
+   useGetPuck as useGetPuck2
+-} from "@puckeditor/core";
++} from "@cityos-core/puck";
+ import {
+   useCallback as useCallback5,
+   useEffect as useEffect11,
+@@ -3439,7 +3439,7 @@
+ 
+ // src/lib/design/inline-editing.ts
+ init_react_import();
+-import { registerOverlayPortal, setDeep } from "@puckeditor/core";
++import { registerOverlayPortal, setDeep } from "@cityos-core/puck";
+ var CONTENT_EDITABLE_ATTR = "data-puck-content-editable";
+ var isInlineEditingDisabled = (el) => el.closest(`[${CONTENT_EDITABLE_ATTR}="false"]`) !== null;
+ var cssEscape = (value) => typeof CSS !== "undefined" && CSS.escape ? CSS.escape(value) : value.replace(/["\\]/g, "\\$&");
+@@ -5652,11 +5652,11 @@
+ 
+ // src/components/Drawer/index.tsx
+ init_react_import();
+-import { createUsePuck as createUsePuck2 } from "@puckeditor/core";
++import { createUsePuck as createUsePuck2 } from "@cityos-core/puck";
+ 
+ // src/components/ManageComponents/index.tsx
+ init_react_import();
+-import { useGetPuck as useGetPuck5 } from "@puckeditor/core";
++import { useGetPuck as useGetPuck5 } from "@cityos-core/puck";
+ import { useCallback as useCallback8, useEffect as useEffect15, useState as useState17, useSyncExternalStore as useSyncExternalStore3 } from "react";
+ 
+ // css-module:/home/runner/work/platform/platform/packages/plugin-ai/src/components/ManageComponents/styles.module.css#css-module
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -1,7 +1,7 @@
+ import * as react from 'react';
+ import { ReactNode } from 'react';
+ import * as react_jsx_runtime from 'react/jsx-runtime';
+-import { PuckAction, Data, Config } from '@puckeditor/core';
++import { PuckAction, Data, Config } from '@cityos-core/puck';
+ import { LanguageModelUsage, UIMessage, CreateUIMessage, DataUIPart, ChatStatus, ChatOnFinishCallback } from 'ai';
+ 
+ type _JSONSchema = boolean | JSONSchema;
+@@ -85,7 +85,7 @@
+   bind?: string;
+ };
+ 
+-declare module "@puckeditor/core" {
++declare module "@cityos-core/puck" {
+   export interface ComponentMetadata {
+     ai?: ComponentAiParams;
+   }
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -1,7 +1,7 @@
+ import * as react from 'react';
+ import { ReactNode } from 'react';
+ import * as react_jsx_runtime from 'react/jsx-runtime';
+-import { PuckAction, Data, Config } from '@puckeditor/core';
++import { PuckAction, Data, Config } from '@cityos-core/puck';
+ import { LanguageModelUsage, UIMessage, CreateUIMessage, DataUIPart, ChatStatus, ChatOnFinishCallback } from 'ai';
+ 
+ type _JSONSchema = boolean | JSONSchema;
+@@ -85,7 +85,7 @@
+   bind?: string;
+ };
+ 
+-declare module "@puckeditor/core" {
++declare module "@cityos-core/puck" {
+   export interface ComponentMetadata {
+     ai?: ComponentAiParams;
+   }

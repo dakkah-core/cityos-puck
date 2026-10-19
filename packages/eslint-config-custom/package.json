@@ -8,12 +8,12 @@
   },
   "license": "MIT",
   "dependencies": {
-    "eslint-config-next": "^16.0.0",
-    "eslint-config-prettier": "^10.1.0",
-    "eslint-config-turbo": "^2.3.3"
+    "eslint-config-next": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-config-turbo": "catalog:"
   },
   "peerDependencies": {
-    "eslint": "^9.0.0"
+    "eslint": "catalog:peers"
   },
   "publishConfig": {
     "access": "public"

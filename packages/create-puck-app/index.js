@@ -9,13 +9,16 @@ import { glob } from "glob";
 import { execSync } from "child_process";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import { loadBootstrapCatalog } from "./bootstrap-catalog.js";
+import { materializeManifest } from "./manifest-catalog.js";
+import { prepareBootstrapIntegration, requireRecipePackageManager, verifyIntegrationPatch } from "./bootstrap-integration.js";
+import { resolvePinnedPnpm, runPinnedPnpm } from "./pinned-pnpm.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const packageJson = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "./package.json"))
-);
+const { workspace, core, toolchain, nodeVersion, pluginAiContract, patches } = loadBootstrapCatalog();
+if (process.versions.node !== toolchain.node) throw new Error(`Expected exactly Node ${toolchain.node}; selected ${process.versions.node}`);
 
 const ansiColors = {
   reset: "\x1b[0m",
@@ -152,8 +155,6 @@ program
       return;
     }
 
-    fs.mkdirSync(appName);
-
     const packageManager = !!options.useNpm
       ? "npm"
       : !!options.usePnpm
@@ -161,6 +162,28 @@ program
       : !!options.useYarn
       ? "yarn"
       : getPkgManager();
+
+    // Resolve required integration support before creating any app files.
+    requireRecipePackageManager(usesPuckAi, packageManager);
+    const templateContext = {
+      ...answers,
+      appName,
+      puckVersion: `npm:${core.name}@${core.version}`,
+      puckSourceVersion: core.version,
+      packageManager: toolchain.packageManager,
+      nodeVersion,
+      nodeEngine: toolchain.nodeEngine,
+    };
+    const packageTemplate = fs.readFileSync(path.join(templatePath, "package.json.hbs"), "utf8");
+    const manifest = materializeManifest(JSON.parse(Handlebars.compile(packageTemplate)(templateContext)), workspace);
+    const integration = prepareBootstrapIntegration(manifest, workspace, core, pluginAiContract);
+    const patchBytes = integration
+      ? verifyIntegrationPatch(fs.readFileSync(patches[integration.selector]), pluginAiContract)
+      : undefined;
+    const pinnedPnpm = packageManager === "pnpm"
+      ? resolvePinnedPnpm({ toolchain, root: __dirname })
+      : undefined;
+    fs.mkdirSync(appName);
 
     // Compile handlebars templates
     const templateFiles = glob.sync(`**/*`, {
@@ -182,13 +205,23 @@ program
         const templateString = fs.readFileSync(filePath, "utf-8");
 
         const template = Handlebars.compile(templateString);
-        data = template({
-          ...answers,
-          appName,
-          puckVersion: `^${packageJson.version}`,
-        });
+        data = template(templateContext);
       } else {
         data = fs.readFileSync(filePath, "utf-8");
+      }
+
+      if (path.basename(targetPath) === "package.json") {
+        if (integration) {
+          const patchPath = path.join(appPath, integration.targetPath);
+          fs.mkdirSync(path.dirname(patchPath), { recursive: true });
+          fs.writeFileSync(patchPath, patchBytes);
+          fs.copyFileSync(new URL("plugin-ai-peer.cjs", import.meta.url), path.join(appPath, ".cityos/plugin-ai-peer.cjs"));
+          fs.writeFileSync(path.join(appPath, ".cityos/plugin-ai-contract.json"), JSON.stringify(pluginAiContract, null, 2) + "\n");
+          // JSON is valid YAML and keeps the standalone patch registration exact.
+          fs.writeFileSync(path.join(appPath, "pnpm-workspace.yaml"), JSON.stringify(integration.workspace, null, 2) + "\n");
+          fs.writeFileSync(path.join(appPath, ".pnpmfile.cjs"), integration.hook);
+        }
+        data = JSON.stringify(manifest, null, 2) + "\n";
       }
 
       const dir = path.dirname(targetPath);
@@ -200,8 +233,12 @@ program
 
     if (packageManager === "yarn") {
       execSync("yarn install", { cwd: appPath, stdio: "inherit" });
+    } else if (packageManager === "pnpm") {
+      const status = runPinnedPnpm(["install"], { toolchain, root: appPath, cwd: appPath,
+        environment: { ...process.env, PUCK_PNPM_EXECUTABLE: pinnedPnpm } });
+      if (status !== 0) throw new Error(`Pinned pnpm install failed with exit ${status}`);
     } else {
-      execSync(`${packageManager} i`, { cwd: appPath, stdio: "inherit" });
+      execSync("npm i", { cwd: appPath, stdio: "inherit" });
     }
 
     let inGitRepo = false;

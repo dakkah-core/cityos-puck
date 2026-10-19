@@ -1,0 +1,1751 @@
+{
+  "scope": "Current public declarations after the three peer source adaptations. Removed dependencies are recorded with null current declarations.",
+  "changes": [
+    {
+      "consumer": "apps/demo/package.json",
+      "field": "dependencies",
+      "name": "classnames",
+      "previousDeclaration": "^2.3.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "2.5.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/demo/package.json",
+      "field": "dependencies",
+      "name": "lucide-react",
+      "previousDeclaration": "^0.468.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "1.59.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/demo/package.json",
+      "field": "dependencies",
+      "name": "next",
+      "previousDeclaration": "^16.3.6",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "16.4.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/demo/package.json",
+      "field": "dependencies",
+      "name": "posthog-js",
+      "previousDeclaration": "^1.374.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "1.438.12",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/demo/package.json",
+      "field": "dependencies",
+      "name": "rc-footer",
+      "previousDeclaration": "^0.6.8",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.6.8",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/demo/package.json",
+      "field": "dependencies",
+      "name": "react",
+      "previousDeclaration": "^19.2.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/demo/package.json",
+      "field": "dependencies",
+      "name": "react-dom",
+      "previousDeclaration": "^19.2.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/demo/package.json",
+      "field": "devDependencies",
+      "name": "@types/node",
+      "previousDeclaration": "^17.0.12",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "26.6.5",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/demo/package.json",
+      "field": "devDependencies",
+      "name": "@types/react",
+      "previousDeclaration": "^19.2.7",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/demo/package.json",
+      "field": "devDependencies",
+      "name": "@types/react-dom",
+      "previousDeclaration": "^19.2.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/demo/package.json",
+      "field": "devDependencies",
+      "name": "typescript",
+      "previousDeclaration": "^5.5.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "dependencies",
+      "name": "lucide-react",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "1.59.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "dependencies",
+      "name": "next",
+      "previousDeclaration": "^15.5.27",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "16.4.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "dependencies",
+      "name": "next-sitemap",
+      "previousDeclaration": "^4.2.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "4.2.3",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "dependencies",
+      "name": "nextra",
+      "previousDeclaration": "^3.3.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "4.6.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "dependencies",
+      "name": "nextra-theme-docs",
+      "previousDeclaration": "^3.3.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "4.6.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "dependencies",
+      "name": "react",
+      "previousDeclaration": "^19.2.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "dependencies",
+      "name": "react-dom",
+      "previousDeclaration": "^19.2.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "dependencies",
+      "name": "shiki",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "4.5.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "dependencies",
+      "name": "zustand",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "5.0.15",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "devDependencies",
+      "name": "@types/node",
+      "previousDeclaration": "^17.0.12",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "26.6.5",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "devDependencies",
+      "name": "@types/react",
+      "previousDeclaration": "^19.2.7",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "devDependencies",
+      "name": "@types/react-dom",
+      "previousDeclaration": "^19.2.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "devDependencies",
+      "name": "pagefind",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "1.5.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "apps/docs/package.json",
+      "field": "devDependencies",
+      "name": "typescript",
+      "previousDeclaration": "^5.5.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "package.json",
+      "field": "devDependencies",
+      "name": "asciichart",
+      "previousDeclaration": "^1.5.25",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "1.5.25",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "package.json",
+      "field": "devDependencies",
+      "name": "conventional-changelog-angular",
+      "previousDeclaration": "^8.3.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "9.4.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "package.json",
+      "field": "devDependencies",
+      "name": "conventional-recommended-bump",
+      "previousDeclaration": "^11.2.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "12.1.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "package.json",
+      "field": "devDependencies",
+      "name": "eslint",
+      "previousDeclaration": "^9.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "10.13.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "package.json",
+      "field": "devDependencies",
+      "name": "lerna",
+      "previousDeclaration": "^9.0.7",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "10.1.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "package.json",
+      "field": "devDependencies",
+      "name": "prettier",
+      "previousDeclaration": "^2.5.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.9.10",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "package.json",
+      "field": "devDependencies",
+      "name": "puppeteer",
+      "previousDeclaration": "^24.8.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "25.14.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "package.json",
+      "field": "devDependencies",
+      "name": "rimraf",
+      "previousDeclaration": "^6.1.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "6.1.3",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "package.json",
+      "field": "devDependencies",
+      "name": "standard-changelog",
+      "previousDeclaration": "^2.0.21",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.1.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "package.json",
+      "field": "devDependencies",
+      "name": "turbo",
+      "previousDeclaration": "^2.5.8",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "2.11.9",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "package.json",
+      "field": "devDependencies",
+      "name": "typescript",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "package.json",
+      "field": "devDependencies",
+      "name": "yaml",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "2.9.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@dnd-kit/abstract",
+      "previousDeclaration": "0.4.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.5.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@dnd-kit/collision",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.5.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@dnd-kit/dom",
+      "previousDeclaration": "0.4.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.5.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@dnd-kit/geometry",
+      "previousDeclaration": "0.4.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.5.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@dnd-kit/helpers",
+      "previousDeclaration": "0.4.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.5.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@dnd-kit/react",
+      "previousDeclaration": "0.4.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.5.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@dnd-kit/state",
+      "previousDeclaration": "0.4.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.5.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@radix-ui/react-popover",
+      "previousDeclaration": "^1.1.15",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "1.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tanstack/react-virtual",
+      "previousDeclaration": "^3.13.9",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.14.21",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/core",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-blockquote",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-bold",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-code",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-code-block",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-document",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-hard-break",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-heading",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-horizontal-rule",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-italic",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-link",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-list",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-paragraph",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-strike",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-text",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-text-align",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/extension-underline",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/html",
+      "previousDeclaration": "^3.30.4",
+      "declaration": null,
+      "selectedCatalogVersion": null,
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/pm",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/react",
+      "previousDeclaration": "^3.30.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "@tiptap/static-renderer",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.32.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "classnames",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "2.5.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "deep-diff",
+      "previousDeclaration": "^1.0.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "1.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "fast-equals",
+      "previousDeclaration": "5.2.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "6.2.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "flat",
+      "previousDeclaration": "^5.0.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "6.0.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "happy-dom",
+      "previousDeclaration": "^20.0.10",
+      "declaration": null,
+      "selectedCatalogVersion": null,
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "object-hash",
+      "previousDeclaration": "^3.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.0.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "react-hotkeys-hook",
+      "previousDeclaration": "^4.6.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "5.3.3",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "use-debounce",
+      "previousDeclaration": "^9.0.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "10.1.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "dependencies",
+      "name": "zustand",
+      "previousDeclaration": "^5.0.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "5.0.15",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "@juggle/resize-observer",
+      "previousDeclaration": "^3.4.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.4.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "@testing-library/dom",
+      "previousDeclaration": "^10.4.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "10.4.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "@testing-library/jest-dom",
+      "previousDeclaration": "^6.6.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "@testing-library/react",
+      "previousDeclaration": "^16.1.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "16.3.3",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "@types/deep-diff",
+      "previousDeclaration": "^1.0.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "1.0.5",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "@types/flat",
+      "previousDeclaration": "^5.0.5",
+      "declaration": null,
+      "selectedCatalogVersion": null,
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "@types/jest",
+      "previousDeclaration": "^29.5.14",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "30.0.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "@types/node",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "26.6.5",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "@types/object-hash",
+      "previousDeclaration": "^3.0.6",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.0.6",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "@types/react",
+      "previousDeclaration": "^19.2.7",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "@types/react-dom",
+      "previousDeclaration": "^19.2.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "@types/uuid",
+      "previousDeclaration": "^10.0.0",
+      "declaration": null,
+      "selectedCatalogVersion": null,
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "css-box-model",
+      "previousDeclaration": "^1.2.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "1.2.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "esbuild",
+      "previousDeclaration": "^0.25.11",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.28.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "eslint",
+      "previousDeclaration": "^9.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "10.13.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "happy-dom",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "21.0.3",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "identity-obj-proxy",
+      "previousDeclaration": "^3.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.0.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "jest",
+      "previousDeclaration": "^29.7.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "30.5.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "jest-environment-jsdom",
+      "previousDeclaration": "^30.0.0-beta.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "30.5.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "lucide-react",
+      "previousDeclaration": "^0.468.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "1.59.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "postcss",
+      "previousDeclaration": "^8.5.6",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.5.31",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "postcss-modules",
+      "previousDeclaration": "^6.0.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "9.0.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "ts-jest",
+      "previousDeclaration": "^29.3.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "29.4.15",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "ts-node",
+      "previousDeclaration": "^10.9.2",
+      "declaration": null,
+      "selectedCatalogVersion": null,
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "tsup",
+      "previousDeclaration": "^8.2.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "9.0.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "typescript",
+      "previousDeclaration": "^5.5.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "devDependencies",
+      "name": "typescript-api",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "npm:@typescript/typescript6@6.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/core/package.json",
+      "field": "peerDependencies",
+      "name": "react",
+      "previousDeclaration": "^18.0.0 || ^19.0.0",
+      "declaration": "catalog:peers",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/create-puck-app/package.json",
+      "field": "dependencies",
+      "name": "commander",
+      "previousDeclaration": "^10.0.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "15.0.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/create-puck-app/package.json",
+      "field": "dependencies",
+      "name": "glob",
+      "previousDeclaration": "^12.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "13.0.6",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/create-puck-app/package.json",
+      "field": "dependencies",
+      "name": "handlebars",
+      "previousDeclaration": "^4.7.10",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "4.7.10",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/create-puck-app/package.json",
+      "field": "dependencies",
+      "name": "inquirer",
+      "previousDeclaration": "^9.2.7",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "14.2.3",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/create-puck-app/package.json",
+      "field": "dependencies",
+      "name": "prettier",
+      "previousDeclaration": "^2.8.8",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "3.9.10",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/create-puck-app/package.json",
+      "field": "dependencies",
+      "name": "yaml",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "2.9.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/eslint-config-custom/package.json",
+      "field": "dependencies",
+      "name": "eslint-config-next",
+      "previousDeclaration": "^16.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "16.4.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/eslint-config-custom/package.json",
+      "field": "dependencies",
+      "name": "eslint-config-prettier",
+      "previousDeclaration": "^10.1.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "10.1.8",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/eslint-config-custom/package.json",
+      "field": "dependencies",
+      "name": "eslint-config-turbo",
+      "previousDeclaration": "^2.3.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "2.11.9",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/eslint-config-custom/package.json",
+      "field": "peerDependencies",
+      "name": "eslint",
+      "previousDeclaration": "^9.0.0",
+      "declaration": "catalog:peers",
+      "selectedCatalogVersion": "10.13.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/field-contentful/package.json",
+      "field": "devDependencies",
+      "name": "@types/react",
+      "previousDeclaration": "^19.2.7",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/field-contentful/package.json",
+      "field": "devDependencies",
+      "name": "@types/react-dom",
+      "previousDeclaration": "^19.2.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/field-contentful/package.json",
+      "field": "devDependencies",
+      "name": "contentful",
+      "previousDeclaration": "^10.8.6",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "11.12.10",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/field-contentful/package.json",
+      "field": "devDependencies",
+      "name": "eslint",
+      "previousDeclaration": "^9.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "10.13.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/field-contentful/package.json",
+      "field": "devDependencies",
+      "name": "tsup",
+      "previousDeclaration": "^8.2.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "9.0.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/field-contentful/package.json",
+      "field": "devDependencies",
+      "name": "typescript",
+      "previousDeclaration": "^5.5.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/field-contentful/package.json",
+      "field": "peerDependencies",
+      "name": "contentful",
+      "previousDeclaration": "^10.0.0",
+      "declaration": "catalog:peers",
+      "selectedCatalogVersion": "11.12.10",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/field-contentful/package.json",
+      "field": "peerDependencies",
+      "name": "react",
+      "previousDeclaration": "^17.0.0 || ^18.0.0 || ^19.0.0",
+      "declaration": "catalog:peers",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-emotion-cache/package.json",
+      "field": "dependencies",
+      "name": "@emotion/cache",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "11.14.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-emotion-cache/package.json",
+      "field": "devDependencies",
+      "name": "@emotion/react",
+      "previousDeclaration": "^11.13.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "11.14.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-emotion-cache/package.json",
+      "field": "devDependencies",
+      "name": "@types/minimatch",
+      "previousDeclaration": "3.0.5",
+      "declaration": null,
+      "selectedCatalogVersion": null,
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-emotion-cache/package.json",
+      "field": "devDependencies",
+      "name": "@types/react",
+      "previousDeclaration": "^19.2.7",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-emotion-cache/package.json",
+      "field": "devDependencies",
+      "name": "@types/react-dom",
+      "previousDeclaration": "^19.0.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-emotion-cache/package.json",
+      "field": "devDependencies",
+      "name": "eslint",
+      "previousDeclaration": "^9.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "10.13.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-emotion-cache/package.json",
+      "field": "devDependencies",
+      "name": "tsup",
+      "previousDeclaration": "^8.2.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "9.0.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-emotion-cache/package.json",
+      "field": "devDependencies",
+      "name": "typescript",
+      "previousDeclaration": "^5.5.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-emotion-cache/package.json",
+      "field": "peerDependencies",
+      "name": "@emotion/react",
+      "previousDeclaration": "^11.0.0",
+      "declaration": "catalog:peers",
+      "selectedCatalogVersion": "11.14.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-emotion-cache/package.json",
+      "field": "peerDependencies",
+      "name": "react",
+      "previousDeclaration": "^17.0.0 || ^18.0.0 || ^19.0.0",
+      "declaration": "catalog:peers",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-heading-analyzer/package.json",
+      "field": "dependencies",
+      "name": "react-from-json",
+      "previousDeclaration": "^0.8.0",
+      "declaration": null,
+      "selectedCatalogVersion": null,
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-heading-analyzer/package.json",
+      "field": "devDependencies",
+      "name": "@types/minimatch",
+      "previousDeclaration": "3.0.5",
+      "declaration": null,
+      "selectedCatalogVersion": null,
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-heading-analyzer/package.json",
+      "field": "devDependencies",
+      "name": "@types/react",
+      "previousDeclaration": "^19.0.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-heading-analyzer/package.json",
+      "field": "devDependencies",
+      "name": "@types/react-dom",
+      "previousDeclaration": "^19.0.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-heading-analyzer/package.json",
+      "field": "devDependencies",
+      "name": "eslint",
+      "previousDeclaration": "^9.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "10.13.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-heading-analyzer/package.json",
+      "field": "devDependencies",
+      "name": "lucide-react",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "1.59.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-heading-analyzer/package.json",
+      "field": "devDependencies",
+      "name": "tsup",
+      "previousDeclaration": "^8.2.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "9.0.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-heading-analyzer/package.json",
+      "field": "devDependencies",
+      "name": "typescript",
+      "previousDeclaration": "^5.5.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/plugin-heading-analyzer/package.json",
+      "field": "peerDependencies",
+      "name": "react",
+      "previousDeclaration": "^17.0.0 || ^18.0.0 || ^19.0.0",
+      "declaration": "catalog:peers",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/tsconfig/package.json",
+      "field": "dependencies",
+      "name": "typescript-plugin-css-modules",
+      "previousDeclaration": "^5.0.1",
+      "declaration": null,
+      "selectedCatalogVersion": null,
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/tsup-config/package.json",
+      "field": "dependencies",
+      "name": "esbuild",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.28.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/tsup-config/package.json",
+      "field": "dependencies",
+      "name": "postcss",
+      "previousDeclaration": "^8.4.24",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.5.31",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/tsup-config/package.json",
+      "field": "dependencies",
+      "name": "postcss-modules",
+      "previousDeclaration": "^6.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "9.0.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/tsup-config/package.json",
+      "field": "dependencies",
+      "name": "tsup",
+      "previousDeclaration": "^8.2.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "9.0.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/tsup-config/package.json",
+      "field": "dependencies",
+      "name": "typescript",
+      "previousDeclaration": "^5.5.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "packages/tsup-config/package.json",
+      "field": "devDependencies",
+      "name": "@types/node",
+      "previousDeclaration": null,
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "26.6.5",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next-ai/package.json",
+      "field": "dependencies",
+      "name": "@puckeditor/cloud-client",
+      "previousDeclaration": "^0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.8.3",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next-ai/package.json",
+      "field": "dependencies",
+      "name": "@puckeditor/plugin-ai",
+      "previousDeclaration": "^0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.8.3",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next-ai/package.json",
+      "field": "dependencies",
+      "name": "classnames",
+      "previousDeclaration": "^2.3.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "2.5.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next-ai/package.json",
+      "field": "dependencies",
+      "name": "next",
+      "previousDeclaration": "^16.3.6",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "16.4.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next-ai/package.json",
+      "field": "dependencies",
+      "name": "react",
+      "previousDeclaration": "^19.2.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next-ai/package.json",
+      "field": "dependencies",
+      "name": "react-dom",
+      "previousDeclaration": "^19.2.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next-ai/package.json",
+      "field": "devDependencies",
+      "name": "@types/node",
+      "previousDeclaration": "^17.0.12",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "26.6.5",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next-ai/package.json",
+      "field": "devDependencies",
+      "name": "@types/react",
+      "previousDeclaration": "^19.2.7",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next-ai/package.json",
+      "field": "devDependencies",
+      "name": "@types/react-dom",
+      "previousDeclaration": "^19.2.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next-ai/package.json",
+      "field": "devDependencies",
+      "name": "typescript",
+      "previousDeclaration": "^5.5.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next/package.json",
+      "field": "dependencies",
+      "name": "classnames",
+      "previousDeclaration": "^2.3.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "2.5.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next/package.json",
+      "field": "dependencies",
+      "name": "next",
+      "previousDeclaration": "^16.3.6",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "16.4.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next/package.json",
+      "field": "dependencies",
+      "name": "react",
+      "previousDeclaration": "^19.2.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next/package.json",
+      "field": "dependencies",
+      "name": "react-dom",
+      "previousDeclaration": "^19.2.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next/package.json",
+      "field": "devDependencies",
+      "name": "@types/node",
+      "previousDeclaration": "^17.0.12",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "26.6.5",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next/package.json",
+      "field": "devDependencies",
+      "name": "@types/react",
+      "previousDeclaration": "^19.2.7",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next/package.json",
+      "field": "devDependencies",
+      "name": "@types/react-dom",
+      "previousDeclaration": "^19.2.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/next/package.json",
+      "field": "devDependencies",
+      "name": "typescript",
+      "previousDeclaration": "^5.5.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "dependencies",
+      "name": "@puckeditor/cloud-client",
+      "previousDeclaration": "^0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.8.3",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "dependencies",
+      "name": "@puckeditor/plugin-ai",
+      "previousDeclaration": "^0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "0.8.3",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "dependencies",
+      "name": "@react-router/node",
+      "previousDeclaration": "^7.18.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.4.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "dependencies",
+      "name": "@react-router/serve",
+      "previousDeclaration": "^7.18.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.4.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "dependencies",
+      "name": "isbot",
+      "previousDeclaration": "^5",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "5.2.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "dependencies",
+      "name": "react",
+      "previousDeclaration": "^19.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "dependencies",
+      "name": "react-dom",
+      "previousDeclaration": "^19.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "dependencies",
+      "name": "react-router",
+      "previousDeclaration": "^7.18.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.4.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "devDependencies",
+      "name": "@react-router/dev",
+      "previousDeclaration": "^7.18.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.4.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "devDependencies",
+      "name": "@types/node",
+      "previousDeclaration": "^20",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "26.6.5",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "devDependencies",
+      "name": "@types/react",
+      "previousDeclaration": "^19.0.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "devDependencies",
+      "name": "@types/react-dom",
+      "previousDeclaration": "^19.0.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "devDependencies",
+      "name": "typescript",
+      "previousDeclaration": "^5.8.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "devDependencies",
+      "name": "vite",
+      "previousDeclaration": "^7.3.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.3.4",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router-ai/package.json",
+      "field": "devDependencies",
+      "name": "vite-tsconfig-paths",
+      "previousDeclaration": "^5.1.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "6.1.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "dependencies",
+      "name": "@react-router/node",
+      "previousDeclaration": "^7.18.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.4.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "dependencies",
+      "name": "@react-router/serve",
+      "previousDeclaration": "^7.18.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.4.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "dependencies",
+      "name": "isbot",
+      "previousDeclaration": "^5",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "5.2.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "dependencies",
+      "name": "react",
+      "previousDeclaration": "^19.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "dependencies",
+      "name": "react-dom",
+      "previousDeclaration": "^19.0.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "dependencies",
+      "name": "react-router",
+      "previousDeclaration": "^7.18.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.4.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "devDependencies",
+      "name": "@react-router/dev",
+      "previousDeclaration": "^7.18.0",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.4.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "devDependencies",
+      "name": "@types/node",
+      "previousDeclaration": "^20",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "26.6.5",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "devDependencies",
+      "name": "@types/react",
+      "previousDeclaration": "^19.0.1",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "devDependencies",
+      "name": "@types/react-dom",
+      "previousDeclaration": "^19.0.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "19.3.0",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "devDependencies",
+      "name": "typescript",
+      "previousDeclaration": "^5.8.3",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "7.0.2",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "devDependencies",
+      "name": "vite",
+      "previousDeclaration": "^7.3.2",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "8.3.4",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    },
+    {
+      "consumer": "recipes/react-router/package.json",
+      "field": "devDependencies",
+      "name": "vite-tsconfig-paths",
+      "previousDeclaration": "^5.1.4",
+      "declaration": "catalog:",
+      "selectedCatalogVersion": "6.1.1",
+      "evidenceBoundary": "Current source selection/removal only; no install, semantic check, test, patch application or runtime qualification."
+    }
+  ]
+}

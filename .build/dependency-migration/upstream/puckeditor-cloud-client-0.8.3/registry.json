@@ -1,0 +1,87 @@
+{
+  "bugs": "https://github.com/puckeditor/puck/issues",
+  "dist": {
+    "shasum": "7b046ae15174d22ca3e75158b7b325c51aa7b5eb",
+    "tarball": "https://registry.npmjs.org/@puckeditor/cloud-client/-/cloud-client-0.8.3.tgz",
+    "fileCount": 15,
+    "integrity": "sha512-bC2EfVDlu8wnCZ9Ed3ZJ7dFxrSqxMjdJXrld/VqHNRJOPtY2ZfR4bYh2vTwge3uIEBzYCrgCMCvkZZEfW0zVpg==",
+    "signatures": [
+      {
+        "sig": "MEQCICaOkH2Rr9umk6a06TCs0iblWJT03aAzS8jootwVuex1AiA1qhMS9o2buofvGrLn8wb/CwXkKPLi+UFGj/jL8dYG6A==",
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+      }
+    ],
+    "unpackedSize": 2529648
+  },
+  "main": "./dist/index.js",
+  "name": "@puckeditor/cloud-client",
+  "types": "./dist/index.d.ts",
+  "author": "Chris Villa <chris@puckeditor.com>",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./experimental": {
+      "types": "./dist/experimental.d.ts",
+      "import": "./dist/experimental.mjs",
+      "require": "./dist/experimental.js"
+    }
+  },
+  "scripts": {
+    "lint": "eslint \"**/*.ts*\"",
+    "test": "vitest run --config vitest.config.ts",
+    "build": "rm -rf dist && tsup src/index.ts src/experimental.ts"
+  },
+  "_npmUser": {
+    "name": "chrisvxd",
+    "email": "chrisvilla@me.com"
+  },
+  "homepage": "https://puckeditor.com",
+  "keywords": [
+    "puck-ecosystem"
+  ],
+  "repository": {
+    "url": "puckeditor/puck",
+    "type": "git"
+  },
+  "directories": {},
+  "maintainers": [
+    {
+      "name": "chrisvxd",
+      "email": "chrisvilla@me.com"
+    }
+  ],
+  "_nodeVersion": "24.20.0",
+  "typesVersions": {
+    "*": {
+      "experimental": [
+        "./dist/experimental.d.ts"
+      ]
+    }
+  },
+  "_hasShrinkwrap": false,
+  "devDependencies": {
+    "ai": "^6.0.228",
+    "zod": "^4.1.12",
+    "jest": "^30.4.2",
+    "tsup": "^8.2.4",
+    "eslint": "^9.39.4",
+    "vitest": "^4.1.0",
+    "tsconfig": "0.8.3",
+    "typescript": "^5.5.4",
+    "@types/node": "^24.10.1",
+    "tsup-config": "0.8.3",
+    "@ai-sdk/openai": "^3.0.85",
+    "@puckeditor/core": "0.23.0-canary.e7fef140",
+    "vite-tsconfig-paths": "^5.1.4",
+    "eslint-config-custom": "0.8.3"
+  },
+  "_npmOperationalInternal": {
+    "tmp": "tmp/cloud-client_0.8.3_1788956224901_0.9148235012972035",
+    "host": "s3://npm-registry-packages-npm-production"
+  },
+  "_id": "@puckeditor/cloud-client@0.8.3",
+  "version": "0.8.3"
+}

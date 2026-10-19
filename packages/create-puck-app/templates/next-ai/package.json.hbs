@@ -5,21 +5,27 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@puckeditor/cloud-client": "^0",
+    "@puckeditor/cloud-client": "catalog:",
     "@puckeditor/core": "{{puckVersion}}",
-    "@puckeditor/plugin-ai": "^0",
-    "classnames": "^2.3.2",
-    "next": "^16.0.8",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1"
+    "@puckeditor/plugin-ai": "catalog:",
+    "classnames": "catalog:",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "@cityos-core/puck": "{{puckSourceVersion}}"
   },
   "devDependencies": {
-    "@types/node": "^17.0.12",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
-    "typescript": "^5.5.4"
-  }
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": "{{nodeEngine}}"
+  },
+  "packageManager": "{{packageManager}}"
 }

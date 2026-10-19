@@ -1,3 +1,5 @@
+"use client";
+
 import styles from "./styles.module.css";
 import getClassNameFactory from "@/core/lib/get-class-name-factory";
 import { Button } from "@/core/components/Button";

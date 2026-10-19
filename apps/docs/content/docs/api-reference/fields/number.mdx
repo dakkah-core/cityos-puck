@@ -1,0 +1,147 @@
+
+import { Example1, Example2, Example3, Example4, Example5 } from "./number.examples";
+
+import { ConfigPreview } from "@/docs/components/Preview";
+
+# Number
+
+Render a `number` input. Extends [Base](base).
+
+<Example1 />
+
+```tsx {5-7} copy
+const config = {
+  components: {
+    Example: {
+      fields: {
+        myNumber: {
+          type: "number",
+        },
+      },
+      render: ({ myNumber }) => {
+        return <div>{myNumber}</div>;
+      },
+    },
+  },
+};
+```
+
+## Params
+
+| Param                         | Example                         | Type     | Status   |
+| ----------------------------- | ------------------------------- | -------- | -------- |
+| [`type`](#type)               | `type: "number"`                | "number" | Required |
+| [`max`](#max)                 | `max: 10`                       | number   | -        |
+| [`min`](#min)                 | `min: 0`                        | number   | -        |
+| [`placeholder`](#placeholder) | `placeholder: "Lorem ipsum..."` | String   | -        |
+
+## Required params
+
+### `type`
+
+The type of the field. Must be `"number"` for Number fields.
+
+```tsx {6} copy
+const config = {
+  components: {
+    Example: {
+      fields: {
+        myNumber: {
+          type: "number",
+        },
+      },
+      // ...
+    },
+  },
+};
+```
+
+## Optional params
+
+### `max`
+
+The maximum numeric value allowed.
+
+```tsx {7} copy
+const config = {
+  components: {
+    Example: {
+      fields: {
+        myNumber: {
+          type: "number",
+          max: 10,
+        },
+      },
+      // ...
+    },
+  },
+};
+```
+
+<Example2 />
+
+### `min`
+
+The minimum numeric value allowed.
+
+```tsx {7} copy
+const config = {
+  components: {
+    Example: {
+      fields: {
+        myNumber: {
+          type: "number",
+          min: 0,
+        },
+      },
+      // ...
+    },
+  },
+};
+```
+
+<Example3 />
+
+### Placeholder
+
+The placeholder text to display when the field is empty.
+
+```tsx {7} copy
+const config = {
+  components: {
+    Example: {
+      fields: {
+        myNumber: {
+          type: "number",
+          placeholder: "Lorem ipsum...",
+        },
+      },
+      // ...
+    },
+  },
+};
+```
+
+<Example4 />
+
+### `step`
+
+The stepping interval when interacting with the field.
+
+```tsx {7} copy
+const config = {
+  components: {
+    Example: {
+      fields: {
+        myNumber: {
+          type: "number",
+          step: 0.1,
+        },
+      },
+      // ...
+    },
+  },
+};
+```
+
+<Example5 />

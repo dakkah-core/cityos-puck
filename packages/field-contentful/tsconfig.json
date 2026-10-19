@@ -1,11 +1,21 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": ["."],
-  "exclude": ["dist", "build", "node_modules"],
+  "include": [
+    "."
+  ],
+  "exclude": [
+    "dist",
+    "build",
+    "node_modules"
+  ],
   "compilerOptions": {
     "paths": {
-      "@/core": ["../core"],
-      "@/core/*": ["../core/*"]
+      "@/core": [
+        "../core"
+      ],
+      "@/core/*": [
+        "../core/*"
+      ]
     }
   }
 }

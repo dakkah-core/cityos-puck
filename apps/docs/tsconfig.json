@@ -1,16 +1,25 @@
 {
   "extends": "./tsconfig/nextjs.json",
   "compilerOptions": {
-    "plugins": [{ "name": "next" }],
     "paths": {
-      "@/puck": ["../../packages/core/index.ts"],
-      "@/core": ["../../packages/core/index.ts"],
-      "@/core/*": ["../../packages/core/*"],
-      "@/plugin-heading-analyzer": ["../../packages/plugin-heading-analyzer"],
+      "@/puck": [
+        "../../packages/core/index.ts"
+      ],
+      "@/core": [
+        "../../packages/core/index.ts"
+      ],
+      "@/core/*": [
+        "../../packages/core/*"
+      ],
+      "@/plugin-heading-analyzer": [
+        "../../packages/plugin-heading-analyzer"
+      ],
       "@/plugin-heading-analyzer/*": [
         "../../packages/plugin-heading-analyzer/*"
       ],
-      "@/docs/*": ["./*"]
+      "@/docs/*": [
+        "./*"
+      ]
     }
   },
   "include": [
@@ -18,7 +27,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "pages/index.mdx"
+    "content/index.mdx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

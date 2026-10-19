@@ -1,0 +1,128 @@
+{
+  "bugs": {
+    "url": "https://github.com/ueberdosis/tiptap/issues"
+  },
+  "dist": {
+    "shasum": "c5e824dba596c24e73e0e9c7d553193342c98e19",
+    "tarball": "https://registry.npmjs.org/@tiptap/html/-/html-3.32.0.tgz",
+    "fileCount": 29,
+    "integrity": "sha512-owy1YEQv5vCyxQKUXAi5NO8Whpz5WnZdKOOwc32voeq0P/GlmKnLy4GXEoNEdnAsVCVfBGkhnWPvzef2lfbq+Q==",
+    "signatures": [
+      {
+        "sig": "MEUCICUcHeXnbO9ZbLTg4ZsA3ctUnJkZVu57jRU1wQ8tiz+YAiEAsoWx3K/ipClNXi538kneIyi9dpYux3nP5VK1K+h7zs8=",
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+      },
+      {
+        "sig": "MEYCIQCfwBGln5MCFomw4aJ9cjb0x+WJm3AuI9R9lFRmkSCurQIhAJ/1gQQq6EH/CCAwUS9YMwepu4OtmMMSoFvRNM5M+cux",
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+      }
+    ],
+    "attestations": {
+      "url": "https://registry.npmjs.org/-/npm/v1/attestations/@tiptap%2fhtml@3.32.0",
+      "provenance": {
+        "predicateType": "https://slsa.dev/provenance/v1"
+      }
+    },
+    "unpackedSize": 71472
+  },
+  "main": "dist/index.cjs",
+  "name": "@tiptap/html",
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": {
+        "import": "./dist/index.d.ts",
+        "require": "./dist/index.d.cts"
+      },
+      "import": {
+        "node": "./dist/server/index.js",
+        "browser": "./dist/index.js",
+        "default": "./dist/index.js"
+      },
+      "require": "./dist/index.cjs"
+    },
+    "./server": {
+      "types": {
+        "import": "./dist/server/index.d.ts",
+        "require": "./dist/server/index.d.cts"
+      },
+      "import": "./dist/server/index.js",
+      "require": "./dist/server/index.cjs"
+    }
+  },
+  "funding": {
+    "url": "https://github.com/sponsors/ueberdosis",
+    "type": "github"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "vp pack"
+  },
+  "_npmUser": {
+    "name": "GitHub Actions",
+    "email": "npm-oidc-no-reply@github.com",
+    "trustedPublisher": {
+      "id": "github",
+      "oidcConfigId": "01fb415e-8c4b-458c-9219-e5ef349b6621"
+    }
+  },
+  "homepage": "https://tiptap.dev",
+  "keywords": [
+    "tiptap",
+    "tiptap utility"
+  ],
+  "repository": {
+    "url": "https://github.com/ueberdosis/tiptap",
+    "type": "git",
+    "directory": "packages/html"
+  },
+  "description": "utility package to render tiptap JSON as HTML",
+  "directories": {},
+  "maintainers": [
+    {
+      "name": "arnaugomeztiptap",
+      "email": "arnau.gomez@tiptap.dev"
+    },
+    {
+      "name": "patrickbaber",
+      "email": "patrick.baber@tiptap.dev"
+    },
+    {
+      "name": "timoisik",
+      "email": "timo.isik@tiptap.dev"
+    },
+    {
+      "name": "_bdbch",
+      "email": "dominik@bdbch.com"
+    },
+    {
+      "name": "svenadlung",
+      "email": "sven.adlung@ueber.io"
+    },
+    {
+      "name": "tiptap-bot",
+      "email": "npm@tiptap.dev"
+    }
+  ],
+  "_nodeVersion": "24.21.0",
+  "_hasShrinkwrap": false,
+  "devDependencies": {
+    "happy-dom": "^20.8.9",
+    "@tiptap/pm": "^3.32.0",
+    "@types/node": "^22.0.0",
+    "@tiptap/core": "^3.32.0"
+  },
+  "peerDependencies": {
+    "happy-dom": "^20.8.9",
+    "@tiptap/pm": "3.32.0",
+    "@tiptap/core": "3.32.0"
+  },
+  "_npmOperationalInternal": {
+    "tmp": "tmp/html_3.32.0_1791893214494_0.3161875459941781",
+    "host": "s3://npm-registry-packages-npm-production"
+  },
+  "_id": "@tiptap/html@3.32.0",
+  "version": "3.32.0"
+}

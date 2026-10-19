@@ -1,4 +1,5 @@
 module.exports = {
+  experimental: { useTypeScriptCli: true },
   reactStrictMode: true,
   transpilePackages: ["@puckeditor/core", "lucide-react"],
   async rewrites() {

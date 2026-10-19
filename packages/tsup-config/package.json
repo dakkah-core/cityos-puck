@@ -8,9 +8,16 @@
   },
   "dependencies": {
     "tsconfig": "workspace:*",
-    "tsup": "^8.2.4",
-    "typescript": "^5.5.4",
-    "postcss": "^8.4.24",
-    "postcss-modules": "^6.0.0"
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "postcss": "catalog:",
+    "postcss-modules": "catalog:",
+    "esbuild": "catalog:"
+  },
+  "scripts": {
+    "typecheck": "node ../../scripts/toolchains/typecheck.mjs --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
   }
 }

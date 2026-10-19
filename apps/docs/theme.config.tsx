@@ -1,88 +1,8 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { useRouter } from "next/router";
-import { DocsThemeConfig, useConfig } from "nextra-theme-docs";
-
 import { ReleaseSwitcher } from "./components/ReleaseSwitcher";
 import { FooterActions } from "./components/FooterActions";
 import { Viewport } from "./components/Viewport";
 
-const Head = () => {
-  const { asPath, defaultLocale, locale } = useRouter();
-  const { frontMatter, title } = useConfig();
-
-  const siteUrl = "https://puckeditor.com";
-  const url =
-    siteUrl + (defaultLocale === locale ? asPath : `/${locale}${asPath}`);
-
-  const defaultTitle = `Puck - The open-source visual editor for React`;
-  const description =
-    frontMatter.description ||
-    `Puck empowers developers to build amazing visual editing experiences into their own React applications, powering the next generation of content tools.`;
-
-  return (
-    <>
-      <link rel="canonical" href={`${siteUrl}${asPath}`} />
-      <meta property="og:url" content={url} />
-      <meta property="description" content={description} />
-      <meta property="og:description" content={description} />
-      <meta property="og:type" content="website" />
-      <meta property="og:image" content={`${siteUrl}/social.png`} />
-      <meta property="og:image:height" content="675" />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:alt" content="Puck" />
-      <meta property="og:image:type" content="image/png" />
-      <meta property="og:locale" content="en" />
-      <meta property="og:site_name" content={defaultTitle} />
-      <meta name="image" content={`${siteUrl}/social.png`} />
-      <meta itemProp="image" content={`${siteUrl}/social.png`} />
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:image" content={`${siteUrl}/social.png`} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image:alt" content="Puck" />
-      <meta name="twitter:image:height" content="675" />
-      <meta name="twitter:image:type" content="image/png" />
-      <meta name="twitter:image:width" content="1200" />
-      <meta name="twitter:site" content="@puckeditor" />
-      <meta
-        name="twitter:title"
-        content={title !== defaultTitle ? `${title} - Puck` : defaultTitle}
-      />
-      <title>{title !== defaultTitle ? `${title} - Puck` : defaultTitle}</title>
-
-      <link rel="icon" href="/favicon.ico" sizes="48x48" />
-      <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      <link rel="manifest" href="/manifest.webmanifest" />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: `{
-      "@context" : "https://schema.org",
-      "@type" : "WebSite",
-      "name" : "Puck",
-      "url" : "https://puckeditor.com/"
-    }`,
-        }}
-      />
-      {asPath == "/" && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: `${JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              name: "Puck",
-              url: siteUrl,
-            })}`,
-          }}
-        />
-      )}
-    </>
-  );
-};
-
-const theme: DocsThemeConfig = {
-  head: Head,
+const theme = {
   logo: (
     <div>
       <svg
@@ -149,7 +69,7 @@ const theme: DocsThemeConfig = {
           ),
         }
       : {},
-  docsRepositoryBase: "https://github.com/puckeditor/puck/tree/main/apps/docs",
+  docsRepositoryBase: "https://github.com/puckeditor/puck/tree/main/apps/docs/content",
   navbar: {
     extraContent: () => (
       <Viewport desktop>

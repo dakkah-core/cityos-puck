@@ -1,9 +1,6 @@
-import flat from "flat";
+import { flatten, unflatten } from "flat";
 import { ComponentData, Config, RootData, UserGenerics } from "../../types";
 import { stripSlots } from "./strip-slots";
-
-// Explicitly destructure to account for flat module issues: https://github.com/puckeditor/puck/issues/1089
-const { flatten, unflatten } = flat;
 
 const isPureObject = (val: any) =>
   val != null && Object.prototype.toString.call(val) === "[object Object]";
@@ -60,12 +57,18 @@ export const flattenNode = <
 ) => {
   return {
     ...node,
-    props: encodeEmptyObjects(flatten(stripSlots(node, config).props)),
+    props: encodeEmptyObjects(
+      flatten<Record<string, any>, Record<string, any>>(
+        stripSlots(node, config).props
+      )
+    ),
   };
 };
 
 export const expandNode = (node: ComponentData | RootData) => {
-  const props = unflatten(decodeEmptyObjects(node.props));
+  const props = unflatten<Record<string, any>, Record<string, any>>(
+    decodeEmptyObjects(node.props)
+  );
 
   return {
     ...node,

@@ -5,24 +5,29 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "next-sitemap",
+    "postbuild": "next-sitemap && pagefind --site .next/server/app --output-path public/_pagefind",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "node ../../scripts/toolchains/typecheck.mjs --noEmit"
   },
   "devDependencies": {
-    "@types/node": "^17.0.12",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "eslint-config-custom": "workspace:*",
-    "typescript": "^5.5.4"
+    "typescript": "catalog:",
+    "pagefind": "catalog:"
   },
   "dependencies": {
-    "@puckeditor/core": "workspace:*",
-    "next": "^15.5.27",
-    "next-sitemap": "^4.2.3",
-    "nextra": "^3.3.1",
-    "nextra-theme-docs": "^3.3.1",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1"
+    "@puckeditor/core": "workspace:@cityos-core/puck@*",
+    "next": "catalog:",
+    "next-sitemap": "catalog:",
+    "nextra": "catalog:",
+    "nextra-theme-docs": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "lucide-react": "catalog:",
+    "shiki": "catalog:",
+    "zustand": "catalog:"
   }
 }

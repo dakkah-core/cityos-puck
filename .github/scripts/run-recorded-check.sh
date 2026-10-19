@@ -9,16 +9,17 @@ if [[ $# -ne 1 ]]; then
 fi
 check="$1"
 case "$check" in
-  install) command=(pnpm install --frozen-lockfile) ;;
-  test) command=(pnpm test) ;;
-  lint) command=(pnpm lint) ;;
-  format) command=(pnpm format:check) ;;
-  build) command=(pnpm build) ;;
+  install) command=(node scripts/toolchains/run-pinned-pnpm.mjs install --frozen-lockfile) ;;
+  test) command=(node scripts/toolchains/run-pinned-pnpm.mjs test) ;;
+  lint) command=(node scripts/toolchains/run-pinned-pnpm.mjs lint) ;;
+  format) command=(node scripts/toolchains/run-pinned-pnpm.mjs format:check) ;;
+  build) command=(node scripts/toolchains/run-pinned-pnpm.mjs build) ;;
   *) echo 'Unknown maintained check.' >&2; exit 64 ;;
 esac
 
 root="$(git rev-parse --show-toplevel)"
 cd "$root"
+source scripts/toolchains/select-workspace-node.sh
 source_sha="$(git rev-parse HEAD)"
 output='.build/cityos-ci'
 mkdir -p "$output"

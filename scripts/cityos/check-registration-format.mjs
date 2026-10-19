@@ -3,6 +3,7 @@ import { createRequire } from 'node:module';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { resolve, dirname } from 'node:path';
+import { formatSource } from './format-source.mjs';
 const require = createRequire(resolve(process.argv[2], 'package.json'));
 const prettier = require('prettier');
 const paths = [
@@ -23,7 +24,7 @@ const paths = [
 ];
 for (const path of paths) {
   const source = readFileSync(path, 'utf8');
-  const expected = prettier.format(source, { ...(await prettier.resolveConfig(path) ?? {}), filepath: path });
+  const expected = await formatSource(prettier, source, path);
   const output = resolve('.build/cityos-registration/formatted', path);
   mkdirSync(dirname(output), { recursive: true });
   writeFileSync(output, expected);

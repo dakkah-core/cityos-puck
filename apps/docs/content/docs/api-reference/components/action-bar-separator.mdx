@@ -1,0 +1,28 @@
+---
+title: <ActionBar.Separator>
+---
+
+import { Example1 } from "./action-bar-separator.examples";
+
+
+import { PuckPreview } from "@/docs/components/Preview";
+import { ActionBar } from "@/puck";
+
+# \<ActionBar.Separator\>
+
+Render a separator in the [`<ActionBar>`](action-bar). An alternative to [`<ActionBar.Group>`](action-bar-group) that avoids wrapping elements.
+
+```tsx showLineNumbers {3} copy
+<ActionBar>
+  <ActionBar.Label label="Label 1" />
+  <ActionBar.Separator />
+  <ActionBar.Label label="Label 2" />
+  <ActionBar.Action>★</ActionBar.Action>
+</ActionBar>
+```
+
+<Example1 />
+
+## Props
+
+This component doesn't accept any props.

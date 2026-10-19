@@ -1,0 +1,37 @@
+---
+title: <ActionBar.Label>
+---
+
+import { Example1 } from "./action-bar-label.examples";
+
+
+import { PuckPreview } from "@/docs/components/Preview";
+import { ActionBar } from "@/puck";
+
+# \<ActionBar.Label\>
+
+Render a label in the [`<ActionBar>`](action-bar) or an [`<ActionBar.Group>`](action-bar-group).
+
+```tsx showLineNumbers {2,4} copy
+<ActionBar>
+  <ActionBar.Label label="Label 1" />
+  <ActionBar.Group>
+    <ActionBar.Label label="Label 2" />
+    <ActionBar.Action>★</ActionBar.Action>
+  </ActionBar.Group>
+</ActionBar>
+```
+
+<Example1 />
+
+## Props
+
+| Prop              | Example   | Type   | Status   |
+| ----------------- | --------- | ------ | -------- |
+| [`label`](#label) | `"Label"` | String | Required |
+
+## Required Props
+
+### `label`
+
+The label text.

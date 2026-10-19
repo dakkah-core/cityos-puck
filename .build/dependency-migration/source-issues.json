@@ -1,0 +1,134 @@
+{
+  "scope": "Source handoff only. The three requested peer blockers have source adaptations and added regressions; no tests, install, patch application, generation, typecheck or build were run.",
+  "registryObservedAt": "2026-10-19T13:01:44.619196+00:00",
+  "observedPackageCount": 117,
+  "publicCatalogEntries": 110,
+  "issues": [
+    {
+      "package": "react-from-json",
+      "selected": "0.8.0",
+      "issue": "Removed the dependency and catalog entry after inspecting the analyzer tree and upstream resolver. An owned recursive React renderer consumes only HeadingBlock nodes.",
+      "state": "source-blocker-resolved-validation-pending",
+      "sourceConsumer": "packages/plugin-heading-analyzer/src/HeadingAnalyzer.tsx",
+      "followUp": "Parent must run the added behavior regression and the TS7 source check in a serialized slot.",
+      "decision": "Preserve rank order, missing-level placeholders, dragged-heading exclusion, repeated labels, click propagation, scroll, and two-second inline style restoration.",
+      "sourcePaths": [
+        "packages/plugin-heading-analyzer/src/heading-tree.ts",
+        "packages/plugin-heading-analyzer/src/HeadingOutline.tsx",
+        "packages/plugin-heading-analyzer/src/HeadingAnalyzer.tsx"
+      ],
+      "regressions": [
+        "packages/core/__tests__/heading-analyzer.spec.tsx"
+      ]
+    },
+    {
+      "package": "@tiptap/html",
+      "selected": "3.32.0",
+      "issue": "Removed @tiptap/html and its Happy DOM 20 peer. The only real consumer now uses @tiptap/static-renderer 3.32.0 for JSON/plain text and the browser-only @tiptap/core parser for HTML.",
+      "state": "source-blocker-resolved-validation-pending",
+      "sourceConsumer": "packages/core/components/RichTextEditor/components/Render.tsx",
+      "followUp": "Parent must qualify static output, custom extension output, hydration and real browser normalization; source inspection does not prove those runtime behaviors.",
+      "decision": "Preserve the existing HTML fallback during server rendering and first hydration; normalize in the browser after hydration. Happy DOM 21.0.3 remains the direct stable dev dependency for DOM-based tests. No older direct target or incompatible peer override was added.",
+      "sourcePaths": [
+        "packages/core/components/RichTextEditor/lib/render-rich-text.ts",
+        "packages/core/components/RichTextEditor/components/Render.tsx",
+        "packages/core/package.json",
+        "pnpm-workspace.yaml"
+      ],
+      "regressions": [
+        "packages/core/components/RichTextEditor/__tests__/static-render.spec.tsx",
+        "packages/core/components/RichTextEditor/__tests__/browser-render.spec.tsx"
+      ]
+    },
+    {
+      "package": "@puckeditor/plugin-ai",
+      "selected": "0.8.3",
+      "issue": "Exact 0.8.3 peer adaptation targets @cityos-core/puck@0.23.0-cityos.3. The resolver hook changes the peer before graph resolution; the exact five-file patch updates installed metadata, both runtime variants and both declaration/augmentation variants.",
+      "state": "source-blocker-resolved-validation-pending",
+      "sourceConsumer": "recipes/next-ai/package.json; recipes/react-router-ai/package.json",
+      "followUp": "Parent must admit peer re-resolution/patch application, run source and installed regressions, compile both AI recipe type contracts with TS7, and exercise the mounted plugin context after rebuilding the core. The patch is authored, not applied or qualified.",
+      "decision": "Inspected all seven imported runtime core symbols and hook data members against the owned source. Both AI recipes declare the owned package alongside the existing upstream-name alias needed by cloud-client declarations, so both names resolve the same local source. Standalone AI generation carries the hook and verified patch bytes and requires pnpm before writing files.",
+      "sourcePaths": [
+        ".pnpmfile.cjs",
+        "config/dependencies/plugin-ai.json",
+        "patches/@puckeditor__plugin-ai@0.8.3.patch",
+        "packages/create-puck-app/plugin-ai-peer.cjs",
+        "packages/create-puck-app/bootstrap-integration.js",
+        "packages/create-puck-app/bootstrap-catalog.js",
+        "packages/create-puck-app/index.js",
+        "packages/create-puck-app/scripts/generate.js",
+        "recipes/next-ai/package.json",
+        "recipes/react-router-ai/package.json",
+        "packages/create-puck-app/templates/next-ai/package.json.hbs",
+        "packages/create-puck-app/templates/react-router-ai/package.json.hbs"
+      ],
+      "regressions": [
+        "scripts/cityos/peer-boundaries.test.mjs",
+        "scripts/toolchains/installed-plugin-ai.test.mjs",
+        "recipes/next-ai/cityos-ai-contract.ts",
+        "recipes/react-router-ai/cityos-ai-contract.ts"
+      ]
+    },
+    {
+      "package": "deep-diff",
+      "selected": "1.0.2",
+      "issue": "1.0.2 is the latest SemVer-stable release. Deprecation is recorded as a maintenance note, not a source migration blocker.",
+      "state": "maintenance-note-nonblocking",
+      "sourceConsumer": "packages/core/lib/get-changed.ts",
+      "followUp": "No replacement requested or made solely for deprecation."
+    },
+    {
+      "package": "nextra",
+      "selected": "4.6.1",
+      "issue": "Major source migration now uses content routes, Layout components, Pagefind indexing, and client example modules; compiler/build/runtime behavior has not been run.",
+      "state": "validation-deferred",
+      "followUp": "Run the added route-preservation regression, TypeScript 7 checks, and focused docs build after parent admits the updated dependency graph."
+    },
+    {
+      "package": "tsup",
+      "selected": "9.0.0",
+      "issue": "Latest stable still calls the historical compiler API for declarations. Exact package dependency/override is scoped to catalog:typescript-api.",
+      "state": "accepted-third-party-ts6-compatibility",
+      "followUp": "Run installed-compatibility tests and focused declaration build after admission; remove binding when stable TS7 API support is available."
+    },
+    {
+      "package": "ts-jest",
+      "selected": "29.4.15",
+      "issue": "Latest stable peer range is TypeScript >=4.3 <7. Jest config is now plain CJS and transformer explicitly selects typescript-api. First-party semantic checking uses TS7 before Jest.",
+      "state": "accepted-third-party-ts6-compatibility",
+      "followUp": "Run installed transformer regression and narrow Jest test after admission. ts-node was removed because the CJS config no longer needs it."
+    },
+    {
+      "package": "@typescript-eslint/*",
+      "selected": "8.71.2",
+      "issue": "Latest stable parser packages declare TypeScript >=4.8.4 <6.1.0. Exact third-party dependencies/overrides select the accepted TS6 API alias.",
+      "state": "accepted-third-party-ts6-compatibility",
+      "followUp": "Run the installed parser regression after admission. First-party source analysis introduces no TypeScript API imports."
+    },
+    {
+      "package": "typescript-plugin-css-modules",
+      "issue": "Legacy JavaScript language-service plugin was removed from first-party configs; CSS module ambient declarations remain. Next also uses its supported TS7 CLI mode.",
+      "state": "source-migration-complete-validation-deferred"
+    },
+    {
+      "package": "pnpm-lock.yaml",
+      "issue": "Intentionally unchanged; it predates the new catalog graph. No install, lock generation, template generation, typecheck, build, or test was executed.",
+      "state": "parent-serialization-required",
+      "followUp": "Parent must admit and serialize package-manager resolution, bootstrap snapshot generation and validation. Frozen-lockfile CI cannot represent this new graph until then."
+    },
+    {
+      "package": "@cityos-core/puck",
+      "selected": "0.23.0-cityos.3",
+      "issue": "Bootstrap derives the exact owned identity and source version. That is not evidence that a registry artifact exists for installation.",
+      "state": "source-only-identity-preserved",
+      "followUp": "Use the parent-authorized local/artifact consumption path; do not infer publication from the template alias."
+    },
+    {
+      "package": "owning-workspace-toolchain",
+      "state": "source-blocker-resolved-validation-pending",
+      "issue": "Canonical JSON, exact projector/check, portable selectors, native pinned pnpm runner, nested Lerna environment, bootstrap migration and exact regressions are authored. No executable validation performed.",
+      "followUp": "See toolchain-handoff.json for exact changed paths, pending qualification and proposed commands."
+    }
+  ],
+  "toolchainFollowUp": "toolchain-handoff.json"
+}

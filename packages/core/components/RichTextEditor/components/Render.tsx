@@ -1,12 +1,17 @@
-import type { JSONContent } from "@tiptap/react";
-import { generateHTML, generateJSON } from "@tiptap/html";
-import { useMemo } from "react";
+"use client";
+
+import type { JSONContent } from "@tiptap/core";
+import { useMemo, useSyncExternalStore } from "react";
 import getClassNameFactory from "../../../lib/get-class-name-factory";
 import styles from "../styles.module.css";
 import { PuckRichText } from "../extension";
 import { RichtextField } from "../../../types";
+import { renderRichTextHTML } from "../lib/render-rich-text";
 
 const getClassName = getClassNameFactory("RichTextEditor", styles);
+const subscribe = () => () => {};
+const browserSnapshot = () => true;
+const serverSnapshot = () => false;
 
 export function RichTextRender({
   content,
@@ -17,42 +22,17 @@ export function RichTextRender({
 }) {
   const { tiptap = {}, options } = field;
   const { extensions = [] } = tiptap;
+  const browserReady = useSyncExternalStore(subscribe, browserSnapshot, serverSnapshot);
 
   const loadedExtensions = useMemo(
     () => [PuckRichText.configure(options), ...extensions],
     [field, extensions]
   );
 
-  const normalized: JSONContent = useMemo(() => {
-    if (typeof content === "object" && content?.type === "doc") {
-      return content;
-    }
-
-    if (typeof content === "string") {
-      if (!content) {
-        return { type: "doc", content: [] };
-      }
-
-      const isHtml = /<\/?[a-z][\s\S]*>/i.test(content);
-
-      if (isHtml) {
-        return generateJSON(content, loadedExtensions);
-      }
-
-      return {
-        type: "doc",
-        content: [
-          { type: "paragraph", content: [{ type: "text", text: content }] },
-        ],
-      };
-    }
-
-    return { type: "doc", content: [] };
-  }, [content, loadedExtensions]);
-
-  const html = useMemo(() => {
-    return generateHTML(normalized, loadedExtensions);
-  }, [normalized, loadedExtensions]);
+  const html = useMemo(
+    () => renderRichTextHTML(content, loadedExtensions, browserReady),
+    [content, loadedExtensions, browserReady]
+  );
 
   return (
     <div className={getClassName()}>

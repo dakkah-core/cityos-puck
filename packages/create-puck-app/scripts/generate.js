@@ -5,6 +5,7 @@ import path from "path";
 import { glob } from "glob";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import { loadBootstrapCatalog } from "../bootstrap-catalog.js";
 
 const verbose = false;
 
@@ -24,6 +25,25 @@ const run = async () => {
   if (!fs.existsSync(templatePath)) {
     console.error(`No template directory could be found at ${templatePath}.`);
     return;
+  }
+
+  // Ship canonical inputs with the standalone CLI. No independently pinned versions.
+  const packagePath = path.join(__dirname, "..");
+  for (const [source, target] of [
+    ["../../../pnpm-workspace.yaml", "dependency-catalog.yaml"],
+    ["../../../package.json", "workspace-package.json"],
+    ["../../../config/toolchains/node-typescript.json", "node-typescript.json"],
+    ["../../core/package.json", "core-package.json"],
+    ["../../../config/dependencies/plugin-ai.json", "plugin-ai-contract.json"],
+  ]) {
+    fs.copyFileSync(path.resolve(__dirname, source), path.join(packagePath, target));
+  }
+  const bootstrap = loadBootstrapCatalog();
+  for (const [selector, patch] of Object.entries(bootstrap.patches)) {
+    const relative = bootstrap.workspace.patchedDependencies[selector];
+    const target = path.join(packagePath, relative);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.copyFileSync(patch, target);
   }
 
   // Copy recipe files

@@ -16,25 +16,26 @@
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
     "build": "rm -rf dist && tsup index.ts",
-    "prepare": "pnpm build"
+    "prepare": "node ../../scripts/toolchains/run-pinned-pnpm.mjs build",
+    "typecheck": "node ../../scripts/toolchains/typecheck.mjs --noEmit"
   },
   "files": [
     "dist"
   ],
   "devDependencies": {
-    "@puckeditor/core": "workspace:^",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
-    "contentful": "^10.8.6",
-    "eslint": "^9.0.0",
+    "@puckeditor/core": "workspace:@cityos-core/puck@*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "contentful": "catalog:",
+    "eslint": "catalog:",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
-    "tsup": "^8.2.4",
+    "tsup": "catalog:",
     "tsup-config": "workspace:*",
-    "typescript": "^5.5.4"
+    "typescript": "catalog:"
   },
   "peerDependencies": {
-    "contentful": "^10.0.0",
-    "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
+    "contentful": "catalog:peers",
+    "react": "catalog:peers"
   }
 }

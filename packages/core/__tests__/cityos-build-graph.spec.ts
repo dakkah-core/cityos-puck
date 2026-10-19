@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -47,7 +47,7 @@ describe("CityOS core build ordering", () => {
   it("evaluates the actual Turbo graph", () => {
     // Constant command only. Dry-run evaluates the installed tool's full task
     // graph without running a build, generating files, or publishing packages.
-    const output = execSync("pnpm exec turbo run build --dry=json", {
+    const output = execFileSync(process.execPath, [resolve(repositoryRoot, "scripts/toolchains/run-pinned-pnpm.mjs"), "exec", "turbo", "run", "build", "--dry=json"], {
       cwd: repositoryRoot,
       encoding: "utf8",
       timeout: 20_000,

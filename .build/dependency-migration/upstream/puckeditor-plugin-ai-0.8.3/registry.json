@@ -1,0 +1,104 @@
+{
+  "bugs": "https://github.com/puckeditor/puck/issues",
+  "dist": {
+    "shasum": "aaa566f8979ff70f1531368b3f26d5154af6fa39",
+    "tarball": "https://registry.npmjs.org/@puckeditor/plugin-ai/-/plugin-ai-0.8.3.tgz",
+    "fileCount": 6,
+    "integrity": "sha512-t4ptEhF9dEj3ohjrfIBmIECVqBQ6ba2wDEtc3Ztzwv+a/zkS3JcHLCng8sykGfpxcOgzhybs+NA0QrHmBjhAiA==",
+    "signatures": [
+      {
+        "sig": "MEUCICqdSCl8TumZhRriUb/FUHNWQegBENeTeUn9YVjfHFbJAiEAr4Gg7yZEKP8uq9QtRFdTL6Q4VdIwcggL14Kc0+FKLdY=",
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+      },
+      {
+        "sig": "MEUCIQCkqVN2h0oA46orNFBwvnpKK0CJidiq6Zpw/wHopUKHxgIgUAXZ0Aaxuc40Dh+9WvkJGwZ78yQyufV8Q43B1JlFRXA=",
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+      }
+    ],
+    "unpackedSize": 507074
+  },
+  "main": "./dist/index.js",
+  "name": "@puckeditor/plugin-ai",
+  "types": "./dist/index.d.ts",
+  "author": "Chris Villa <chris@puckeditor.com>",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    },
+    "./styles.css": "./dist/index.css"
+  },
+  "scripts": {
+    "dev": "tsup index.ts --watch",
+    "lint": "eslint \"**/*.ts*\"",
+    "test": "vitest run --config vitest.config.ts",
+    "build": "rm -rf dist && tsup index.ts"
+  },
+  "_npmUser": {
+    "name": "chrisvxd",
+    "email": "chrisvilla@me.com"
+  },
+  "homepage": "https://puckeditor.com",
+  "keywords": [
+    "puck-ecosystem",
+    "puck-plugin"
+  ],
+  "repository": {
+    "url": "puckeditor/puck",
+    "type": "git"
+  },
+  "directories": {},
+  "maintainers": [
+    {
+      "name": "chrisvxd",
+      "email": "chrisvilla@me.com"
+    }
+  ],
+  "_nodeVersion": "24.20.0",
+  "dependencies": {
+    "ai": "^6.0.228",
+    "qler": "^0.6.2",
+    "ulid": "^3.0.1",
+    "domutils": "^4.0.2",
+    "domhandler": "^6.0.1",
+    "htmlparser2": "^12.0.0",
+    "use-debounce": "^9.0.4",
+    "react-markdown": "^10.1.0",
+    "html2canvas-pro": "^2.3.3",
+    "use-stick-to-bottom": "^1.1.1",
+    "react-textarea-autosize": "^8.5.9"
+  },
+  "_hasShrinkwrap": false,
+  "devDependencies": {
+    "tsup": "^8.2.4",
+    "jsdom": "^28.1.0",
+    "eslint": "^9.39.4",
+    "openai": "^5.5.1",
+    "vitest": "^4.1.0",
+    "reducer": "0.8.3",
+    "tsconfig": "0.8.3",
+    "react-dom": "^19.2.0",
+    "typescript": "^5.5.4",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.10.1",
+    "tsup-config": "0.8.3",
+    "@types/react": "^19.2.0",
+    "lucide-react": "^0.554.0",
+    "@ai-sdk/react": "^3.0.230",
+    "@puckeditor/core": "0.23.0-canary.e7fef140",
+    "@types/react-dom": "^19.2.0",
+    "@puckeditor/ai-types": "0.8.3",
+    "eslint-config-custom": "0.8.3",
+    "@puckeditor/platform-types": "0.8.3"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "@puckeditor/core": "^0"
+  },
+  "_npmOperationalInternal": {
+    "tmp": "tmp/plugin-ai_0.8.3_1788956353342_0.7136464278727592",
+    "host": "s3://npm-registry-packages-npm-production"
+  },
+  "_id": "@puckeditor/plugin-ai@0.8.3",
+  "version": "0.8.3"
+}

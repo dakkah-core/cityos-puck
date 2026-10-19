@@ -1,15 +1,13 @@
 import packageJson from "./package.json" with { type: "json" };
 import nextra from "nextra";
 
-const withNextra = nextra({
-  theme: "nextra-theme-docs",
-  themeConfig: "./theme.config.tsx",
-});
+const withNextra = nextra();
 
 const BRANCH_NAME = process.env.VERCEL_GIT_COMMIT_REF || "";
 const IS_RELEASE_BRANCH = BRANCH_NAME.startsWith("releases/");
 
 export default withNextra({
+  experimental: { useTypeScriptCli: true },
   async redirects() {
     return [
       {

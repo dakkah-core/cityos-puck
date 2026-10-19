@@ -1,0 +1,39 @@
+{
+  "status": "source-ready-validation-pending",
+  "exclusiveRoot": "C:\\cityos\\cityos-puck",
+  "registryObservedAt": "2026-10-19T13:01:44.619196+00:00",
+  "freshPublicPackageObservations": 117,
+  "sourceBlockersResolved": [
+    "react-from-json React 19 consumer",
+    "@tiptap/html Happy DOM 20 peer",
+    "plugin-ai owned prerelease core peer"
+  ],
+  "ownedPackageUnchanged": {
+    "name": "@cityos-core/puck",
+    "version": "0.23.0-cityos.3",
+    "entry": "./cityos"
+  },
+  "validationPerformed": [
+    "Source inspection, published registry/archive inspection, final diff inspection only."
+  ],
+  "validationNotPerformed": [
+    "Install or lock resolution",
+    "Patch application",
+    "Repository generation",
+    "Semantic typecheck",
+    "Build",
+    "Automated tests",
+    "Browser/runtime qualification"
+  ],
+  "proposedNarrowCommands": [
+    "node --test scripts/cityos/toolchain-source.test.mjs scripts/cityos/dependency-migration.test.mjs scripts/cityos/peer-boundaries.test.mjs",
+    "node scripts/toolchains/typecheck.mjs --noEmit --project packages/core/tsconfig.json",
+    "node packages/core/node_modules/jest/bin/jest.js --config packages/core/jest.config.cjs --runInBand packages/core/__tests__/heading-analyzer.spec.tsx packages/core/components/RichTextEditor/__tests__/static-render.spec.tsx packages/core/components/RichTextEditor/__tests__/browser-render.spec.tsx",
+    "node --test scripts/toolchains/installed-plugin-ai.test.mjs"
+  ],
+  "commandPreconditions": "Parent must first admit and serialize the needed graph install/core build. Before every new Node shell dot-source the canonical selector and verify node --version equals v26.12.0. Installed plugin tests need both updated dependencies and built core. No ambient pnpm.",
+  "maintenanceNotes": [
+    "deep-diff 1.0.2 retained as latest stable; deprecation is nonblocking.",
+    "Source aliases and exact versions do not prove an owned registry artifact exists."
+  ]
+}

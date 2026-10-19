@@ -1,0 +1,5 @@
+# Preserve the exact inspected patch bytes on Windows and POSIX checkouts.
+patches/*.patch text eol=lf
+scripts/toolchains/*.sh text eol=lf
+.github/scripts/run-recorded-check.sh text eol=lf
+scripts/publish.sh text eol=lf

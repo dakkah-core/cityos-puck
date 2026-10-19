@@ -11,7 +11,7 @@ const script = fileURLToPath(
   new URL("../../.github/scripts/run-recorded-check.sh", import.meta.url)
 );
 
-// This isolated fake pnpm tests only evidence/exit-code propagation. It is not
+// This isolated fake Node command tests only evidence/exit-code propagation. It is not
 // an application test or a substitute for the real workflow commands.
 function fixture(run) {
   const root = mkdtempSync(join(tmpdir(), "cityos-check-evidence-"));
@@ -28,9 +28,13 @@ function fixture(run) {
     );
     const bin = join(root, "bin");
     mkdirSync(bin);
+    const selectors = join(root, "scripts", "toolchains");
+    mkdirSync(selectors, { recursive: true });
+    // Selection is covered by toolchain behavior tests; this fixture isolates logging.
+    writeFileSync(join(selectors, "select-workspace-node.sh"), "# fixture selection boundary\n");
     writeFileSync(
-      join(bin, "pnpm"),
-      '#!/bin/sh\nprintf "fixture stdout\\n"\nprintf "fixture stderr\\n" >&2\nexit "${FIXTURE_EXIT:-0}"\n',
+      join(bin, "node"),
+      '#!/bin/sh\n[ \"$1\" = scripts/toolchains/run-pinned-pnpm.mjs ] || exit 65\nprintf "fixture stdout\\n"\nprintf "fixture stderr\\n" >&2\nexit "${FIXTURE_EXIT:-0}"\n',
       { mode: 0o755 }
     );
     run({

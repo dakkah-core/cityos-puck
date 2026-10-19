@@ -1,0 +1,40 @@
+---
+title: Slot
+---
+
+import { Example1 } from "./slot.examples";
+
+
+import { PuckPreview } from "@/docs/components/Preview";
+import { Puck } from "@/puck";
+import { Color } from "@/docs/components/Color";
+
+# Slot
+
+Use the following CSS properties for theming slots (drop zones) and the components dragged within them.
+
+```css showLineNumbers
+.Container {
+  --puck-slot-color-bg: #fff2ee;
+  --puck-slot-color-border: #f6ab3b;
+}
+```
+
+<Example1 />
+
+## CSS properties
+
+Defaults shown as `var(--puck-...)` reference [global tokens](/docs/api-reference/theming/global). See [computed values](/docs/api-reference/theming/computed-values#slot) for the values they resolve to.
+
+| Token                                         | Default                              | Description                           |
+| --------------------------------------------- | ------------------------------------ | ------------------------------------- |
+| `--puck-slot-color-bg`                        | `var(--puck-color-selection-bg)`     | Drop zone background when active      |
+| `--puck-slot-color-border`                    | `var(--puck-color-selection-border)` | Drop zone outline color               |
+| `--puck-slot-border-width`                    | `var(--puck-border-width-focus)`     | Drop zone outline width               |
+| `--puck-slot-border-style`                    | `dashed`                             | Drop zone outline style               |
+| `--puck-slot-component-color-overlay`         | `var(--puck-color-selection-bg)`     | Component overlay background on hover |
+| `--puck-slot-component-color-overlay-border`  | `var(--puck-color-selection-border)` | Component overlay outline             |
+| `--puck-slot-component-border-width`          | `var(--puck-border-width-focus)`     | Component overlay outline width       |
+| `--puck-slot-component-color-border-selected` | `var(--puck-color-selection-border)` | Selected component overlay outline    |
+| `--puck-slot-component-color-placeholder`     | <Color>#6499cf</Color>               | Drag placeholder background           |
+| `--puck-slot-component-color-border-dragging` | <Color>#cfdff0</Color>               | Outline while dragging component      |

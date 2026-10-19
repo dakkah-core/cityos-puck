@@ -1,4 +1,3 @@
-const standardChangelog = require("standard-changelog");
 const path = require("path");
 const fs = require("fs");
 
@@ -14,14 +13,14 @@ const changelog = fs.readFileSync(changelogPath, "utf8");
 
 let changes = "";
 
-const standardStream = standardChangelog();
-
-standardStream.on(
-  "data",
-  (chunk) => (changes = `${changes}${chunk.toString()}`)
-);
-
-standardStream.on("end", () => {
+async function updateChangelog() {
+  const { StandardChangelog } = await import("standard-changelog");
+  const generator = new StandardChangelog(path.join(__dirname, ".."))
+    .readPackage()
+    .readRepository();
+  for await (const chunk of generator.write()) {
+    changes += chunk;
+  }
   // Indent headers and add download section
   const transformed = transform(changes);
 
@@ -32,4 +31,9 @@ standardStream.on("end", () => {
   );
 
   fs.writeFileSync(changelogPath, updatedChangelog);
+}
+
+updateChangelog().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
 });

@@ -6,20 +6,21 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "node ../../scripts/toolchains/typecheck.mjs --noEmit"
   },
   "dependencies": {
-    "@puckeditor/core": "workspace:*",
-    "classnames": "^2.3.2",
-    "next": "^16.3.6",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1"
+    "@puckeditor/core": "workspace:@cityos-core/puck@*",
+    "classnames": "catalog:",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "^17.0.12",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "eslint-config-custom": "workspace:*",
-    "typescript": "^5.5.4"
+    "typescript": "catalog:"
   }
 }

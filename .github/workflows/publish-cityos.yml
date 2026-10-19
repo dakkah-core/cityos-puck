@@ -20,15 +20,23 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11.26.0
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version-file: .nvmrc
           registry-url: https://registry.npmjs.org
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @cityos-core/puck build
+      - name: Check canonical toolchain projections
+        shell: bash
+        run: |
+          source scripts/toolchains/select-workspace-node.sh
+          node scripts/toolchains/project-toolchain.mjs --check
+      - uses: pnpm/action-setup@v4
+      - run: |
+          source scripts/toolchains/select-workspace-node.sh
+          node scripts/toolchains/run-pinned-pnpm.mjs install --frozen-lockfile
+      - run: |
+          source scripts/toolchains/select-workspace-node.sh
+          node scripts/toolchains/run-pinned-pnpm.mjs --filter @cityos-core/puck build
       - working-directory: packages/core
-        run: npm publish --access public --tag cityos --provenance --ignore-scripts
+        run: |
+          source "$GITHUB_WORKSPACE/scripts/toolchains/select-workspace-node.sh"
+          npm publish --access public --tag cityos --provenance --ignore-scripts

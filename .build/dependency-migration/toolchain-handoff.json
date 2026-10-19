@@ -1,0 +1,125 @@
+{
+  "status": "source-ready-validation-pending",
+  "exclusiveRoot": "C:\\cityos\\cityos-puck",
+  "recordedAt": "2026-10-19T13:28:01.928922+00:00",
+  "canonicalSource": "config/toolchains/node-typescript.json",
+  "changedPaths": [
+    "config/toolchains/node-typescript.json",
+    "scripts/toolchains/toolchain.mjs",
+    "scripts/toolchains/project-toolchain.mjs",
+    "scripts/toolchains/resolve-workspace-node.mjs",
+    "scripts/toolchains/select-workspace-node.ps1",
+    "scripts/toolchains/select-workspace-node.sh",
+    "scripts/toolchains/run-pinned-pnpm.mjs",
+    "scripts/toolchains/typecheck.mjs",
+    "scripts/toolchains/installed-compatibility.test.mjs",
+    "packages/create-puck-app/toolchain.cjs",
+    "packages/create-puck-app/pinned-pnpm.mjs",
+    "packages/create-puck-app/bootstrap-catalog.js",
+    "packages/create-puck-app/index.js",
+    "packages/create-puck-app/scripts/generate.js",
+    "packages/create-puck-app/package.json",
+    "packages/create-puck-app/templates/next/package.json.hbs",
+    "packages/create-puck-app/templates/next-ai/package.json.hbs",
+    "packages/create-puck-app/templates/react-router/package.json.hbs",
+    "packages/create-puck-app/templates/react-router-ai/package.json.hbs",
+    "scripts/cityos/toolchain-source.test.mjs",
+    "scripts/cityos/toolchain-behavior.test.mjs",
+    "scripts/cityos/dependency-migration.test.mjs",
+    "scripts/cityos/peer-boundaries.test.mjs",
+    "scripts/cityos/verification-evidence.test.mjs",
+    "package.json",
+    "packages/core/package.json",
+    "packages/core/__tests__/cityos-build-graph.spec.ts",
+    "packages/field-contentful/package.json",
+    "packages/plugin-emotion-cache/package.json",
+    "packages/plugin-heading-analyzer/package.json",
+    "scripts/publish.sh",
+    ".github/scripts/run-recorded-check.sh",
+    ".github/workflows/ci.yml",
+    ".github/workflows/publish.yml",
+    ".github/workflows/publish-canary.yml",
+    ".github/workflows/publish-cityos.yml",
+    ".gitattributes",
+    ".gitignore"
+  ],
+  "existingProjectionsPreserved": [
+    ".nvmrc",
+    "pnpm-workspace.yaml",
+    "recipes/react-router/package.json",
+    "recipes/react-router-ai/package.json"
+  ],
+  "sourceDecisions": [
+    "Exact Node 26.12.0, Node declarations 26.6.5, TypeScript 7.0.2, pnpm 12.14.0 and accepted TypeScript API alias have one JSON authority. Engine ranges and packageManager derive from that catalog.",
+    "Pure projector implements --check and --write over .nvmrc, all five existing Node engine manifests, root packageManager/pnpm engine, and both default and named TypeScript API aliases. Neither mode was executed.",
+    "Portable PowerShell/bash selectors resolve and verify the exact catalog runtime, including the active node command. No sibling repository path is embedded. Parent shells must still select and verify the main canonical runtime first.",
+    "The first-party typecheck runner resolves and compares the exact installed TypeScript CLI without yaml or the legacy .nvmrc authority.",
+    "Bootstrap readers prefer source JSON authority and reject stale manager, runtime engines, compiler, declaration and alias projections. Packed snapshots copy the same canonical JSON; all recipe engine placeholders derive from it.",
+    "Published pnpm 12.14.0 uses native binaries. The runner rejects JS/cmd/shell manager shims, resolves only existing native bytes, and probes exact manager version. No manager installation/download fallback exists.",
+    "Nested Lerna lockfile updates were inspected in published 10.1.1 source: they invoke pnpm and may route through COREPACK_ROOT. Child environments now pin the native manager directory and Node executable, clear the inherited Corepack routing variable, and reject competing pnpm shims in the selected Node directory.",
+    "Explicit repository pnpm calls in manifests, publish scripts, maintained CI checks, Turbo graph regression, and bootstrap install use the pinned runner. Existing workflow trigger/action-reference/permission values are preserved; setup-node pnpm cache lookup was removed because it invokes an ambient manager.",
+    "All four original toolchain source tests remain, strengthened by exact catalog comparisons. Added behavior coverage exercises derivations, projection repair/preservation, stale bootstrap rejection, exact runtime choice, native header/manager failure checks, child environments and nested manager shadow prevention."
+  ],
+  "upstreamSourceAnalysis": [
+    {
+      "package": "pnpm",
+      "version": "12.14.0",
+      "registry": "https://registry.npmjs.org/pnpm/12.14.0",
+      "files": [
+        "package.json",
+        "bin/pnpm.mjs",
+        "install.js"
+      ]
+    },
+    {
+      "package": "lerna",
+      "version": "10.1.1",
+      "registry": "https://registry.npmjs.org/lerna/10.1.1",
+      "inspectedBehavior": [
+        "version lockfile update",
+        "execPackageManager/createCommandAndArgs",
+        "COREPACK_ROOT routing"
+      ]
+    }
+  ],
+  "ownedIdentityUnchanged": {
+    "name": "@cityos-core/puck",
+    "version": "0.23.0-cityos.3",
+    "entry": "./cityos"
+  },
+  "acceptedExceptionsUnchanged": [
+    "Exact third-party TypeScript 6 API compatibility for ts-jest, tsup and typescript-eslint until the accepted TS7.1 boundary. First-party checking stays on TS7.",
+    "deep-diff 1.0.2 remains latest SemVer-stable; deprecation remains a nonblocking maintenance note."
+  ],
+  "performed": [
+    "Read-only source/registry/archive inspection",
+    "Source edits and regression additions",
+    "Final diff inspection and git diff --check only"
+  ],
+  "notPerformed": [
+    "Node command execution, including new selectors or --version probes",
+    "Projector/check or generation execution",
+    "Install or lockfile mutation",
+    "Build or semantic typecheck",
+    "Automated tests",
+    "Publication or runtime qualification"
+  ],
+  "validationPending": [
+    "Exact parent-to-fork selector/alias handoff on the existing machine; PowerShell and bash behavior have not been executed.",
+    "Existing native pnpm availability and operating-system execution permission are unqualified. Use PUCK_PNPM_EXECUTABLE with existing pnpm/pnpm.exe bytes or provision them under PNPM_HOME only in a parent-admitted slot; the runner fails if absent/mismatched/shadowed.",
+    "All newly added source and installed behavior regressions remain unrun.",
+    "Lock resolution, exact plugin-ai patch application, bootstrap snapshot/template generation, TS7 checks and focused builds from the prior source migration remain pending serialized admission."
+  ],
+  "proposedNarrowCommandsAfterAdmission": [
+    "node scripts/toolchains/project-toolchain.mjs --check",
+    "node --test scripts/cityos/toolchain-source.test.mjs scripts/cityos/toolchain-behavior.test.mjs scripts/cityos/dependency-migration.test.mjs scripts/cityos/peer-boundaries.test.mjs scripts/cityos/verification-evidence.test.mjs",
+    "node scripts/toolchains/run-pinned-pnpm.mjs --version",
+    "node --test scripts/toolchains/installed-compatibility.test.mjs",
+    "node scripts/toolchains/typecheck.mjs --noEmit --project packages/core/tsconfig.json"
+  ],
+  "shellPreconditions": [
+    "Before every new shell with Node: dot-source C:/cityos/dakkah-cityos-cms/scripts/toolchains/select-workspace-node.ps1 and verify node --version against that main workspace canonical JSON.",
+    "Use C:/cityos/cityos-puck as cwd, then dot-source scripts/toolchains/select-workspace-node.ps1 for the owning workspace and verify exact selection.",
+    "No validation runs until the parent grants and serializes a slot. Installed tests require the admitted current dependency graph. No ambient pnpm."
+  ]
+}

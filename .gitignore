@@ -40,3 +40,14 @@ yarn-error.log*
 .idea
 
 dist
+
+# Rebuilt by Nextra's search indexer.
+_pagefind/
+
+# Bootstrap snapshots are copied from canonical inputs before packing.
+packages/create-puck-app/dependency-catalog.yaml
+packages/create-puck-app/workspace-package.json
+packages/create-puck-app/core-package.json
+packages/create-puck-app/node-typescript.json
+packages/create-puck-app/plugin-ai-contract.json
+packages/create-puck-app/patches/

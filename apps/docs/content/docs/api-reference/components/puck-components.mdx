@@ -1,0 +1,31 @@
+---
+title: <Puck.Components>
+---
+
+import { Example1 } from "./puck-components.examples";
+
+
+import { PuckPreview } from "@/docs/components/Preview";
+import { Puck } from "@/puck";
+
+# \<Puck.Components\>
+
+Render a draggable list of components based on the [user-defined components](/docs/api-reference/configuration/config#components) when composing a custom Puck UI. Respects the [`categories` API](/docs/api-reference/configuration/config#categories).
+
+<Example1 />
+
+```tsx {} showLineNumbers copy
+import { Puck } from "@puckeditor/core";
+
+export function Editor() {
+  return (
+    <Puck>
+      <Puck.Components />
+    </Puck>
+  );
+}
+```
+
+## Props
+
+This component doesn't accept any props.

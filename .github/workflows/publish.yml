@@ -21,18 +21,24 @@ jobs:
           repo-token: "${{ secrets.GH_TOKEN }}"
           tag: ${{ env.TAG_NAME }}
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 24
-          cache: "pnpm"
+          node-version-file: .nvmrc
           registry-url: "https://registry.npmjs.org"
 
+      - name: Check canonical toolchain projections
+        shell: bash
+        run: |
+          source scripts/toolchains/select-workspace-node.sh
+          node scripts/toolchains/project-toolchain.mjs --check
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          source scripts/toolchains/select-workspace-node.sh
+          node scripts/toolchains/run-pinned-pnpm.mjs install
 
       - name: Publish all packages
         run: ./scripts/publish.sh latest

@@ -1,0 +1,473 @@
+{
+  "scope": "Source preservation fixture for the Nextra 3-to-4 route migration, before any build or runtime validation.",
+  "routes": [
+    {
+      "path": "docs/api-reference/actions.mdx",
+      "sha256": "18bba65ad25e8f7c42a3e43d51e94e90f4f3da4ae88f8437f16a563d887ff284"
+    },
+    {
+      "path": "docs/api-reference/components.mdx",
+      "sha256": "b467673efe717824609d21c671ab4e04359c32a6ae657cdd39965ba08537676f"
+    },
+    {
+      "path": "docs/api-reference/components/action-bar-action.mdx",
+      "sha256": "49b5c1f775264e8a20b4dec0d99e7b15353e1b6f4280697e37a0c8fc5de6c7b2"
+    },
+    {
+      "path": "docs/api-reference/components/action-bar-group.mdx",
+      "sha256": "c8afc7df7d644842655df09678980a046abe1fb1a0466d2d034bc7fd1194dcd2"
+    },
+    {
+      "path": "docs/api-reference/components/action-bar-label.mdx",
+      "sha256": "5b88d09a5d77de06e619e351b15cbffbbd19abc70ed0372b53248048f864bb00"
+    },
+    {
+      "path": "docs/api-reference/components/action-bar-separator.mdx",
+      "sha256": "135c445ea5377402c765dd577c6f99cb244b1eaef6182ad49a74c9d33284f487"
+    },
+    {
+      "path": "docs/api-reference/components/action-bar.mdx",
+      "sha256": "a6b677da515325f94b80c587667cf9fcac82606210e0222ed13a51206313cac7"
+    },
+    {
+      "path": "docs/api-reference/components/auto-field.mdx",
+      "sha256": "bb19fcbff520a54460d3bc7ee5e825cfd575cfeea7c31d190f0b149c71823ef5"
+    },
+    {
+      "path": "docs/api-reference/components/drawer-item.mdx",
+      "sha256": "7d474835be3bb2e4795bc672f1e3faabab7413eef50c5dca0e06d788758f8a30"
+    },
+    {
+      "path": "docs/api-reference/components/drawer.mdx",
+      "sha256": "28578c0593485a6d8fc6148f0d089e32e740400c8cf3a6bb56825436da80f478"
+    },
+    {
+      "path": "docs/api-reference/components/drop-zone.mdx",
+      "sha256": "0f4ac1bd3977b367434179f6f8aee47bc358559f08988030e556f629621c0fc6"
+    },
+    {
+      "path": "docs/api-reference/components/field-label.mdx",
+      "sha256": "5a07529ee49547c532fde8bbf15ba4fa83e07fd00caeac7fa887d5561f8e8208"
+    },
+    {
+      "path": "docs/api-reference/components/inline-text-field.mdx",
+      "sha256": "60e3fc735c0d0be8d7e4ec315835064c6f04011cf198b48bfe2b6cf7742bcb0a"
+    },
+    {
+      "path": "docs/api-reference/components/puck-components.mdx",
+      "sha256": "2fbb963a0be87d091ebb46277a898e5e271559023f92dcac12cd7db29f8c4849"
+    },
+    {
+      "path": "docs/api-reference/components/puck-fields.mdx",
+      "sha256": "ad1599bf40d952e3824fe99dac40bb61bfde873d465eba627df6655da830cbf3"
+    },
+    {
+      "path": "docs/api-reference/components/puck-layout.mdx",
+      "sha256": "80e399e5ffe663bc82e48b93c78ad2c2bf20d688148d8702c9f628d5240b41ee"
+    },
+    {
+      "path": "docs/api-reference/components/puck-outline.mdx",
+      "sha256": "61c25b9d94453c15d7aab3d35451f66314bc71748181ad4646ff0e3b2e552ccc"
+    },
+    {
+      "path": "docs/api-reference/components/puck-preview.mdx",
+      "sha256": "a088e798ffb3df3ade9972dc4e874586724dd097dbed8494ff32efc10f272f51"
+    },
+    {
+      "path": "docs/api-reference/components/puck.mdx",
+      "sha256": "2c84ae492270de8444c75d6237f1ede0278902e59a88a799219a5d07b653c16c"
+    },
+    {
+      "path": "docs/api-reference/components/render.mdx",
+      "sha256": "b258514d2c08ec628be0497984a03d608870a87b414348730c86d6ab42d80e10"
+    },
+    {
+      "path": "docs/api-reference/components/rich-text-menu-control.mdx",
+      "sha256": "691a872113cb5b788eabe89ad1897caecbb101806a31e5997cf4e83eab3ec6eb"
+    },
+    {
+      "path": "docs/api-reference/components/rich-text-menu-group.mdx",
+      "sha256": "a5472b873554b7fd2e7b2dde00a163114cb9d59ada3aefc1cfc03bc284c4b2b2"
+    },
+    {
+      "path": "docs/api-reference/components/rich-text-menu.mdx",
+      "sha256": "a6cac897617eeb88152a91c68a6479ccf202bc981d38727f7ceb1ef73e5e7a1c"
+    },
+    {
+      "path": "docs/api-reference/configuration.mdx",
+      "sha256": "4d4c170829c2fd10139f2a983c12e689f10302cdba03cccd5c70a2981fab0fd7"
+    },
+    {
+      "path": "docs/api-reference/configuration/component-config.mdx",
+      "sha256": "4c0f5273ef26aa3adfa9de0146615e6ea81c637000ee289cf410127f184bffd2"
+    },
+    {
+      "path": "docs/api-reference/configuration/config.mdx",
+      "sha256": "38c2dcfdc01c62a004c7bdaa752fcad44624566ea09564a7b3fb3c7f88f90917"
+    },
+    {
+      "path": "docs/api-reference/data-model.mdx",
+      "sha256": "b38a21fe165e29a2c9cf12badb7efea87a7160cfc74585711c6d50bca860b3da"
+    },
+    {
+      "path": "docs/api-reference/data-model/app-state.mdx",
+      "sha256": "405444a700f610a87309e349c98687cca9047ee7c77deca1a18ee4f1d36822bd"
+    },
+    {
+      "path": "docs/api-reference/data-model/component-data.mdx",
+      "sha256": "dfe22f6d5d091ad13612df2ed4adfb97fba9472b6a4872d304a1d1569de44c52"
+    },
+    {
+      "path": "docs/api-reference/data-model/data.mdx",
+      "sha256": "4953b98a33b8d67147a6528893729c8eb193665b63fe46c446982b6570341b33"
+    },
+    {
+      "path": "docs/api-reference/data-model/item-selector.mdx",
+      "sha256": "4f3096892807d20ff6787030de57b8ee9648a87bad595586035ab35e670272a3"
+    },
+    {
+      "path": "docs/api-reference/data-model/root-data.mdx",
+      "sha256": "61057379fa2460562f89b62fc52eb90fa6720a20a00d4d9756212c0c043cd38a"
+    },
+    {
+      "path": "docs/api-reference/dictionary.mdx",
+      "sha256": "fa51fd188d74cbab59d765e38585046011fec6911f007d024146acf09c332f7d"
+    },
+    {
+      "path": "docs/api-reference/field-transforms.mdx",
+      "sha256": "b61f8285b543547ac57a8845ad0510fbf18b20e2415e30e79d2b7d56d061cca3"
+    },
+    {
+      "path": "docs/api-reference/fields.mdx",
+      "sha256": "c1137a6f0822067abe1f3668357375cc8a446af7a3fbed0434ffbd3b9fb0bea4"
+    },
+    {
+      "path": "docs/api-reference/fields/array.mdx",
+      "sha256": "707ae2352d18d36ed9b32e0a2bb7ac0432d97b7a547b6a78e2bf575c795a447e"
+    },
+    {
+      "path": "docs/api-reference/fields/base.mdx",
+      "sha256": "5203310589efd362c44980b77108a7030a4932144492bb45dd04a6f60ffd5b99"
+    },
+    {
+      "path": "docs/api-reference/fields/checkbox.mdx",
+      "sha256": "2f94451266e5384bc62ede58e849295c15fc463612a6031c75227f7508201180"
+    },
+    {
+      "path": "docs/api-reference/fields/custom.mdx",
+      "sha256": "7d890b8b3d59e7e091c5db6fb872695b3b00fa944ccd1505044b4b858b3e5834"
+    },
+    {
+      "path": "docs/api-reference/fields/external.mdx",
+      "sha256": "2606232e3f73a36d4dd7bb7e5d39557dca5bc3203d46b9cdc3826540422b6fca"
+    },
+    {
+      "path": "docs/api-reference/fields/number.mdx",
+      "sha256": "c707c1c522723d1d2a546206c2d308cf12989e1ca67ffe1f27493761057e6b0a"
+    },
+    {
+      "path": "docs/api-reference/fields/object.mdx",
+      "sha256": "5fe139b6474701e2e6d31c665a323f7f77a8346652e839c79255e72e9b6fd219"
+    },
+    {
+      "path": "docs/api-reference/fields/radio.mdx",
+      "sha256": "557338eddba52741c9f6b8d70a9bff352549b26763b458b9a93d291f56f29497"
+    },
+    {
+      "path": "docs/api-reference/fields/richtext.mdx",
+      "sha256": "2d804a63e9490083f43245f15a99cb4802544f8f2c85fd0abbe9220c8b0aeee3"
+    },
+    {
+      "path": "docs/api-reference/fields/select.mdx",
+      "sha256": "f791f065f65c856a18f4b3a3b751dc4fce804873b601585bc9fe85df1a7cb857"
+    },
+    {
+      "path": "docs/api-reference/fields/slot.mdx",
+      "sha256": "ccfbdaf3551c103d171361dbbe80394a6aa6ee95ffeba6ebaa01eca12e8c607c"
+    },
+    {
+      "path": "docs/api-reference/fields/text.mdx",
+      "sha256": "478a745d3a8e6b18292c850ba85fb1d2e2aa43f7b2e9c8b9b1c3898a422c228c"
+    },
+    {
+      "path": "docs/api-reference/fields/textarea.mdx",
+      "sha256": "1a7d138589ca2a9500dd63a25ab0e5d99eb52ec45189a34039265a347ff65692"
+    },
+    {
+      "path": "docs/api-reference/functions.mdx",
+      "sha256": "3322f6e9fceaee9fd35335f6c7570a6a78d82429f51a8b15505ee249d0210e4d"
+    },
+    {
+      "path": "docs/api-reference/functions/migrate.mdx",
+      "sha256": "6a361407c03b2f5534d28863188466f41fd0d7ebbbbac79e0507d9f7612ed4f9"
+    },
+    {
+      "path": "docs/api-reference/functions/register-overlay-portal.mdx",
+      "sha256": "519d87f8b7f2dc7bd99e00ef9c8abaeab7621bc654b6f3feb21764fc7d0063dc"
+    },
+    {
+      "path": "docs/api-reference/functions/resolve-all-data.mdx",
+      "sha256": "39d6fbcbe51201ccbc718864b3f41bcf09c5637abcc4bca68558586071ea02bf"
+    },
+    {
+      "path": "docs/api-reference/functions/set-deep.mdx",
+      "sha256": "feddfe47ab165b427f0b9d38fff7fa5bd2a5605800ecea1f87eb5786fa5f3518"
+    },
+    {
+      "path": "docs/api-reference/functions/transform-props.mdx",
+      "sha256": "7e028476e48e5a08f298db51ae8be28acb6dcb7ce13ca18faf7f6ffc5fafc1ce"
+    },
+    {
+      "path": "docs/api-reference/functions/use-get-puck.mdx",
+      "sha256": "bd03a1aa60622154e14bf0369498f8f30c6651871a6d552aa62630907f0c174e"
+    },
+    {
+      "path": "docs/api-reference/functions/use-puck.mdx",
+      "sha256": "3ba2661da605d99342ca68b57c270c06a3751f65b88f71681fb239fb8d5ed392"
+    },
+    {
+      "path": "docs/api-reference/functions/walk-tree.mdx",
+      "sha256": "e72f255ef6207c4daefddea2bdd5d91b362a257c3afb3440cfa8ac4837c47eb2"
+    },
+    {
+      "path": "docs/api-reference/overrides.mdx",
+      "sha256": "a9512de90b63aee52ba258136c8c04d34d4997eb488f6941a74529f21c629ac9"
+    },
+    {
+      "path": "docs/api-reference/overrides/action-bar.mdx",
+      "sha256": "a1c79c433e0caf0709dd1bdc73374b8ebde83b4dc26d8096955f5ce39ac03cb1"
+    },
+    {
+      "path": "docs/api-reference/overrides/component-overlay.mdx",
+      "sha256": "7231b06efd35392fa8b4ad70027f508510b7db2e6e1f2b9d8ca0352de7c6cce3"
+    },
+    {
+      "path": "docs/api-reference/overrides/drawer-item.mdx",
+      "sha256": "01b264c8db1ede99adf7b06f13116f9999ff23239cc938c60604113f9a926ae0"
+    },
+    {
+      "path": "docs/api-reference/overrides/drawer.mdx",
+      "sha256": "81e32b6258181bdb3d686eaeb29fc3c2f1353dbc5f3fdf1fcc68017ba3179856"
+    },
+    {
+      "path": "docs/api-reference/overrides/field-label.mdx",
+      "sha256": "55b7c9a86eea932108946a9c6f7b92ebd63fdecfce27cd6e6ec2ca6c0d6ef6f7"
+    },
+    {
+      "path": "docs/api-reference/overrides/field-types.mdx",
+      "sha256": "aa6f8a822495514d35a25cd880b378babfa05a2fd1f9df2903f248e5f7cf29d6"
+    },
+    {
+      "path": "docs/api-reference/overrides/fields.mdx",
+      "sha256": "1d7b80b12ed61308387c4f96fbc3e2267d51a2157efa4dac542bc0b7777fd582"
+    },
+    {
+      "path": "docs/api-reference/overrides/header-actions.mdx",
+      "sha256": "f94cf9ea944fb09ace8415b5b35e64a7c6a65f2cf3b40ecc99de7e9d18a7b773"
+    },
+    {
+      "path": "docs/api-reference/overrides/header.mdx",
+      "sha256": "9c25b6798ab5d459a8098670381e300d7fdf0d1631d6287a8fc3f7f90ce9352a"
+    },
+    {
+      "path": "docs/api-reference/overrides/iframe.mdx",
+      "sha256": "3c201e0a2d1fc91e5ebdc48c848fed407ad71a52a2318d228c4c018470b0c4e0"
+    },
+    {
+      "path": "docs/api-reference/overrides/outline.mdx",
+      "sha256": "3d8094a221981921df974a7d898413aa3b4e7a7c425b6497f79e6c07250091b4"
+    },
+    {
+      "path": "docs/api-reference/overrides/preview.mdx",
+      "sha256": "b6ee3f57cfd199853ffa7a43aef13308d85904803e5a4e98bc260b881c69e51d"
+    },
+    {
+      "path": "docs/api-reference/overrides/puck.mdx",
+      "sha256": "ead04625578e259c9cc9ddb199107111c0e6fc3f24825a897e910c3f54f860da"
+    },
+    {
+      "path": "docs/api-reference/permissions.mdx",
+      "sha256": "045bd0ecd5e1895c9710ad770e9fc6a092771491aa7db022a2b93af1fde7cbd4"
+    },
+    {
+      "path": "docs/api-reference/plugin.mdx",
+      "sha256": "48cb5b2f2eb30b931449c26bd5c34b8febace3dec4ffea1fba25d6de77a6ee69"
+    },
+    {
+      "path": "docs/api-reference/plugins/blocks-plugin.mdx",
+      "sha256": "ddb5b68cb69ec194233f9d99f20f5c8ad13fc2f315d9b030f1bf027b09c1ba9c"
+    },
+    {
+      "path": "docs/api-reference/plugins/fields-plugin.mdx",
+      "sha256": "5f0cd767acff35dc32ab5cf8b3c721b765cf40b26f2a3c9ca74cd26d04b1180b"
+    },
+    {
+      "path": "docs/api-reference/plugins/legacy-side-bar-plugin.mdx",
+      "sha256": "cb3561485e2a51db519adfdb4aa8ad5faff50a120bcd880a771b2425211fb705"
+    },
+    {
+      "path": "docs/api-reference/plugins/outline-plugin.mdx",
+      "sha256": "043cf022b42470a14348ed33b98ecaad2c4a03d971db39e20b57ad54db8b7607"
+    },
+    {
+      "path": "docs/api-reference/puck-api.mdx",
+      "sha256": "254165e5297d4e1804cb3d74b38318f2291143ee8d77aa234a1ac49f8d8a61b5"
+    },
+    {
+      "path": "docs/api-reference/theming/action-bar.mdx",
+      "sha256": "5c87a102d56220ee54f9c7830f0b45519b1d32cd09bd44338149fc3d1ff47343"
+    },
+    {
+      "path": "docs/api-reference/theming/button.mdx",
+      "sha256": "b03c8066d9576e7cc7cc2e9ccba4fea9aef78f0df754230049d1b3c3a7ad4a18"
+    },
+    {
+      "path": "docs/api-reference/theming/canvas.mdx",
+      "sha256": "4b7dd43ac5d3e6da1c40199a63ca0f592da39a29ea621e9acf4397821ba64cbe"
+    },
+    {
+      "path": "docs/api-reference/theming/computed-values.mdx",
+      "sha256": "772035f2c1fe5525d3f15e0f960fc04ccba298c90cf2654c826d454e23d2b7fe"
+    },
+    {
+      "path": "docs/api-reference/theming/drawer.mdx",
+      "sha256": "f8c0c5b9d2e3002cbb7a4889b6cee3e6f79b9d2bd0b0f5889fe89fdf80942a3c"
+    },
+    {
+      "path": "docs/api-reference/theming/fields.mdx",
+      "sha256": "a720a7f58053df54406eae31e27d6ec3e38aae0cb955646f8ab27a086b33de76"
+    },
+    {
+      "path": "docs/api-reference/theming/global.mdx",
+      "sha256": "ff9a8661c7457055255f75cb87067e9ec92ba1309040aafe3f0c2c4978a8ca24"
+    },
+    {
+      "path": "docs/api-reference/theming/header.mdx",
+      "sha256": "b2155ee26c3f4afb90c632139a831b9d552a800674cd3cf883789b6564b431f4"
+    },
+    {
+      "path": "docs/api-reference/theming/icon-button.mdx",
+      "sha256": "cec76a51335a0e50d9e90c76e0c95fca7051095992907c566a00ad0d0d6afadd"
+    },
+    {
+      "path": "docs/api-reference/theming/outline.mdx",
+      "sha256": "063201cf7c6d1e92f9181afe57e1b9ef5ea6ea2c64bbeebc636a1fd7f2d10553"
+    },
+    {
+      "path": "docs/api-reference/theming/plugin-bar.mdx",
+      "sha256": "1f978b896d9d9a31a8c8f54410cf5473b0b284c454c1283af79b9455e38dca44"
+    },
+    {
+      "path": "docs/api-reference/theming/sidebar.mdx",
+      "sha256": "186301922f622178314d8576b36a6e61fe6fdd4dbdfe94c646fa249333de6115"
+    },
+    {
+      "path": "docs/api-reference/theming/slot.mdx",
+      "sha256": "81d414e47bfba87026681d9325896dbd2713cf0d9ba8d745d210d63be43b062c"
+    },
+    {
+      "path": "docs/extending-puck/composition.mdx",
+      "sha256": "09615394a1c59e3d7d31da81cda4839b78fad0527bbd0cd76d429d0a98e87663"
+    },
+    {
+      "path": "docs/extending-puck/custom-fields.mdx",
+      "sha256": "e057791d870b2da104811c357f5f585503580c63da680ea1d631376efcc260b1"
+    },
+    {
+      "path": "docs/extending-puck/field-transforms.mdx",
+      "sha256": "e7d030d256fab9bc9ea0cb22b363c4a4e6bbdeb048f79ab376650739c459c596"
+    },
+    {
+      "path": "docs/extending-puck/internal-puck-api.mdx",
+      "sha256": "ee56f34e18e306ae7f35a5754590e1c9ee5101de70e0fad5667b0afc8a4db6e5"
+    },
+    {
+      "path": "docs/extending-puck/plugins.mdx",
+      "sha256": "8d6699a3c4734ec552c9e4d3a09fe5c49700e2edbf2a9b7d6b70d70f64a12155"
+    },
+    {
+      "path": "docs/extending-puck/theming.mdx",
+      "sha256": "d41eec06e51d48e6dc61bf728170c85de6950f74ca5e3963d7d540cdc5c7f452"
+    },
+    {
+      "path": "docs/extending-puck/ui-overrides.mdx",
+      "sha256": "e32cc07fec038e6037f2e6ce0ced30146f462100e163799e455d7d24540fe0f0"
+    },
+    {
+      "path": "docs/getting-started.mdx",
+      "sha256": "54523e206f0c9e28bafe358cf31bbab972b32a47576b48acf7af6cd9e577d468"
+    },
+    {
+      "path": "docs/guides/migrations/dropzones-to-slots.mdx",
+      "sha256": "641c22cdd4579ba62df0ca87337ca95bc64e56007290995f74c45e74927ac411"
+    },
+    {
+      "path": "docs/index.mdx",
+      "sha256": "3c1a2fc551fe4444461f77cdc7c74d7d93c493def294eb911b29332bcae2c6b9"
+    },
+    {
+      "path": "docs/integrating-puck/categories.mdx",
+      "sha256": "8f51911c06429b92e92eb33c92e852b388fc6326766e7859589c83cdee3e9ad7"
+    },
+    {
+      "path": "docs/integrating-puck/component-configuration.mdx",
+      "sha256": "2facc17916c6a2ece7ee409e949cd8a9947302e7cabb56dca91dd94638d3dedf"
+    },
+    {
+      "path": "docs/integrating-puck/data-migration.mdx",
+      "sha256": "2e05bc18cb29aa0ba166e2b3617c8d8e6df13687310fc2ada2ca26622821f607"
+    },
+    {
+      "path": "docs/integrating-puck/dynamic-fields.mdx",
+      "sha256": "8c33dd9804cbcc6083bd8d501641521b20e1373dd4da45eca320fa3d7cea69dc"
+    },
+    {
+      "path": "docs/integrating-puck/dynamic-props.mdx",
+      "sha256": "b19e94e0e9633bd2f3b8daf3d3b56500b51edcb479bcef7ea7fdbdaa65758bd5"
+    },
+    {
+      "path": "docs/integrating-puck/external-data-sources.mdx",
+      "sha256": "38b16781e63e77aca2d6673d073ba290f65b594e859c5d9e2f44a676ca445831"
+    },
+    {
+      "path": "docs/integrating-puck/feature-toggling.mdx",
+      "sha256": "f0bf2403111c315bf9b2a7e1a4efcb18fb0684ddea47af138739dc2c017f4a01"
+    },
+    {
+      "path": "docs/integrating-puck/localization.mdx",
+      "sha256": "f7b1ed61fc8d5651269c13262001600715bb3189e2a8f7bb7f6d2cfbf2ae9e20"
+    },
+    {
+      "path": "docs/integrating-puck/multi-column-layouts.mdx",
+      "sha256": "48cbf074f1a8ad20607b967dd27e34bdcc0a857cc43f2a301e4f062979176e69"
+    },
+    {
+      "path": "docs/integrating-puck/overlay-portals.mdx",
+      "sha256": "609f5de37876c5028105831ef434c3c0e1d4e8bcb64916598f84bd6c82f9eb11"
+    },
+    {
+      "path": "docs/integrating-puck/rich-text-editing.mdx",
+      "sha256": "d17ad515df6ae1bf38727bf4e077b11c0dd67647ce51a9b7deae7be65ece240a"
+    },
+    {
+      "path": "docs/integrating-puck/root-configuration.mdx",
+      "sha256": "d6f5bcf21581370f1b2114a6ada224496caddf8f4f88118f725a9d2ebcca61ac"
+    },
+    {
+      "path": "docs/integrating-puck/server-components.mdx",
+      "sha256": "78fe45b45a7803e5a9550eb6e723f3dae48402a5b38414b11b60ca3fa4cf4e31"
+    },
+    {
+      "path": "docs/integrating-puck/styling.mdx",
+      "sha256": "f17a45986f3a2264fc52f5686feabe68c8cd4263567dd6483959a787712247f5"
+    },
+    {
+      "path": "docs/integrating-puck/viewports.mdx",
+      "sha256": "27b0202a7edfddbd87bb547ea7232f8258617e102a869eb912c72c650909a8d9"
+    },
+    {
+      "path": "index.mdx",
+      "sha256": "43d91327d26361f3fd6efc3e652c54780691a2480508556d4cce6078feda5138"
+    }
+  ]
+}
