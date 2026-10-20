@@ -30,7 +30,7 @@ jobs:
         run: |
           source scripts/toolchains/select-workspace-node.sh
           mkdir -p .build/cityos-registration
-          node --experimental-strip-types --test scripts/cityos/*.test.mjs | tee .build/cityos-registration/results.tap
+          node scripts/cityos/registration-source-suite.mjs | tee .build/cityos-registration/results.tap
       - name: Check registration formatting with pinned tool
         shell: bash
         run: |
