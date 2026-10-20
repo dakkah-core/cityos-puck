@@ -10,7 +10,6 @@ autoInstallPeers: true
 # lifecycle scripts unless explicitly allowed here. Keep this list minimal.
 allowBuilds:
   esbuild: true # bundler binary for tsup (core/plugin builds)
-  puppeteer: true # downloads Chromium for the e2e smoke test
   sharp: true # native image optimisation used by Next.js
   "@parcel/watcher": true # native file watcher used in dev
   unrs-resolver: true # native binding for the eslint import resolver
@@ -104,7 +103,7 @@ catalog:
   "jest-environment-jsdom": "30.5.2"
   "js-yaml": "5.5.0"
   "lerna": "10.1.1"
-  "lucide-react": "1.59.0"
+  "lucide-react": "1.60.0"
   "next": "16.4.2"
   "next-sitemap": "4.2.3"
   "nextra": "4.6.1"
@@ -116,10 +115,11 @@ catalog:
   "postcss-modules": "9.0.1"
   "posthog-js": "1.438.12"
   "prettier": "3.9.10"
-  "puppeteer": "25.14.0"
+  "playwright-core": "1.64.1"
   "qs": "6.16.1"
   "rc-footer": "0.6.8"
   "react": "19.3.1"
+  "react-compiler-runtime": "1.0.0"
   "react-dom": "19.3.1"
   "react-hotkeys-hook": "5.3.3"
   "react-router": "8.5.0"
@@ -154,6 +154,8 @@ catalogs:
 
 # Preserve security override selectors while taking versions from the owning catalog.
 overrides:
+  "nextra@4.6.1>react-compiler-runtime": "catalog:"
+  "nextra-theme-docs@4.6.1>react-compiler-runtime": "catalog:"
   "eslint-plugin-react@7.37.5>resolve": "catalog:"
   "eslint-import-resolver-node@0.3.10>resolve": "catalog:"
   "conventional-commits-parser@^7.0.0": "catalog:"
@@ -268,3 +270,4 @@ minimumReleaseAgeExclude:
   - "@inquirer/search@4.3.5"
   - "@inquirer/select@5.2.7"
   - inquirer@14.2.4
+  - lucide-react@1.60.0

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "cityos.nextra-stable-docs.integration-inputs.v1",
+  "status": "source-inspected-not-install-proven",
+  "activationAllowed": false,
+  "preferredMechanism": "Existing default catalog, eventually naming a generated standard file: tarball. No protocol adapter, shim, private published package or new readPackage hook.",
+  "nativeManager": {
+    "name": "pnpm",
+    "version": "12.14.0",
+    "tagObject": "74af3c439b8eea4061f250c521eebba5a1805d0d",
+    "sourceCommit": "fe4a0c232384289de82be3d502896ca7e070050c",
+    "repository": "https://github.com/pnpm/pnpm",
+    "license": "MIT",
+    "licenseFile": "canonical-source/pnpm-12.14.0/LICENSE.upstream",
+    "licenseSha256": "4b8e2a57502758b2d034ece9cabf19dd098c5609003ed8dbdafd085274f25bd9",
+    "retainedReferences": [
+      { "path": "canonical-source/pnpm-12.14.0/catalogs-resolver.rs.source", "upstreamPath": "pnpm/crates/catalogs-resolver/src/lib.rs", "sha256": "7d3df7ed7e6751856ffa0548477c0a2cdec60e92ed3b9b008b4a41e6f6104dc0" },
+      { "path": "canonical-source/pnpm-12.14.0/catalogs-resolver-tests.rs.source", "upstreamPath": "pnpm/crates/catalogs-resolver/src/tests.rs", "sha256": "36ae0116c59a6c1711d86510f775e3fc4402dea7910f976c14bc1451570d077f" },
+      { "path": "canonical-source/pnpm-12.14.0/catalog-local-deps.rs.source", "upstreamPath": "pnpm/crates/cli/tests/suite/catalog_local_deps.rs", "sha256": "1cbe711db191ab859913abf3114acf7306ad5506ebf66544b9ec91ca72768479" }
+    ],
+    "sourceFindings": [
+      "catalogs-resolver accepts workspace:* and file: entries. Relative filesystem entries are re-anchored from workspace_dir to consumer_dir.",
+      "Native CLI source cases cover nested file-catalog consumers, lock catalog snapshots, frozen installs and pack re-anchoring. These upstream test sources were inspected and retained, not executed here.",
+      "Native pack re-anchors a file catalog dependency in a published manifest; it does not embed the referenced tarball. Re-anchoring alone does not make an exported consumer portable."
+    ]
+  },
+  "bootstrapFindings": {
+    "reader": "packages/create-puck-app/manifest-catalog.js",
+    "snapshots": "packages/create-puck-app/bootstrap-catalog.js and scripts/generate.js",
+    "behavior": "resolveCatalog returns a selected scalar unchanged; materializeManifest rejects workspace: but neither re-anchors nor copies file: values. The snapshot generator copies catalog/owner/toolchain inputs and registered patches, not file-catalog tarballs.",
+    "actualConsumers": "None of the four standalone recipe templates declares nextra or nextra-theme-docs. Nextra is private docs-only; preserve that boundary.",
+    "requiredProof": "Materialize and pack all four current recipes with a candidate catalog snapshot and prove no local Nextra reference or missing artifact leaks into their active manifests. If a future bootstrap consumer uses Nextra, a governed artifact-copy/re-anchoring change is required before use; this packet does not supply it."
+  },
+  "workspaceAlternative": "Native workspace: catalog support exists, but an active workspace manifest under retained inputs is prohibited and standalone materialization rejects workspace:. Do not add the inert packet as a workspace.",
+  "patchAlternative": "The repository has exact patchedDependencies and an early package hook. This packet registers neither. A code-only patch cannot be assumed to remove a resolution-time dependency edge. Prefer the complete source-built artifact with its corrected manifest once portable catalog qualification passes.",
+  "requiredPortableProof": [
+    "Use the exact selected native manager through the existing runner and Node selector in serialized parent-owned scratch consumers; no ambient shim or alternate manager.",
+    "Resolve the same generated tarball from a root consumer and apps/docs at different nesting depths on Windows and POSIX; verify package identity, content digest and the theme's exact nextra 4.6.1 peer.",
+    "Move or copy the entire candidate checkout/artifact layout, reinstall from a frozen lockfile in a clean consumer and prove there is no absolute host path or dependence on an earlier node_modules tree.",
+    "Inspect the resolved graph: no better-react-mathjax, mathjax-full or replacement MathJax/SRE prerelease enters through this variant; KaTeX paths and current family remain.",
+    "Only after complete generation and acceptance may the parent choose a durable artifact path and edit the catalog/lock. A .build scratch tarball is not a portable final binding."
+  ]
+}

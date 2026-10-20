@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "cityos.chromium-bidi.rebuild-inputs.v1",
+  "status": "blocked-input-design-only",
+  "executableGenerator": null,
+  "sourceCorrectionInputs": [],
+  "blockers": "backport/REVIEW.json#/missingInputs",
+  "base": "canonical-source/SOURCE.json#/baseline",
+  "behavioralReference": "canonical-source/SOURCE.json#/reference",
+  "versionAuthority": {
+    "toolchain": "config/toolchains/node-typescript.json",
+    "dependencies": "pnpm-workspace.yaml#catalog",
+    "rule": "Every eventual active dependency declaration resolves from its owning catalog. Versions inside canonical-source/SOURCE.json are immutable upstream provenance only. Fail on absent entries, unavailable pinned tools, mismatched versions or prerelease tool selections; do not bootstrap ambient tools."
+  },
+  "toolchainEntrypoints": {
+    "powershellSelector": "scripts/toolchains/select-workspace-node.ps1",
+    "posixSelector": "scripts/toolchains/select-workspace-node.sh",
+    "packageManager": "node scripts/toolchains/run-pinned-pnpm.mjs",
+    "typescriptCli": "scripts/toolchains/typecheck.mjs",
+    "bundlerCatalogKeyIfReviewed": "esbuild"
+  },
+  "requiredDeterministicPipeline": [
+    "Verify retained source archive and npm baseline integrity against SOURCE.json; verify source-file hashes. Extract to an explicitly bounded scratch directory in the existing primary checkout, never a new worktree. Retained upstream manifests and lockfiles remain provenance and are not active workspaces or install inputs.",
+    "Apply only the reviewed canonical-source correction inputs and exact versioned protocol/spec source additions. Recreate protocol types and validation schemas with the reviewed pinned generator. Fail when canonical inputs or owning catalog selections are missing; do not patch generated TypeScript, JS, declarations, source maps or IIFEs by hand.",
+    "Use the selected Puck Node and catalog TypeScript 7 CLI to typecheck and emit provider modules and declarations. Preserve upstream ES2023 target and both browser/Node checks. Handle the retained .ts import specifier through reviewed compiler configuration, not string rewriting of emitted JS.",
+    "Bundle the mapperTab from rebuilt bidiTab source with a reviewed catalog-pinned bundler configuration. Preserve third-party license comments and reproduce a deterministic, dependency-identified THIRD_PARTY_NOTICES; fail unlicensed dependencies as upstream does. An esbuild substitution for upstream Rollup needs explicit output/export/license parity evidence.",
+    "Materialize the exact original stable package layout including its main/type metadata and all published module/declaration/type paths. CJS compatibility on selected Node means real require(packageRoot), ESM means real import through the package entrypoint, and mapperTab means the rebuilt browser bundle. Do not invent lib/cjs or lib/esm trees absent from the upstream package.",
+    "Diff the rebuilt candidate against the integrity-verified stable npm baseline with canonical ordering, LF patch lines, fixed source-map roots, no absolute local paths, timestamps or nondeterministic banners. No dependency or browser revision metadata change may be hidden in the patch.",
+    "Independently rebuild twice from clean bounded scratch inputs and compare complete output inventories and patch SHA256. Retain tool/catalog/source/license/input hashes and output hashes. No reproducibility claim precedes matching outputs.",
+    "Parent reviews generated patch and passes acceptance-plan.json before adding exact Puppeteer parent selectors, catalog entries, patch registration or lock changes. No current production wiring is provided by this design."
+  ],
+  "preservedBrowserSource": {
+    "path": "node_modules/.pnpm/puppeteer-core@25.15.0/node_modules/puppeteer-core/src/revisions.ts",
+    "sha256": "f55e7be4eb68448334377df64c3367e3d2d7132d001334e99dfad2911a8f528d",
+    "observation": {"chrome": "155.0.8059.84", "chrome-headless-shell": "155.0.8059.84", "firefox": "stable_158.0"},
+    "rule": "These are preserved observed native revisions, not active dependency declarations or new version authority. No downgrade or capability removal is permitted."
+  }
+}

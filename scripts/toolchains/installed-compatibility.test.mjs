@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { createRequire } from "node:module";
+import { createRequire, findPackageJSON } from "node:module";
 import { dirname, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -35,6 +35,44 @@ const assertIsolatedApi = (require) => {
   assert.equal(typeof api.createProgram, "function");
   return api;
 };
+
+for (const name of ["nextra", "nextra-theme-docs"]) {
+  test(`Nextra stable compiler runtime: ${name} resolves and renders compiled cache hooks`, () => {
+    const docsURL = new URL("../../apps/docs/package.json", import.meta.url);
+    const docs = createRequire(docsURL);
+    // The theme exposes only an import condition. Node's package lookup uses
+    // its default resolver without pretending that it has a CommonJS entry.
+    const parentManifest = findPackageJSON(name, docsURL);
+    assert.ok(parentManifest, `${name} must be installed for the actual docs consumer`);
+    assert.equal(JSON.parse(readFileSync(parentManifest, "utf8")).name, name);
+    const parent = createRequire(parentManifest);
+    const workspace = rootRequire("yaml").parse(readFileSync(new URL("../../pnpm-workspace.yaml", import.meta.url), "utf8"));
+    assert.equal(catalog["react-compiler-runtime"], "1.0.0");
+    assert.equal(workspace.overrides[`${name}@4.6.1>react-compiler-runtime`], "catalog:");
+    assert.equal(workspace.overrides["react-compiler-runtime"], undefined);
+    const manifest = loadManifest(parent, "react-compiler-runtime");
+    assert.equal(manifest.value.version, catalog["react-compiler-runtime"]);
+    assert.match(manifest.value.version, /^\d+\.\d+\.\d+$/u);
+    const runtimeRequire = createRequire(manifest.path);
+    const React = runtimeRequire("react");
+    assert.equal(React, docs("react"), "Compiled hook and renderer must share the actual React provider");
+    const { c } = parent("react-compiler-runtime");
+    assert.equal(typeof c, "function");
+    const { renderToStaticMarkup } = docs("react-dom/server");
+    function Compiled({ value }) {
+      const cache = c(2);
+      if (cache[0] !== value) {
+        cache[0] = value;
+        cache[1] = React.createElement("span", null, value);
+      }
+      return cache[1];
+    }
+    for (const value of ["first", "second", "<&>"]) {
+      const expected = renderToStaticMarkup(React.createElement("span", null, value));
+      assert.equal(renderToStaticMarkup(React.createElement(Compiled, { value })), expected);
+    }
+  });
+}
 
 test("the installed first-party compiler is the catalog TS7 CLI", () => {
   const { path, value } = loadManifest(rootRequire, "typescript");

@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "cityos.chromium-bidi.backport-review.v1",
+  "status": "blocked-before-source-correction-and-production-wiring",
+  "decision": "A complete capability-preserving backport is not established as bounded. Retain the source and inert regression/build inputs; do not create a partial provider patch or register an override.",
+  "scope": {
+    "baseline": "../canonical-source/SOURCE.json#/baseline",
+    "reference": "../canonical-source/SOURCE.json#/reference",
+    "moduleInventory": "../canonical-source/SOURCE-FILES.json",
+    "nativeBrowserSource": "../canonical-source/native-browser/SOURCE.json",
+    "nativeBrowserBoundary": "The exact Chrome 155.0.8059.84 source exposes viewportMeta enable/default and media feature overrides. That source observation supports keeping the native revision; actual browser behavior remains untested.",
+    "comparedAlphaModules": 98,
+    "differingAlphaModules": 63,
+    "boundary": "File differences include annotations, formatting and generated schema changes as well as behavior. This count is not a claim that all 63 modules need backporting. Seven additional stable published modules have no corresponding alpha module map; absence is not treated as an intentional removal."
+  },
+  "commandDelta": [
+    {
+      "method": "emulation.setMediaFeaturesOverride",
+      "referenceBehavior": "Implemented. Validates the supported Blink feature names before changing configuration, supports global/user/browsing-context settings, propagates the effective setting to related frame targets, and sends Emulation.setEmulatedMedia. Null removes the override.",
+      "dependencies": [
+        "bidiMapper/CommandProcessor.ts",
+        "bidiMapper/BidiParser.ts",
+        "bidiMapper/BidiNoOpParser.ts",
+        "bidiTab/BidiParser.ts",
+        "protocol-parser/protocol-parser.ts",
+        "protocol/generated/webdriver-bidi.ts",
+        "protocol-parser/generated/webdriver-bidi.ts",
+        "bidiMapper/modules/browser/ContextConfig.ts",
+        "bidiMapper/modules/emulation/EmulationProcessor.ts",
+        "bidiMapper/modules/context/BrowsingContextImpl.ts",
+        "bidiMapper/modules/cdp/CdpTarget.ts"
+      ],
+      "supportedFeatures": [
+        "color-gamut", "forced-colors", "prefers-color-scheme", "prefers-contrast",
+        "prefers-reduced-data", "prefers-reduced-motion", "prefers-reduced-transparency"
+      ]
+    },
+    {
+      "method": "emulation.setViewportMetaOverride",
+      "referenceBehavior": "Implemented. Accepts true or null, supports scoped configuration and inheritance, and shares the metrics path with viewport, pixel ratio, orientation, screen area and scrollbar settings. The viewport-meta-only case must not clear device metrics. Target initialization must apply inherited settings to new targets.",
+      "dependencies": [
+        "bidiMapper/CommandProcessor.ts",
+        "bidiMapper/BidiParser.ts",
+        "bidiMapper/BidiNoOpParser.ts",
+        "bidiTab/BidiParser.ts",
+        "protocol-parser/protocol-parser.ts",
+        "protocol/generated/webdriver-bidi.ts",
+        "protocol-parser/generated/webdriver-bidi.ts",
+        "bidiMapper/modules/browser/ContextConfig.ts",
+        "bidiMapper/modules/emulation/EmulationProcessor.ts",
+        "bidiMapper/modules/context/BrowsingContextImpl.ts",
+        "bidiMapper/modules/cdp/CdpTarget.ts",
+        "bidiMapper/modules/cdp/CdpTargetManager.ts"
+      ]
+    },
+    {
+      "method": "emulation.setTextLayoutModeOverride",
+      "referenceBehavior": "Parsed and rejected with unsupported operation. Stable has no corresponding case. Do not invent a successful implementation or count this as a working feature."
+    }
+  ],
+  "additionalBehaviorDifferences": [
+    {
+      "id": "cache-persistence",
+      "files": ["bidiMapper/modules/network/NetworkProcessor.ts", "bidiMapper/modules/network/NetworkStorage.ts", "bidiMapper/modules/cdp/CdpTarget.ts"],
+      "evidence": "Reference stores per-top-level-context cache behavior, applies it to children and newly configured targets, and clears scoped settings on a global change. Stable stores only a global default and applies context changes to the currently selected target.",
+      "puppeteerCallSite": "puppeteer-core/src/bidi/core/BrowsingContext.ts:setCacheBehavior sends contexts:[this.id]; bidi/Page.ts:setCacheEnabled calls it.",
+      "implication": "A two-command backport alone cannot establish preservation of current cache behavior across child target creation or replacement."
+    },
+    {
+      "id": "window-transitions",
+      "files": ["bidiMapper/modules/browser/BrowserProcessor.ts"],
+      "evidence": "Reference fetches current bounds and restores a non-normal window before resizing or transitioning. Stable directly sends the final bounds. Reference also maps missing-window errors differently.",
+      "puppeteerCallSite": "puppeteer-core/src/bidi/Browser.ts:setWindowBounds and core/Browser.ts:setClientWindowState.",
+      "implication": "Preservation needs a protocol-faithful regression and actual headful browser proof beyond the two emulation methods."
+    },
+    {
+      "id": "target-domains-and-cdp-events",
+      "files": ["bidiMapper/modules/cdp/CdpTarget.ts", "bidiMapper/modules/cdp/CdpTargetManager.ts"],
+      "evidence": "Reference passes targetInfo.type into CdpTarget; distinguishes page, frame and worker domains; and forwards browser/custom-session CDP events. Stable lacks that target-type constructor input and those event-forwarding paths.",
+      "implication": "Copying the two target methods without tracing target initialization omits required guards or imports unrelated target behavior. Worker/CDP capabilities require explicit preservation evidence."
+    },
+    {
+      "id": "preload-realm-and-navigation",
+      "files": ["bidiMapper/modules/script/PreloadScript.ts", "bidiMapper/modules/script/WindowRealm.ts", "bidiMapper/modules/cdp/CdpTarget.ts", "bidiMapper/modules/context/BrowsingContextImpl.ts", "bidiMapper/modules/context/NavigationTracker.ts"],
+      "evidence": "Reference scopes preload channels by target and sandbox, resets/waits for the active default realm differently, and handles initial popup navigation, BFCache restore and download navigation attribution differently.",
+      "implication": "Realm, evaluateOnNewDocument, popup, frame replacement and navigation acceptance cannot be inferred from matching command names."
+    },
+    {
+      "id": "provider-cookie-extensions",
+      "files": ["bidiMapper/modules/network/NetworkUtils.ts", "bidiMapper/modules/storage/StorageProcessor.ts"],
+      "evidence": "Reference adds goog:hasCrossSiteAncestor validation/filtering and goog:partitionKey conversion. Stable lacks these paths.",
+      "boundary": "Puppeteer 25.15.0's inspected BiDi converter still rejects hasCrossSiteAncestor:true. This is a provider capability difference, not a claim that Puppeteer's current public BiDi API accepts that input."
+    }
+  ],
+  "missingInputs": [
+    {
+      "id": "canonical-protocol-input",
+      "required": "Retained, license-identified CDDL/spec source at an exact revision with bounded additions for the required commands and public Command/Emulation unions.",
+      "observed": "The complete stable repository archive has generated protocol TypeScript and Zod sources, but no .cddl file. Its tools/generate-bidi-types.mjs requires an external --cddl-file. Generated headers cite mutable W3C master, not an exact input revision."
+    },
+    {
+      "id": "protocol-generator-and-schema-family",
+      "required": "An owner-selected pinned protocol generator and schema-family path, or a reviewed source-owned extension design that generates all required public types and parsers without hand-editing generated files.",
+      "observed": "Stable uses cddlconv 0.1.7 and Zod ^3.24.1. Reference uses cddlconv 0.2.0 and Zod ^4.6.5; parseObject changes error.errors to error.issues, and generated enum/value exports change. Neither cddlconv nor a provider schema-family selection is in the owning Puck catalog."
+    },
+    {
+      "id": "provider-runtime-and-build-dependency-authority",
+      "required": "Owning catalog entries and reviewed dependency delivery for the provider runtime/protocol/schema dependencies, bundler and third-party license handling.",
+      "observed": "Puck currently catalogs Node, TS7, pnpm and esbuild. It does not catalog chromium-bidi, devtools-protocol, mitt, zod, cddlconv, rollup, @rollup/plugin-node-resolve, rollup-plugin-cleanup or rollup-plugin-license. Upstream GN/Ninja and external DEPS/CIPD inputs are retained references, not installed/reviewed Puck execution inputs."
+    },
+    {
+      "id": "complete-bounded-correction-set",
+      "required": "Trace the additional behavior changes affecting current capabilities, define the exact source correction set, and prove preservation rather than assuming two missing dispatcher cases exhaust the compatibility work.",
+      "observed": "Source inspection identifies the additional differences above; no complete preservation proof or accepted reduction in capability exists."
+    },
+    {
+      "id": "serialized-execution-window",
+      "required": "Parent-controlled execution after the primary lease is available and frozen catalog/install-age issues are resolved.",
+      "observed": "Human explicitly prohibits tests, builds, installs, typechecks, generation and browser execution during this sidecar. No result is claimed for the inert inputs."
+    }
+  ],
+  "nonClaims": [
+    "No provider source correction, compiled patch, override, dependency declaration or patch registration has been implemented.",
+    "No alpha module, declaration or IIFE has been relabeled or copied into a stable candidate.",
+    "Source/CDP-schema support is not actual browser behavior or compatibility acceptance.",
+    "No production, release, owner-approval or readiness claim."
+  ]
+}

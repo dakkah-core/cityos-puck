@@ -1,7 +1,9 @@
+import { parseArgs } from "node:util";
+import { pathToFileURL } from "node:url";
 import { smoke } from "./smoke-framework.mjs";
 import { dragAndDrop } from "./utils/drag-and-drop.mjs";
 
-const runs = {
+export const runs = {
   oneLevel: async (page) => {
     await dragAndDrop(
       page,
@@ -83,7 +85,7 @@ const runs = {
   },
 };
 
-const tests = [
+export const tests = [
   {
     label: "iframe, 2 levels",
     url: "http://localhost:3000/test/edit?disableIframe=false",
@@ -106,11 +108,38 @@ const tests = [
   },
 ];
 
-(async () => {
-  await smoke(tests, {
-    chart: true,
-    duration: 180,
-    threshold: 300,
-    puppeteerOptions: { headless: true },
+export const smokeConfig = {
+  chart: true,
+  duration: 180,
+  threshold: 300,
+  browserOptions: { headless: true },
+};
+
+export const main = async (args = process.argv.slice(2)) => {
+  const { values } = parseArgs({
+    args,
+    options: { "executable-path": { type: "string" } },
+    strict: true,
+    allowPositionals: false,
   });
-})();
+
+  return smoke(tests, {
+    ...smokeConfig,
+    browserOptions: {
+      ...smokeConfig.browserOptions,
+      executablePath: values["executable-path"],
+    },
+  });
+};
+
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+  try {
+    await main();
+  } catch (error) {
+    console.error(error);
+    process.exitCode = 1;
+  }
+}

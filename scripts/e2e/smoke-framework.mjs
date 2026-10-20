@@ -14,10 +14,10 @@ const execute = async (test) => {
     threshold = THRESHOLD,
     chart = CHART,
     chartHeight = CHART_HEIGHT,
-    puppeteerOptions,
+    browserOptions,
   } = test;
 
-  const { browser, page } = await setup(test.url, puppeteerOptions);
+  const { browser, page } = await setup(test.url, browserOptions);
 
   if (chart) {
     console.log(
@@ -99,6 +99,10 @@ const execute = async (test) => {
         () => performance.memory.usedJSHeapSize
       );
 
+      if (!Number.isFinite(memoryUsage) || memoryUsage < 0) {
+        throw new Error("Chrome did not return a valid usedJSHeapSize sample.");
+      }
+
       memoryData.push((memoryUsage / MB).toFixed(2));
 
       plot();
@@ -125,6 +129,7 @@ const execute = async (test) => {
     }
   } catch (err) {
     console.error("Error during smoke test:", err);
+    throw err;
   } finally {
     await browser.close();
   }
@@ -158,7 +163,13 @@ export const smoke = async (tests, config) => {
 
   console.log(`${numSucceeded}/${results.length} tests passed`);
 
-  if (numSucceeded < 0) {
-    process.exit(1);
+  if (numSucceeded < results.length) {
+    const error = new Error(
+      `${results.length - numSucceeded}/${results.length} smoke tests exceeded their memory threshold.`
+    );
+    error.results = results;
+    throw error;
   }
+
+  return results;
 };

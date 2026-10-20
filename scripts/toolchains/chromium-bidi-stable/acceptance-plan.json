@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "cityos.chromium-bidi.acceptance-inputs.v1",
+  "status": "prepared-not-executed",
+  "executor": "Parent task in its serialized primary-checkout execution window",
+  "currentExecutionAllowed": false,
+  "prerequisites": [
+    "Resolve every missing input in backport/REVIEW.json and complete the source correction set before enabling a rebuild.",
+    "Resolve the reported frozen catalog mismatch and exact package-age gate through their owning workflow; do not disable policy globally.",
+    "Select the exact Puck Node in every new shell and verify it against the owning toolchain JSON; run pnpm only through the pinned runner.",
+    "Preserve source identity, Apache license and all third-party notices. Candidate provenance must distinguish stable baseline plus reviewed source backports from an upstream unmodified stable release."
+  ],
+  "providerRegressionInputs": {
+    "module": "regression-inputs/provider.test-input.mjs",
+    "registration": "Import registerProviderRegressionInputs from a parent-owned node:test wrapper; explicitly supply test, packageRoot and reviewed targetConstructorLayout. This input does not auto-register on import and has not run.",
+    "control": "Run against original stable package and require the two missing commands/metrics assertions to fail for their expected causes; run against the exact integrity-verified reference for behavioral comparison. A load/import error is not a successful defect reproduction.",
+    "candidate": "Run against the rebuilt candidate. These inputs exercise real provider constructors, configuration storage, processors, parser and target methods. Only external CDP calls are doubled. They are unit/contract evidence, never browser evidence.",
+    "scopeLimit": "These six inputs do not exhaust dispatcher, lifecycle, inheritance, OOPIF, worker, cache, browser or emitted-export acceptance. Additional cases below remain mandatory."
+  },
+  "additionalContractProof": [
+    "Drive real CommandProcessor/BidiServer through BiDi transport and the validating parser for both commands. Assert success/error result IDs, channels, error codes, unsupported feature handling and CDP rejection propagation.",
+    "Use real BrowsingContextImpl and CdpTarget graphs for context and user-context isolation, global inheritance, per-context precedence, null clearing, duplicates, missing/empty/both selectors, iframe rejection and target creation after configuration.",
+    "Assert media payload filtering and complete resets across pages/OOPIFs; assert viewport meta survives viewport, DPR, screen/orientation and scrollbar changes and that worker targets do not receive unsupported domains.",
+    "Prove per-context cache persistence on child/replacement targets, custom/browser CDP event forwarding, window state transitions, preload channels by sandbox, navigation/realm replacement, popup and download lifecycle behavior identified in REVIEW.json."
+  ],
+  "exports": {
+    "cjs": "Use actual require() on the rebuilt package under selected Node; assert BidiMapper.BidiServer.createAndStart, EventEmitter, OutgoingMessage and Protocol exports, and exercise the exact Puppeteer connectBidiOverCdp argument/interface path.",
+    "esm": "Import through the package entrypoint and all currently consumed subpaths; compare runtime export keys with the stable baseline and reference. Exercise actual mapper startup and transport responses, not only symbol existence.",
+    "mapperTab": "Load the rebuilt mapperTab in real Chromium through the provider's tab transport, complete session creation and both command round trips. Check browser globals and independent frame/worker behavior. Loading the Node mapper alone does not cover the IIFE.",
+    "types": "Compile regression-inputs/exports.type-input.ts plus the installed Puppeteer adapter/interface consumers using catalog TS7 in Node and browser configurations. Check CJS/ESM declarations and all published type subpaths. No declaration hand edits or skipped library checking as substitute proof."
+  },
+  "actualBrowser": [
+    "Use Chrome and chrome-headless-shell at the exact observed native revision and Firefox's observed native revision from generator-inputs.json. Verify executable/product versions at runtime and preserve all revision source hashes.",
+    "Exercise Chromium BiDi-over-CDP through Puppeteer with real session.new, page/context create, navigation, evaluate, events, cookies, screenshot/PDF, network interception/auth/cache, CDP sessions/events, dialogs, viewport, workers/OOPIFs, downloads and existing smoke behavior. Existing expected unsupported results must not silently become success or lost capability.",
+    "Send both emulation commands through the real transport: check matchMedia for every supported feature, invalid/unsupported inputs, feature reset, viewport-meta-only behavior with a real viewport meta document, combined metrics, reload/navigation, new targets and context isolation.",
+    "Exercise the rebuilt mapperTab path separately from the Node mapper path. Run headful window transition checks separately where the window manager can provide meaningful bounds.",
+    "Run Firefox's existing native BiDi coverage without routing it through the Chromium mapper. Preserve its existing supported and expected unsupported behaviors."
+  ],
+  "reproducibilityAndRegistrationGate": "Two clean matching builds and patch hashes, complete package/notice/export/type coverage, real browser acceptance, and parent review are required before any production catalog/lock/patch/override registration.",
+  "nonEvidence": "No tests, typechecks, builds, generator, patched install, browser or compatibility acceptance has executed in this sidecar."
+}

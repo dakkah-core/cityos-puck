@@ -1,0 +1,357 @@
+{
+  "schemaVersion": "cityos.chromium-bidi.source-inspection.v1",
+  "puckHead": "908befa43be3ab33136cb1b69db79318af322836",
+  "reviewCoverage": "Complete published alpha module source inventory and dispatcher case comparison; targeted semantic dependency tracing. Not a full behavioral equivalence proof.",
+  "comparedModuleCount": 98,
+  "differingModuleCount": 63,
+  "differingModules": [
+    {
+      "path": "bidiMapper/BidiNoOpParser.ts",
+      "stableSha256": "57f73f326e237fa350f3ed4024759aaa65c79fedcd204fbf9f5c67c64ca868c5",
+      "referenceSha256": "9616a7b209ae143d4b3136004a68e60a353ce2d3f04c035cfa86a17d211a5386"
+    },
+    {
+      "path": "bidiMapper/BidiParser.ts",
+      "stableSha256": "55066c42c67a7b82151ca47d8dd8b9a1249e19e24f627d68a9ebf03fd4b0502f",
+      "referenceSha256": "3b82f31ee9bf04274477d39d7252795ce18bbddabe5b0535201393f1b8a4ee0e"
+    },
+    {
+      "path": "bidiMapper/BidiServer.ts",
+      "stableSha256": "bd4492ab6747f56f6d82807866f7a68a8749d628718245b3995442260eda9b90",
+      "referenceSha256": "ef3886c7bc8719990b2367ad7ea72ca857f741f517e18087d0efbcbbe54d8792"
+    },
+    {
+      "path": "bidiMapper/CommandProcessor.ts",
+      "stableSha256": "e681c84b145cbc66c2ab8eb5883839e5eca2ef60c04e7b81500d1785db00a201",
+      "referenceSha256": "99f0829fc884630f5aca321024fd44a18664caa200ae9c6ad2d825bd7ff3bab3"
+    },
+    {
+      "path": "bidiMapper/modules/bluetooth/BluetoothProcessor.ts",
+      "stableSha256": "fb9e87eda75187522e49c591db662e6393527f6e39e13a3eff54b4b9d0fb5a2e",
+      "referenceSha256": "5fee72634b27dc239530a439997a1924b30ee4b2c95fdac1a1f726c3f03a04be"
+    },
+    {
+      "path": "bidiMapper/modules/browser/BrowserProcessor.ts",
+      "stableSha256": "10b0612a5d81651e30cc841e2e50a258b12b808d1978ebabf69cb2c4930b7b3d",
+      "referenceSha256": "d8cef26ad37e4a6b40c24b93ce2bae26f742833f9c3e15f7df79508b0a05505c"
+    },
+    {
+      "path": "bidiMapper/modules/browser/ContextConfig.ts",
+      "stableSha256": "f68666bb319fad10693c394b5f73fe0cf5ea5bf1ba9d4b74f6ee2f262cfa5469",
+      "referenceSha256": "61493c42f321c3c3fc8d388bdd3033b86d94c31f2f5935aaa1427df9f6499c83"
+    },
+    {
+      "path": "bidiMapper/modules/browser/ContextConfigStorage.ts",
+      "stableSha256": "f9c82e1a39b5db59fe04ed5b0f392588d45e65fdf1106b1b37d783cb6c9b675b",
+      "referenceSha256": "06caeae18dfbb7a3f6b3f2d5cffca39af1ed7f6f39bd6b1fc8593a10a5550fa6"
+    },
+    {
+      "path": "bidiMapper/modules/browser/UserContextStorage.ts",
+      "stableSha256": "ca488743525ed581b81360a5d7dee1bf615c6453e284e37cd090d3f41e0d0c66",
+      "referenceSha256": "b079fc09a5e558857f0d7ec8d4ee3fa1bd5d8c9cf80189a0b2a552fdd8d43626"
+    },
+    {
+      "path": "bidiMapper/modules/cdp/CdpTarget.ts",
+      "stableSha256": "c531cd069b2aadfc9ac325e16b241a915954dd15c0820ef83d429a1eeaf0c099",
+      "referenceSha256": "5d90333fa911c6a2186d8d42b5084addf15adb295af555235d5ba472d03bf058"
+    },
+    {
+      "path": "bidiMapper/modules/cdp/CdpTargetManager.ts",
+      "stableSha256": "cd435aa8cbbd0a1e908e48c3190be7120aa76cf918cb81d814d55d1ad5cce9d9",
+      "referenceSha256": "fd628d25a1406ec65b36b5f930fd8e318d71134b08a90f8eb0672259a7cce7c7"
+    },
+    {
+      "path": "bidiMapper/modules/context/BrowsingContextImpl.ts",
+      "stableSha256": "cbcaf85a6c84d4f702597b5ac66826595aa8b6a12c6fba877c95c9a81b884983",
+      "referenceSha256": "bf64ae63d87420c4c4afad1a4ea3120b7ac1f1ab352231ee9f3a1e0036f2ba4b"
+    },
+    {
+      "path": "bidiMapper/modules/context/BrowsingContextProcessor.ts",
+      "stableSha256": "f7d83b10c52337d0a250d080198fbb26634cd3f16955558783a306b75d2ae752",
+      "referenceSha256": "a05cc590406a9742cd7d2aff2094d153633033728f0b1e999b59f9efee52461a"
+    },
+    {
+      "path": "bidiMapper/modules/context/BrowsingContextStorage.ts",
+      "stableSha256": "c91d25a6681c087ec7a0feb762e8029bfea07b43dc5b1f106eab306b4d901e25",
+      "referenceSha256": "d52ef7549f57fefaa12df7c8d1629cb2cd3364311401773d1992943ff98a709b"
+    },
+    {
+      "path": "bidiMapper/modules/context/NavigationTracker.ts",
+      "stableSha256": "54837b99887c4a82e1b2921847593e323069bf4d1a0ecfee979f4e4262948062",
+      "referenceSha256": "e436fe347a20d1e527fdc225bb6e3d3ffc4b783e1cb5358fedb5ff2c4fb93e02"
+    },
+    {
+      "path": "bidiMapper/modules/digitalCredentials/DigitalCredentialsProcessor.ts",
+      "stableSha256": "80cff0bcc62ca195e48f8e65c0da9cef6c10bc32e5c404001d8b3c958b9344b3",
+      "referenceSha256": "65c7db3f2b822eda5874b5545df0348da387b1d1897d38a28668c8037ad614fd"
+    },
+    {
+      "path": "bidiMapper/modules/emulation/EmulationProcessor.ts",
+      "stableSha256": "e941c395b4163defc43e48410659df809b7d126d58d09f8e4453368c75e79015",
+      "referenceSha256": "0f8183a525651578c383d52f2a232a7f9bd29cc302967d5c83bdcb6fbe4f9a75"
+    },
+    {
+      "path": "bidiMapper/modules/input/ActionDispatcher.ts",
+      "stableSha256": "f6b5a052b15001d3a9ee23512c82542e112fd6f3bc659f7086e94143687c2f9f",
+      "referenceSha256": "b6077776c3f900a4a9e141134c1e29cf5ffa391c2b3536e6de1744bc93a72d80"
+    },
+    {
+      "path": "bidiMapper/modules/input/InputSource.ts",
+      "stableSha256": "50ffff8160621873b639666bef77f57ee9b066bb06e06c3266b2be884a4449c7",
+      "referenceSha256": "3d174c117521e0d35e3200649f03960729cb0dc9316202ec1b93fcd1a09d42f5"
+    },
+    {
+      "path": "bidiMapper/modules/input/InputState.ts",
+      "stableSha256": "54951a667006c050587673ee727249c8142df109b47339235b8c3957e81db611",
+      "referenceSha256": "e73b75dc6446d4f9cb9908734cdf636740fb1f456db2ff4a90a4f2ca073edb7f"
+    },
+    {
+      "path": "bidiMapper/modules/log/LogManager.ts",
+      "stableSha256": "90efbd9803000fb4c462eaa62374754469c237c9822bca62c75d9a181b431d37",
+      "referenceSha256": "369809817ef37f55f1f74b18e88cfe5352f44fad8f2dec2718550b181ae12e68"
+    },
+    {
+      "path": "bidiMapper/modules/network/CollectorsStorage.ts",
+      "stableSha256": "c2b69afad4e7140703bb36882fb23bbb9b3f810a474df3178a11266660bdf681",
+      "referenceSha256": "c3906a13395737a69cb5fecb8750277ff72cb5e8060b19705e967ab890348cb6"
+    },
+    {
+      "path": "bidiMapper/modules/network/NetworkProcessor.ts",
+      "stableSha256": "483f5eedaad2513be12390443ed137fd73fc17fddc7510738e55b81970a92b38",
+      "referenceSha256": "a7da95f6ffb8acca82391968e01550de7c6cf924be55e9cfcd146b9d62905025"
+    },
+    {
+      "path": "bidiMapper/modules/network/NetworkRequest.ts",
+      "stableSha256": "d3aa9843450a32345d2059b4fc28b7859beeed6f5d9dcec901e577e234c593db",
+      "referenceSha256": "fdd729078628ac6450ae4e3c1b4e2ea08b0c9596279e9eb3770f1b020da39825"
+    },
+    {
+      "path": "bidiMapper/modules/network/NetworkStorage.ts",
+      "stableSha256": "4cc35c30c7d355118a52b6624dd186ec9e644beb6b28ef47ad3618c84616d985",
+      "referenceSha256": "77d1671cc216ca3c98a1a4eceaface79e59f5dc4b7fcdd7934d5faeb40fef3f6"
+    },
+    {
+      "path": "bidiMapper/modules/network/NetworkUtils.ts",
+      "stableSha256": "4f05518f4d38a366ae71245367eda1321f6b602ddef69df92636f63bbf0f8440",
+      "referenceSha256": "f68283818cac12d3e73c87aaef79423dea716e01c0217f016b12edeebc15a562"
+    },
+    {
+      "path": "bidiMapper/modules/script/ChannelProxy.ts",
+      "stableSha256": "cd8a0b8bd1458c83197efb3b0b167f121f3f3aa96182212444e6136d3a14727c",
+      "referenceSha256": "f5ce4b1c53449b17b5c7f3449d9db2dd23639da7556b5e88bda4b86e59bd5302"
+    },
+    {
+      "path": "bidiMapper/modules/script/PreloadScript.ts",
+      "stableSha256": "cf62db417028a5d156c15789d653d888381795b389d87c0ef880ed0f6c668724",
+      "referenceSha256": "4e2c273c632f4d5da60e9ad20ad914f7c7fa8d3022323319a99ec43ad8b50c20"
+    },
+    {
+      "path": "bidiMapper/modules/script/PreloadScriptStorage.ts",
+      "stableSha256": "12fa9ea556ec96e18543138c9f328b0fa5093d8ea5aa762d1a6d19e8ce1def2a",
+      "referenceSha256": "d4621c840cae2b10d78a217ca2f559198e66c59407a1eb7dc3bbb2b353433c64"
+    },
+    {
+      "path": "bidiMapper/modules/script/Realm.ts",
+      "stableSha256": "a6cb442af25ecb7e4a2456afcf8a767fa83187a0fc176e63c29ae42a545e34f2",
+      "referenceSha256": "90fafed3a39fe6cf93942a6c0f2d74be492dd0bb6ed3e14abdefd8a58f368007"
+    },
+    {
+      "path": "bidiMapper/modules/script/RealmStorage.ts",
+      "stableSha256": "c4bf14205e1dcdef119e7b9d58e8d202e1cf6d0dcc6a3c11317a16d329c90613",
+      "referenceSha256": "163d7304e36839422a0a67a0a0d4a39150d00ebdc70f27c6314ad4f9e5b9df09"
+    },
+    {
+      "path": "bidiMapper/modules/script/WindowRealm.ts",
+      "stableSha256": "698951c4e25827855c8e1b7770fa461fe215b55f5eefdb3b8063c52908d808e4",
+      "referenceSha256": "030bc07819aef3a039456ccbf27a089bbf1e846609fcf666d98074aa00b5ee6c"
+    },
+    {
+      "path": "bidiMapper/modules/script/WorkerRealm.ts",
+      "stableSha256": "7c3bf063d93a21ba1db86577267c8dde35dccccae897862d1ac42727f691035e",
+      "referenceSha256": "280b21f29c375fba3b2c1762b9404f0b48068215498bc65265b4529f8ed4a14f"
+    },
+    {
+      "path": "bidiMapper/modules/session/EventManager.ts",
+      "stableSha256": "25edd28f15cdaa7065e147fed5e54916d6b7866a5534053a539aad5cb9cb929d",
+      "referenceSha256": "7a46405d93e76ae2ad512d0395ac77998998e36c909d7bac61101e439a8f84ef"
+    },
+    {
+      "path": "bidiMapper/modules/session/SubscriptionManager.ts",
+      "stableSha256": "c9d4904825629a22eb9015e05c04d96b8ce708e4621c46bb63dd4bd696a42ed4",
+      "referenceSha256": "8082f00a7f181a5e23153b363fa69b17f4ffdfce3df2752b0a23762a317f4e3e"
+    },
+    {
+      "path": "bidiMapper/modules/speculation/SpeculationProcessor.ts",
+      "stableSha256": "4d7b2230b25e67b951e5e4b430812672959175880e5a6f5c438ce6aa8ca30009",
+      "referenceSha256": "1f5cb43cfe7edb711c7a86dc9d5123ef75ddbd44ccdbd6521847d935e1f4411a"
+    },
+    {
+      "path": "bidiMapper/modules/storage/StorageProcessor.ts",
+      "stableSha256": "75df1ccd935fe1a8ef44c4adb0210a807ff39b6c9d24bbcf9a226f3713a9f4a5",
+      "referenceSha256": "3cbe301d3f7c7f4d71e1af57f10f9bd0b5b812d897f90205b756dc96c38285f2"
+    },
+    {
+      "path": "bidiTab/BidiParser.ts",
+      "stableSha256": "226e9957014bb321f4782664806ec2eaab91a6c862b0938baf5b2483d9b7fd54",
+      "referenceSha256": "06e081fe6265622796e17ba703dd718bb5c34a7360e42f2b3942c89b685f59b2"
+    },
+    {
+      "path": "bidiTab/bidiTab.ts",
+      "stableSha256": "88145635d493bb95097b503d67613d533be59d0428fed891f9b68dfcf0c309ba",
+      "referenceSha256": "cb22194bacb3a746860e9447cc5f95641a7920dd95a17a0cb9634c6fa9586a18"
+    },
+    {
+      "path": "bidiTab/mapperTabPage.ts",
+      "stableSha256": "01834dfcb8867b3a045755f04107b3a69c1ad219bcf58464da2db7546a30f25e",
+      "referenceSha256": "e2d4652b552d0bd7c6a7ccdfa2090e24862a306f6b74483296d588df3f5278c1"
+    },
+    {
+      "path": "bidiTab/Transport.ts",
+      "stableSha256": "15586da640cc55d11e79cc2255beb5afb84e26724fdb646a8d0fdd027d38ed26",
+      "referenceSha256": "0ec0423b746e4b80a740bc08bd88455ca29461ba3fa7dbb63100c9f92e58892f"
+    },
+    {
+      "path": "cdp/CdpClient.ts",
+      "stableSha256": "284214d2fcb7377163c9d63982639ec00ccf89017f53fd6a4fc66d509948b3d9",
+      "referenceSha256": "8ee16852554d94c8b8e1afad57fe9fb258c2468a440f8d51c0aa22af9c2968cb"
+    },
+    {
+      "path": "cdp/CdpConnection.ts",
+      "stableSha256": "1332bd0a11606ae5beb7f3c408083285c6a4ad169e1c42e8916242c658a89379",
+      "referenceSha256": "2abf7f8642a0bb53dadc51710dabf6e4bbcdf85a5758a6810286fdb45d29e30e"
+    },
+    {
+      "path": "protocol-parser/generated/webdriver-bidi-bluetooth.ts",
+      "stableSha256": "b1a9ea6afab3b44ee6cf7922246e6f9d8e19a9f14043abc1b177432818d54e87",
+      "referenceSha256": "391e777d601425b893eded40703832ee89e3d662d73b5131ce7831ef7d9400b2"
+    },
+    {
+      "path": "protocol-parser/generated/webdriver-bidi-digital-credentials.ts",
+      "stableSha256": "e61d92cab8807368405b05f53dcebda57bf1de6a8601f2fba6f70109c442211e",
+      "referenceSha256": "43245e3180c492f66686d3318b25b6b3992931fe7c576fb53c89682f70094f62"
+    },
+    {
+      "path": "protocol-parser/generated/webdriver-bidi-nav-speculation.ts",
+      "stableSha256": "469ef85504a94e43e25344a1d1e71c7186a5af1ca4f73d1d12f23b1066c70d81",
+      "referenceSha256": "1fa6cc6d946953af90ae654ece69a84167eeb23bbefe25f70b81155efbd09c5b"
+    },
+    {
+      "path": "protocol-parser/generated/webdriver-bidi-permissions.ts",
+      "stableSha256": "da737da54446c3f5e5112d9aa2b7844131ae88cd00b2f050d7b4733c69a144b7",
+      "referenceSha256": "819004c7777492cd624094380f8f149eb8c74b46acc07e68b8dca1a14301fa77"
+    },
+    {
+      "path": "protocol-parser/generated/webdriver-bidi-ua-client-hints.ts",
+      "stableSha256": "141157fee358ed01c5275f1d91cc781e6280ef4898ab28e905abd647e5e7676b",
+      "referenceSha256": "fa240c66633a13ae9f49d0da14193e49027da601ff2e489afee0353afbe6449c"
+    },
+    {
+      "path": "protocol-parser/generated/webdriver-bidi.ts",
+      "stableSha256": "d95477f6d1e46fa599131300719cdbe9e184c1c333beb304c1398306c6a84d4a",
+      "referenceSha256": "25a5237f6c5691ed256156e57e83c69ebc3d96e5660051307104179c2b109aaf"
+    },
+    {
+      "path": "protocol-parser/protocol-parser.ts",
+      "stableSha256": "0688b5d79b5d488093e302560115057d09bbc44b1e7f78db404afe33bd3356f8",
+      "referenceSha256": "1cbc2b29a5ab7705ad6e13da8d2d81e4d3518e013633055d1cede50d313218b9"
+    },
+    {
+      "path": "protocol/cdp.ts",
+      "stableSha256": "a2f579d066cbb968401cb52da78cd22a792ab07de42c8b4b72f0c84bfc342150",
+      "referenceSha256": "03815871f8e3543a046a52135a96ff5d793f75de5026d056f424bf335a2c1ffd"
+    },
+    {
+      "path": "protocol/chromium-bidi.ts",
+      "stableSha256": "609c06f56f6f37a2afb20b3565a5ef3617701391423ba2a3709aca37f672d1ff",
+      "referenceSha256": "152db4214cf40d5e0e90c167939c0e38e49aa337e3d7317dbb439039841fdd7a"
+    },
+    {
+      "path": "protocol/ErrorResponse.ts",
+      "stableSha256": "03ee2f4ea1f136ad9324313944cf67518514a93f96a9997d8e4f735adb24c582",
+      "referenceSha256": "26d5a47aae60cbfed8a9be25c47ad5c770f86b84e722a72a82986e89dd2eea5a"
+    },
+    {
+      "path": "protocol/generated/webdriver-bidi-bluetooth.ts",
+      "stableSha256": "5a7484464e546079e58197fb0b41979195e5114c5af883dcba57e88ae854aa92",
+      "referenceSha256": "b6b8ae5a5817a2782ff90aa896c00ef37dad6f717d775eddcd146a536b7775dc"
+    },
+    {
+      "path": "protocol/generated/webdriver-bidi-digital-credentials.ts",
+      "stableSha256": "dca9fe02d931899b346ff9eb1422988ff0e7c760a958d56e19a11403022124d2",
+      "referenceSha256": "8b59280fb56d964d46b050920682d8c557eb61e2676d01b418e7b89c889a9a12"
+    },
+    {
+      "path": "protocol/generated/webdriver-bidi-nav-speculation.ts",
+      "stableSha256": "3a13d1fc84ead6043bf938186b308e08e90bf71d182b6493547bc9aeb3f0132a",
+      "referenceSha256": "327262847025ef1ae16fc73294924f8d4928aada5b6ababdfe36a35b81d596e6"
+    },
+    {
+      "path": "protocol/generated/webdriver-bidi-permissions.ts",
+      "stableSha256": "9bdf1fbba41102bc8a310db5bc0cd1ae38c9e2ec837d93c99fa6e6f63af7dbc9",
+      "referenceSha256": "31b919844d466d18335fa3aee95631887e25a2e885fe7eb2abd8849983539ff0"
+    },
+    {
+      "path": "protocol/generated/webdriver-bidi-ua-client-hints.ts",
+      "stableSha256": "75069f05a6ddfa4cd9b3452e4783ad6c7568fefa630a48a4cf4b61069f69671e",
+      "referenceSha256": "82f4ff79b0aae306c901ae3488cba49292d9c3383efa6722cc6530a5e8556677"
+    },
+    {
+      "path": "protocol/generated/webdriver-bidi.ts",
+      "stableSha256": "e2e05439fde7b64ea2a252c13df943caeb11e292c1702a5b74c35bc918c2fd1a",
+      "referenceSha256": "3f8ff8874e90a6411fc8ae2988bfc0417551ae48b457fec354dfe2e3d653a22a"
+    },
+    {
+      "path": "utils/Buffer.ts",
+      "stableSha256": "2474916e49d647e0cf54573d8d04deb613a856eb71939abc9fc5694bbdcccb20",
+      "referenceSha256": "5a7888afd4056e6cfab2271ea464f4f993fc3e62ed458e9b5ecefabc675a83fd"
+    },
+    {
+      "path": "utils/Deferred.ts",
+      "stableSha256": "69a4683ed85d1fbe2199bd142d150e187820fbdbf22e73b19fb8dc16a33cf8a4",
+      "referenceSha256": "6e73aae9f04347c85ab62927c5b0b9f4a8585e814ee75ad72f1916129ed00723"
+    },
+    {
+      "path": "utils/ProcessingQueue.ts",
+      "stableSha256": "0a0b29f19db58e06ef0058c0078838d113a1fd49beb0dc64bf393aa590838948",
+      "referenceSha256": "70e67c673bd09303560c9da432dcce73fbe3e41adb45f0395b9b9c93766c404d"
+    },
+    {
+      "path": "utils/result.ts",
+      "stableSha256": "bae60049fa0f5dd70a928032a58d5a74406355f3612216a8935ba497594460fb",
+      "referenceSha256": "ec80492d2739581090babf771913bffaab10ce5c4b476ed84bfeeb37c5a5e313"
+    }
+  ],
+  "parentOwnedObservedHashes": [
+    {
+      "path": "package.json",
+      "sha256": "b5a0cfe089e1dd6c800451c8d4e60d64752c61c76814dacef5a2f822a4714e49"
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "sha256": "81d90e857812210d5a244551cd382ddf1b75b786403c688bf41fa85bad28d988"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "69fef7db3a2555b29127d068216b5ca5bd47eb7acf1f8160f8fa18d13403ae45"
+    },
+    {
+      "path": "scripts/toolchains/installed-compatibility.test.mjs",
+      "sha256": "04f7525727e7deafe3fef388896fdd1a362edf0905df9a410437647f04864c42"
+    },
+    {
+      "path": "config/toolchains/node-typescript.json",
+      "sha256": "a066bf9f4b031c138ec354ff4238939891275f04505e713de39a0ddc26a150f1"
+    }
+  ],
+  "initialParentEdits": [
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "scripts/toolchains/installed-compatibility.test.mjs"
+  ],
+  "newDispatcherCases": [
+    "emulation.setMediaFeaturesOverride",
+    "emulation.setTextLayoutModeOverride",
+    "emulation.setViewportMetaOverride"
+  ],
+  "sourceOnlyBoundary": "No runtime or validation execution. Hash inspection and source retrieval only; all regression inputs remain unexecuted."
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "cityos.nextra-stable-docs.preparation-observations.v1",
+  "evidence": "Source and official registry metadata inspection only; no generator, test, build, installation or runtime execution.",
+  "missingOwningCatalogSelectionsAtPreparation": [
+    "@svgr/core", "@svgr/plugin-jsx", "@svgr/plugin-svgo",
+    "babel-plugin-react-compiler", "react-compiler-webpack"
+  ],
+  "officialBuildMetadataObservations": [
+    { "name": "@svgr/core", "version": "8.1.0", "url": "https://registry.npmjs.org/@svgr%2fcore/latest", "seam": "SVG-to-TSX transform; Babel 7 dependency family" },
+    { "name": "@svgr/plugin-jsx", "version": "8.1.0", "url": "https://registry.npmjs.org/@svgr%2fplugin-jsx/latest", "seam": "Named JSX/TSX export production" },
+    { "name": "@svgr/plugin-svgo", "version": "8.1.0", "url": "https://registry.npmjs.org/@svgr%2fplugin-svgo/latest", "seam": "removeXMLNS SVG transform; SVGO 3 dependency family" },
+    { "name": "babel-plugin-react-compiler", "version": "1.0.0", "url": "https://registry.npmjs.org/babel-plugin-react-compiler/latest", "seam": "Stable React compiler replacing the upstream build manifest's prerelease selection" },
+    { "name": "react-compiler-webpack", "version": "1.1.0", "url": "https://registry.npmjs.org/react-compiler-webpack/latest", "seam": "Exact retained plugin imports dist/react-compiler-loader.js and supplies a webpack-style async/getOptions/resourcePath context. Current stable package metadata uses Babel 8 and a compiler peer; loader path/context compatibility must be proved." }
+  ],
+  "rule": "Observed registry versions are provenance, not active version authority or accepted compatibility. The generator reads only stable selections from the owning catalog and rejects missing or mismatched tools. No catalog, override, exception or package binding is added here.",
+  "producerQualificationSeams": [
+    "TS7 checks and declaration output replace the upstream TSUP declaration/SVG alias patch; full generated layout, public icon type signature and docs consumer compilation must pass.",
+    "React compiler loader private subpath and callback contract are an actual source seam in the retained upstream plugin. Do not substitute a children stub, disable optimization silently or restore upstream prerelease packages to bypass a failure.",
+    "Native file-catalog source support is present. Relocated artifacts, frozen-lock installs and bootstrap materialization have not been exercised locally; no provider binding exists."
+  ]
+}

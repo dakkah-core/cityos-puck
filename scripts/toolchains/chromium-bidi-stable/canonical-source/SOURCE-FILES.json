@@ -1,0 +1,1441 @@
+{
+  "schemaVersion": "cityos.chromium-bidi.source-correspondence.v1",
+  "evidence": "Published tarballs read only in memory and SHA512 checked against registry metadata. Alpha module sourcesContent exactly matched retained source. Stable module maps omit sourcesContent; their source binding uses the registry gitHead and retained GitHub archive, not a claim of byte-reproducible compiled outputs. No provider module was executed.",
+  "versions": [
+    {
+      "version": "17.0.2",
+      "integrity": "sha512-5v9GQFhTktFvotn/OFNJBmKLKRAb6n9r0bVCwf7sHgWc3/JryK0bj1nn93L3pHFrfgcsu6Be6EWsDi+1XHTGDg==",
+      "inspectedModuleCount": 105,
+      "modules": [
+        {
+          "path": "bidiMapper/modules/input/ActionDispatcher.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/input/ActionDispatcher.ts",
+          "sourceSha256": "f6b5a052b15001d3a9ee23512c82542e112fd6f3bc659f7086e94143687c2f9f",
+          "publishedMapSha256": "d08f5a45d7ddf91a26d0a4b5962eb50bc3e740ba52fc31825345e9615844da4d",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/input/ActionOption.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/input/ActionOption.ts",
+          "sourceSha256": "027c3cede81d77bc8babce5e56882a83184f5d941f24388b270ed3e60e5f1161",
+          "publishedMapSha256": "13df6afbbed60d097ccb27d67ce896d6cdb7f75b1a1dc4662b83f1eb94196085",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/assert.ts",
+          "upstreamSource": "../../../../../src/utils/assert.ts",
+          "sourceSha256": "ebd5daa11e2e56a0080f8fcd5635ff232f387302e2ac4f3e2b5898cf349966d8",
+          "publishedMapSha256": "de3100e2d08facad09e0843ef32b59bcee9cabb5c7e995e1c14fa1c52140c867",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/base64.ts",
+          "upstreamSource": "../../../../../src/utils/base64.ts",
+          "sourceSha256": "7e7ffeda96e4defcb1281155a76b84aa091873a4fd82d4bc755d1bbf2e57b644",
+          "publishedMapSha256": "24dd55885e490f895f48f4f9ab53ef1126bc9acdcb7e35175b03581df35e1081",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/BidiMapper.ts",
+          "upstreamSource": "../../../../../src/bidiMapper/BidiMapper.ts",
+          "sourceSha256": "ed39a8f109b2f3cb8cfa40978ee8bf48b3655f455118a3e2638c464c5744c860",
+          "publishedMapSha256": "d0b49eb3ebaba5c961aa2795cc121fce0a8948e04c291f3a0cae20b1170759e4",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/BidiNoOpParser.ts",
+          "upstreamSource": "../../../../../src/bidiMapper/BidiNoOpParser.ts",
+          "sourceSha256": "57f73f326e237fa350f3ed4024759aaa65c79fedcd204fbf9f5c67c64ca868c5",
+          "publishedMapSha256": "ab223d16e84e4aa9dc1afbefb4ac4875d2420aa5ef3f24ccb6acd9328856a751",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/BidiParser.ts",
+          "upstreamSource": "../../../../../src/bidiMapper/BidiParser.ts",
+          "sourceSha256": "55066c42c67a7b82151ca47d8dd8b9a1249e19e24f627d68a9ebf03fd4b0502f",
+          "publishedMapSha256": "17e40516aee0efe2d6b42e9909817b6bd59ac322d53b0a995af2454c9522e0bf",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiTab/BidiParser.ts",
+          "upstreamSource": "../../../../../src/bidiTab/BidiParser.ts",
+          "sourceSha256": "226e9957014bb321f4782664806ec2eaab91a6c862b0938baf5b2483d9b7fd54",
+          "publishedMapSha256": "70f7c0a6ebaf0288d79c2ff1229bbbe834e7b1a44ec73f548db3d9e44cdadd73",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/BidiServer.ts",
+          "upstreamSource": "../../../../../src/bidiMapper/BidiServer.ts",
+          "sourceSha256": "bd4492ab6747f56f6d82807866f7a68a8749d628718245b3995442260eda9b90",
+          "publishedMapSha256": "30f076e0d4bb81fd36e9cefb7d8889dfb687d9572a5e59de09a8ace5ff64dfed",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiTab/bidiTab.ts",
+          "upstreamSource": "../../../../../src/bidiTab/bidiTab.ts",
+          "sourceSha256": "88145635d493bb95097b503d67613d533be59d0428fed891f9b68dfcf0c309ba",
+          "publishedMapSha256": "919b9f09fdf9f543379ec3ee720947f01b813e1c6fc20bc3c0693e2768721cde",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/BidiTransport.ts",
+          "upstreamSource": "../../../../../src/bidiMapper/BidiTransport.ts",
+          "sourceSha256": "a86d7d3afe6b22d145165149f87ea646d040e5dd0f3c01638dbe48969af1305c",
+          "publishedMapSha256": "0a0f9bf13eadaeb80d50fa684ece26bb7fc36f7dcd0a764b663d128a96814616",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/bluetooth/BluetoothProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/bluetooth/BluetoothProcessor.ts",
+          "sourceSha256": "fb9e87eda75187522e49c591db662e6393527f6e39e13a3eff54b4b9d0fb5a2e",
+          "publishedMapSha256": "25fe012d81b4bcdf60ce5b04ff6dc788ff7f9acd795b2735d8db99ab48349c63",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiServer/BrowserInstance.ts",
+          "upstreamSource": "../../../../../src/bidiServer/BrowserInstance.ts",
+          "sourceSha256": "7ee28724d292cfdc5b1feb76b4e35477a7b6eaf3500ba7eff0e146177061c7b0",
+          "publishedMapSha256": "786dcf993997830ecf521ff7f0261591c262cf93f881cdfd238e5572b7c1b60c",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/browser/BrowserProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/browser/BrowserProcessor.ts",
+          "sourceSha256": "10b0612a5d81651e30cc841e2e50a258b12b808d1978ebabf69cb2c4930b7b3d",
+          "publishedMapSha256": "4fa5481a784626ca169d49e0e3bd74a36d2af9d39f6d41a59ed42121ffb9e55e",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/context/BrowsingContextImpl.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/context/BrowsingContextImpl.ts",
+          "sourceSha256": "cbcaf85a6c84d4f702597b5ac66826595aa8b6a12c6fba877c95c9a81b884983",
+          "publishedMapSha256": "ba8904e33505f3b3b4f14bc20b286640121df21c97798b99ada06a8375e834bd",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/context/BrowsingContextProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/context/BrowsingContextProcessor.ts",
+          "sourceSha256": "f7d83b10c52337d0a250d080198fbb26634cd3f16955558783a306b75d2ae752",
+          "publishedMapSha256": "8bebd59d612396fa33ec3d3ffd8bcd7b42b563b20edd4b8b81396e220b060ba3",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/context/BrowsingContextStorage.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/context/BrowsingContextStorage.ts",
+          "sourceSha256": "c91d25a6681c087ec7a0feb762e8029bfea07b43dc5b1f106eab306b4d901e25",
+          "publishedMapSha256": "0d95ea654f52cfc8492bb31b2bbb30d5c6fd7cd46fd44a78b945efa766409c1b",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/Buffer.ts",
+          "upstreamSource": "../../../../../src/utils/Buffer.ts",
+          "sourceSha256": "2474916e49d647e0cf54573d8d04deb613a856eb71939abc9fc5694bbdcccb20",
+          "publishedMapSha256": "64806e22ddb2b3d2f676733b13fd35cb8fe7ad709d793c587f69bf3e2fe6db50",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "cdp/cdp.ts",
+          "upstreamSource": "../../../../../src/cdp/cdp.ts",
+          "sourceSha256": "7a4880a25a17bcedb124f4f9d78a71545121024d60855a7782c281ed37d741b3",
+          "publishedMapSha256": "86f47ff6cd1df5144f499f969d6186e40a2def7d09fb4e30316f6cb96218e3d5",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol/cdp.ts",
+          "upstreamSource": "../../../../../src/protocol/cdp.ts",
+          "sourceSha256": "a2f579d066cbb968401cb52da78cd22a792ab07de42c8b4b72f0c84bfc342150",
+          "publishedMapSha256": "573ef5da2df279343d431b2fd52523d7e1443c945f2ed34b33367582a3f91c2b",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "cdp/CdpClient.ts",
+          "upstreamSource": "../../../../../src/cdp/CdpClient.ts",
+          "sourceSha256": "284214d2fcb7377163c9d63982639ec00ccf89017f53fd6a4fc66d509948b3d9",
+          "publishedMapSha256": "5b8eecf9844b96c438e6b6c989836c78b57661ef2cb3d613afebbdc7588e20f9",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "cdp/CdpConnection.ts",
+          "upstreamSource": "../../../../../src/cdp/CdpConnection.ts",
+          "sourceSha256": "1332bd0a11606ae5beb7f3c408083285c6a4ad169e1c42e8916242c658a89379",
+          "publishedMapSha256": "b3c6d7dd852c4c618f9e4932bbadd0b58515679c10d2c2f754732e8e07b43fe8",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/cdpErrorConstants.ts",
+          "upstreamSource": "../../../../../src/utils/cdpErrorConstants.ts",
+          "sourceSha256": "e14f5320f1b537555087b1198403d63186079b428b2d2d04b3f55c8600527a23",
+          "publishedMapSha256": "9941616f49f88a3f63713de80141d5cb4eb42fb690a1f40dad542e2a05c3d3c5",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "cdp/cdpMessage.ts",
+          "upstreamSource": "../../../../../src/cdp/cdpMessage.ts",
+          "sourceSha256": "ae17baacf3c1a3f8890996609a8d14f3d9da9a23b6bd2f56fba142282acbe6df",
+          "publishedMapSha256": "76373048df40aa68b3ce85fffe010b9bb2edc56b244580458443adb33da52a7e",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/cdp/CdpProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/cdp/CdpProcessor.ts",
+          "sourceSha256": "57ddfc6245acbfab1553c5918e1b23b532811f6b921882a3ef076f8f3d57cfd9",
+          "publishedMapSha256": "b273b0d4e95019226a82ec706b633873bd5e10cf8c43fb7b271724c569f4ccb3",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/cdp/CdpTarget.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/cdp/CdpTarget.ts",
+          "sourceSha256": "c531cd069b2aadfc9ac325e16b241a915954dd15c0820ef83d429a1eeaf0c099",
+          "publishedMapSha256": "ca45650c339c3d102becdc766f62194fbf30869e0787e0f94f977bb8cd657356",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/cdp/CdpTargetManager.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/cdp/CdpTargetManager.ts",
+          "sourceSha256": "cd435aa8cbbd0a1e908e48c3190be7120aa76cf918cb81d814d55d1ad5cce9d9",
+          "publishedMapSha256": "be37593862b54fe943e49c751fee88951553e3ab3664a173a174001e56545d28",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/script/ChannelProxy.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/script/ChannelProxy.ts",
+          "sourceSha256": "cd8a0b8bd1458c83197efb3b0b167f121f3f3aa96182212444e6136d3a14727c",
+          "publishedMapSha256": "52012fbbf3e6511b22346e89ac08333a6d06e863545623f4b918df6266aeb8b8",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol/chromium-bidi.ts",
+          "upstreamSource": "../../../../../src/protocol/chromium-bidi.ts",
+          "sourceSha256": "609c06f56f6f37a2afb20b3565a5ef3617701391423ba2a3709aca37f672d1ff",
+          "publishedMapSha256": "37957d8710dc6ae525e2bdc56ece76234f82987842c95c9c8b1551437bf7f370",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/network/CollectorsStorage.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/network/CollectorsStorage.ts",
+          "sourceSha256": "c2b69afad4e7140703bb36882fb23bbb9b3f810a474df3178a11266660bdf681",
+          "publishedMapSha256": "7623e0064eafa9c3a995b2ab593569570651c01e67440b230a341b4274dffcbd",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/CommandProcessor.ts",
+          "upstreamSource": "../../../../../src/bidiMapper/CommandProcessor.ts",
+          "sourceSha256": "e681c84b145cbc66c2ab8eb5883839e5eca2ef60c04e7b81500d1785db00a201",
+          "publishedMapSha256": "c938a8dbfe9746e9cb5c841eb6cd4c92b71c760f88b45ef88a03770b9f294c96",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/browser/ContextConfig.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/browser/ContextConfig.ts",
+          "sourceSha256": "f68666bb319fad10693c394b5f73fe0cf5ea5bf1ba9d4b74f6ee2f262cfa5469",
+          "publishedMapSha256": "1ccfb224c2a197bc9c48ef145d051fd5f257117a6383488c24194df135141c21",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/browser/ContextConfigStorage.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/browser/ContextConfigStorage.ts",
+          "sourceSha256": "f9c82e1a39b5db59fe04ed5b0f392588d45e65fdf1106b1b37d783cb6c9b675b",
+          "publishedMapSha256": "3cde05d5b985380c6d1655fc7b70651b65d201bd094446a09e50e3e9ffafc6fd",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/DefaultMap.ts",
+          "upstreamSource": "../../../../../src/utils/DefaultMap.ts",
+          "sourceSha256": "23b75903a7dbdada9895478034da74349ce70d1da5d9e456c98e412fce0624ea",
+          "publishedMapSha256": "c9329d067463ec31afcb52092393acf1d5af2d17670cf1c37d4d31c153067d06",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/Deferred.ts",
+          "upstreamSource": "../../../../../src/utils/Deferred.ts",
+          "sourceSha256": "69a4683ed85d1fbe2199bd142d150e187820fbdbf22e73b19fb8dc16a33cf8a4",
+          "publishedMapSha256": "874b28394b0a0f000c91aefeb25ef113c7eed13fdb7a675c0165b8fb802a2ce7",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/digitalCredentials/DigitalCredentialsProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/digitalCredentials/DigitalCredentialsProcessor.ts",
+          "sourceSha256": "80cff0bcc62ca195e48f8e65c0da9cef6c10bc32e5c404001d8b3c958b9344b3",
+          "publishedMapSha256": "44c35e429b207b4877d08e12571398cb04944de2316f174496fc1790e0c22317",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/emulation/EmulationProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/emulation/EmulationProcessor.ts",
+          "sourceSha256": "e941c395b4163defc43e48410659df809b7d126d58d09f8e4453368c75e79015",
+          "publishedMapSha256": "c55a095dd453dc3ebbda18804f7d5ae50362d0e01741f479a2cd9c5410c06034",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol/ErrorResponse.ts",
+          "upstreamSource": "../../../../../src/protocol/ErrorResponse.ts",
+          "sourceSha256": "03ee2f4ea1f136ad9324313944cf67518514a93f96a9997d8e4f735adb24c582",
+          "publishedMapSha256": "81d9377ed0ce9a44fe3a9adcc529c4038ac62628b05b2c8f5696a6798de5c5be",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/EventEmitter.ts",
+          "upstreamSource": "../../../../../src/utils/EventEmitter.ts",
+          "sourceSha256": "3b690554c3ddcf571fa1255c349a673a1e4ad265a146f30b57fe8af859c9e2d1",
+          "publishedMapSha256": "396f571e1c8ef6bddaba5a75168a26fe24576c3f8141fe45c552bdc60156a85f",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/session/EventManager.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/session/EventManager.ts",
+          "sourceSha256": "25edd28f15cdaa7065e147fed5e54916d6b7866a5534053a539aad5cb9cb929d",
+          "publishedMapSha256": "74dd1de1d678dd3c3e63b4680235a27819340b3c3c1fc2cca1832062af917b5c",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/session/events.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/session/events.ts",
+          "sourceSha256": "53e68bc1a6e261497956d4a6c7c19e681f65b207cac2e67a4484742ce0b56a30",
+          "publishedMapSha256": "17c5867dfe21caa91f0392a106e32e04e0f93df0115b8d0ef7a3ba62fc8a4311",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/graphemeTools.ts",
+          "upstreamSource": "../../../../../src/utils/graphemeTools.ts",
+          "sourceSha256": "3ea11a10df746895baa3d740d996cb1aa5999639f8cc72f9ebad09a87752ccde",
+          "publishedMapSha256": "cbf6eeeffc9ddf7b30822dde918e90ea25c85b62c9ce990ecf28b8621fb4c9d5",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/IdWrapper.ts",
+          "upstreamSource": "../../../../../src/utils/IdWrapper.ts",
+          "sourceSha256": "6cc61fac274e72939812ad30a8ca2a94dd8358955704d2d1def610e02d458bc3",
+          "publishedMapSha256": "0cfd7b24a6894c8632da75a048ed72e3d7cfa34acfc9186f2fbb77c9e0192dd6",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiServer/index.ts",
+          "upstreamSource": "../../../../../src/bidiServer/index.ts",
+          "sourceSha256": "9869f732ed6ababff5efd8a398fc4adf28801d04d4c8d984d6418920514f03f8",
+          "publishedMapSha256": "072024ec69685d4ecc3ba309d5066197dfd7eccc6b19af517ada686c6ae53dc7",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "index.ts",
+          "upstreamSource": "../../../../src/index.ts",
+          "sourceSha256": "d3950c33b4b149c46ec57361a8d04126f6cc1c6b6d703098f851f093f6c5f8e3",
+          "publishedMapSha256": "40efbf7b7fa459a50ff70d066932005faf38b00a446de6c133fee8dcd79e7dcd",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/input/InputProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/input/InputProcessor.ts",
+          "sourceSha256": "8aca775d70aabe4a4e7c57d75259c9774726f2ef7f732d703a2c00ece0bc0d1a",
+          "publishedMapSha256": "dc72a687d5dc580bba0a70a964ba19020e47c09050789a7a7df939d8d831052c",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/input/InputSource.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/input/InputSource.ts",
+          "sourceSha256": "50ffff8160621873b639666bef77f57ee9b066bb06e06c3266b2be884a4449c7",
+          "publishedMapSha256": "3977f934aa35d4a5851f802cbbeef06131dee3d3834824471e01190e1c518b57",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/input/InputState.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/input/InputState.ts",
+          "sourceSha256": "54951a667006c050587673ee727249c8142df109b47339235b8c3957e81db611",
+          "publishedMapSha256": "5394be339aa72a7feea8ed86d8141358d5c605f20287bc01e559016f66322df6",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/input/InputStateManager.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/input/InputStateManager.ts",
+          "sourceSha256": "4b61c422b66173a61b2d7efec4e064ec93d6dd47f5610aa321521a7f5edef978",
+          "publishedMapSha256": "cf651d6cc06d27cc4b1c2e5a963dc5038d82eafb4cb8da23b8c16fccebde4583",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/input/keyUtils.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/input/keyUtils.ts",
+          "sourceSha256": "e540935f3a5801a9db35ece14a4a107bc6e03cb4ca56751126532fb296b6c9b3",
+          "publishedMapSha256": "b655703e2b1fe4d63bdec3fb6c399ec8a205ff90124e746b346859bdc92ffde7",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/log.ts",
+          "upstreamSource": "../../../../../src/utils/log.ts",
+          "sourceSha256": "dfa974876e0e87b30d9319e5379e0de5e5d613193e703de04f1e5845d9754e60",
+          "publishedMapSha256": "4845bc4ae01ed1724c0e825c5846b3f79acad0d29d1910b34e61aae7c91a9f7b",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/log/logHelper.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/log/logHelper.ts",
+          "sourceSha256": "2d84570fa700e9ba8cac41f9c28555830ed410e92953ee5cadd498c56cadd2c6",
+          "publishedMapSha256": "f58ac2395da7efc197434baa4bb5fa57c2081e9705534f1e3b4e24ad8df0ceb4",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/log/LogManager.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/log/LogManager.ts",
+          "sourceSha256": "90efbd9803000fb4c462eaa62374754469c237c9822bca62c75d9a181b431d37",
+          "publishedMapSha256": "9decea4a6af749acb9378b8640ebb72ba90cba0112e2826672bc158a32e31c24",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiServer/MapperCdpConnection.ts",
+          "upstreamSource": "../../../../../src/bidiServer/MapperCdpConnection.ts",
+          "sourceSha256": "31e8efd2f92daa3452e8a362a3d57e02bbbd5bda346c6fe67e771a740cf07a6f",
+          "publishedMapSha256": "395d119e83b114e1b093057f4861ae9b066bb26d4f89f72db946000a3a8aa12f",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/MapperOptions.ts",
+          "upstreamSource": "../../../../../src/bidiMapper/MapperOptions.ts",
+          "sourceSha256": "e8d9835e2545f71ec1e40985638c2f6af5003b4b4560aa87f0183ae4d89592f0",
+          "publishedMapSha256": "addb4c1305c67055ad1d89302e2d12ae8ff4b1bcfb5294a62000ed23070a311d",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiTab/mapperTabPage.ts",
+          "upstreamSource": "../../../../../src/bidiTab/mapperTabPage.ts",
+          "sourceSha256": "01834dfcb8867b3a045755f04107b3a69c1ad219bcf58464da2db7546a30f25e",
+          "publishedMapSha256": "1eaab3a570aed929ef726e064684eae2df4869294154522bbe4f2752fe7dfb2e",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/Mutex.ts",
+          "upstreamSource": "../../../../../src/utils/Mutex.ts",
+          "sourceSha256": "0255a291ce52ead96995e5a5cfcfef7db53f99b1ec5e6ac00bd249accc97d850",
+          "publishedMapSha256": "20e6399331c0ba7b0bbc0141118c3107d38f06e95f5af25bbcdaae1abc17b3ac",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/context/NavigationTracker.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/context/NavigationTracker.ts",
+          "sourceSha256": "54837b99887c4a82e1b2921847593e323069bf4d1a0ecfee979f4e4262948062",
+          "publishedMapSha256": "24bafd159e53d6e10392ba2ba41c6f39e3f5ce2b04bc89719a8486c5da56673b",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/network/NetworkProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/network/NetworkProcessor.ts",
+          "sourceSha256": "483f5eedaad2513be12390443ed137fd73fc17fddc7510738e55b81970a92b38",
+          "publishedMapSha256": "ce451ca736cdfc31f2b125dc4223b857cc36e8bb830a90254f1354556d21e248",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/network/NetworkRequest.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/network/NetworkRequest.ts",
+          "sourceSha256": "d3aa9843450a32345d2059b4fc28b7859beeed6f5d9dcec901e577e234c593db",
+          "publishedMapSha256": "ed676b7140b66cd1def829e31a9e7a6cc5d81078cc2de578c56868caa3796045",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/network/NetworkStorage.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/network/NetworkStorage.ts",
+          "sourceSha256": "4cc35c30c7d355118a52b6624dd186ec9e644beb6b28ef47ad3618c84616d985",
+          "publishedMapSha256": "e009244a2f480038d96a52c5d026f7f3a0c86397254248fa3a3b55ab0ce66e4c",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/network/NetworkUtils.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/network/NetworkUtils.ts",
+          "sourceSha256": "4f05518f4d38a366ae71245367eda1321f6b602ddef69df92636f63bbf0f8440",
+          "publishedMapSha256": "87b2b8610e747c7d56e042a251c8224313845f5ea653c28c172fda4299b58e9a",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/OutgoingMessage.ts",
+          "upstreamSource": "../../../../../src/bidiMapper/OutgoingMessage.ts",
+          "sourceSha256": "aee6f4e1b222c49d4fc169fd6ffc54cacd9c3b8a5894920e1edba4b0273ed38f",
+          "publishedMapSha256": "0c98387142d0681c9c8539266f667ea833987a90f3c74fc828dde5b69878e3e6",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/permissions/PermissionsProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/permissions/PermissionsProcessor.ts",
+          "sourceSha256": "853a1617924f6fcae080e7b64c8eb4f4a6a8def03a37eb14571a0cd23a1ce07b",
+          "publishedMapSha256": "3f81096724cec66f15b911e74d888bcdf356f8710fbf6143a6da6bf69b7cc0b1",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiServer/PipeTransport.ts",
+          "upstreamSource": "../../../../../src/bidiServer/PipeTransport.ts",
+          "sourceSha256": "a5a3dde175cb8130534008a39618c2be1629ee29add78eb4e3921b6b7e6f5aae",
+          "publishedMapSha256": "e1bc765a6dfa38852c54b3e1ca12bb73a18721db5d48a8c5cbbddeb281d24100",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/script/PreloadScript.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/script/PreloadScript.ts",
+          "sourceSha256": "cf62db417028a5d156c15789d653d888381795b389d87c0ef880ed0f6c668724",
+          "publishedMapSha256": "ce32c9b8535971914f316aef8fb5051972b0103f5cc4ed56fa3dbacf06cf9c61",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/script/PreloadScriptStorage.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/script/PreloadScriptStorage.ts",
+          "sourceSha256": "12fa9ea556ec96e18543138c9f328b0fa5093d8ea5aa762d1a6d19e8ce1def2a",
+          "publishedMapSha256": "08afcd3d1259059bfc499ba4283dd0b5aba1940d5036c40983e052617ecf6cb8",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/ProcessingQueue.ts",
+          "upstreamSource": "../../../../../src/utils/ProcessingQueue.ts",
+          "sourceSha256": "0a0b29f19db58e06ef0058c0078838d113a1fd49beb0dc64bf393aa590838948",
+          "publishedMapSha256": "806b9e9f23c8ea75db351f4cb35f805168a38ec7058e69441a2e0c384a795e17",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol-parser/protocol-parser.ts",
+          "upstreamSource": "../../../../../src/protocol-parser/protocol-parser.ts",
+          "sourceSha256": "0688b5d79b5d488093e302560115057d09bbc44b1e7f78db404afe33bd3356f8",
+          "publishedMapSha256": "2d2134a685c59da10d421f9eecc6dc8d628999c6b9123b89e15bbb0703668bce",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol/protocol.ts",
+          "upstreamSource": "../../../../../src/protocol/protocol.ts",
+          "sourceSha256": "bcb56c7f4a281748be30a08903c318409b177e8f3686b599c0e989093f0716b2",
+          "publishedMapSha256": "77c34de24e0d60d3092e958bfccead947f2dd01f6a5e6230eb8091d2564e966a",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiServer/reader.ts",
+          "upstreamSource": "../../../../../src/bidiServer/reader.ts",
+          "sourceSha256": "dfb746dd1af505b5b2b7ba1e7d63b5d8263ede26bd20bc35ff55dc76e721f30f",
+          "publishedMapSha256": "8e074a41852e78ad303617f01cdd16ed603741abefc79cfdd68b0d833194a858",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/script/Realm.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/script/Realm.ts",
+          "sourceSha256": "a6cb442af25ecb7e4a2456afcf8a767fa83187a0fc176e63c29ae42a545e34f2",
+          "publishedMapSha256": "5ab4df919a05b9eb955b7f88eb85fe848c5aa09ac670aea3fe7f9fa8a0c39107",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/script/RealmStorage.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/script/RealmStorage.ts",
+          "sourceSha256": "c4bf14205e1dcdef119e7b9d58e8d202e1cf6d0dcc6a3c11317a16d329c90613",
+          "publishedMapSha256": "6efff2f3ee4a55d74accc69e7c1300bba827d9f2ae8fd613448e17b9a9866fc4",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/result.ts",
+          "upstreamSource": "../../../../../src/utils/result.ts",
+          "sourceSha256": "bae60049fa0f5dd70a928032a58d5a74406355f3612216a8935ba497594460fb",
+          "publishedMapSha256": "44d1c58434231347be17395e0ee8ba5b114df90842f4f8ef5536ff7abad3aa89",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/script/ScriptProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/script/ScriptProcessor.ts",
+          "sourceSha256": "9e7d19d08b64262e05d5b7c33e7ad7efb2b2587dbfa17d56fedc8c0662acc690",
+          "publishedMapSha256": "cc0800e7fe078921e58e197a1f19a576bab319281e5946cfc332b871d138b131",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/session/SessionProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/session/SessionProcessor.ts",
+          "sourceSha256": "2df6266d78bc03a61320b9f08bf95e4904d8617b15bfbfe0824627f5580bc15a",
+          "publishedMapSha256": "82ed7869c08c88317a050b6ec51cb252997fed2e8f8372121f8e347b5f177ded",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/script/SharedId.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/script/SharedId.ts",
+          "sourceSha256": "75dc69c59df9c0470bee5f023962eb5e82b1bd13be5dd05ba47aaf25a5c927db",
+          "publishedMapSha256": "e72306ada975fe0e19435f9888b37abe8bc1fdf10e5de16ab2c90aed2709b717",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiServer/SimpleTransport.ts",
+          "upstreamSource": "../../../../../src/bidiServer/SimpleTransport.ts",
+          "sourceSha256": "5888fa585dfc931ed2cdfc90ffdfd763a9b836e9c7efe278dae7d043401710c8",
+          "publishedMapSha256": "5e590c5a4aa4d6e9c593eb4914084ca060cc11e658346264e9fa14e26e7a73cd",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/speculation/SpeculationProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/speculation/SpeculationProcessor.ts",
+          "sourceSha256": "4d7b2230b25e67b951e5e4b430812672959175880e5a6f5c438ce6aa8ca30009",
+          "publishedMapSha256": "f5b69cf9be8beb07d24093fdefebbd6feabe5eacebbc08411715efa06dcbf3c8",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/storage/StorageProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/storage/StorageProcessor.ts",
+          "sourceSha256": "75df1ccd935fe1a8ef44c4adb0210a807ff39b6c9d24bbcf9a226f3713a9f4a5",
+          "publishedMapSha256": "d4dae6ac50514660687efad3b8e87e74501af311eb200e6433cb6a2acb38ee84",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/session/SubscriptionManager.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/session/SubscriptionManager.ts",
+          "sourceSha256": "c9d4904825629a22eb9015e05c04d96b8ce708e4621c46bb63dd4bd696a42ed4",
+          "publishedMapSha256": "14f0123ee6f3110170857e45b393d3feda98292da02e2fbe94c614167e1487bb",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/time.ts",
+          "upstreamSource": "../../../../../src/utils/time.ts",
+          "sourceSha256": "c426b734dd13663a3f76ca9ad65ef5a2fbf6eb917a7f8b2e624a67ec6ee8dde8",
+          "publishedMapSha256": "5e9cda1483948e23e5f1cc888707c0cd9b01d725b878efab2c4c41ca9ee035fa",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiTab/Transport.ts",
+          "upstreamSource": "../../../../../src/bidiTab/Transport.ts",
+          "sourceSha256": "15586da640cc55d11e79cc2255beb5afb84e26724fdb646a8d0fdd027d38ed26",
+          "publishedMapSha256": "fae0f8e8ff1a10d5a18f6aa97ac249b1ff495658009dbfb328f61a2ad1646275",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/transport.ts",
+          "upstreamSource": "../../../../../src/utils/transport.ts",
+          "sourceSha256": "4ce2ea521bf28ce7424c5c7ca1c8704bc50779670aa7d2f65670eb3cdbf86070",
+          "publishedMapSha256": "067beb9574d82deb580ae6a05a106c5451b79798d7a247421d59947f9994c50f",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/unitConversions.ts",
+          "upstreamSource": "../../../../../src/utils/unitConversions.ts",
+          "sourceSha256": "690695b792f0346d2da8ea36c1f945aa46a79a098a9595660415778b034daf88",
+          "publishedMapSha256": "9bd35ce91c151bf8a378357377cfbdb09369a3fac687d99706088dab68c1f879",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/urlHelpers.ts",
+          "upstreamSource": "../../../../../src/utils/urlHelpers.ts",
+          "sourceSha256": "990792602c3a4875497267f54521504f17a9da311ad00287a307b19b8f3c5bd1",
+          "publishedMapSha256": "2c4525ece06819e9c79ad48141baf107da4f00b9b7e5e4ec667f517279c445ca",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/browser/UserContextStorage.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/browser/UserContextStorage.ts",
+          "sourceSha256": "ca488743525ed581b81360a5d7dee1bf615c6453e284e37cd090d3f41e0d0c66",
+          "publishedMapSha256": "2b23785fa55e3207674c48164274ae04d4ca26f30399b51b127d492f6697cdff",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/input/USKeyboardLayout.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/input/USKeyboardLayout.ts",
+          "sourceSha256": "cd637e035ba673a9167d6072690364e5b25a0277aa10e17dc717d52ffd36411f",
+          "publishedMapSha256": "7cc173995b83376ebec855475a56d038ffa01715a446585ca3d9e005c5c44f06",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "utils/uuid.ts",
+          "upstreamSource": "../../../../../src/utils/uuid.ts",
+          "sourceSha256": "0c60fb4ac255a09dcd0feaebe9e2d60c6cd18b9da4075a6698ac3437dee68205",
+          "publishedMapSha256": "0b575284346edcc28a056e63bd18c69cf47e25c195cf8de6eb4bceb445fa7190",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol-parser/generated/webdriver-bidi-bluetooth.ts",
+          "upstreamSource": "../../../../../../src/protocol-parser/generated/webdriver-bidi-bluetooth.ts",
+          "sourceSha256": "b1a9ea6afab3b44ee6cf7922246e6f9d8e19a9f14043abc1b177432818d54e87",
+          "publishedMapSha256": "af8775fd6726cc4ae89ebc06b98c257400c21c43f1de4723aca36629169d3c3f",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol/generated/webdriver-bidi-bluetooth.ts",
+          "upstreamSource": "../../../../../../src/protocol/generated/webdriver-bidi-bluetooth.ts",
+          "sourceSha256": "5a7484464e546079e58197fb0b41979195e5114c5af883dcba57e88ae854aa92",
+          "publishedMapSha256": "5714206c6761f0380e8ed576cb987faec29485f8bbca5fce55b5d5d1f28d6eae",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol-parser/generated/webdriver-bidi-digital-credentials.ts",
+          "upstreamSource": "../../../../../../src/protocol-parser/generated/webdriver-bidi-digital-credentials.ts",
+          "sourceSha256": "e61d92cab8807368405b05f53dcebda57bf1de6a8601f2fba6f70109c442211e",
+          "publishedMapSha256": "8d0c2c2f018efd42776a3dda38c093fc552782eac94a41546823c4766884ee9c",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol/generated/webdriver-bidi-digital-credentials.ts",
+          "upstreamSource": "../../../../../../src/protocol/generated/webdriver-bidi-digital-credentials.ts",
+          "sourceSha256": "dca9fe02d931899b346ff9eb1422988ff0e7c760a958d56e19a11403022124d2",
+          "publishedMapSha256": "5a329265c8767d5ab05896df118f8f5a31cddfeda1862f9db2da09bf1de504a6",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol-parser/generated/webdriver-bidi-nav-speculation.ts",
+          "upstreamSource": "../../../../../../src/protocol-parser/generated/webdriver-bidi-nav-speculation.ts",
+          "sourceSha256": "469ef85504a94e43e25344a1d1e71c7186a5af1ca4f73d1d12f23b1066c70d81",
+          "publishedMapSha256": "551bd4d3d41c4fafd0f8a4661189f03551f080c9852187c9f7fd84aecd5f92eb",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol/generated/webdriver-bidi-nav-speculation.ts",
+          "upstreamSource": "../../../../../../src/protocol/generated/webdriver-bidi-nav-speculation.ts",
+          "sourceSha256": "3a13d1fc84ead6043bf938186b308e08e90bf71d182b6493547bc9aeb3f0132a",
+          "publishedMapSha256": "22a5c635db860eaf295047c4ef9c25441dfb1ee90cd4e4ccbd2da25bd751d966",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol-parser/generated/webdriver-bidi-permissions.ts",
+          "upstreamSource": "../../../../../../src/protocol-parser/generated/webdriver-bidi-permissions.ts",
+          "sourceSha256": "da737da54446c3f5e5112d9aa2b7844131ae88cd00b2f050d7b4733c69a144b7",
+          "publishedMapSha256": "070d6b0ff3be50c8d6d8c2333cedb22459232fc6affa532fe234dd57ff0ffe3b",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol/generated/webdriver-bidi-permissions.ts",
+          "upstreamSource": "../../../../../../src/protocol/generated/webdriver-bidi-permissions.ts",
+          "sourceSha256": "9bdf1fbba41102bc8a310db5bc0cd1ae38c9e2ec837d93c99fa6e6f63af7dbc9",
+          "publishedMapSha256": "1a3a7d3938a7bb28948baf18ea95352c6e93c8fb2ad7efd7946b8b23e87a09cc",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol-parser/generated/webdriver-bidi-ua-client-hints.ts",
+          "upstreamSource": "../../../../../../src/protocol-parser/generated/webdriver-bidi-ua-client-hints.ts",
+          "sourceSha256": "141157fee358ed01c5275f1d91cc781e6280ef4898ab28e905abd647e5e7676b",
+          "publishedMapSha256": "c067aa318b2c740d5724154fc588827d150695828eabd8ae0e936ef7ea2b1c1c",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol/generated/webdriver-bidi-ua-client-hints.ts",
+          "upstreamSource": "../../../../../../src/protocol/generated/webdriver-bidi-ua-client-hints.ts",
+          "sourceSha256": "75069f05a6ddfa4cd9b3452e4783ad6c7568fefa630a48a4cf4b61069f69671e",
+          "publishedMapSha256": "8da9514cea78507ddea2a56c33e54f2f57578d033693383ac83535288963a428",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol-parser/generated/webdriver-bidi.ts",
+          "upstreamSource": "../../../../../../src/protocol-parser/generated/webdriver-bidi.ts",
+          "sourceSha256": "d95477f6d1e46fa599131300719cdbe9e184c1c333beb304c1398306c6a84d4a",
+          "publishedMapSha256": "65aeee02da973260cd664ed20478d4399630628b7a9ac2373a6b655b596d91e4",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "protocol/generated/webdriver-bidi.ts",
+          "upstreamSource": "../../../../../../src/protocol/generated/webdriver-bidi.ts",
+          "sourceSha256": "e2e05439fde7b64ea2a252c13df943caeb11e292c1702a5b74c35bc918c2fd1a",
+          "publishedMapSha256": "185b6d4f5998a6c6df1c509a3867939acd9b9b53388cca3b4b69ccea7be3f1e3",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/webExtension/WebExtensionProcessor.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/webExtension/WebExtensionProcessor.ts",
+          "sourceSha256": "2a9df103b5f712f4cadd7c2d17d08776a3d5c7ce86194267ba114b1e62c24676",
+          "publishedMapSha256": "4b4888ffbb6ca2cb85567f7d4c2dcc5566ac694072cac700f18bdd94b4199ddc",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiServer/WebSocketServer.ts",
+          "upstreamSource": "../../../../../src/bidiServer/WebSocketServer.ts",
+          "sourceSha256": "e4758d55408a605de6d8469ba07d379e7e3f82f16c7fc0c1a50949a564852b4c",
+          "publishedMapSha256": "c65075d1c0dcfc7da692d0873d1c9710c0353109fb13650d4ceaec9f76e1c6cd",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/script/WindowRealm.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/script/WindowRealm.ts",
+          "sourceSha256": "698951c4e25827855c8e1b7770fa461fe215b55f5eefdb3b8063c52908d808e4",
+          "publishedMapSha256": "911422c21462f102282c6a53e7c54568912a8dfd778f061d90d78078912604fa",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        },
+        {
+          "path": "bidiMapper/modules/script/WorkerRealm.ts",
+          "upstreamSource": "../../../../../../../src/bidiMapper/modules/script/WorkerRealm.ts",
+          "sourceSha256": "7c3bf063d93a21ba1db86577267c8dde35dccccae897862d1ac42727f691035e",
+          "publishedMapSha256": "bfe0d2e26a97bb254b2d34b0d3e7dadfb6f31ae96b42c46822657c8a94103fb6",
+          "correspondence": "registry-gitHead; published module map has no sourcesContent"
+        }
+      ]
+    },
+    {
+      "version": "157.0.8090-0",
+      "integrity": "sha512-KJw7IQgqXwxpJgJlEIPg5mr2ZoqA+jkTRtc5EABI7sUJ3bu3cpI7NuEBoj4Gn1AsF78CaT9So5WQWspK3/wYag==",
+      "inspectedModuleCount": 98,
+      "modules": [
+        {
+          "path": "bidiMapper/modules/input/ActionDispatcher.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/input/ActionDispatcher.ts",
+          "sourceSha256": "b6077776c3f900a4a9e141134c1e29cf5ffa391c2b3536e6de1744bc93a72d80",
+          "publishedMapSha256": "b1a55f2708ba85cf45f37aa290ad081df3ded3c6679e97d4af22b87c6f74fe19",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/input/ActionOption.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/input/ActionOption.ts",
+          "sourceSha256": "027c3cede81d77bc8babce5e56882a83184f5d941f24388b270ed3e60e5f1161",
+          "publishedMapSha256": "b0c2cb72c8d8b9e6756c43046faa81437feaa7230065fd585f8de590c0c6dcb0",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/assert.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/assert.ts",
+          "sourceSha256": "ebd5daa11e2e56a0080f8fcd5635ff232f387302e2ac4f3e2b5898cf349966d8",
+          "publishedMapSha256": "4d1987695c65e696e46ba07215b1e564e302a9ac11be3b9c27069f8837f14c8d",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/base64.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/base64.ts",
+          "sourceSha256": "7e7ffeda96e4defcb1281155a76b84aa091873a4fd82d4bc755d1bbf2e57b644",
+          "publishedMapSha256": "52c067300f4583cf109939a917d48d8ff90263d0c94a64174100ede9e492152b",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/BidiMapper.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/bidiMapper/BidiMapper.ts",
+          "sourceSha256": "ed39a8f109b2f3cb8cfa40978ee8bf48b3655f455118a3e2638c464c5744c860",
+          "publishedMapSha256": "a7899d9cbc5b426b130bb003681eab08101aa9abc3fc06df518465ab7257402c",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/BidiNoOpParser.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/bidiMapper/BidiNoOpParser.ts",
+          "sourceSha256": "9616a7b209ae143d4b3136004a68e60a353ce2d3f04c035cfa86a17d211a5386",
+          "publishedMapSha256": "44d09d63d14ca7f62b900117f8e87937664d2cbb4006e13366cc36e5a5292182",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/BidiParser.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/bidiMapper/BidiParser.ts",
+          "sourceSha256": "3b82f31ee9bf04274477d39d7252795ce18bbddabe5b0535201393f1b8a4ee0e",
+          "publishedMapSha256": "1afdd7f030c9ce7d612d065dcebb0b51af62e481363b6abf3cce97671e1f213e",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiTab/BidiParser.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/bidiTab/BidiParser.ts",
+          "sourceSha256": "06e081fe6265622796e17ba703dd718bb5c34a7360e42f2b3942c89b685f59b2",
+          "publishedMapSha256": "c91ab35257703d1536e74ebfca1b5baa632cee9971b8442dc5a4d6bcdf7f304b",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/BidiServer.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/bidiMapper/BidiServer.ts",
+          "sourceSha256": "ef3886c7bc8719990b2367ad7ea72ca857f741f517e18087d0efbcbbe54d8792",
+          "publishedMapSha256": "b49ef30f52ae77b24a9fbb2e638e665db9a45cf3e9b8ae5f773fb41003f9a280",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiTab/bidiTab.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/bidiTab/bidiTab.ts",
+          "sourceSha256": "cb22194bacb3a746860e9447cc5f95641a7920dd95a17a0cb9634c6fa9586a18",
+          "publishedMapSha256": "5128036e1bf1710698bf4c4082985952704d0f6130a562ca0af5c69e554f24f2",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/BidiTransport.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/bidiMapper/BidiTransport.ts",
+          "sourceSha256": "a86d7d3afe6b22d145165149f87ea646d040e5dd0f3c01638dbe48969af1305c",
+          "publishedMapSha256": "c382d0d294af97524786311fa76d8b0940bcf5b12136614f0e999e6c6de859bb",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/bluetooth/BluetoothProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/bluetooth/BluetoothProcessor.ts",
+          "sourceSha256": "5fee72634b27dc239530a439997a1924b30ee4b2c95fdac1a1f726c3f03a04be",
+          "publishedMapSha256": "c966e77ba5e34b7fbd4592ab429708ca0bbe519f23b20e0548cff23ad3ce8be6",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/browser/BrowserProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/browser/BrowserProcessor.ts",
+          "sourceSha256": "d8cef26ad37e4a6b40c24b93ce2bae26f742833f9c3e15f7df79508b0a05505c",
+          "publishedMapSha256": "70f758a5efa20f2adc2f98b20b89b9422d226d837f45608d254238e3ecbc05e9",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/context/BrowsingContextImpl.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/context/BrowsingContextImpl.ts",
+          "sourceSha256": "bf64ae63d87420c4c4afad1a4ea3120b7ac1f1ab352231ee9f3a1e0036f2ba4b",
+          "publishedMapSha256": "19216caa3605802e71dbf950ca6859a5a66e23782bd42f9b6b192216039c1b13",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/context/BrowsingContextProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/context/BrowsingContextProcessor.ts",
+          "sourceSha256": "a05cc590406a9742cd7d2aff2094d153633033728f0b1e999b59f9efee52461a",
+          "publishedMapSha256": "6bca78e17e235d59d578753a6a894d0da9ffd0fe0fadb8d68aeff047bb1a35e3",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/context/BrowsingContextStorage.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/context/BrowsingContextStorage.ts",
+          "sourceSha256": "d52ef7549f57fefaa12df7c8d1629cb2cd3364311401773d1992943ff98a709b",
+          "publishedMapSha256": "ee52a1f9f18184e0830707060dba174f30aca06f39057570f1b03aa707905f98",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/Buffer.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/Buffer.ts",
+          "sourceSha256": "5a7888afd4056e6cfab2271ea464f4f993fc3e62ed458e9b5ecefabc675a83fd",
+          "publishedMapSha256": "632e843103738b5b3fcd5e2d21a2e98bf35ba270927cd1178b5e5ea72e60a7de",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "cdp/cdp.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/cdp/cdp.ts",
+          "sourceSha256": "7a4880a25a17bcedb124f4f9d78a71545121024d60855a7782c281ed37d741b3",
+          "publishedMapSha256": "f90ff2cd07180a123e8de4ca89d3ea630cdf8c6968721bf72163d53e245e2508",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol/cdp.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/protocol/cdp.ts",
+          "sourceSha256": "03815871f8e3543a046a52135a96ff5d793f75de5026d056f424bf335a2c1ffd",
+          "publishedMapSha256": "ff7cb529918b4c573b4a9f99cf7d49f687f7bdbf55403239a6db56a227a52f32",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "cdp/CdpClient.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/cdp/CdpClient.ts",
+          "sourceSha256": "8ee16852554d94c8b8e1afad57fe9fb258c2468a440f8d51c0aa22af9c2968cb",
+          "publishedMapSha256": "20e48f266d7f54db4c48a903c647478fa39a1fad1ddbb7f484708ed76248a1b1",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "cdp/CdpConnection.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/cdp/CdpConnection.ts",
+          "sourceSha256": "2abf7f8642a0bb53dadc51710dabf6e4bbcdf85a5758a6810286fdb45d29e30e",
+          "publishedMapSha256": "68960ab8fddeb86c6eb2b5b38964203a5ac2bf380d2292be5819baf1a0df75d0",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/cdpErrorConstants.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/cdpErrorConstants.ts",
+          "sourceSha256": "e14f5320f1b537555087b1198403d63186079b428b2d2d04b3f55c8600527a23",
+          "publishedMapSha256": "45afa068654845dfd5ccaea34dfc71573517ef12f88abc89bcf63ba2b625d403",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "cdp/cdpMessage.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/cdp/cdpMessage.ts",
+          "sourceSha256": "ae17baacf3c1a3f8890996609a8d14f3d9da9a23b6bd2f56fba142282acbe6df",
+          "publishedMapSha256": "907feb94cbedf559f9a32ab5f29d278d09feebc5332960f2355449ac31d76496",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/cdp/CdpProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/cdp/CdpProcessor.ts",
+          "sourceSha256": "57ddfc6245acbfab1553c5918e1b23b532811f6b921882a3ef076f8f3d57cfd9",
+          "publishedMapSha256": "54ff905667fd3501f726d907195f591b1b98b493a8ed7d4a05b06c7570dcc6fa",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/cdp/CdpTarget.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/cdp/CdpTarget.ts",
+          "sourceSha256": "5d90333fa911c6a2186d8d42b5084addf15adb295af555235d5ba472d03bf058",
+          "publishedMapSha256": "b44d3cd60f51ef16404ab0e69cc484c55fb47612d977c328d251242ac0cbf354",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/cdp/CdpTargetManager.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/cdp/CdpTargetManager.ts",
+          "sourceSha256": "fd628d25a1406ec65b36b5f930fd8e318d71134b08a90f8eb0672259a7cce7c7",
+          "publishedMapSha256": "bd7562ccdf75efbaf71f22260acaa37b3b2fba30d4dfe701fd06b497f765b581",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/script/ChannelProxy.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/script/ChannelProxy.ts",
+          "sourceSha256": "f5ce4b1c53449b17b5c7f3449d9db2dd23639da7556b5e88bda4b86e59bd5302",
+          "publishedMapSha256": "192a7635e7bda9d5bc27e1151485162cf85be0a529da852264196c0de0fc3c07",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol/chromium-bidi.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/protocol/chromium-bidi.ts",
+          "sourceSha256": "152db4214cf40d5e0e90c167939c0e38e49aa337e3d7317dbb439039841fdd7a",
+          "publishedMapSha256": "268b156c54fd9ebcfcc3a2bd3bb0ac5839b4cc3b14e7898b1e2f3368fa8b4033",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/network/CollectorsStorage.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/network/CollectorsStorage.ts",
+          "sourceSha256": "c3906a13395737a69cb5fecb8750277ff72cb5e8060b19705e967ab890348cb6",
+          "publishedMapSha256": "01c4a319e8deab4c0770c29428675a032af7ebb9c74f65420f024ac3b3a7c1dc",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/CommandProcessor.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/bidiMapper/CommandProcessor.ts",
+          "sourceSha256": "99f0829fc884630f5aca321024fd44a18664caa200ae9c6ad2d825bd7ff3bab3",
+          "publishedMapSha256": "fd1fd0632da40a6e0c48553df341b00f39e8daca084137dd48c454b3e7171de6",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/browser/ContextConfig.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/browser/ContextConfig.ts",
+          "sourceSha256": "61493c42f321c3c3fc8d388bdd3033b86d94c31f2f5935aaa1427df9f6499c83",
+          "publishedMapSha256": "83e73d4989a4bb618bc67c585f70920fdb1460c20b508b07da0dbdf42b31b17f",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/browser/ContextConfigStorage.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/browser/ContextConfigStorage.ts",
+          "sourceSha256": "06caeae18dfbb7a3f6b3f2d5cffca39af1ed7f6f39bd6b1fc8593a10a5550fa6",
+          "publishedMapSha256": "cdf47e5edd97659c9cdc6c7ce862a417269cb55840acb3bf72199b4ff4bbaada",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/DefaultMap.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/DefaultMap.ts",
+          "sourceSha256": "23b75903a7dbdada9895478034da74349ce70d1da5d9e456c98e412fce0624ea",
+          "publishedMapSha256": "690b80f000755bf7dc0ca1c082be42b4e5d2d0ddd1eb10303f409b2efaecff91",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/Deferred.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/Deferred.ts",
+          "sourceSha256": "6e73aae9f04347c85ab62927c5b0b9f4a8585e814ee75ad72f1916129ed00723",
+          "publishedMapSha256": "d3c1c807b3f6e7a427c61f27ad93be87bc750cc165bdc7d248e93262f9016832",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/digitalCredentials/DigitalCredentialsProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/digitalCredentials/DigitalCredentialsProcessor.ts",
+          "sourceSha256": "65c7db3f2b822eda5874b5545df0348da387b1d1897d38a28668c8037ad614fd",
+          "publishedMapSha256": "699b203e4e6811cbbd24aaf6693205f09f42e101fe48775da3a7cc8f33076401",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/emulation/EmulationProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/emulation/EmulationProcessor.ts",
+          "sourceSha256": "0f8183a525651578c383d52f2a232a7f9bd29cc302967d5c83bdcb6fbe4f9a75",
+          "publishedMapSha256": "f7646100569215e9225c084fab8f435075b55b2e059047fbb5487265b22f827a",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol/ErrorResponse.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/protocol/ErrorResponse.ts",
+          "sourceSha256": "26d5a47aae60cbfed8a9be25c47ad5c770f86b84e722a72a82986e89dd2eea5a",
+          "publishedMapSha256": "42b20ed2081cf18fd0fc7789e16d84366a1f842c367cbadbdc09f04c59e45db9",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/EventEmitter.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/EventEmitter.ts",
+          "sourceSha256": "3b690554c3ddcf571fa1255c349a673a1e4ad265a146f30b57fe8af859c9e2d1",
+          "publishedMapSha256": "6d5957a5a0b3f3486aae53990d6ecc53c5ed56f5eb1ccbb992728d60bcd8ea1b",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/session/EventManager.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/session/EventManager.ts",
+          "sourceSha256": "7a46405d93e76ae2ad512d0395ac77998998e36c909d7bac61101e439a8f84ef",
+          "publishedMapSha256": "654f6b5ef83db97ee616d279dcdb29fd9a9de9888b277853831890b999bed83e",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/session/events.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/session/events.ts",
+          "sourceSha256": "53e68bc1a6e261497956d4a6c7c19e681f65b207cac2e67a4484742ce0b56a30",
+          "publishedMapSha256": "39ec7e3b8034af4a2ecef89f0cf93943443476a3026d5c62632208e8e8a42001",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/graphemeTools.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/graphemeTools.ts",
+          "sourceSha256": "3ea11a10df746895baa3d740d996cb1aa5999639f8cc72f9ebad09a87752ccde",
+          "publishedMapSha256": "c46aeaf37036e9ae1e062a49a90e6d57680678f0bd4adb19c6fc9e7ca40f53ae",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/IdWrapper.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/IdWrapper.ts",
+          "sourceSha256": "6cc61fac274e72939812ad30a8ca2a94dd8358955704d2d1def610e02d458bc3",
+          "publishedMapSha256": "e82f4c15fc6718fc0ed388693af2d38c1298116350ac50f01bb12cfd6415fe4d",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "index.ts",
+          "upstreamSource": "../../../../../../third_party/chromium-bidi/src/index.ts",
+          "sourceSha256": "d3950c33b4b149c46ec57361a8d04126f6cc1c6b6d703098f851f093f6c5f8e3",
+          "publishedMapSha256": "8be8b2c9b6dc2dd29f36fd93b82c5af7f6b47902f00059ddbbc217d5c6102b58",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/input/InputProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/input/InputProcessor.ts",
+          "sourceSha256": "8aca775d70aabe4a4e7c57d75259c9774726f2ef7f732d703a2c00ece0bc0d1a",
+          "publishedMapSha256": "1ee8a6c05a6d7a4f8e864e89aa8c8624fe913990729bd0e73d8dcc4840e4b4d6",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/input/InputSource.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/input/InputSource.ts",
+          "sourceSha256": "3d174c117521e0d35e3200649f03960729cb0dc9316202ec1b93fcd1a09d42f5",
+          "publishedMapSha256": "6b34e18d2576c2a6608ec6cff7548453b493e71ce918b46d2470228c3bb3fb33",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/input/InputState.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/input/InputState.ts",
+          "sourceSha256": "e73b75dc6446d4f9cb9908734cdf636740fb1f456db2ff4a90a4f2ca073edb7f",
+          "publishedMapSha256": "6988732bfd630a582e353d1c2c2c144e318a821eda9b9f1c6a722850084be526",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/input/InputStateManager.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/input/InputStateManager.ts",
+          "sourceSha256": "4b61c422b66173a61b2d7efec4e064ec93d6dd47f5610aa321521a7f5edef978",
+          "publishedMapSha256": "22b68e5972387b846ac0b2d63a5de916818e47f20054f3ca48579794e9bd9bcf",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/input/keyUtils.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/input/keyUtils.ts",
+          "sourceSha256": "e540935f3a5801a9db35ece14a4a107bc6e03cb4ca56751126532fb296b6c9b3",
+          "publishedMapSha256": "4a08513b8f670fec450e3942bb35fd08f2a20b7d20ea76d3cec21ade807ad4a8",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/log.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/log.ts",
+          "sourceSha256": "dfa974876e0e87b30d9319e5379e0de5e5d613193e703de04f1e5845d9754e60",
+          "publishedMapSha256": "8c52374ef5afe581068f6c356cc7e390f3c1c361f1d2f875ccc224e929539ed5",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/log/logHelper.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/log/logHelper.ts",
+          "sourceSha256": "2d84570fa700e9ba8cac41f9c28555830ed410e92953ee5cadd498c56cadd2c6",
+          "publishedMapSha256": "9a7c567942cb89e17d66c40d8cf9d562581c0779be8f0f06a1f551ea8f611dbc",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/log/LogManager.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/log/LogManager.ts",
+          "sourceSha256": "369809817ef37f55f1f74b18e88cfe5352f44fad8f2dec2718550b181ae12e68",
+          "publishedMapSha256": "e42fb394d85f13108bc29420886c322b28eb2dc7315264d630ba762c63d9ef4e",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/MapperOptions.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/bidiMapper/MapperOptions.ts",
+          "sourceSha256": "e8d9835e2545f71ec1e40985638c2f6af5003b4b4560aa87f0183ae4d89592f0",
+          "publishedMapSha256": "571b83caedef3112e71c5c90c9cbe92c70b7194d2033cf01d890a847f9992ba0",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiTab/mapperTabPage.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/bidiTab/mapperTabPage.ts",
+          "sourceSha256": "e2d4652b552d0bd7c6a7ccdfa2090e24862a306f6b74483296d588df3f5278c1",
+          "publishedMapSha256": "ba00ee1e7a551c6e9db2a8975babaf092998fddc728a06d242a7ce0363d7a643",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/Mutex.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/Mutex.ts",
+          "sourceSha256": "0255a291ce52ead96995e5a5cfcfef7db53f99b1ec5e6ac00bd249accc97d850",
+          "publishedMapSha256": "51b14f147e35f9072ce20edaf148e1922f0d156a534ea5fcdd72746119ad5d65",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/context/NavigationTracker.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/context/NavigationTracker.ts",
+          "sourceSha256": "e436fe347a20d1e527fdc225bb6e3d3ffc4b783e1cb5358fedb5ff2c4fb93e02",
+          "publishedMapSha256": "e77cdd5c44ddb32c9af7fc2157513fb8c37c97093d4d3cbb693817fb54ba319f",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/network/NetworkProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/network/NetworkProcessor.ts",
+          "sourceSha256": "a7da95f6ffb8acca82391968e01550de7c6cf924be55e9cfcd146b9d62905025",
+          "publishedMapSha256": "ca680169220c54e9cd38a3f44bcbad85aac697eeab156506372673b9cbbeb883",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/network/NetworkRequest.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/network/NetworkRequest.ts",
+          "sourceSha256": "fdd729078628ac6450ae4e3c1b4e2ea08b0c9596279e9eb3770f1b020da39825",
+          "publishedMapSha256": "6c1867848cf47166a76cbf08272fdab9e22a6c04faa5b158a464966f4f10d9e2",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/network/NetworkStorage.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/network/NetworkStorage.ts",
+          "sourceSha256": "77d1671cc216ca3c98a1a4eceaface79e59f5dc4b7fcdd7934d5faeb40fef3f6",
+          "publishedMapSha256": "25dd426d75610bbc851fe382fcdd2b004b88390091b3b2b0a2e51696a50429f0",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/network/NetworkUtils.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/network/NetworkUtils.ts",
+          "sourceSha256": "f68283818cac12d3e73c87aaef79423dea716e01c0217f016b12edeebc15a562",
+          "publishedMapSha256": "f2a2c811fd6117293ee5184667ea2f14a3337709f7b2222d3cda56955c14b11a",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/OutgoingMessage.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/bidiMapper/OutgoingMessage.ts",
+          "sourceSha256": "aee6f4e1b222c49d4fc169fd6ffc54cacd9c3b8a5894920e1edba4b0273ed38f",
+          "publishedMapSha256": "155ea639cf5ab63b8f053efb3a977bbccbd1d60fc6b588b959652168c9758868",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/permissions/PermissionsProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/permissions/PermissionsProcessor.ts",
+          "sourceSha256": "853a1617924f6fcae080e7b64c8eb4f4a6a8def03a37eb14571a0cd23a1ce07b",
+          "publishedMapSha256": "db2d84fd050b796302dac4b7c239d532e4191a1ad7d8592589a04509ddd72430",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/script/PreloadScript.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/script/PreloadScript.ts",
+          "sourceSha256": "4e2c273c632f4d5da60e9ad20ad914f7c7fa8d3022323319a99ec43ad8b50c20",
+          "publishedMapSha256": "33495244d5e95213d74f32c8f80532a2cd19008b99c28a4b171602508c2e401d",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/script/PreloadScriptStorage.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/script/PreloadScriptStorage.ts",
+          "sourceSha256": "d4621c840cae2b10d78a217ca2f559198e66c59407a1eb7dc3bbb2b353433c64",
+          "publishedMapSha256": "91a8d879ec01958129d88f31b00cab34e5076cb4daf1e4501276c972518d79fd",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/ProcessingQueue.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/ProcessingQueue.ts",
+          "sourceSha256": "70e67c673bd09303560c9da432dcce73fbe3e41adb45f0395b9b9c93766c404d",
+          "publishedMapSha256": "bd987749c0d6d9c70be937200e37b12486e4ec13810723fe69c4c0b49e7ae24a",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol-parser/protocol-parser.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/protocol-parser/protocol-parser.ts",
+          "sourceSha256": "1cbc2b29a5ab7705ad6e13da8d2d81e4d3518e013633055d1cede50d313218b9",
+          "publishedMapSha256": "37b2ed183083917dca8268bcb615b27c2e2f6ca66456d086285f6efd0ad133a0",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol/protocol.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/protocol/protocol.ts",
+          "sourceSha256": "bcb56c7f4a281748be30a08903c318409b177e8f3686b599c0e989093f0716b2",
+          "publishedMapSha256": "0b514550179b639f0f9a6d7cef5753a72b2f9bb301788dfcd61fbc5a6aad77da",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/script/Realm.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/script/Realm.ts",
+          "sourceSha256": "90fafed3a39fe6cf93942a6c0f2d74be492dd0bb6ed3e14abdefd8a58f368007",
+          "publishedMapSha256": "caccd8c8e65802b0ba689951f7efbc573010b038a53c73951d94dad9d89057e0",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/script/RealmStorage.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/script/RealmStorage.ts",
+          "sourceSha256": "163d7304e36839422a0a67a0a0d4a39150d00ebdc70f27c6314ad4f9e5b9df09",
+          "publishedMapSha256": "17d955aa0bc6904cc3805003a7bdaec8847ed0a5f5e9c37333a932631165b9e9",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/result.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/result.ts",
+          "sourceSha256": "ec80492d2739581090babf771913bffaab10ce5c4b476ed84bfeeb37c5a5e313",
+          "publishedMapSha256": "54123f6165fe9ef45552b9904f96e737186523baf8032d44e815b2c5ee148127",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/script/ScriptProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/script/ScriptProcessor.ts",
+          "sourceSha256": "9e7d19d08b64262e05d5b7c33e7ad7efb2b2587dbfa17d56fedc8c0662acc690",
+          "publishedMapSha256": "85211bbbe9a0bd0e491f935c412d42b9da312deec62b936868823956c8ef6db1",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/session/SessionProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/session/SessionProcessor.ts",
+          "sourceSha256": "2df6266d78bc03a61320b9f08bf95e4904d8617b15bfbfe0824627f5580bc15a",
+          "publishedMapSha256": "c2ae12755abc0d4ff386dfc989f62f2577c4e0f276a9b1d66236f86824e3c617",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/script/SharedId.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/script/SharedId.ts",
+          "sourceSha256": "75dc69c59df9c0470bee5f023962eb5e82b1bd13be5dd05ba47aaf25a5c927db",
+          "publishedMapSha256": "6e023fd94b9e713cf219107d1166b7ecdff688fdc3acdfa0455c20ca1f3ca846",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/speculation/SpeculationProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/speculation/SpeculationProcessor.ts",
+          "sourceSha256": "1f5cb43cfe7edb711c7a86dc9d5123ef75ddbd44ccdbd6521847d935e1f4411a",
+          "publishedMapSha256": "d02c5bc8547dea41d073b6e91bbbf3dc8566d1af1ce8995dc10f7c38d0779119",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/storage/StorageProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/storage/StorageProcessor.ts",
+          "sourceSha256": "3cbe301d3f7c7f4d71e1af57f10f9bd0b5b812d897f90205b756dc96c38285f2",
+          "publishedMapSha256": "e28661089932e652990523dc70c59d3b4b1d0a195176d240bcfda8e936d1245b",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/session/SubscriptionManager.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/session/SubscriptionManager.ts",
+          "sourceSha256": "8082f00a7f181a5e23153b363fa69b17f4ffdfce3df2752b0a23762a317f4e3e",
+          "publishedMapSha256": "66680369b09e57a452e1c111ae596c574769ae0cb6364f6084101d6f71fde251",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/time.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/time.ts",
+          "sourceSha256": "c426b734dd13663a3f76ca9ad65ef5a2fbf6eb917a7f8b2e624a67ec6ee8dde8",
+          "publishedMapSha256": "5934ae1ca84d70f3a9737e294f23bfcf4a0fa75bd5a1f5a17b2723f250a1d05f",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiTab/Transport.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/bidiTab/Transport.ts",
+          "sourceSha256": "0ec0423b746e4b80a740bc08bd88455ca29461ba3fa7dbb63100c9f92e58892f",
+          "publishedMapSha256": "642c865046ea80aeed26433af733792e202bfe7de9b3bcc51b99b0878d24787a",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/transport.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/transport.ts",
+          "sourceSha256": "4ce2ea521bf28ce7424c5c7ca1c8704bc50779670aa7d2f65670eb3cdbf86070",
+          "publishedMapSha256": "d0cc8ec02543873e4f7cefc42b6df3bc4ae4e69c7c020d2a7d6d7491cd535824",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/unitConversions.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/unitConversions.ts",
+          "sourceSha256": "690695b792f0346d2da8ea36c1f945aa46a79a098a9595660415778b034daf88",
+          "publishedMapSha256": "3d7a3b0a6131c11d049851d458f82cc2f75ff3fc9299685c1356a5703b03c893",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/urlHelpers.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/urlHelpers.ts",
+          "sourceSha256": "990792602c3a4875497267f54521504f17a9da311ad00287a307b19b8f3c5bd1",
+          "publishedMapSha256": "e7ebc23a76cefe27eda862805bbaac353b73a6331d0cfadc8c018862a5a5c1b2",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/browser/UserContextStorage.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/browser/UserContextStorage.ts",
+          "sourceSha256": "b079fc09a5e558857f0d7ec8d4ee3fa1bd5d8c9cf80189a0b2a552fdd8d43626",
+          "publishedMapSha256": "a3af71d761538c4de3237f84bd699515c4f3b8063d65e502991a7bb052bfd8af",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/input/USKeyboardLayout.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/input/USKeyboardLayout.ts",
+          "sourceSha256": "cd637e035ba673a9167d6072690364e5b25a0277aa10e17dc717d52ffd36411f",
+          "publishedMapSha256": "58affedc004e2f117791e07e15f8acf90e8aeecf3e14c625b8833e6d2799f835",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "utils/uuid.ts",
+          "upstreamSource": "../../../../../../../third_party/chromium-bidi/src/utils/uuid.ts",
+          "sourceSha256": "0c60fb4ac255a09dcd0feaebe9e2d60c6cd18b9da4075a6698ac3437dee68205",
+          "publishedMapSha256": "2fa0fcee3513f4e2f205410314fd2c6de2d8608d02269beae093221901be389b",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol-parser/generated/webdriver-bidi-bluetooth.ts",
+          "upstreamSource": "../../../../../../../../third_party/chromium-bidi/src/protocol-parser/generated/webdriver-bidi-bluetooth.ts",
+          "sourceSha256": "391e777d601425b893eded40703832ee89e3d662d73b5131ce7831ef7d9400b2",
+          "publishedMapSha256": "b824d443d761aea1fe280117660a0b5497a25f31753a379a27fe29ccacd1c590",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol/generated/webdriver-bidi-bluetooth.ts",
+          "upstreamSource": "../../../../../../../../third_party/chromium-bidi/src/protocol/generated/webdriver-bidi-bluetooth.ts",
+          "sourceSha256": "b6b8ae5a5817a2782ff90aa896c00ef37dad6f717d775eddcd146a536b7775dc",
+          "publishedMapSha256": "2b8b48bbe9f89c85679f479b315050a1760dae659f02b8046dd5a55287314e4b",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol-parser/generated/webdriver-bidi-digital-credentials.ts",
+          "upstreamSource": "../../../../../../../../third_party/chromium-bidi/src/protocol-parser/generated/webdriver-bidi-digital-credentials.ts",
+          "sourceSha256": "43245e3180c492f66686d3318b25b6b3992931fe7c576fb53c89682f70094f62",
+          "publishedMapSha256": "7716f33eaa9f3d5f6e1db7c2eebf50cc2f09c85330cebfc11aad19ff2d729d11",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol/generated/webdriver-bidi-digital-credentials.ts",
+          "upstreamSource": "../../../../../../../../third_party/chromium-bidi/src/protocol/generated/webdriver-bidi-digital-credentials.ts",
+          "sourceSha256": "8b59280fb56d964d46b050920682d8c557eb61e2676d01b418e7b89c889a9a12",
+          "publishedMapSha256": "51fa03b9c44036a44e99c6ccb312a1ea717196a9fac672d01675d840a30ba2c1",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol-parser/generated/webdriver-bidi-nav-speculation.ts",
+          "upstreamSource": "../../../../../../../../third_party/chromium-bidi/src/protocol-parser/generated/webdriver-bidi-nav-speculation.ts",
+          "sourceSha256": "1fa6cc6d946953af90ae654ece69a84167eeb23bbefe25f70b81155efbd09c5b",
+          "publishedMapSha256": "b4c0af50363c367b065c831a10f208c964c906e6876d7bb0a8b556e7e3a97596",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol/generated/webdriver-bidi-nav-speculation.ts",
+          "upstreamSource": "../../../../../../../../third_party/chromium-bidi/src/protocol/generated/webdriver-bidi-nav-speculation.ts",
+          "sourceSha256": "327262847025ef1ae16fc73294924f8d4928aada5b6ababdfe36a35b81d596e6",
+          "publishedMapSha256": "6e408016a8e2b37d619e64c037b7e8e0d3f1bd1fac03b465d7719feab2f0ffef",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol-parser/generated/webdriver-bidi-permissions.ts",
+          "upstreamSource": "../../../../../../../../third_party/chromium-bidi/src/protocol-parser/generated/webdriver-bidi-permissions.ts",
+          "sourceSha256": "819004c7777492cd624094380f8f149eb8c74b46acc07e68b8dca1a14301fa77",
+          "publishedMapSha256": "e080494835f67078384af142ed5dd1f9d3a389f0444c47662962f103b9098fef",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol/generated/webdriver-bidi-permissions.ts",
+          "upstreamSource": "../../../../../../../../third_party/chromium-bidi/src/protocol/generated/webdriver-bidi-permissions.ts",
+          "sourceSha256": "31b919844d466d18335fa3aee95631887e25a2e885fe7eb2abd8849983539ff0",
+          "publishedMapSha256": "94d7e0274126af5b9f565b25c4bde09a54a0af03c98acef9df3e009b3db20123",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol-parser/generated/webdriver-bidi-ua-client-hints.ts",
+          "upstreamSource": "../../../../../../../../third_party/chromium-bidi/src/protocol-parser/generated/webdriver-bidi-ua-client-hints.ts",
+          "sourceSha256": "fa240c66633a13ae9f49d0da14193e49027da601ff2e489afee0353afbe6449c",
+          "publishedMapSha256": "2e6769a139d14e3c6b2208e92edc9f1b7fe098cf2166c4dcf4e049d7b405e012",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol/generated/webdriver-bidi-ua-client-hints.ts",
+          "upstreamSource": "../../../../../../../../third_party/chromium-bidi/src/protocol/generated/webdriver-bidi-ua-client-hints.ts",
+          "sourceSha256": "82f4ff79b0aae306c901ae3488cba49292d9c3383efa6722cc6530a5e8556677",
+          "publishedMapSha256": "95299098879bc106842d117b73992b8a5a2d30489f2e56b26db1663cc77a2e6b",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol-parser/generated/webdriver-bidi.ts",
+          "upstreamSource": "../../../../../../../../third_party/chromium-bidi/src/protocol-parser/generated/webdriver-bidi.ts",
+          "sourceSha256": "25a5237f6c5691ed256156e57e83c69ebc3d96e5660051307104179c2b109aaf",
+          "publishedMapSha256": "8390f7e1deb6cdd6c74cdbf202929fc99ff37e3cf7cd055b5eede5546c550b35",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "protocol/generated/webdriver-bidi.ts",
+          "upstreamSource": "../../../../../../../../third_party/chromium-bidi/src/protocol/generated/webdriver-bidi.ts",
+          "sourceSha256": "3f8ff8874e90a6411fc8ae2988bfc0417551ae48b457fec354dfe2e3d653a22a",
+          "publishedMapSha256": "9c41476bc6ebdefe4aa7682f817459dc849c882148ea7b818c3da76a29016618",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/webExtension/WebExtensionProcessor.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/webExtension/WebExtensionProcessor.ts",
+          "sourceSha256": "2a9df103b5f712f4cadd7c2d17d08776a3d5c7ce86194267ba114b1e62c24676",
+          "publishedMapSha256": "05a457d660351dbed42ebbc058f2139cb3a2b25ff8b43665e3b595aeb93d8d9e",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/script/WindowRealm.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/script/WindowRealm.ts",
+          "sourceSha256": "030bc07819aef3a039456ccbf27a089bbf1e846609fcf666d98074aa00b5ee6c",
+          "publishedMapSha256": "d7d8a136a6760006a719fc0d39ddc4fec788e05ed4b29b381bc0a36143cc90f5",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        },
+        {
+          "path": "bidiMapper/modules/script/WorkerRealm.ts",
+          "upstreamSource": "../../../../../../../../../third_party/chromium-bidi/src/bidiMapper/modules/script/WorkerRealm.ts",
+          "sourceSha256": "280b21f29c375fba3b2c1762b9404f0b48068215498bc65265b4529f8ed4a14f",
+          "publishedMapSha256": "f9befbfd6d37c208b7798ef541b1b338b84cb4c9b5d880fd5feac24636ba94dd",
+          "correspondence": "published tarball sourcesContent matched retained installed source exactly"
+        }
+      ]
+    }
+  ]
+}

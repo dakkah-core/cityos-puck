@@ -157,3 +157,47 @@ test("Nextra content migration preserves every MDX route and interactive example
     assert.equal(digest(source), sha256, path);
   }
 });
+
+test("owned Nextra renderer guard rejects MathJax explicitly without changing KaTeX settings", async () => {
+  const { assertSupportedLatexRenderer } = await import("../toolchains/nextra-stable-docs/source-overlays/src/server/math-renderer.ts");
+  for (const value of [undefined, false, true, { renderer: "katex", options: {} }]) {
+    assert.equal(assertSupportedLatexRenderer(value), undefined);
+  }
+  assert.throws(() => assertSupportedLatexRenderer({ renderer: "mathjax" }), /NEXTRA_MATHJAX_UNSUPPORTED/u);
+  assert.throws(() => assertSupportedLatexRenderer({ renderer: "unknown" }), /NEXTRA_UNSUPPORTED_MATH_RENDERER/u);
+  const prefix = "scripts/toolchains/nextra-stable-docs/";
+  for (const path of ["src/server/index.ts", "src/server/compile.ts"]) {
+    assert.match(read(`${prefix}source-overlays/${path}`), /assertSupportedLatexRenderer\(/u, path);
+  }
+  const provenance = json(`${prefix}provenance.json`);
+  assert.equal(provenance.activationAllowed, false);
+  assert.deepEqual(provenance.manifestChanges.removeDependencies, ["better-react-mathjax"]);
+  assert.equal(provenance.retiredSource.length, 1);
+  assert.doesNotMatch(read(`${prefix}source-overlays/src/client/components/index.ts`), /better-react-mathjax|export.*MathJax/u);
+  assert.doesNotMatch(read(`${prefix}source-overlays/src/types.ts`), /MathJaxOptions/u);
+  assert.doesNotMatch(read(`${prefix}source-overlays/src/server/schemas.ts`), /MathJaxOptionsSchema|MathJax3Config/u);
+  assert.doesNotMatch(read(`${prefix}source-overlays/src/server/rehype-plugins/index.ts`), /rehypeBetterReactMathjax/u);
+  assert.match(read(`${prefix}source-overlays/src/server/compile.ts`), /latex && remarkMath/u);
+  assert.match(read(`${prefix}source-overlays/src/server/compile.ts`), /\[rehypeKatex, latex.options\]/u);
+  assert.match(read("apps/docs/next.config.mjs"), /nextra\(\{ latex: false \}\)/u);
+});
+
+test("owned Nextra preservation packet guards every route, example and public source boundary", () => {
+  const input = json("scripts/toolchains/nextra-stable-docs/acceptance-inputs/preservation.json");
+  const fixture = json(input.routeFixture);
+  const actualRoutes = [...files("apps/docs/content")].filter((path) => path.endsWith(".mdx")).sort();
+  const actualExamples = [...files("apps/docs/content")].filter((path) => path.endsWith(".examples.tsx")).sort();
+  assert.equal(input.expectedRoutes, 117);
+  assert.equal(input.expectedExamples, 44);
+  assert.deepEqual(actualRoutes, fixture.routes.map(({ path }) => `apps/docs/content/${path}`).sort());
+  assert.deepEqual(actualRoutes, input.routes.map(({ path }) => path).sort());
+  assert.deepEqual(actualExamples, input.examples.map(({ path }) => path).sort());
+  assert.equal(actualRoutes.length, input.expectedRoutes);
+  assert.equal(actualExamples.length, input.expectedExamples);
+  for (const { path, sha256 } of [...input.routes, ...input.examples, ...input.publicBoundarySources]) {
+    const actual = createHash("sha256").update(read(path).replaceAll("\r\n", "\n")).digest("hex");
+    assert.equal(actual, sha256, path);
+  }
+  assert.equal(core.name, input.publicPackage.name);
+  assert.deepEqual(core.exports, input.publicPackage.exports);
+});

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "cityos.nextra-stable-docs.producer-inputs.v1",
+  "status": "authored-not-executed",
+  "versionAuthority": {
+    "toolchain": "config/toolchains/node-typescript.json",
+    "dependencies": "pnpm-workspace.yaml#catalog"
+  },
+  "requiredToolCatalogKeys": [
+    "tar", "esbuild", "typescript", "react-compiler-runtime",
+    "@svgr/core", "@svgr/plugin-jsx", "@svgr/plugin-svgo",
+    "babel-plugin-react-compiler", "react-compiler-webpack"
+  ],
+  "typescript": {
+    "mode": "Owning TypeScript 7 CLI only, with no compiler API imports",
+    "moduleResolution": "bundler",
+    "target": "es2022",
+    "skipLibCheck": false,
+    "exclude": ["src/**/__tests__/**", "src/**/*.test.*", "src/**/*.spec.*"],
+    "declarations": "TypeScript 7 emitDeclarationOnly from the prepared TypeScript source. No declaration editing or source-template copying into dist."
+  },
+  "svgSourceProducer": {
+    "tools": ["@svgr/core", "@svgr/plugin-jsx", "@svgr/plugin-svgo"],
+    "configuration": { "exportType": "named", "namedExport": "ReactComponent", "typescript": true, "svgoPlugins": ["removeXMLNS"] },
+    "rule": "Generate TSX intermediates from exact upstream SVG input, with upstream named exports, before TS7 checks and declarations. Preserve the public ReactComponent signature through the exact upstream src/icon.ts type, replacing its former declaration alias at the TypeScript source level. Change only source import specifiers ending in .svg to the matching generated .js basename. Reject collisions or unexpected export syntax. This replaces upstream's generated-declaration SVG alias patch without adding a compiler API binding."
+  },
+  "runtimeProducer": {
+    "emitter": "catalog esbuild, bundle:false, ESM, es2022, automatic JSX",
+    "reactCompiler": "Compile and use the exact retained upstream esbuild React compiler plugin; its target/configuration remain unchanged. Stable dependency API compatibility requires acceptance.",
+    "nodeImports": "Preserve upstream's removal of node: prefixes through a source-load transform before emission.",
+    "layout": "Preserve src-relative dist entrypoints, loader.cjs, styles and dist/client/package.json sideEffects:false."
+  },
+  "packing": {
+    "tool": "Existing runPinnedPnpm via scripts/toolchains/run-pinned-pnpm.mjs",
+    "format": "Native pnpm pack tarball with the original files/exports metadata and retained MIT license",
+    "output": "An explicit new child of .build/nextra-stable-docs; no overwrite, install, provider registration or root-manifest write",
+    "promotion": "Forbidden until two independent matching output inventories, provider/content acceptance and portable native catalog integration evidence exist."
+  },
+  "typeScript6": "No new TypeScript API consumer is introduced. This producer uses TS7 declarations directly. The existing exact tsup compatibility binding remains untouched.",
+  "kaTexConsumerSeams": [
+    { "consumer": "nextra@4.6.1", "source": "src/server/compile.ts", "api": "rehype-katex selected by latex:true or renderer:katex" },
+    { "consumer": "nextra@4.6.1", "source": "src/server/compile-metadata.ts", "api": "Unconditional remark-math metadata parsing" },
+    { "consumer": "rehype-katex@7.0.1", "api": "katex.renderToString, displayMode, strict/error fallback", "range": "^0.16.0" },
+    { "consumer": "micromark-extension-math@3.1.0", "api": "KaTeX-backed HTML extension and types", "range": "^0.16.0" },
+    { "consumer": "mermaid@11.17.2", "api": "Diagram math labels through KaTeX", "range": "^0.16.47" }
+  ]
+}

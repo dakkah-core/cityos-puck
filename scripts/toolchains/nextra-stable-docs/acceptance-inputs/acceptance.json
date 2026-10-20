@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "cityos.nextra-stable-docs.acceptance-inputs.v1",
+  "status": "prepared-not-executed",
+  "activationAllowed": false,
+  "executor": "Parent task in a serialized primary-checkout qualification window",
+  "sourceRegistration": "Appended tests in scripts/cityos/dependency-migration.test.mjs exercise the authored renderer guard and exact preservation inputs without registering a provider.",
+  "providerRegistration": "Import registerProviderAcceptanceInputs from provider-input.mjs and supply test/packageRoot for the real generated package. No test auto-registers on import.",
+  "control": "Use original 4.6.1 as the retired-API control. A missing dependency, import exception or unrelated build failure does not reproduce successful retirement. Type negatives must distinguish accepted upstream MathJax from explicitly retired candidate API.",
+  "generation": [
+    "Select the exact canonical Node in the shell. Provide only reviewed stable tools through the owning catalog; no install is performed by this generator.",
+    "Set NODE_ENV=production and run generate.mjs with an explicit new child of .build/nextra-stable-docs. The producer verifies archive/source/packet/preservation hashes before creating output.",
+    "Build twice in different fresh bounded paths. Compare the entire packed runtime file inventory, JS, declarations, schema-generated types, styles, licenses and manifest. Record tarball hashes and explain any archive-only metadata difference before making a reproducibility claim.",
+    "Inspect complete generated JS/declaration imports and dependency edges. No better-react-mathjax, mathjax-full, MathJaxContext, MathJaxOptions, renderer:mathjax declaration or retired rehype integration may remain; explicit unsupported-error text is expected.",
+    "Compare retained baseline package layout and all non-retired export shapes with the candidate, including client directives, SVG named exports, React compiler behavior and all wildcard subpaths consumed by docs. No emitted-file editing is allowed to make parity pass."
+  ],
+  "types": "Compile exports.type-input.ts with the canonical TS7 CLI and skipLibCheck:false in the isolated candidate consumer. Verify the actual docs/theme public consumers and generated declarations. Existing exact tsup TS6 policy remains unchanged; this producer adds no TypeScript API consumer.",
+  "content": [
+    "Require exact route-set equality against both the 117-route existing fixture and preservation.json; compare all 117 route and 44 example LF-normalized source hashes, plus the existing reconstructed-body fixture assertions.",
+    "Build the actual docs app, including its postbuild sitemap and Pagefind output. Exercise every enumerated route and check metadata, TOC, source-copy content, navigation, 21 Callout pages and interactive examples.",
+    "Qualify ordinary/release/canary base paths and existing redirects. Exercise browser hydration and inspect actual runtime errors and requests; static source hashing is not browser evidence.",
+    "Preserve public core/RSC/internal/CityOS exports, CSS and current four recipes. The existing demo smoke is a separate main-owned check and is not edited by this packet."
+  ],
+  "kaTex": "Run real compileMdx fixtures for disabled math, latex:true, explicit KaTeX, inline/display/fenced math, macros and invalid-input fallback on the current family. Preserve compile-metadata's unconditional remark-math parsing. A KaTeX 0.19 transition needs separate consumer API/type/runtime cases and source changes.",
+  "portableIntegration": "Complete integration-inputs.json proof on native pnpm 12, Windows and POSIX, moved checkout/artifact layouts, frozen locks, exact theme peer resolution and four standalone bootstrap manifests. Source inspection of upstream native tests is not local integration evidence.",
+  "promotion": "No patch, hook, workspace enrollment, catalog binding, lock update or registry publication until full generation, reproducibility, public behavior and portable integration qualification is recorded and reviewed by the parent.",
+  "nonEvidence": "No generation, install, build, typecheck, test, browser, Git operation or provider activation was executed while preparing this packet."
+}

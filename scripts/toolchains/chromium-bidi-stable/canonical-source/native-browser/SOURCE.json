@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "cityos.chromium-bidi.native-browser-source.v1",
+  "productRevisionObservation": "155.0.8059.84",
+  "gitHead": "5869fe313571d75152b77813cf0a4ee26a4e6df0",
+  "evidence": "Chromium source support only; no browser launched. Emulation.setDeviceMetricsOverride exposes viewportMeta enable/default; setEmulatedMedia accepts features. Blink source handles the seven supported feature names. No browser revision changes follow from this source observation.",
+  "sources": [
+    {
+      "upstreamPath": "third_party/blink/public/devtools_protocol/domains/Emulation.pdl",
+      "url": "https://chromium.googlesource.com/chromium/src/+/155.0.8059.84/third_party/blink/public/devtools_protocol/domains/Emulation.pdl?format=TEXT",
+      "sha256": "c835f60fe9582cfa3469f5c851eb2626dcf9ce19157bafbf69028b62c99e8135",
+      "retained": "Emulation.pdl"
+    },
+    {
+      "upstreamPath": "third_party/blink/renderer/core/css/media_feature_overrides.cc",
+      "url": "https://chromium.googlesource.com/chromium/src/+/155.0.8059.84/third_party/blink/renderer/core/css/media_feature_overrides.cc?format=TEXT",
+      "sha256": "c86ef7bcfd427b894f20715deee0109ca2a5ebd82533bd621a1a94ec945738dd",
+      "retained": "media_feature_overrides.cc"
+    },
+    {
+      "upstreamPath": "LICENSE",
+      "url": "https://chromium.googlesource.com/chromium/src/+/155.0.8059.84/LICENSE?format=TEXT",
+      "sha256": "368cca1106be99d39ecd32a38d8305585d802a475effb66380b91ffc9bcf709b",
+      "retained": "LICENSE"
+    }
+  ]
+}

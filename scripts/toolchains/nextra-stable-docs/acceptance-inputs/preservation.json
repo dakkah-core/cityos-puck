@@ -1,0 +1,735 @@
+{
+  "schemaVersion": "cityos.nextra-stable-docs.preservation-inputs.v1",
+  "status": "captured-source-input-not-test-evidence",
+  "normalization": "UTF-8 without BOM; CRLF replaced with LF",
+  "routeFixture": "scripts/cityos/fixtures/docs-route-migration.json",
+  "expectedRoutes": 117,
+  "expectedExamples": 44,
+  "routes": [
+    {
+      "path": "apps/docs/content/docs/api-reference/actions.mdx",
+      "sha256": "3c602e96db6caa7186a6499a10761012d84d6e31da422a75569c2e0a54ab4f9d"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components.mdx",
+      "sha256": "cc3bc5d3ae25571da8788778b4a4f82d4d4bc2d1340d1415efe70f0e399588ef"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/action-bar-action.mdx",
+      "sha256": "8ac25facac6e9683da9f5401cfd74664113475378ddd7f802792853837dca4f6"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/action-bar-group.mdx",
+      "sha256": "3c7dd7790b37bdd3ee632af9177b8be3986c17c44108c9f5e1df0354a8eb21e8"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/action-bar-label.mdx",
+      "sha256": "8396bcbb391f886d93e12515f9623b352079abb8e899f73fd7b63d8c2df6e0e2"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/action-bar-separator.mdx",
+      "sha256": "1884fa2c528b179c8a96a169798bd682b466eac2026d89a1b5c458e292303c1d"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/action-bar.mdx",
+      "sha256": "1d8117e6c904ce5a7995c2a51ac0ac38dcb00197b0750408518f7cf45d272391"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/auto-field.mdx",
+      "sha256": "a119a110e9c1cd49d50dd974d78a0e5c6cc871070a7872fe1aef5c686e5a33ab"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/drawer-item.mdx",
+      "sha256": "c6c4a5e229fca46d3aa7f2d65b1ae6b6fc17623338cb9a36f81e7687a1791935"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/drawer.mdx",
+      "sha256": "3639b0fa9057535c36a75b9350159f49243efbcd739ce4ebabba3b4ec9713f8b"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/drop-zone.mdx",
+      "sha256": "85b46676d69ae89a745ce1ca78d501e70d3196c3ea5e55138a8a4242cbfa580c"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/field-label.mdx",
+      "sha256": "cd9b343adfc3fbc84a3fed9d3a71e638eddb873ac252a7fdfb0983276c6222d3"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/inline-text-field.mdx",
+      "sha256": "3ad66845ffd7e036dff9cc8eeb7aa1b0686791745f303155d5a3c9451347ccaf"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/puck-components.mdx",
+      "sha256": "48f43f28db9c6be0ebcddd3e1fbc1e3a218d4ad6ff66616d8826a66ccc51a947"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/puck-fields.mdx",
+      "sha256": "71899cfbb5846aaa5a22b44889bef4e40a2f22eb40d4633241abe05adb52e923"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/puck-layout.mdx",
+      "sha256": "7255f0855e175481078f39482202d1af07dab1dd16ccadf1460920d6081619f4"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/puck-outline.mdx",
+      "sha256": "536f4c0465991167ea9d105f0a1cadf323eb4f7c8820960151b377d900df889a"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/puck-preview.mdx",
+      "sha256": "ca06f8f21ab1eab5cb340ceb6465ea9b920a8a5533338dd93914656f34fb1703"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/puck.mdx",
+      "sha256": "15d1fde1bd0d6ab7a0a8e72313038d49d9cf6ce934cc24509a87a72cea7658d0"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/render.mdx",
+      "sha256": "ce429e1f0a8b3ac30c455262c00e91c76e7799b23f968f18e0c0d057508e0e05"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/rich-text-menu-control.mdx",
+      "sha256": "b5118c050fe54cb76454e1e8c85a65a52f1be45ab636aae98ec21c0520aa7053"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/rich-text-menu-group.mdx",
+      "sha256": "ae1419e4a0daa7451af65c1910572328debe1e2728750c7d8057c56568884a3d"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/rich-text-menu.mdx",
+      "sha256": "51f0e971e44c7723761934ea69a01902d2d6bca331034944ce10cc24fdf9c6f1"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/configuration.mdx",
+      "sha256": "1bdc9a36c127e579f42fe1657a0b8c75bf78912d7e2245e4fe8cf8e6a85e67d9"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/configuration/component-config.mdx",
+      "sha256": "ab0e6705027eb5408b433b7bc194b6ec844b9b8abbb2d8775bb91cf4f4c3b04f"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/configuration/config.mdx",
+      "sha256": "d7c9e1fc1902a94245396ad6fd984262500e76a31371dd66408d4633340e373c"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/data-model.mdx",
+      "sha256": "4903819efdcda3d11664d14feba1c8c5ca2aed89c7e8455517456aec3919b085"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/data-model/app-state.mdx",
+      "sha256": "dcbb022e1affa9f49a519b229f16ebbc203518c0a8cab9a4d0bd4fba98535ab5"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/data-model/component-data.mdx",
+      "sha256": "601d5f8f6d4c3982c69e8605dae1362ed3a2b09e3a9a2ecfe919f0370bd62193"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/data-model/data.mdx",
+      "sha256": "e1b0b7c15b363789bb86efe4b7a570280a8721a7b101b2e2754fdc47f0e36a66"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/data-model/item-selector.mdx",
+      "sha256": "353ae7b2f855274f896ff014948eca240fc853c558c4a1f8225d43e9d0d35e6a"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/data-model/root-data.mdx",
+      "sha256": "6c8497177cec00b93f55fe70f16189a423bde760d1ebf9689fa5007311befa7c"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/dictionary.mdx",
+      "sha256": "b93f933e44f448a24c3c4297ceebe5c380a3310c4c82a0abc149d55285994303"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/field-transforms.mdx",
+      "sha256": "3434eb50057e802758a1e2c2b427a3771e6eb91ba3f38924bf84ab0e62d6f2c1"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields.mdx",
+      "sha256": "af22276c380f995a533008170dc618889ffee1b0e2d83516182f3ac5b25e8319"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/array.mdx",
+      "sha256": "4d1e916e1f49b1c03bf428838e211205716cd4eb05f7051add044591dd4652d6"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/base.mdx",
+      "sha256": "ab8f3bf5fa8fae97ed28969bcc24b5c20e6cbf4c94da572072ac392a6a84654d"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/checkbox.mdx",
+      "sha256": "1e937d455f6c2084e73d5c332882c874ae5a09f2ffd925348da618bc89beba11"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/custom.mdx",
+      "sha256": "49fb2c21d52408504bf68b26e4597c498b43f7ebb13d8b2d5cf416b71d3362db"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/external.mdx",
+      "sha256": "7e49cebf57fb3a5512e734ef3a0b11dd50ba4ab70cfe233718ee43baef87bc0d"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/number.mdx",
+      "sha256": "82ecb9c7b517f224d7522f32519a0fc08c9191d375fb2099deb285ff606f139f"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/object.mdx",
+      "sha256": "0c8fec365be51b352b69579a7af0436fae14fdc88b00614aa1c0120ed8d08702"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/radio.mdx",
+      "sha256": "858e1fdfe110f557a79d96bbcead815b3615fcbed97db88c046a2f54e9a13efd"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/richtext.mdx",
+      "sha256": "e5ade8dc838124568bd52706c7b7091206dcaa0b26901bc6fddf72012bfa9319"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/select.mdx",
+      "sha256": "4487be6375ccefa45bbf88966be6040c567ba085c902cba9f9da9d507aca386e"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/slot.mdx",
+      "sha256": "182acd7f21f2c5cb2ae42193c56b45b66cdfc57deedbf32d2bf9390476a234cf"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/text.mdx",
+      "sha256": "68f53c74e2d5376fbdf30206387422884fc2ce716e46fb50ff85894a168adb00"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/textarea.mdx",
+      "sha256": "c2e3176d862cd372560e711f100356bc6deb506009ae108c1f625d74f9d01f46"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/functions.mdx",
+      "sha256": "1bc550dc652b0acd5cf837cc64b297920cc49cb01ca0309e5416c2179f006f7b"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/functions/migrate.mdx",
+      "sha256": "b404d0225d0fc66597f298cda1437fd2b5a14abd1c30fb902827197b69769b46"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/functions/register-overlay-portal.mdx",
+      "sha256": "cc7ab8f1a13a7734e164e94c7b1c91508a1be898fb9ccee3c0329c9155a80d54"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/functions/resolve-all-data.mdx",
+      "sha256": "d734a7f5f0a5470b44e0adeeccbf394e1345e2ed137781eb8f9cf3dec8fb1f93"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/functions/set-deep.mdx",
+      "sha256": "bcb3612ca33232948d207e3c0541e12802d3bc4a9d816c4c82e90c1f9fb855b1"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/functions/transform-props.mdx",
+      "sha256": "35fc169cc96f87184be900b571eefdcfb153bb2eabe59115f59daf78608dd770"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/functions/use-get-puck.mdx",
+      "sha256": "bd323b21d0e9b61dbd1dfdfa266eea7892058e0fdda55ad152f31aa0ffec3284"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/functions/use-puck.mdx",
+      "sha256": "a7495d4a3266c11e9a8507363b4b2cebd250db061a352df3bdf7308b7d4f9a89"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/functions/walk-tree.mdx",
+      "sha256": "544bab7bf80b97eb665bb1cdaf93302accf04fbf2beea21b76a84dc3d2e98a7d"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides.mdx",
+      "sha256": "91a2c879ef0f30a3400c7ae8e75570b3cd5e46061efbcc5d2673c49bffbba073"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/action-bar.mdx",
+      "sha256": "47abcf37beb3c63b9a12bca09b80e321635fa9dc6a7f1640aff828efd78ceef2"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/component-overlay.mdx",
+      "sha256": "6851feeed017e0f1ddfc696436c792dd6f9f69394f5df5731d7a2a3e778f12e1"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/drawer-item.mdx",
+      "sha256": "654f68f073f9fc5a97ac85a7a88dcc64ffe8a1f19191c698e54e8b85f5692613"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/drawer.mdx",
+      "sha256": "69f2792b7211e475ad1e21ab6113f6c8528a3405ba8dec389026aa13bd8eba6b"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/field-label.mdx",
+      "sha256": "58181b7f8214df9abbec085aa3d8802f2f23ba30ca687dc5c099c41cfa85e7f5"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/field-types.mdx",
+      "sha256": "52f2c83b1468133a20d6b31ba01b7b6d2606c757b9880bcced47075228e3d4d9"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/fields.mdx",
+      "sha256": "cc5bffe595d33ff889be52efba1e0fe3c4953e51ef24f806382a26126feae6bb"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/header-actions.mdx",
+      "sha256": "533318b5ca5b6088280e9060fb0adac90a0c9a34cc3487d1ffa04e940c26b89d"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/header.mdx",
+      "sha256": "fc909b6f93ca7f1a0c18a8401cc11c76486f9e4d5af83f2f8dd708dff6d58aa1"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/iframe.mdx",
+      "sha256": "ce5a00815fbd822cba5855c084d5ab4c9d6d3299eef8f307421b87f14ad42e22"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/outline.mdx",
+      "sha256": "8797da55c31f1a461a0f97000bfeee60c04ce5ca09a0b1b3835d3bb746e55e71"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/preview.mdx",
+      "sha256": "f9dff5187dacf4dbea077ee653c202915fa44ff351cb52433d1a7dc1ccffc658"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/overrides/puck.mdx",
+      "sha256": "a983b2ca749ae1585353052ed9065c23058f0ef5b38f1d324affee1c3cfb7741"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/permissions.mdx",
+      "sha256": "32c5fe5dc6526012cf6ecb5fa9c472c6779e20a80a56e4ffbc4c3f9bee4a40b9"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/plugin.mdx",
+      "sha256": "aa73ce4cacd2d51d5104f0fb8439ad2ce64a73f53c2569f75aa14b663b1921d4"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/plugins/blocks-plugin.mdx",
+      "sha256": "eadfa689fc790bedeb5ad8044f5b710c37f5697934d96d9e997446db07824298"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/plugins/fields-plugin.mdx",
+      "sha256": "f58fc957e0e630a149f0c02e28ffeae1158157bb7a8c0e8cd76d242616c9031a"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/plugins/legacy-side-bar-plugin.mdx",
+      "sha256": "ae6a3dd2bf71537e512a5b0807945d14fd7b0ab2be222ecf2e20fe1a0808e447"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/plugins/outline-plugin.mdx",
+      "sha256": "667641ed4b5caf118dd28a7b87c30bee82a94739662607fa4e2f57409effbcd0"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/puck-api.mdx",
+      "sha256": "cc6e0f1c0eb14063a7fc9835cc6f3e60e9a856710156b2e84cc10fdbe8934d03"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/action-bar.mdx",
+      "sha256": "a94bff4af65515e6bc1979779db5e58311bae5645c72bbb23038ef7d475d1978"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/button.mdx",
+      "sha256": "54d272bcc2d907bcb54cde81bbf508f2a5eec39c4ec2e98335a12903971db7c4"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/canvas.mdx",
+      "sha256": "c4d66db166fdc4398625dfe7ca608ed21e510db7b9d9b888d6dee25816fe0239"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/computed-values.mdx",
+      "sha256": "239316d89557c1b2f4aff68977835a8a6c1442acab79408d044d327292b4909a"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/drawer.mdx",
+      "sha256": "728535e554523c6ca2922592412721a77817e6ac73948de9079a69f33da454a6"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/fields.mdx",
+      "sha256": "588569882f2eead0f91f69559058d6a5541c84f496818a73c98c1c92ce9720e6"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/global.mdx",
+      "sha256": "d098a03afe11c4184965e47da29c8af6ceeb518458640a31353ca9c32c2dd28d"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/header.mdx",
+      "sha256": "4b184dfa51f422f585257a9b95f7f0ab1c0010e6178d263c95d129006ace30ea"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/icon-button.mdx",
+      "sha256": "cadf3c8d4a670487d4adb19e0c90442083e2f50919192a09e3d3d7340aac1389"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/outline.mdx",
+      "sha256": "b8e87cb96e522efd3d580bdf8296363ae04ea512e1876f1963ec09b25b6cf497"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/plugin-bar.mdx",
+      "sha256": "42cdc85c73c3badb72dedb67e67030cef702eddb8a970aee42b303615e327355"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/sidebar.mdx",
+      "sha256": "a8ba3da3766e51ed8959f25503a2aae6b4b47a54acb4adec3710ed4143ae4e47"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/slot.mdx",
+      "sha256": "73eb150d49846363d19268c065868139c435a308f4ef59f6541c992d3d86d52d"
+    },
+    {
+      "path": "apps/docs/content/docs/extending-puck/composition.mdx",
+      "sha256": "ebceb78a9f40b6986686ac0e87ba671ef457e874a0d1570e01cd1ba4bdc66608"
+    },
+    {
+      "path": "apps/docs/content/docs/extending-puck/custom-fields.mdx",
+      "sha256": "70e85bfeca43140266a73e921411a4e3bf32faec6f2e375accee5967f88fd42f"
+    },
+    {
+      "path": "apps/docs/content/docs/extending-puck/field-transforms.mdx",
+      "sha256": "b863c56bde15913b216dc1717da0d1bbf57bdbab1a2cb41794bd40929d48670e"
+    },
+    {
+      "path": "apps/docs/content/docs/extending-puck/internal-puck-api.mdx",
+      "sha256": "512c250fb2ed8a67b0655f7e230cc72051980bf482737a2ec3cfd6d76bcb8b02"
+    },
+    {
+      "path": "apps/docs/content/docs/extending-puck/plugins.mdx",
+      "sha256": "f6fb2d84e1daa7bf208880e3d284ea18d9c8583fc62220cd35dca28b24b61964"
+    },
+    {
+      "path": "apps/docs/content/docs/extending-puck/theming.mdx",
+      "sha256": "185461cba77496e08162ab7b2d8c719f35a31c28cce8a4284cd84bbf57f8bee4"
+    },
+    {
+      "path": "apps/docs/content/docs/extending-puck/ui-overrides.mdx",
+      "sha256": "2137f85f8eb0846534e35206c02e02660320b9bb696bab75f1b144c895f6a99d"
+    },
+    {
+      "path": "apps/docs/content/docs/getting-started.mdx",
+      "sha256": "0da5c47cc105434094e00a3cf1a862f4912540fbeae1f8fdd247b0b86a727ba0"
+    },
+    {
+      "path": "apps/docs/content/docs/guides/migrations/dropzones-to-slots.mdx",
+      "sha256": "3b2b5d70addb90ac1ddef48a39cf1238885d734c9cf59d7b46b613b5cb9c2c23"
+    },
+    {
+      "path": "apps/docs/content/docs/index.mdx",
+      "sha256": "a06eee248d5c86e1f0f9084a97e5dd8ec025df9d2e596ae9906ea9b227a30d8a"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/categories.mdx",
+      "sha256": "33cce95e9b8432740ebb256a7b8aa8730ebab8e74b3576ce5c97776a7ac98bc7"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/component-configuration.mdx",
+      "sha256": "53f2231a7537226feef6f3360fc280f96989f5fe78d2b3aa001c411c6a5177bb"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/data-migration.mdx",
+      "sha256": "740c63a3d3bb2f4952dec98f57deac1b2df83cb42b591fbb292400f25ec71e63"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/dynamic-fields.mdx",
+      "sha256": "3290593ac76c247f9643ba4b062d227617b8d0cbb73ede4d87a2417241ccb8e3"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/dynamic-props.mdx",
+      "sha256": "4b4e0a0376f2afdc0059f2b641a7de555f4efa5e80eaeaca98675092860d9e0b"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/external-data-sources.mdx",
+      "sha256": "f9c9c8b175b99b6dfce7499856cafafa62e75e965927ec0d0ccccf188c3f6a8f"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/feature-toggling.mdx",
+      "sha256": "b89fd9d26a098c09899e1d2c36196d3a2b49f09df65c8d9a2a374aded9dd65bb"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/localization.mdx",
+      "sha256": "384ed90e26482fb365f6c0d221dbef0c46f49b7723265a3efb72ddf77b684812"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/multi-column-layouts.mdx",
+      "sha256": "30ce5832bf52b46fb22e9e25e2a1f623c5089ba400e586809586588636ccffea"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/overlay-portals.mdx",
+      "sha256": "7a009a6dc28ae84f1fc99eadb22e05d14bcb9f244cdd4568e16e5f006ae03148"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/rich-text-editing.mdx",
+      "sha256": "aeb7866f14eda871004c018be132321faccf3037d8173036822e805483eb0470"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/root-configuration.mdx",
+      "sha256": "5416e513238a839ab6cbeab501e502abe4c431926895829ba33e68312b211183"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/server-components.mdx",
+      "sha256": "31ff4a5888e293d00554c470f8f28a8486d4a46ff9c5e1bb87ff8a7cdc6e03d2"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/styling.mdx",
+      "sha256": "7c591253b38f9fe569aafe71ad0c185356f0160b35dd46d0054ce352c252aea9"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/viewports.mdx",
+      "sha256": "f9c8b3f3d20afbcd1f7fc1dadb09dbc3830dd7d03c37fb3d9c458ace838fb9d9"
+    },
+    {
+      "path": "apps/docs/content/index.mdx",
+      "sha256": "9de0773fd8b8e5b34b6187c84ac2ccc67e817d822f72021b80131b6d650b0d3f"
+    }
+  ],
+  "examples": [
+    {
+      "path": "apps/docs/content/docs/api-reference/components/action-bar-action.examples.tsx",
+      "sha256": "4bd35f4351e2554b7b8ee8f3b100369377421ab21989b5e53954ba04c680ac39"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/action-bar-group.examples.tsx",
+      "sha256": "25ee68b1c88fb03fae933dccc45c9b1073db1dfd92523a869134eab9c00a1d05"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/action-bar-label.examples.tsx",
+      "sha256": "473cd67e96fa79c65c6b47871b12a953d9587ed5721de900101d4a0840dd5d14"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/action-bar-separator.examples.tsx",
+      "sha256": "31027a80dcf0d6ffcead30901e7842570f19ac05aa870863ac7937de66efe8b5"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/action-bar.examples.tsx",
+      "sha256": "d875aef5584395e2e61a0502dd6a7e079b4e4ae32befee5e0a41cc282a1ac483"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/auto-field.examples.tsx",
+      "sha256": "93790bd51c86ea0b29722bf23d8941a3e2d3c1db7702e080e61c8b054b424e93"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/drawer-item.examples.tsx",
+      "sha256": "5039ab037fe7cef75b84bd63d44e20eb14affedf5cb53c5a7498ab5d8d13704f"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/drawer.examples.tsx",
+      "sha256": "c57fd8790ccacbcd1920445268832135d8a08f24c562dabdc5289c8801b51b8c"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/field-label.examples.tsx",
+      "sha256": "a33a09b395fbd8a315d4fd05c99707b45307604b963362cd9eeb5ac1ae070bc6"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/inline-text-field.examples.tsx",
+      "sha256": "39368027bd267b3127ef31115b92f230e693fb8e3800bccc054073cdfbd4d89f"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/puck-components.examples.tsx",
+      "sha256": "d2c51c28a1533d2c959b6f749cce4ba314e5477c53f896353481415443c3d73b"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/puck-fields.examples.tsx",
+      "sha256": "cc88ac5c4b145cd495da8f59af5088a872c42521e8a8cd99ad3b45c7937a91f0"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/puck-outline.examples.tsx",
+      "sha256": "12f3ef27ddd40bae808442c7a01d3ff7f3bc5f34ab01f461ff6be5c06c81657e"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/puck-preview.examples.tsx",
+      "sha256": "cb9535a7d7b799bdbf7347726d5152381e93c5ea550406b3d76f2b09a399b98c"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/rich-text-menu.examples.tsx",
+      "sha256": "299d7a86fd1f3488020bd5c679f6d074b2060b08706a71fc6167d3bb9e51fa64"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/configuration/component-config.examples.tsx",
+      "sha256": "84434c2b37d4dba72f0f4549453c6dbb62c7b42d21533c4e7628b21b1207929c"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/array.examples.tsx",
+      "sha256": "d8ab93290bf1599c143fe750a865d44cc1900c20f31291a184eea332231c6722"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/checkbox.examples.tsx",
+      "sha256": "730cbd7fba329e37609107cbfe4a59279767af253e21fbefcaea6f45ddce3f6b"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/custom.examples.tsx",
+      "sha256": "c4da31661ef3102c117f8eac4927e1e0df07b58dd183016ec8e0bd442fabda41"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/external.examples.tsx",
+      "sha256": "22bfdcf4fbdb30e0301fc57c69441744234f0cb6579c433c41313d9152006bb5"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/number.examples.tsx",
+      "sha256": "94c930a15512ee6a38df2b9ab6b0e7fe6335da85f1471de4028e019047f7f22d"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/object.examples.tsx",
+      "sha256": "9c21f1886f71ced872233dac2c9cbb65677724610d96a70da470fd77c04a12d8"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/radio.examples.tsx",
+      "sha256": "e6146355e7b92899e42ca6784c0dcd60ac27bd356cf9c6e6e89f3e0af37bfce5"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/richtext.examples.tsx",
+      "sha256": "aebf897641af6d4d43f81dca3d9d2e009a1f24a590f51f5561f92f4122525a5c"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/select.examples.tsx",
+      "sha256": "9c74a0bcb963d3ec3b9197d65ecd16d3000e020e8e6c89d3b56a26a43538a402"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/slot.examples.tsx",
+      "sha256": "48455ffd70a00685781516f1ea6d582772df1f2bcfe1fc50b29a021905a76b9d"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/text.examples.tsx",
+      "sha256": "34d7264d73d73f1c5791c651c1c2c335272ec5687bd17ab45de7253e40fcfbbc"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/fields/textarea.examples.tsx",
+      "sha256": "262bc49c10dcc5f9a07ca8d956e54ca1e77499ef9a61ca655536c22a8c2692aa"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/action-bar.examples.tsx",
+      "sha256": "8c35e431d9df8c7e15be5a830f0e9d8d927bafdc66fa89b4624b63f1505c65e0"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/button.examples.tsx",
+      "sha256": "efae930a76ec1351731f2fc1be4ff0dbf4283e74f80c6041c5eacc5f864794e3"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/drawer.examples.tsx",
+      "sha256": "7d05e2db54f30a9f4fd45153668d47f706fb9600bc1093abcb25d29281a3b4e4"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/fields.examples.tsx",
+      "sha256": "55e862afe21912d841ea8b5556ff9c2ca256db91836af0d4b5b64bb873553ce9"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/icon-button.examples.tsx",
+      "sha256": "2a2605507af3df45a7864ef7a749130c2ec5177c056b0602796276937ef673a8"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/outline.examples.tsx",
+      "sha256": "d5440b4696487d0b6bc6ccf49ae98130dc88275bda3e3d9e2c74d20d8ff8ca2a"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/slot.examples.tsx",
+      "sha256": "1b5e7c84ce6e8f050f69a1e6496358ae6ed6fa354071c8274fff72fff5ff73d7"
+    },
+    {
+      "path": "apps/docs/content/docs/extending-puck/composition.examples.tsx",
+      "sha256": "3db95e373c480db05b0ab973ea2b39c7b10d3bfdcf4354f3a99ae73847ac1c26"
+    },
+    {
+      "path": "apps/docs/content/docs/extending-puck/custom-fields.examples.tsx",
+      "sha256": "3f6d047d1127498236fbc0b1195f8fc3ac372b8ad149489ab81605dd7500277a"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/component-configuration.examples.tsx",
+      "sha256": "5f33507fd845a0885e28404c0c5425c6a1f688072753d11441d5606970141e9b"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/dynamic-fields.examples.tsx",
+      "sha256": "0bcf6fbfa27fcb54f2280eb90b93127cd0f1dc33151da72ee759682b8c0bbcc9"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/dynamic-props.examples.tsx",
+      "sha256": "3f68f64ad2b49e967766d4b7f3099cff46ef903feeaa4a302483b566d939e3e4"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/external-data-sources.examples.tsx",
+      "sha256": "eb7fdf20fa1efc6b75cec3c227090d337417fb4f7d27926263f8747af6545bf2"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/multi-column-layouts.examples.tsx",
+      "sha256": "fdd8b8e5913e62bc96aa1208bf6edaa02d4ab587f7b9b556a6831b0de07cf36b"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/overlay-portals.examples.tsx",
+      "sha256": "57d7f2682af1fe5692ff4d03cc6c5eeaa58797868665cae8cc054b59497acd46"
+    },
+    {
+      "path": "apps/docs/content/docs/integrating-puck/rich-text-editing.examples.tsx",
+      "sha256": "7ae7aa13f9b1eed7bed4668da6876c3969950f93be669e8b0b7632d103077e30"
+    }
+  ],
+  "publicBoundarySources": [
+    {
+      "path": "packages/core/bundle/index.ts",
+      "sha256": "b01f97e259882527c8b7cdd5e380b6b4676906675b66d92692d0cc721bbfc793"
+    },
+    {
+      "path": "packages/core/bundle/core.ts",
+      "sha256": "9a9c4994b84ff8dc716370be51deb0d96728d695bd6dce506244c2ddc7372e69"
+    },
+    {
+      "path": "packages/core/bundle/rsc.tsx",
+      "sha256": "0a6bc367a1956189d84689c85a0bfd9c89f2945a6f57c683d61644b8c9aa9a92"
+    },
+    {
+      "path": "packages/core/bundle/internal.ts",
+      "sha256": "4621f90001bf1d8c1a6a68f7fd4837971a00c8d8526f141012c706391821adf0"
+    },
+    {
+      "path": "packages/core/bundle/no-external.ts",
+      "sha256": "1e7384e77b592d4bd6205976cf5f5cab0e52b1ede1b05d5ae614486abb1fdeb0"
+    },
+    {
+      "path": "packages/core/cityos.ts",
+      "sha256": "b32dab92c83f80dc1110532319920965174e6d55ae27e18d9d5bf62628484a35"
+    },
+    {
+      "path": "packages/core/cityos-registration.ts",
+      "sha256": "15c1e6341f47e04e115e7b18594a4d6dd00286652ac6e8ff2536369c45dfed5d"
+    },
+    {
+      "path": "apps/docs/mdx-components.tsx",
+      "sha256": "d0a25677326b164cf683a7127b28ebfee778c9abaeaaa289a7ea21dbfd2e21b4"
+    },
+    {
+      "path": "apps/docs/app/layout.tsx",
+      "sha256": "a411d807bd3655438c52385f040b409af8056759e607766382c6a5d42d8b0849"
+    },
+    {
+      "path": "apps/docs/app/[[...mdxPath]]/page.tsx",
+      "sha256": "4ba1d0a7cb5f03be32d99c0e8faa53c6bf2bba200a15f61d9b7936b8be4dadc2"
+    }
+  ],
+  "publicPackage": {
+    "name": "@cityos-core/puck",
+    "exports": {
+      ".": {
+        "react-server": {
+          "types": "./dist/bundle/rsc.d.ts",
+          "import": "./dist/bundle/rsc.mjs",
+          "require": "./dist/bundle/rsc.js"
+        },
+        "default": {
+          "types": "./dist/bundle/index.d.ts",
+          "import": "./dist/bundle/index.mjs",
+          "require": "./dist/bundle/index.js"
+        }
+      },
+      "./rsc": {
+        "types": "./dist/bundle/rsc.d.ts",
+        "import": "./dist/bundle/rsc.mjs",
+        "require": "./dist/bundle/rsc.js"
+      },
+      "./internal": {
+        "types": "./dist/bundle/internal.d.ts",
+        "import": "./dist/bundle/internal.mjs",
+        "require": "./dist/bundle/internal.js"
+      },
+      "./puck.css": "./dist/bundle/index.css",
+      "./no-external.css": "./dist/bundle/no-external.css",
+      "./dist/index.css": "./dist/bundle/index.css",
+      "./package.json": "./package.json",
+      "./cityos": {
+        "types": "./dist/cityos.d.ts",
+        "import": "./dist/cityos.mjs",
+        "require": "./dist/cityos.js"
+      }
+    }
+  },
+  "note": "These are source preservation observations. Matching hashes do not establish build, runtime, acceptance or production readiness."
+}

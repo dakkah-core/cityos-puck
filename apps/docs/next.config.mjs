@@ -1,7 +1,7 @@
 import packageJson from "./package.json" with { type: "json" };
 import nextra from "nextra";
 
-const withNextra = nextra();
+const withNextra = nextra({ latex: false });
 
 const BRANCH_NAME = process.env.VERCEL_GIT_COMMIT_REF || "";
 const IS_RELEASE_BRANCH = BRANCH_NAME.startsWith("releases/");
