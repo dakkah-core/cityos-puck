@@ -20,6 +20,7 @@ allowBuilds:
 # Public version authority. Workspace manifests and bootstrap templates resolve these entries.
 # Registry selections are source inputs, not installed or runtime qualification evidence.
 catalog:
+  "resolve": "1.22.13"
   "conventional-commits-parser": "7.1.3"
   "twoslash": "0.3.9"
   "tsconfck": "3.1.6"
@@ -97,7 +98,7 @@ catalog:
   "handlebars": "4.7.10"
   "happy-dom": "21.0.3"
   "identity-obj-proxy": "3.0.0"
-  "inquirer": "14.2.3"
+  "inquirer": "14.2.4"
   "isbot": "5.2.2"
   "jest": "30.5.2"
   "jest-environment-jsdom": "30.5.2"
@@ -153,6 +154,8 @@ catalogs:
 
 # Preserve security override selectors while taking versions from the owning catalog.
 overrides:
+  "eslint-plugin-react@7.37.5>resolve": "catalog:"
+  "eslint-import-resolver-node@0.3.10>resolve": "catalog:"
   "conventional-commits-parser@^7.0.0": "catalog:"
   "ws": "catalog:"
   "yaml": "catalog:"
@@ -231,6 +234,7 @@ packageExtensions:
 
 # Exact upstream integration patch; core identity and source version remain unchanged.
 patchedDependencies:
+  "eslint-plugin-react@7.37.5": "patches/eslint-plugin-react@7.37.5.resolve-stable.patch"
   "twoslash@0.3.9": "patches/twoslash@0.3.9.patch"
   "@puckeditor/plugin-ai@0.8.3": "patches/@puckeditor__plugin-ai@0.8.3.patch"
 minimumReleaseAgeExclude:
@@ -251,3 +255,16 @@ minimumReleaseAgeExclude:
   - "@typescript-eslint/visitor-keys@8.72.0"
   - react-router@8.5.0
   - typescript-eslint@8.72.0
+  - "@inquirer/checkbox@5.2.7"
+  - "@inquirer/confirm@6.3.4"
+  - "@inquirer/core@12.0.5"
+  - "@inquirer/editor@5.3.5"
+  - "@inquirer/expand@5.1.7"
+  - "@inquirer/input@5.1.8"
+  - "@inquirer/number@4.2.5"
+  - "@inquirer/password@5.2.4"
+  - "@inquirer/prompts@8.7.4"
+  - "@inquirer/rawlist@5.3.7"
+  - "@inquirer/search@4.3.5"
+  - "@inquirer/select@5.2.7"
+  - inquirer@14.2.4

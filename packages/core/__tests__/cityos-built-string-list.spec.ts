@@ -1,6 +1,6 @@
 /** @jest-environment node */
-import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
+import { runBuiltConsumer } from "../__test_support__/run-built-consumer";
 
 const coreRoot = resolve(__dirname, "..");
 
@@ -12,7 +12,7 @@ const coreRoot = resolve(__dirname, "..");
  */
 describe("CityOS built scalar-list consumer boundary", () => {
   for (const mode of ["require", "import"]) {
-    it(`shares editor context and ships field styles through ${mode} exports`, () => {
+    it(`shares editor context and ships field styles through ${mode} exports`, async () => {
       const script = `
         import assert from 'node:assert/strict';
         import { createRequire } from 'node:module';
@@ -23,11 +23,19 @@ describe("CityOS built scalar-list consumer boundary", () => {
         const require = createRequire(resolve('package.json'));
         const window = new Window();
         for (const name of ['window', 'document', 'navigator', 'HTMLElement',
-          'Element', 'Node', 'MutationObserver', 'ResizeObserver']) {
+          'Element', 'Node', 'MutationObserver', 'ResizeObserver',
+          'localStorage', 'sessionStorage', 'Storage']) {
           Object.defineProperty(globalThis, name, {
             value: name === 'window' ? window : window[name], configurable: true,
           });
         }
+        // Node 26 exposes a native storage accessor even without a backing
+        // file. This client fixture must use the mounted browser provider.
+        assert.equal(globalThis.localStorage, window.localStorage);
+        assert.equal(globalThis.sessionStorage, window.sessionStorage);
+        localStorage.setItem('cityos-built-consumer-probe', 'browser-storage');
+        assert.equal(localStorage.getItem('cityos-built-consumer-probe'), 'browser-storage');
+        localStorage.removeItem('cityos-built-consumer-probe');
         globalThis.getComputedStyle = window.getComputedStyle.bind(window);
         globalThis.requestAnimationFrame = window.requestAnimationFrame.bind(window);
         globalThis.cancelAnimationFrame = window.cancelAnimationFrame.bind(window);
@@ -37,6 +45,14 @@ describe("CityOS built scalar-list consumer boundary", () => {
         globalThis.IS_REACT_ACT_ENVIRONMENT = true;
         const React = require('react');
         const { createRoot } = require('react-dom/client');
+        await new Promise(resolve => {
+          process.once('message', message => {
+            assert.deepEqual(message, { type: 'run-built-consumer' });
+            process.disconnect();
+            resolve();
+          });
+          process.send({ phase: 'provider-ready' });
+        });
         const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
         const load = async (entry) => ${JSON.stringify(mode)} === 'require'
           ? require(resolve(entry.require))
@@ -95,12 +111,8 @@ describe("CityOS built scalar-list consumer boundary", () => {
         }
         console.log('BUILT_SCALAR_LIST_OK');
       `;
-      const output = execFileSync(
-        process.execPath,
-        ["--input-type=module", "-e", script],
-        { cwd: coreRoot, encoding: "utf8", timeout: 20_000 }
-      );
+      const output = await runBuiltConsumer(script, { cwd: coreRoot });
       expect(output).toContain("BUILT_SCALAR_LIST_OK");
-    }, 30_000);
+    }, 60_000);
   }
 });

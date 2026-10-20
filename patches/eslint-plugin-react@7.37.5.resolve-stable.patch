@@ -1,0 +1,62 @@
+diff --git a/lib/util/version.js b/lib/util/version.js
+--- a/lib/util/version.js
++++ b/lib/util/version.js
+@@ -76,6 +76,40 @@ function readDefaultReactVersionFromContext(context) {
+   }
+ }
+ 
++function resolveReactPath(basedir) {
++  const options = { basedir, preserveSymlinks: false };
++  const candidates = new Set();
++  return resolve.sync('react', {
++    ...options,
++    packageIterator(request, start, thunk) {
++      const directories = thunk();
++      directories.forEach((directory) => candidates.add(path.resolve(directory)));
++      return directories;
++    },
++    packageFilter(pkg, directory) {
++      if (!candidates.has(path.resolve(directory)) || !pkg.main || typeof pkg.main !== 'string') {
++        return pkg;
++      }
++      const main = pkg.main === '.' || pkg.main === './' ? 'index' : pkg.main;
++      let entry;
++      try {
++        entry = resolve.sync(path.resolve(directory, main), options);
++      } catch (e) {}
++      if (!entry) {
++        try {
++          entry = resolve.sync(path.resolve(directory, 'index'), options);
++        } catch (e) {}
++      }
++      if (!entry) {
++        const error = new Error(`Cannot find module '${path.resolve(directory, main)}'. Please verify that the package.json has a valid "main" entry`);
++        error.code = 'INCORRECT_PACKAGE_MAIN';
++        throw error;
++      }
++      return pkg;
++    },
++  });
++}
++
+ // TODO, semver-major: remove context fallback
+ function detectReactVersion(context) {
+   if (cachedDetectedReactVersion) {
+@@ -85,7 +119,7 @@ function detectReactVersion(context) {
+   const basedir = resolveBasedir(context);
+ 
+   try {
+-    const reactPath = resolve.sync('react', { basedir });
++    const reactPath = resolveReactPath(basedir);
+     const react = require(reactPath); // eslint-disable-line global-require, import/no-dynamic-require
+     cachedDetectedReactVersion = react.version;
+     return cachedDetectedReactVersion;
+@@ -136,7 +170,7 @@ function detectFlowVersion(context) {
+   const basedir = resolveBasedir(context);
+ 
+   try {
+-    const flowPackageJsonPath = resolve.sync('flow-bin/package.json', { basedir });
++    const flowPackageJsonPath = resolve.sync('flow-bin/package.json', { basedir, preserveSymlinks: false });
+     const flowPackageJson = require(flowPackageJsonPath); // eslint-disable-line global-require, import/no-dynamic-require
+     return flowPackageJson.version;
+   } catch (e) {
