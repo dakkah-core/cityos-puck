@@ -36,6 +36,16 @@ const execute = async (test) => {
   const start = Date.now();
 
   const clearLines = (n) => {
+    // Captured CI/controller output is a plain stream, without terminal methods.
+    // Keep the chart/metrics output available without attempting cursor control.
+    if (
+      typeof process.stdout.moveCursor !== "function" ||
+      typeof process.stdout.clearLine !== "function" ||
+      typeof process.stdout.cursorTo !== "function"
+    ) {
+      process.stdout.write("\n");
+      return;
+    }
     for (let i = 0; i < n; i++) {
       const y = i === 0 ? null : -1;
       process.stdout.moveCursor(0, y);

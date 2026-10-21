@@ -16,6 +16,7 @@
   "producerQualificationSeams": [
     "TS7 checks and declaration output replace the upstream TSUP declaration/SVG alias patch; full generated layout, public icon type signature and docs consumer compilation must pass.",
     "React compiler loader private subpath and callback contract are an actual source seam in the retained upstream plugin. Do not substitute a children stub, disable optimization silently or restore upstream prerelease packages to bypass a failure.",
-    "Native file-catalog source support is present. Relocated artifacts, frozen-lock installs and bootstrap materialization have not been exercised locally; no provider binding exists."
+    "Native hook source shares the lazy Node worker between updateConfig and readPackage and passes loaded hook objects onward. This supports the existing patch/early-hook mechanism, with real install/frozen reuse/physical patch proof still required. No hook or patch registration is active.",
+    "File/workspace catalog alternatives were inspected but are superseded by the published-stable exact patch plus metadata-retirement hook. No local provider protocol or workspace is prepared."
   ]
 }

@@ -86,5 +86,13 @@ test("heading and rich-text consumers no longer depend on the incompatible peer 
   assert.equal(catalog["@tiptap/static-renderer"], catalog["@tiptap/core"]);
   assert.equal(catalog["react-from-json"], undefined);
   assert.equal(catalog["@tiptap/html"], undefined);
-  assert.equal(catalog["deep-diff"], "1.0.2");
+});
+
+test("the unused deprecated diff package and its declarations stay out of the owned core", () => {
+  for (const name of ["deep-diff", "@types/deep-diff"]) {
+    for (const field of ["dependencies", "devDependencies", "optionalDependencies", "peerDependencies"]) {
+      assert.equal(core[field]?.[name], undefined, `${field}.${name}`);
+    }
+    assert.equal(catalog[name], undefined, name);
+  }
 });

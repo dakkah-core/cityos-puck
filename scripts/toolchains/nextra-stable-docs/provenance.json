@@ -57,13 +57,13 @@
   "manifestChanges": {
     "removeDependencies": ["better-react-mathjax"],
     "catalogBindings": { "react-compiler-runtime": "react-compiler-runtime" },
-    "omitBuildOnlyFields": ["scripts", "devDependencies"],
+    "omitBuildOnlyFields": [],
     "preserve": ["name", "version", "type", "exports", "types", "files", "peerDependencies", "sideEffects", "engines", "license"],
     "kaTex": "Preserve upstream katex ^0.16.21, rehype-katex ^7.0.0 and remark-math ^6.0.0. The observed current KaTeX resolution is 0.16.47. No 0.19 migration is authorized by this packet."
   },
   "compatibility": {
     "firstParty": "No first-party MathJax capability was found in the inspected 117 MDX routes, 44 extracted examples, recipes, public Puck exports or CityOS boundary. Preservation acceptance remains required.",
     "upstreamNarrowing": "This is a modified Nextra 4.6.1 docs variant, not full upstream API compatibility. MathJax component exports, renderer configuration, option types and rehype integration are retired. Configuration and direct compile entrypoints reject MathJax explicitly. KaTeX is never selected silently.",
-    "distribution": "Retain nextra identity/version for the theme's exact 4.6.1 peer, identify modified source by commit, overlay and output hashes and an OWNED_VARIANT notice. No new published package, registry publication or production authority is granted."
+    "distribution": "Retain published nextra 4.6.1 catalog identity/version and the theme's exact peer. A complete generated package patch plus exact registered metadata-retirement hook identifies modified source by commit, overlay, patch/output hashes and OWNED_VARIANT notice. No new provider package, local-artifact protocol, registry publication or production authority is granted."
   }
 }

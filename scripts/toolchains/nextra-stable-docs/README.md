@@ -45,19 +45,23 @@ that a separate migration would need to qualify.
    or linked ancestors, and materializes only the Nextra sources/styles/loader
    and the exact upstream React compiler plugin. It does not install tools,
    execute upstream package lifecycle scripts or overwrite an earlier build.
-3. Applies the authored source overlays and manifest delta. The generated
-   manifest preserves the original package identity, version, exports and
-   theme peer compatibility. Its compiler runtime selection follows the
-   existing catalog. Build-only upstream scripts/manifests are not activated.
+3. Applies the authored source overlays and canonical manifest delta to the
+   published metadata. The generated manifest preserves the original package
+   identity, version, exports and theme peer compatibility. Its compiler
+   runtime selection follows the existing catalog. No upstream lifecycle
+   script or retained workspace manifest is executed.
 4. Generates SVG TSX intermediates while retaining the original public icon
    type contract. It runs upstream `setup-files.ts` as the owner of
    schema-derived types, checks source with TS7 and emits declarations through
    TS7. Catalog esbuild emits ESM using the retained React compiler transform.
    No TypeScript compiler API import or additional TS6 binding is introduced.
-5. Uses the existing pinned native pnpm runner to pack the preserved public
-   package layout. The candidate includes its MIT license and a generated
-   `dist/OWNED_VARIANT.json` notice identifying modified source and tools.
-   It records a complete candidate file inventory without activating it.
+5. Compares the complete source-built package with the integrity-verified
+   published npm baseline. `package-patch.mjs` emits deterministic complete-file
+   unified hunks covering the physical manifest, every changed JS/declaration,
+   additions and deletions. The candidate retains its MIT license and a
+   generated `dist/OWNED_VARIANT.json` notice. The patch receives complete
+   baseline/candidate inventories and matching sibling provenance. No Git,
+   install, package publication, provider binding or active patch copy occurs.
 
 For a later authorized generation window, first select Node with the owning
 shell selector, set `NODE_ENV=production`, then call the producer with
@@ -69,28 +73,39 @@ prepared acceptance must precede provider integration.
 
 ## Prepared integration choice
 
-The preferred candidate is a standard source-built tarball through the
-existing default catalog. Native pnpm 12.14.0 sources, retained with hashes and
-license under `canonical-source/pnpm-12.14.0`, implement both `file:` and
-`workspace:` catalog values. They re-anchor relative files from the workspace
-to nested consumers and contain frozen-install and packing cases. Those are
-inspected upstream sources, not locally executed integration evidence.
+The preferred integration keeps the published stable `nextra: 4.6.1` catalog
+selection and theme peer unchanged. A complete generated patch updates the
+physical package; an exact registered `readPackage` retirement removes the
+original `better-react-mathjax: ^2.3.0` edge before graph resolution. There is
+no local provider protocol, package identity change or provider workspace.
 
-Native packing re-anchors a file dependency but does not embed that tarball.
-A durable, copied artifact layout and moved-checkout/frozen-install proof are
-therefore required. The generator's `.build` output is not a final catalog
-binding. This packet adds no protocol adapter, registry package or package hook.
+`registered-retirement.cjs` reuses the existing dependency-free catalog reader
+supplied by its caller and native pnpm's parsed canonical `patchedDependencies`
+settings. `proposed-pnpmfile.cjs.source` prepares the additions for parent merge
+after Nash; it is not an active hook. The native source shares the same lazy
+Node worker for `updateConfig` and `readPackage`, and passes loaded hook objects
+onward. Hash-bound native sources and their license are retained. Real install,
+frozen-reuse and physical patch application still need parent qualification.
 
-The existing bootstrap materializer returns catalog scalars unchanged and
-rejects `workspace:`. Its snapshot packer copies catalog inputs and registered
-patches, without copying file-catalog tarballs. None of the four current recipe
-templates consumes Nextra, so the prepared proof checks that all four active
-standalone manifests remain free of Nextra/local-file references. Introducing
-a standalone Nextra consumer would require an explicit artifact transport
-change before use. The inert packet must never become an active workspace.
+Retirement requires the exact selector/path, existing complete generated patch
+and sibling provenance, matching source/packet/patch hashes, complete package
+inventories, and all coordinated retirement paths. Wrong ranges, versions,
+registration or artifacts fail closed. Unregistered files never enable it.
+Fresh workers must initialize from native canonical metadata; there is no
+file-presence fallback, additional enable flag or second YAML parser.
+
+File/workspace catalog alternatives were inspected and superseded by this
+existing patch/hook mechanism. Native source supports them, but the bootstrap
+materializer copies scalars unchanged and rejects `workspace:`. None of the
+four current recipes consumes Nextra. Their prepared proof prevents this patch
+registration or hook from leaking into active standalone workspaces. The CLI's
+existing snapshot packer copies registered patches, not their source-provenance
+closure; a future standalone Nextra consumer would require that complete closure
+before use. The inert retained inputs must never become an active workspace.
 
 `integration-inputs.json` and `acceptance-inputs/acceptance.json` contain the
 concrete generation, provider, content, type, portability and promotion gates.
-`provider-input.mjs` exports opt-in registration against a real generated
-package; `exports.type-input.ts` supplies TS7 positive and retired-API negative
-cases. Neither executes on its own.
+`provider-input.mjs` and `hook-input.mjs` export opt-in registrations against
+real generated package/registered-patch fixtures. `exports.type-input.ts`
+supplies TS7 positive and retired-API negative cases. No test is automatically
+registered by these inputs.

@@ -2,7 +2,12 @@
   "schemaVersion": "cityos.nextra-stable-docs.integration-inputs.v1",
   "status": "source-inspected-not-install-proven",
   "activationAllowed": false,
-  "preferredMechanism": "Existing default catalog, eventually naming a generated standard file: tarball. No protocol adapter, shim, private published package or new readPackage hook.",
+  "preferredMechanism": "Keep the published nextra 4.6.1 default catalog entry. Use a complete source-generated exact package patch plus the existing native readPackage hook to retire the exact original metadata edge before resolution. No file/workspace provider, alternate package identity or new protocol.",
+  "registration": {
+    "selector": "nextra@4.6.1",
+    "path": "patches/nextra@4.6.1.mathjax-retired.patch"
+  },
+  "registrationMeaning": "This is the intended exact registration contract, not an active patchedDependencies entry. No patch or receipt exists yet. Parent may register only after complete generation and qualification. The helper requires native parsed canonical registration plus the complete patch and matching sibling .provenance.json; file presence alone never enables retirement.",
   "nativeManager": {
     "name": "pnpm",
     "version": "12.14.0",
@@ -15,7 +20,11 @@
     "retainedReferences": [
       { "path": "canonical-source/pnpm-12.14.0/catalogs-resolver.rs.source", "upstreamPath": "pnpm/crates/catalogs-resolver/src/lib.rs", "sha256": "7d3df7ed7e6751856ffa0548477c0a2cdec60e92ed3b9b008b4a41e6f6104dc0" },
       { "path": "canonical-source/pnpm-12.14.0/catalogs-resolver-tests.rs.source", "upstreamPath": "pnpm/crates/catalogs-resolver/src/tests.rs", "sha256": "36ae0116c59a6c1711d86510f775e3fc4402dea7910f976c14bc1451570d077f" },
-      { "path": "canonical-source/pnpm-12.14.0/catalog-local-deps.rs.source", "upstreamPath": "pnpm/crates/cli/tests/suite/catalog_local_deps.rs", "sha256": "1cbe711db191ab859913abf3114acf7306ad5506ebf66544b9ec91ca72768479" }
+      { "path": "canonical-source/pnpm-12.14.0/catalog-local-deps.rs.source", "upstreamPath": "pnpm/crates/cli/tests/suite/catalog_local_deps.rs", "sha256": "1cbe711db191ab859913abf3114acf7306ad5506ebf66544b9ec91ca72768479" },
+      { "path": "canonical-source/pnpm-12.14.0/node-runtime.rs.source", "upstreamPath": "pnpm/crates/hooks/src/node_runtime.rs", "sha256": "85d078fbb454494f2d28b52797f73d374cda7f5719e2b55a79ceb4c865001f09" },
+      { "path": "canonical-source/pnpm-12.14.0/configuration-hooks.rs.source", "upstreamPath": "pnpm/crates/cli/src/config_deps/hooks.rs", "sha256": "f016468aacf16158a5084ce2a05fcd5cbb80f81c7fd417056be5795dcbaf9cc2" },
+      { "path": "canonical-source/pnpm-12.14.0/worker.cjs.source", "upstreamPath": "pnpm/crates/hooks/src/worker.cjs", "sha256": "e2f6d7538b7c929f2ca5ec6cf551a956827a21deeccc14d250a6a918378afa06" },
+      { "path": "canonical-source/pnpm-12.14.0/install-hooks.rs.source", "upstreamPath": "pnpm/crates/cli/tests/suite/install/hooks.rs", "sha256": "8a3c83e940f26fdcb68b1f83f168260d132de2b67055a8e4dee3c9230f610c55" }
     ],
     "sourceFindings": [
       "catalogs-resolver accepts workspace:* and file: entries. Relative filesystem entries are re-anchored from workspace_dir to consumer_dir.",
@@ -28,15 +37,24 @@
     "snapshots": "packages/create-puck-app/bootstrap-catalog.js and scripts/generate.js",
     "behavior": "resolveCatalog returns a selected scalar unchanged; materializeManifest rejects workspace: but neither re-anchors nor copies file: values. The snapshot generator copies catalog/owner/toolchain inputs and registered patches, not file-catalog tarballs.",
     "actualConsumers": "None of the four standalone recipe templates declares nextra or nextra-theme-docs. Nextra is private docs-only; preserve that boundary.",
-    "requiredProof": "Materialize and pack all four current recipes with a candidate catalog snapshot and prove no local Nextra reference or missing artifact leaks into their active manifests. If a future bootstrap consumer uses Nextra, a governed artifact-copy/re-anchoring change is required before use; this packet does not supply it."
+    "requiredProof": "Materialize and pack all four current recipes with the unchanged published Nextra catalog and prove no Nextra patch registration or retirement hook leaks into their active manifests/workspaces. The existing snapshot generator copies registered patch bytes, but not provenance receipts. Since current recipes do not consume Nextra or this hook, their active integration must remain scoped to their existing actual consumers. A future standalone Nextra consumer would require copying the complete patch/provenance/metadata reader closure before use."
   },
   "workspaceAlternative": "Native workspace: catalog support exists, but an active workspace manifest under retained inputs is prohibited and standalone materialization rejects workspace:. Do not add the inert packet as a workspace.",
-  "patchAlternative": "The repository has exact patchedDependencies and an early package hook. This packet registers neither. A code-only patch cannot be assumed to remove a resolution-time dependency edge. Prefer the complete source-built artifact with its corrected manifest once portable catalog qualification passes.",
+  "hookContract": {
+    "helper": "registered-retirement.cjs",
+    "proposal": "proposed-pnpmfile.cjs.source",
+    "inspectedRootHookSha256": "037e7bd048e16c1434b145835f7adddb16374e6c336280092e94963fb848b4e7",
+    "metadataReader": "Reuse scripts/toolchains/read-default-catalog.cjs for published version authority. Native updateConfig supplies its parsed canonical patchedDependencies settings; do not add another YAML parser or depend on installed yaml during bootstrap.",
+    "nativeSourceFinding": "NodeJsHooks.update_config and read_package both call the same lazy self.worker(); the worker loads the module once and retains it for multiple requests. Config-dependency preparation returns the loaded hook objects that ran updateConfig. This supports initialize(config) then readPackage(pkg) without a duplicate metadata flag.",
+    "failClosed": "Uninitialized workers, ambiguous/changed Nextra selectors, changed published catalog versions, changed original dependency range, missing or altered complete patch/provenance and incomplete generated inventories fail. Unregistered patch files do not remove the edge. Already-retired physical metadata must match the exact generated dependency map.",
+    "remainingProof": "Prove the real native install carries the initialized hook handle through dependency resolution and that frozen reuse and patch application produce both the retired graph and the generated physical manifest/JS/declarations. If a separate worker bypasses initialization, stop; do not fall back to file presence or a new YAML reader."
+  },
   "requiredPortableProof": [
     "Use the exact selected native manager through the existing runner and Node selector in serialized parent-owned scratch consumers; no ambient shim or alternate manager.",
-    "Resolve the same generated tarball from a root consumer and apps/docs at different nesting depths on Windows and POSIX; verify package identity, content digest and the theme's exact nextra 4.6.1 peer.",
-    "Move or copy the entire candidate checkout/artifact layout, reinstall from a frozen lockfile in a clean consumer and prove there is no absolute host path or dependence on an earlier node_modules tree.",
+    "Install published nextra 4.6.1 with the exact complete patch and canonical parsed hook registration at root and apps/docs nesting depths on Windows and POSIX. Verify package identity, patch content digest and the theme's exact nextra 4.6.1 peer.",
+    "Move or copy the candidate checkout with its registered patch, provenance and source packet; reinstall from a frozen lockfile in a clean consumer. Prove no absolute host path, local provider protocol or dependence on an earlier node_modules tree.",
     "Inspect the resolved graph: no better-react-mathjax, mathjax-full or replacement MathJax/SRE prerelease enters through this variant; KaTeX paths and current family remain.",
-    "Only after complete generation and acceptance may the parent choose a durable artifact path and edit the catalog/lock. A .build scratch tarball is not a portable final binding."
+    "Exercise missing registration, unregistered file presence, wrong range/version, broad selector, wrong path, missing receipt, changed patch, incomplete inventory, original upstream control and already-retired physical manifest. No dependency may be silently removed when registration/provenance is invalid.",
+    "Only after complete generation, native graph proof and acceptance may the parent stage the patch/receipt at the declared path and merge proposed hook wiring after Nash. Root nextra/theme catalog identities stay published stable 4.6.1. No active registration is authored by this packet."
   ]
 }

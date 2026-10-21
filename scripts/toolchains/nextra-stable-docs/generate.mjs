@@ -8,7 +8,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import catalogReader from "../read-default-catalog.cjs";
 import { assertNodeVersion, loadToolchain } from "../toolchain.mjs";
-import { runPinnedPnpm } from "../../../packages/create-puck-app/pinned-pnpm.mjs";
+import { createCompletePackagePatch, inventoryPackage } from "./package-patch.mjs";
 
 // Explicit generation only. Importing this module has no filesystem effects.
 // There is deliberately no install, patch-registration or activation operation.
@@ -76,6 +76,7 @@ export function preflight() {
   const provenance = json(join(packet, "provenance.json"));
   const inputs = json(join(packet, "producer-inputs.json"));
   const catalog = catalogReader.readDefaultCatalog();
+  if (catalog.nextra !== provenance.upstream.version || catalog["nextra-theme-docs"] !== provenance.upstream.version) fail("Published Nextra/theme catalog identity differs from the exact source variant");
   const tools = Object.fromEntries(inputs.requiredToolCatalogKeys.map((name) => [name, tool(name, catalog)]));
   assert.equal(tools.typescript.version, toolchain.typescript);
   assert.match(tools.typescript.version, /^7\./u);
@@ -88,10 +89,11 @@ export function preflight() {
   const packetHashes = json(join(packet, "acceptance-inputs/packet-integrity.json"));
   for (const entry of packetHashes.files) verify(checkedPath(packet, entry.path), entry.sha256);
   const preservation = assertPreservedInputs();
-  return { toolchain, provenance, inputs, catalog, tools, preservation };
+  const integration = json(join(packet, "integration-inputs.json"));
+  return { toolchain, provenance, inputs, catalog, tools, preservation, integration };
 }
 
-async function extractSources(tar, context, work) {
+async function extractSources(tar, context, work, baselineRoot) {
   const { provenance } = context;
   const archiveRoot = provenance.upstream.archiveRoot;
   const prefix = `${archiveRoot}/packages/nextra/`;
@@ -131,17 +133,24 @@ async function extractSources(tar, context, work) {
     const path = checkedPath(packageRoot, entry.path);
     await rename(path, `${path}.upstream-input`);
   }
-  const manifest = json(join(packet, provenance.upstream.manifest));
+  // The physical manifest retains published metadata; the retirement range
+  // and source identities must agree with the exact owning source manifest.
+  const canonicalManifest = json(join(packet, provenance.upstream.manifest));
+  const manifest = json(join(baselineRoot, "package.json"));
   assert.equal(manifest.name, provenance.upstream.name);
   assert.equal(manifest.version, provenance.upstream.version);
+  assert.deepEqual(manifest.exports, canonicalManifest.exports);
   for (const name of provenance.manifestChanges.removeDependencies) {
-    if (!Object.hasOwn(manifest.dependencies, name)) fail(`Missing retirement edge: ${name}`);
+    if (!Object.hasOwn(manifest.dependencies, name) || manifest.dependencies[name] !== canonicalManifest.dependencies[name]) fail(`Missing or changed retirement edge: ${name}`);
     delete manifest.dependencies[name];
   }
   for (const [name, key] of Object.entries(provenance.manifestChanges.catalogBindings)) manifest.dependencies[name] = context.catalog[key];
   for (const field of provenance.manifestChanges.omitBuildOnlyFields) delete manifest[field];
   await writeFile(join(packageRoot, "package.json"), `${JSON.stringify(manifest, null, 2)}\n`);
   await copyFile(join(packet, provenance.upstream.licenseFile), join(packageRoot, "LICENSE"));
+  for (const entry of readdirSync(baselineRoot, { withFileTypes: true })) {
+    if (entry.isFile() && /^readme(?:\.[^/]+)?$/iu.test(entry.name)) await copyFile(join(baselineRoot, entry.name), join(packageRoot, entry.name));
+  }
   return packageRoot;
 }
 
@@ -244,6 +253,13 @@ async function emit(packageRoot, work, context) {
     plugins: [reactCompilerPlugin({ filter: /[\\/]src[\\/]client[\\/]/u })],
   });
   await writeFile(join(packageRoot, "dist/client/package.json"), '{"sideEffects":false}\n');
+  for (const path of files(join(packageRoot, "dist"))) {
+    if (!/\.(?:js|mjs|d\.ts|d\.mts)$/u.test(path)) continue;
+    const output = await readFile(path, "utf8");
+    if (/better-react-mathjax|mathjax-full|MathJaxContext|MathJaxOptions|MathJax3Config|rehypeBetterReactMathjax|renderer:\s*["']mathjax/u.test(output)) {
+      fail(`Generated runtime/declaration retains retired integration: ${relative(packageRoot, path)}`);
+    }
+  }
   const variant = {
     upstream: { name: "nextra", version: "4.6.1", commit: context.provenance.upstream.commit },
     compatibility: context.provenance.compatibility,
@@ -270,20 +286,50 @@ export async function generate(workDirectory) {
   }
   const tar = await import(pathToFileURL(ownerRequire.resolve("tar")).href);
   await mkdir(work, { recursive: true });
-  const packageRoot = await extractSources(tar, context, work);
+  const baselineRoot = join(work, "published-baseline");
+  await mkdir(baselineRoot);
+  await tar.x({ file: join(packet, context.provenance.publishedBaseline.archive), cwd: baselineRoot, strip: 1, strict: true, preservePaths: false,
+    filter(path, entry) {
+      if (!path.startsWith("package/")) fail(`Unexpected published package path: ${path}`);
+      if (!["File", "Directory"].includes(entry.type)) fail(`Non-regular published package input: ${path}`);
+      return true;
+    },
+  });
+  const packageRoot = await extractSources(tar, context, work, baselineRoot);
   await emit(packageRoot, work, context);
   const artifacts = join(work, "artifacts");
   await mkdir(artifacts);
-  // The generated package has no lifecycle scripts; native pack uses the
-  // preserved public files/exports metadata. No installation occurs here.
-  const status = runPinnedPnpm(["pack", "--pack-destination", artifacts], { toolchain: context.toolchain, root: repository, cwd: packageRoot, environment: { ...process.env, NODE_ENV: "production" } });
-  if (status !== 0) fail(`Native package packing failed (${status})`);
-  const inventory = [...files(join(packageRoot, "dist"))].map((path) => ({ path: relative(packageRoot, path).replaceAll(sep, "/"), sha256: digest(readFileSync(path)) }));
-  const packageInputs = ["package.json", "LICENSE", "loader.cjs", ...[...files(join(packageRoot, "styles"))].map((path) => relative(packageRoot, path))];
-  for (const path of packageInputs) inventory.push({ path: path.replaceAll(sep, "/"), sha256: digest(readFileSync(join(packageRoot, path))) });
-  inventory.sort((a, b) => a.path.localeCompare(b.path, "en"));
-  await writeFile(join(work, "candidate-inventory.json"), `${JSON.stringify({ status: "generated-unqualified", files: inventory }, null, 2)}\n`);
-  return { packageRoot, artifacts, inventory: join(work, "candidate-inventory.json") };
+  const candidateRoot = join(work, "candidate-package");
+  await mkdir(candidateRoot);
+  const candidatePaths = ["package.json", "LICENSE", "loader.cjs", ...readdirSync(packageRoot).filter((name) => /^readme(?:\.[^/]+)?$/iu.test(name)),
+    ...[...files(join(packageRoot, "dist")), ...files(join(packageRoot, "styles"))].map((path) => relative(packageRoot, path))];
+  for (const path of candidatePaths) {
+    const target = checkedPath(candidateRoot, path);
+    await mkdir(dirname(target), { recursive: true });
+    await copyFile(checkedPath(packageRoot, path), target);
+  }
+  const baselineInventory = inventoryPackage(baselineRoot);
+  const candidateInventory = inventoryPackage(candidateRoot);
+  const { patch, changedFiles } = createCompletePackagePatch(baselineRoot, candidateRoot, baselineInventory, candidateInventory);
+  const patchName = context.integration.registration.path.split("/").at(-1);
+  const patchPath = join(artifacts, patchName);
+  await writeFile(patchPath, patch);
+  const canonicalManifest = json(join(packet, context.provenance.upstream.manifest));
+  const receipt = {
+    schemaVersion: "cityos.nextra-stable-docs.generated-patch.v1",
+    status: "complete-source-generated-patch",
+    nonEvidence: "Generation is not qualification or activation. Parent must prove the real native hook/patch graph and public behavior before registration.",
+    package: { name: "nextra", version: "4.6.1", originalDependency: "better-react-mathjax", originalRange: canonicalManifest.dependencies["better-react-mathjax"] },
+    registration: context.integration.registration,
+    patchSha256: digest(patch),
+    sourceProvenanceSha256: digest(readFileSync(join(packet, "provenance.json"))),
+    packetIntegritySha256: digest(readFileSync(join(packet, "acceptance-inputs/packet-integrity.json"))),
+    publishedBaselineSha256: context.provenance.publishedBaseline.sha256,
+    changedFiles, baselineInventory, candidateInventory,
+    candidateDependencies: json(join(candidateRoot, "package.json")).dependencies,
+  };
+  await writeFile(`${patchPath}.provenance.json`, `${JSON.stringify(receipt, null, 2)}\n`);
+  return { packageRoot: candidateRoot, patchPath, provenancePath: `${patchPath}.provenance.json` };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

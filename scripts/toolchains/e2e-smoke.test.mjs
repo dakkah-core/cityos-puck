@@ -228,6 +228,24 @@ test("memory threshold failures reject after all four scenarios, with their metr
   assert.ok(io.browsers.every((browser) => browser.closed === 1));
 });
 
+test("captured output keeps charts and metrics without terminal cursor methods", async (t) => {
+  const terminal = terminalAndClockIO(t);
+  const io = browserIO(t);
+  for (const name of ["moveCursor", "clearLine", "cursorTo"]) {
+    Object.defineProperty(process.stdout, name, {
+      configurable: true,
+      value: undefined,
+    });
+  }
+  const results = await main(["--executable-path", executablePath]);
+  assert.equal(results.length, 4);
+  assert.ok(results.every(({ result }) => result.iterations === 1));
+  assert.ok(terminal.writes.includes("\n"));
+  assert.ok(terminal.writes.some((line) => line.includes("MB (") && line.includes("iterations")));
+  assert.ok(terminal.logs.includes("4/4 tests passed"));
+  assert.ok(io.browsers.every((browser) => browser.closed === 1));
+});
+
 test("scenario exceptions reject instead of being counted as passing", async (t) => {
   const terminal = terminalAndClockIO(t);
   const io = browserIO(t);

@@ -8,6 +8,11 @@ import { fileURLToPath } from "url";
 import { loadBootstrapCatalog } from "../bootstrap-catalog.js";
 
 const verbose = false;
+const arguments_ = process.argv.slice(2);
+if (arguments_.length > 1 || (arguments_.length === 1 && arguments_[0] !== "--catalog-only")) {
+  throw new Error("Usage: generate.js [--catalog-only]");
+}
+const catalogOnly = arguments_[0] === "--catalog-only";
 
 const run = async () => {
   const __filename = fileURLToPath(import.meta.url);
@@ -17,12 +22,12 @@ const run = async () => {
   const recipePath = path.join(__dirname, "../../../recipes");
   const templatePath = path.join(__dirname, "../templates");
 
-  if (!fs.existsSync(recipePath)) {
+  if (!catalogOnly && !fs.existsSync(recipePath)) {
     console.error(`No recipe directory could be found at ${recipePath}.`);
     return;
   }
 
-  if (!fs.existsSync(templatePath)) {
+  if (!catalogOnly && !fs.existsSync(templatePath)) {
     console.error(`No template directory could be found at ${templatePath}.`);
     return;
   }
@@ -44,6 +49,11 @@ const run = async () => {
     const target = path.join(packagePath, relative);
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.copyFileSync(patch, target);
+  }
+
+  if (catalogOnly) {
+    console.log("Copied canonical bootstrap catalog inputs only.");
+    return;
   }
 
   // Copy recipe files

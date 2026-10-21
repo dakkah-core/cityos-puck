@@ -29,11 +29,12 @@
     "nodeImports": "Preserve upstream's removal of node: prefixes through a source-load transform before emission.",
     "layout": "Preserve src-relative dist entrypoints, loader.cjs, styles and dist/client/package.json sideEffects:false."
   },
-  "packing": {
-    "tool": "Existing runPinnedPnpm via scripts/toolchains/run-pinned-pnpm.mjs",
-    "format": "Native pnpm pack tarball with the original files/exports metadata and retained MIT license",
-    "output": "An explicit new child of .build/nextra-stable-docs; no overwrite, install, provider registration or root-manifest write",
-    "promotion": "Forbidden until two independent matching output inventories, provider/content acceptance and portable native catalog integration evidence exist."
+  "patchProduction": {
+    "owner": "package-patch.mjs, called only by the explicit generator",
+    "format": "Complete deterministic LF unified package patch against the integrity-verified published npm baseline, including physical manifest, all changed JS/declarations, additions and deletions",
+    "metadata": "Keep the published manifest's non-retired metadata. Apply the exact canonical source edge retirement and existing stable compiler-runtime catalog binding; preserve public files/exports and license.",
+    "output": "A patch, complete package inventories and sibling source provenance in an explicit new .build/nextra-stable-docs child. No active patch copy, overwrite, install, provider registration or root-manifest write.",
+    "promotion": "Forbidden until two independent matching complete patch/output inventories, provider/content acceptance and real native hook/patch graph evidence exist."
   },
   "typeScript6": "No new TypeScript API consumer is introduced. This producer uses TS7 declarations directly. The existing exact tsup compatibility binding remains untouched.",
   "kaTexConsumerSeams": [

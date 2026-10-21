@@ -1,0 +1,30 @@
+// Inert proposal based on the inspected root hook. Parent must merge these
+// additions with Nash's final hook; never replace concurrent hook changes.
+const { retargetPluginAiPeer } = require("./packages/create-puck-app/plugin-ai-peer.cjs");
+const contract = require("./config/dependencies/plugin-ai.json");
+const core = require("./packages/core/package.json");
+const { readDefaultCatalog } = require("./scripts/toolchains/read-default-catalog.cjs");
+const { adaptToolingApi } = require("./scripts/toolchains/tooling-api.cjs");
+const toolingPolicy = require("./config/dependencies/tooling-api.json");
+const { createRegisteredMathJaxRetirement } = require("./scripts/toolchains/nextra-stable-docs/registered-retirement.cjs");
+const catalog = readDefaultCatalog();
+const nextraRetirement = createRegisteredMathJaxRetirement({ repositoryRoot: __dirname, readCatalog: readDefaultCatalog });
+
+if (contract.corePackage !== core.name || contract.coreSourceVersion !== core.version) {
+  throw new Error("The plugin-ai source patch must match the owned core identity and source version");
+}
+
+module.exports = {
+  hooks: {
+    updateConfig(config) {
+      // Native pnpm supplies its parsed canonical patchedDependencies settings.
+      // Merge into an existing updateConfig hook if Nash introduces one.
+      nextraRetirement.initialize(config);
+      return config;
+    },
+    readPackage(pkg) {
+      const adapted = adaptToolingApi(retargetPluginAiPeer(pkg, contract), catalog, toolingPolicy);
+      return nextraRetirement.readPackage(adapted);
+    },
+  },
+};

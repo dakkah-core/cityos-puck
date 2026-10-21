@@ -1,17 +1,100 @@
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { copyFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import { createHash } from "node:crypto";
 import { test } from "node:test";
 import { materializeManifest, resolveCatalog } from "../../packages/create-puck-app/manifest-catalog.js";
 import { readDefaultCatalog } from "../toolchains/catalog-version.mjs";
 import { formatSource } from "./format-source.mjs";
+import { loadBootstrapCatalog } from "../../packages/create-puck-app/bootstrap-catalog.js";
 
 const root = new URL("../../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
 const json = (path) => JSON.parse(read(path));
 const catalog = readDefaultCatalog();
 const core = json("packages/core/package.json");
+
+test("Nextra source generation tools have direct owning catalog bindings", () => {
+  const producer = json("scripts/toolchains/nextra-stable-docs/producer-inputs.json");
+  const manifest = json("package.json");
+  for (const name of producer.requiredToolCatalogKeys) {
+    assert.equal(manifest.devDependencies[name], "catalog:", name);
+    assert.match(catalog[name], /^\d+\.\d+\.\d+$/u, name);
+  }
+  assert.equal(catalog["@svgr/core"], "8.1.0");
+  assert.equal(catalog["@svgr/plugin-jsx"], "8.1.0");
+  assert.equal(catalog["@svgr/plugin-svgo"], "8.1.0");
+  assert.equal(catalog["babel-plugin-react-compiler"], "1.0.0");
+  assert.equal(catalog["react-compiler-webpack"], "1.1.0");
+});
+
+test("the actual catalog-only generator refreshes every snapshot and preserves recipe outputs", () => {
+  const temporaryRoot = realpathSync(tmpdir());
+  const fixture = mkdtempSync(join(temporaryRoot, "puck-catalog-snapshots-"));
+  const identity = lstatSync(fixture, { bigint: true });
+  const link = join(fixture, "node_modules");
+  let linkIdentity;
+  try {
+    const copy = (source, target = source) => {
+      const output = join(fixture, target);
+      mkdirSync(dirname(output), { recursive: true });
+      copyFileSync(new URL(source, root), output);
+    };
+    const snapshots = [
+      ["pnpm-workspace.yaml", "dependency-catalog.yaml"],
+      ["package.json", "workspace-package.json"],
+      ["config/toolchains/node-typescript.json", "node-typescript.json"],
+      ["packages/core/package.json", "core-package.json"],
+      ["config/dependencies/plugin-ai.json", "plugin-ai-contract.json"],
+    ];
+    for (const [source] of snapshots) copy(source);
+    for (const source of ["package.json", "bootstrap-catalog.js", "toolchain.cjs", "scripts/generate.js"]) {
+      copy("packages/create-puck-app/" + source);
+    }
+    const bootstrap = loadBootstrapCatalog();
+    for (const path of Object.values(bootstrap.workspace.patchedDependencies ?? {})) copy(path);
+    const packageRoot = join(fixture, "packages/create-puck-app");
+    mkdirSync(join(fixture, "recipes"));
+    mkdirSync(join(packageRoot, "templates"));
+    writeFileSync(join(fixture, "recipes/unrelated-output.txt"), "DO_NOT_COPY_RECIPE_OUTPUT\n");
+    writeFileSync(join(packageRoot, "templates/kept.txt"), "PRESERVE_TEMPLATE_OUTPUT\n");
+    for (const [, target] of snapshots) writeFileSync(join(packageRoot, target), "STALE_SNAPSHOT\n");
+    symlinkSync(fileURLToPath(new URL("node_modules/", root)), link, "junction");
+    linkIdentity = lstatSync(link, { bigint: true });
+    const result = spawnSync(process.execPath,
+      [join(packageRoot, "scripts/generate.js"), "--catalog-only"],
+      { cwd: fixture, encoding: "utf8", windowsHide: true, timeout: 20_000 });
+    assert.equal(result.error, undefined);
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /catalog inputs only/);
+    for (const [source, target] of snapshots) {
+      assert.deepEqual(readFileSync(join(packageRoot, target)), readFileSync(new URL(source, root)), target);
+    }
+    for (const path of Object.values(bootstrap.workspace.patchedDependencies ?? {})) {
+      assert.deepEqual(readFileSync(join(packageRoot, path)), readFileSync(new URL(path, root)), path);
+    }
+    assert.equal(readFileSync(join(packageRoot, "templates/kept.txt"), "utf8"), "PRESERVE_TEMPLATE_OUTPUT\n");
+    assert.equal(existsSync(join(packageRoot, "templates/unrelated-output.txt")), false);
+  } finally {
+    const current = lstatSync(fixture, { bigint: true });
+    assert.equal(current.dev, identity.dev, "Fixture ownership changed; cleanup refused");
+    assert.equal(current.ino, identity.ino, "Fixture ownership changed; cleanup refused");
+    assert.equal(realpathSync(fixture), fixture);
+    assert.equal(dirname(fixture), temporaryRoot);
+    if (linkIdentity) {
+      const currentLink = lstatSync(link, { bigint: true });
+      assert.ok(currentLink.isSymbolicLink());
+      assert.equal(currentLink.dev, linkIdentity.dev);
+      assert.equal(currentLink.ino, linkIdentity.ino);
+      unlinkSync(link);
+    }
+    rmSync(fixture, { recursive: true, force: true });
+  }
+});
 
 function* files(directory) {
   for (const entry of readdirSync(new URL(directory, root), { withFileTypes: true })) {
@@ -200,4 +283,19 @@ test("owned Nextra preservation packet guards every route, example and public so
   }
   assert.equal(core.name, input.publicPackage.name);
   assert.deepEqual(core.exports, input.publicPackage.exports);
+});
+
+test("owned Nextra metadata retirement stays inert without exact canonical patch registration", async () => {
+  const require = createRequire(import.meta.url);
+  const { fileURLToPath } = await import("node:url");
+  const { createRegisteredMathJaxRetirement } = require("../toolchains/nextra-stable-docs/registered-retirement.cjs");
+  const options = { repositoryRoot: fileURLToPath(root), readCatalog: readDefaultCatalog };
+  const input = { name: "nextra", version: "4.6.1", dependencies: { "better-react-mathjax": "^2.3.0" } };
+  const instance = createRegisteredMathJaxRetirement(options);
+  assert.throws(() => instance.readPackage(input), /not initialized/u);
+  const config = { patchedDependencies: {} };
+  assert.equal(instance.initialize(config), config);
+  assert.equal(instance.readPackage(input), input);
+  assert.equal(input.dependencies["better-react-mathjax"], "^2.3.0");
+  assert.throws(() => instance.initialize({ patchedDependencies: { nextra: "patches/unregistered.patch" } }), /Unexpected Nextra patch selector/u);
 });
