@@ -1,21 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Plus, Trash } from "lucide-react";
-import type { CustomField, CustomFieldEditorContext } from "./types/Fields";
+import type {
+  CustomField,
+  CustomFieldEditorContext,
+  Dictionary,
+} from "@cityos-core/puck";
 import type { CityOSPuckStringListField } from "./cityos-registration";
 import {
   editCityOSStringList,
   snapshotCityOSStringList,
   type CityOSStringListEdit,
 } from "./cityos-string-list";
-import { getMessage, type Dictionary } from "./lib/dictionary";
-import { IconButton } from "./components/IconButton";
-import getClassNameFactory from "./lib/get-class-name-factory";
-import inputStyles from "./components/AutoField/styles.module.css";
-import arrayStyles from "./components/AutoField/fields/ArrayField/styles.module.css";
+import { getMessage } from "./messages";
 import styles from "./cityos-string-list-field.module.css";
-
-const inputClass = getClassNameFactory("Input", inputStyles);
-const arrayClass = getClassNameFactory("ArrayField", arrayStyles);
 
 function ListRow({
   id,
@@ -52,7 +49,7 @@ function ListRow({
       <label htmlFor={fieldId}>{`${label}: ${item}`}</label>
       <textarea
         ref={inputRef}
-        className={inputClass("input")}
+        className={styles.input}
         id={fieldId}
         value={value}
         rows={2}
@@ -64,7 +61,8 @@ function ListRow({
       />
       {!readOnly && (
         <div className={styles.actions}>
-          <IconButton
+          <button
+            className={styles.iconButton}
             type="button"
             disabled={index === 0}
             title={`${up}: ${item}`}
@@ -74,8 +72,9 @@ function ListRow({
             }
           >
             <ArrowUp size={16} aria-hidden="true" />
-          </IconButton>
-          <IconButton
+          </button>
+          <button
+            className={styles.iconButton}
             type="button"
             disabled={last}
             title={`${down}: ${item}`}
@@ -85,15 +84,16 @@ function ListRow({
             }
           >
             <ArrowDown size={16} aria-hidden="true" />
-          </IconButton>
-          <IconButton
+          </button>
+          <button
+            className={styles.iconButton}
             type="button"
             title={`${remove}: ${item}`}
             aria-label={`${remove}: ${item}`}
             onClick={() => edit({ type: "remove", index }, index)}
           >
             <Trash size={16} aria-hidden="true" />
-          </IconButton>
+          </button>
         </div>
       )}
     </li>
@@ -139,7 +139,7 @@ function StringListEditor({
     const requested = focus.current;
     focus.current = undefined;
     const available = inputs.current.filter(
-      (node): node is HTMLTextAreaElement => node !== null
+      (node): node is HTMLTextAreaElement => node !== null,
     );
     const target = available[Math.min(requested, available.length - 1)];
     (target ?? add.current)?.focus();
@@ -198,11 +198,11 @@ function StringListEditor({
               type="button"
               title={addLabel}
               aria-label={addLabel}
-              className={arrayClass("addButton")}
+              className={styles.addButton}
               onClick={() =>
                 edit(
                   { type: "insert", index: items.length, value: "" },
-                  items.length
+                  items.length,
                 )
               }
             >
@@ -216,7 +216,7 @@ function StringListEditor({
 }
 
 export function createCityOSStringListField(
-  definition: Readonly<CityOSPuckStringListField>
+  definition: Readonly<CityOSPuckStringListField>,
 ): CustomField<string[]> {
   const field = Object.freeze({ ...definition });
   return {

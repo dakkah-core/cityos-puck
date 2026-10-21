@@ -7,7 +7,8 @@ import { formatSource } from './format-source.mjs';
 const require = createRequire(resolve(process.argv[2], 'package.json'));
 const prettier = require('prettier');
 const paths = [
-  'packages/core/cityos-registration.ts',
+  'extensions/cityos/messages.ts',
+  'extensions/cityos/cityos-registration.ts',
   'packages/core/cityos.ts',
   'packages/core/__tests__/cityos-registration.test.tsx',
   'packages/core/__tests__/cityos-structured-registration.spec.ts',
@@ -15,9 +16,9 @@ const paths = [
   'packages/core/__helpers__/cityos-structured-registration.ts',
   'packages/core/__helpers__/cityos-editor-environment.ts',
   'docs/cityos-registration.md',
-  'packages/core/cityos-string-list.ts',
-  'packages/core/cityos-string-list-field.tsx',
-  'packages/core/cityos-string-list-field.module.css',
+  'extensions/cityos/cityos-string-list.ts',
+  'extensions/cityos/cityos-string-list-field.tsx',
+  'extensions/cityos/cityos-string-list-field.module.css',
   'packages/core/lib/dictionary.ts',
   'packages/core/__tests__/cityos-string-list-editor.test.tsx',
   'docs/cityos-string-list-registration.md',

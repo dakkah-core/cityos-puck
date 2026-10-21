@@ -656,7 +656,7 @@
   "publicBoundarySources": [
     {
       "path": "packages/core/bundle/index.ts",
-      "sha256": "b01f97e259882527c8b7cdd5e380b6b4676906675b66d92692d0cc721bbfc793"
+      "sha256": "db3658ea4f58aa18824a280414f9aa748fa7e54b7e7793ccb5883ed26d339b3d"
     },
     {
       "path": "packages/core/bundle/core.ts",
@@ -676,11 +676,11 @@
     },
     {
       "path": "packages/core/cityos.ts",
-      "sha256": "b32dab92c83f80dc1110532319920965174e6d55ae27e18d9d5bf62628484a35"
+      "sha256": "966665c4f194e26aa3d22cbe2b6fba2b0d168fcae555631a5581a7aac80631cb"
     },
     {
       "path": "packages/core/cityos-registration.ts",
-      "sha256": "15c1e6341f47e04e115e7b18594a4d6dd00286652ac6e8ff2536369c45dfed5d"
+      "sha256": "defe37d3154a51db09ed72aa46772ea5d2d05b18b78ee24f019cfe5bd8f712c7"
     },
     {
       "path": "apps/docs/mdx-components.tsx",
@@ -693,6 +693,30 @@
     {
       "path": "apps/docs/app/[[...mdxPath]]/page.tsx",
       "sha256": "4ba1d0a7cb5f03be32d99c0e8faa53c6bf2bba200a15f61d9b7936b8be4dadc2"
+    },
+    {
+      "path": "extensions/cityos/cityos-registration.ts",
+      "sha256": "259a32be685370427bca9b8f448b68a6e81476e505b3230df855bc37ce6ce2f1"
+    },
+    {
+      "path": "extensions/cityos/cityos-string-list-field.module.css",
+      "sha256": "3e34f596105950838aeb4869a2334a799d79a3ac68dd097678f337b55a803ceb"
+    },
+    {
+      "path": "extensions/cityos/cityos-string-list-field.tsx",
+      "sha256": "07254a4eeea985ceb247e02779d4e05469b2b779952293779a94f03557ec66de"
+    },
+    {
+      "path": "extensions/cityos/cityos-string-list.ts",
+      "sha256": "e3da081aad097aef27485c7a6983e553d2ce0960251ee37041950d9405177419"
+    },
+    {
+      "path": "extensions/cityos/index.ts",
+      "sha256": "d4fc49a9dfd4df54de43dbb8e856659aeb2231590ce62f063d70d547c1ddfa66"
+    },
+    {
+      "path": "extensions/cityos/messages.ts",
+      "sha256": "bee2b9e09afb0fa2f6ec53cf4af16c412030fa2542d5aa4ef36091205b4448cc"
     }
   ],
   "publicPackage": {

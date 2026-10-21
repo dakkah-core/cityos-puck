@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { parseCityOSPuckRegistration, digestCityOSPuckRegistration, bindCityOSPuckRegistration } from '../../packages/core/cityos-registration.ts';
+import { parseCityOSPuckRegistration, digestCityOSPuckRegistration, bindCityOSPuckRegistration } from '../../extensions/cityos/cityos-registration.ts';
 
 // Generated conformance data, not another compiler or a runtime admission record.
 const bytes = readFileSync(new URL('./fixtures/compiler-registration.v2.json', import.meta.url), 'utf8');

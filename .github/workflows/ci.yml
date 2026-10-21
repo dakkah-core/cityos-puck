@@ -15,6 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@v6
         with:
@@ -31,6 +32,12 @@ jobs:
           source scripts/toolchains/select-workspace-node.sh
           mkdir -p .build/cityos-registration
           node scripts/cityos/registration-source-suite.mjs | tee .build/cityos-registration/results.tap
+      - name: Verify upstream integration and CityOS source ownership
+        shell: bash
+        run: |
+          source scripts/toolchains/select-workspace-node.sh
+          node --test scripts/upstream/integration.test.mjs scripts/upstream/extension-boundary.test.mjs
+          node scripts/upstream/integration.mjs > .build/cityos-registration/upstream-source.json
       - name: Check registration formatting with pinned tool
         shell: bash
         run: |

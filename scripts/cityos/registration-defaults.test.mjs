@@ -6,7 +6,7 @@ import {
   parseCityOSPuckRegistration,
   bindCityOSPuckRegistration,
   digestCityOSPuckRegistration,
-} from '../../packages/core/cityos-registration.ts';
+} from '../../extensions/cityos/cityos-registration.ts';
 
 // This target fixture is produced by CityOS Compiler, not hand-maintained metadata.
 const bytes = readFileSync(new URL('./fixtures/compiler-registration-v4.json', import.meta.url), 'utf8');

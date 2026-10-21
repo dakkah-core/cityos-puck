@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { bindCityOSPuckRegistration, digestCityOSPuckRegistration, parseCityOSPuckRegistration } from '../../packages/core/cityos-registration.ts';
+import { bindCityOSPuckRegistration, digestCityOSPuckRegistration, parseCityOSPuckRegistration } from '../../extensions/cityos/cityos-registration.ts';
 
 const digest = 'sha256:' + 'a'.repeat(64);
 const source = () => ({

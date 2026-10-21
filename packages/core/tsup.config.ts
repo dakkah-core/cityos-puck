@@ -3,6 +3,7 @@ import tsupconfig from "../tsup-config";
 import path from "path";
 import { build, type Plugin } from "esbuild";
 import { cssModulePlugin } from "../tsup-config/css-module-plugin";
+import { captureSourceIdentity } from "../../scripts/upstream/integration.mjs";
 
 const packageRoot = path.resolve(import.meta.dirname);
 
@@ -92,7 +93,7 @@ const runtimeCssPlugin: Plugin = {
           cachedContents = [
             `export const defaultUiStyles = ${JSON.stringify(defaultStyles)};`,
             `export const iframeInteractionStyles = ${JSON.stringify(
-              interactionStyles
+              interactionStyles,
             )};`,
           ].join("\n");
         }
@@ -101,12 +102,17 @@ const runtimeCssPlugin: Plugin = {
           contents: cachedContents,
           loader: "js" as const,
         };
-      }
+      },
     );
   },
 };
 
 export default defineConfig({
   ...tsupconfig,
+  define: {
+    __CITYOS_PUCK_BUILD__: JSON.stringify(
+      captureSourceIdentity(path.resolve(packageRoot, "../..")),
+    ),
+  },
   esbuildPlugins: [...(tsupconfig.esbuildPlugins ?? []), runtimeCssPlugin],
 });

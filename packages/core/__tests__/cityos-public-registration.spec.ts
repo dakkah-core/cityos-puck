@@ -10,11 +10,11 @@ import * as registration from "../cityos-registration";
 const nodeRequire = createRequire(__filename);
 const coreRoot = resolve(__dirname, "..");
 const manifest = JSON.parse(
-  readFileSync(resolve(coreRoot, "package.json"), "utf8")
+  readFileSync(resolve(coreRoot, "package.json"), "utf8"),
 );
 // This loads the actual prepared CommonJS export with Node, not a source alias.
 const compiled: typeof publicApi = nodeRequire(
-  resolve(coreRoot, manifest.exports["./cityos"].require)
+  resolve(coreRoot, manifest.exports["./cityos"].require),
 );
 const previousCrypto = Object.getOwnPropertyDescriptor(globalThis, "crypto");
 
@@ -67,12 +67,20 @@ describe("CityOS public registration entry", () => {
   });
 
   it("preserves metadata in the prepared export", () => {
-    expect(compiled.CITYOS_PUCK_PACKAGE).toEqual(publicApi.CITYOS_PUCK_PACKAGE);
+    expect(compiled.CITYOS_PUCK_PACKAGE.packageName).toBe(
+      publicApi.CITYOS_PUCK_PACKAGE.packageName,
+    );
+    expect(compiled.CITYOS_PUCK_PACKAGE.nativeDataProfile).toBe(
+      publicApi.CITYOS_PUCK_PACKAGE.nativeDataProfile,
+    );
+    expect(compiled.CITYOS_PUCK_PACKAGE.forkRevision).toMatch(/^[a-f0-9]{40}$/);
+    expect(compiled.CITYOS_PUCK_PACKAGE.sourceDigest).toMatch(/^[a-f0-9]{64}$/);
+    expect(typeof compiled.CITYOS_PUCK_PACKAGE.dirty).toBe("boolean");
     expect(compiled.CITYOS_PUCK_REGISTRATION_VERSION).toBe(
-      registration.CITYOS_PUCK_REGISTRATION_VERSION
+      registration.CITYOS_PUCK_REGISTRATION_VERSION,
     );
     expect(compiled.CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION).toBe(
-      registration.CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION
+      registration.CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION,
     );
     expect(typeof compiled.bindCityOSPuckRegistration).toBe("function");
   });
@@ -92,7 +100,7 @@ describe("CityOS public registration entry", () => {
       const config = await api.bindCityOSPuckRegistration(
         source,
         expected,
-        (key) => (key === "fixture.text" ? installed : undefined)
+        (key) => (key === "fixture.text" ? installed : undefined),
       );
       expect(Object.keys(config.components)).toEqual(["FutureConfiguredText"]);
       expect(config.components.FutureConfiguredText.fields).toEqual({
@@ -106,7 +114,7 @@ describe("CityOS public registration entry", () => {
     const expected = await registration.digestCityOSPuckRegistration(source);
     for (const api of [publicApi, compiled]) {
       await expect(
-        api.bindCityOSPuckRegistration(source, expected, () => undefined)
+        api.bindCityOSPuckRegistration(source, expected, () => undefined),
       ).rejects.toThrow("CITYOS_PUCK_RENDERER_UNAVAILABLE");
     }
   });
@@ -119,7 +127,7 @@ describe("CityOS public registration entry", () => {
     };
     for (const api of [publicApi, compiled]) {
       await expect(
-        api.bindCityOSPuckRegistration(source, wrongDigest, rejectLookup)
+        api.bindCityOSPuckRegistration(source, wrongDigest, rejectLookup),
       ).rejects.toThrow("CITYOS_PUCK_MANIFEST_MISMATCH");
     }
   });

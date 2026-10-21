@@ -1,18 +1,11 @@
 {
   "extends": "../tsconfig/react-library.json",
-  "include": [
-    "."
-  ],
-  "exclude": [
-    "dist",
-    "build",
-    "node_modules"
-  ],
+  "include": [".", "../../extensions/cityos"],
+  "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
-    "types": [
-      "node",
-      "jest",
-      "@testing-library/jest-dom"
-    ]
+    "types": ["node", "jest", "@testing-library/jest-dom"],
+    "paths": {
+      "@cityos-core/puck": ["./bundle/core.ts"]
+    }
   }
 }

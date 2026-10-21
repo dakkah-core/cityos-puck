@@ -2,8 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { parseCityOSPuckRegistration, digestCityOSPuckRegistration, bindCityOSPuckRegistration } from '../../packages/core/cityos-registration.ts';
-import { snapshotCityOSStringList, editCityOSStringList } from '../../packages/core/cityos-string-list.ts';
+import { parseCityOSPuckRegistration, digestCityOSPuckRegistration, bindCityOSPuckRegistration } from '../../extensions/cityos/cityos-registration.ts';
+import { snapshotCityOSStringList, editCityOSStringList } from '../../extensions/cityos/cityos-string-list.ts';
 
 const bytes=readFileSync(new URL('./fixtures/compiler-registration.v3.json',import.meta.url),'utf8');
 const proof=JSON.parse(readFileSync(new URL('./fixtures/compiler-registration.v3.evidence.json',import.meta.url),'utf8'));

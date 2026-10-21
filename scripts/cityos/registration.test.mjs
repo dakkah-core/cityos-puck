@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseCityOSPuckRegistration, digestCityOSPuckRegistration, bindCityOSPuckRegistration } from '../../packages/core/cityos-registration.ts';
+import { parseCityOSPuckRegistration, digestCityOSPuckRegistration, bindCityOSPuckRegistration } from '../../extensions/cityos/cityos-registration.ts';
 const digest = 'sha256:' + 'a'.repeat(64);
 const ref = { key: 'fixture.text', version: '1', digest };
 const entry = (type = 'FixtureText') => ({ type, label: 'نص / Text', renderer: { ...ref }, fields: { text: { type: 'text', label: 'النص' } } });

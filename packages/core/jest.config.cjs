@@ -3,13 +3,22 @@
 const config = {
   preset: "ts-jest/presets/js-with-ts-esm", // TS + ESM
   testEnvironment: "jsdom",
+  roots: ["<rootDir>", "<rootDir>/../../extensions/cityos"],
 
   // Treat these files as ESM so `import`/`export` keep working
   extensionsToTreatAsEsm: [".ts", ".tsx"],
 
   transform: {
     // Let ts-jest compile TS/JS for Jest
-    "^.+\\.[tj]sx?$": ["ts-jest", { useESM: true, compiler: "typescript-api", diagnostics: false, tsconfig: { allowJs: true } }],
+    "^.+\\.[tj]sx?$": [
+      "ts-jest",
+      {
+        useESM: true,
+        compiler: "typescript-api",
+        diagnostics: false,
+        tsconfig: { allowJs: true },
+      },
+    ],
   },
 
   // Re-enable transform *inside* selected node_modules

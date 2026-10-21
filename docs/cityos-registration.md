@@ -83,3 +83,13 @@ The explicit v3 contract and its fork-owned control are documented in
 [scalar string-list registration](cityos-string-list-registration.md). V1/v2
 keep their existing semantics; v3 is not automatically available in previously
 published packages or the platform host.
+
+## Source ownership and upstream qualification
+
+CityOS registration, scalar-list editing and field styles are owned by `extensions/cityos/`. The existing `@cityos-core/puck/cityos` export and source compatibility entries forward to that implementation. Extensions use public Puck types and the generic custom-field presentation context; they do not import editor stores, private components or private styles.
+
+`CITYOS_PUCK_PACKAGE.forkRevision` is injected from the observed Git source at assembly. `sourceDigest` binds the assembly inputs and `dirty` distinguishes uncommitted local candidates. Source imports report `source-unassembled` with null assembly fields. This metadata does not substitute for the consumed tarball integrity or registry gitHead.
+
+`config/upstream/integration.json` pins the selected upstream commit and inventories every maintained change outside the owned extension/tooling directories. `node scripts/upstream/integration.mjs` requires that upstream to be integrated and rejects undeclared changes. `--inventory` inspects a candidate before integration; it does not qualify an artifact. Receipt verification requires the canonical required checks, unchanged logs, a clean matching source identity, lockfile and exact tested artifact bytes.
+
+The reserved root canvas retains its own index even when `default-zone` carries a slot constraint. Generic source regressions exercise indexing and allow/disallow behavior; no generated bundle patch is needed in a newly assembled artifact. Existing consumers must retain their recorded patch until they adopt a qualified published replacement.
