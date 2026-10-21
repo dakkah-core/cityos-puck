@@ -42,6 +42,10 @@ yarn-error.log*
 
 dist
 
+# tsup loads its configuration through a temporary generated module. It is a
+# build intermediate, not an input to the distribution's source identity.
+packages/core/tsup.config.bundled_*.mjs
+
 # Rebuilt by Nextra's search indexer.
 _pagefind/
 
