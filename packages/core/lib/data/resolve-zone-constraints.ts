@@ -1,6 +1,7 @@
 import { Config, SlotField } from "../../types";
 import { NodeIndex, ZoneIndex } from "../../types/Internal";
 import { getSlotField } from "./get-slot-field";
+import { rootDroppableId } from "../root-droppable-id";
 
 export type ZoneConstraints = Pick<SlotField, "allow" | "disallow">;
 
@@ -19,9 +20,12 @@ const NO_CONSTRAINTS: ZoneConstraints = {};
 export const getZoneConstraints = (
   zoneCompound: string,
   config: Config,
-  indexes: { nodes: NodeIndex; zones: ZoneIndex }
+  indexes: { nodes: NodeIndex; zones: ZoneIndex },
 ): ZoneConstraints => {
-  if (indexes.zones[zoneCompound]?.type !== "slot") {
+  if (
+    indexes.zones[zoneCompound]?.type !== "slot" &&
+    zoneCompound !== rootDroppableId
+  ) {
     return NO_CONSTRAINTS;
   }
 

@@ -67,6 +67,26 @@ describe("resolve-zone-constraints", () => {
     expect(getZoneConstraints(rootDroppableId, config, indexes)).toEqual({});
   });
 
+  it("applies configured slot constraints to the reserved root canvas", () => {
+    const constrained: Config = {
+      ...config,
+      root: {
+        ...config.root,
+        fields: {
+          ...config.root?.fields,
+          "default-zone": { type: "slot", allow: ["Card"], disallow: ["Grid"] },
+        },
+      },
+    };
+    expect(getZoneConstraints(rootDroppableId, constrained, indexes)).toEqual({
+      allow: ["Card"],
+      disallow: ["Grid"],
+    });
+    expect(getZoneConstraints("card-1:zone1", constrained, indexes)).toEqual(
+      {},
+    );
+  });
+
   it("resolves legacy dropzone zones as unconstrained", () => {
     expect(getZoneConstraints("card-1:zone1", config, indexes)).toEqual({});
   });

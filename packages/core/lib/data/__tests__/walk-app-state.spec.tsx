@@ -54,6 +54,50 @@ const defaultState = {
 const appStore = createAppStore();
 
 describe("walk-app-state", () => {
+  it("retains root canvas indexes when default-zone is declared as a slot", () => {
+    const rootConfig: Config = {
+      components: { Card: { render: () => <div /> } },
+      root: {
+        fields: {
+          "default-zone": { type: "slot", allow: ["Card"] },
+          secondary: { type: "slot" },
+        },
+      },
+    };
+    const content = ["first", "second"].map((id) => ({
+      type: "Card",
+      props: { id },
+    }));
+    const state = {
+      ...defaultState,
+      data: {
+        root: {
+          props: {
+            "default-zone": [],
+            secondary: [{ type: "Card", props: { id: "nested" } }],
+          },
+        },
+        content,
+      },
+    } as PrivateAppState;
+    const visits: string[] = [];
+    const result = walkAppState(state, rootConfig, (items, zone) => {
+      visits.push(zone);
+      return items;
+    });
+    expect(result.data.content).toEqual(content);
+    expect(result.indexes.zones[rootDroppableId]).toEqual({
+      type: "root",
+      contentIds: ["first", "second"],
+    });
+    expect(result.indexes.zones["root:secondary"].contentIds).toEqual([
+      "nested",
+    ]);
+    expect(result.indexes.nodes.first.path).toEqual([rootDroppableId]);
+    expect(visits.filter((zone) => zone === rootDroppableId)).toHaveLength(1);
+    expect(state.data.content).toEqual(content);
+  });
+
   const config: UserConfig = {
     root: {
       fields: { title: { type: "text" }, slot: { type: "slot" } },
@@ -83,18 +127,18 @@ describe("walk-app-state", () => {
     state: PrivateAppState,
     item: ComponentData | undefined,
     path: string[],
-    index: number
+    index: number,
   ) => {
     if (!item) return;
 
     const zoneCompound = path[path.length - 1];
 
     expect(state.indexes.zones[zoneCompound]?.contentIds[index]).toEqual(
-      item.props.id
+      item.props.id,
     );
     expect(state.indexes.nodes[item.props.id].data).toEqual(item);
     expect(state.indexes.nodes[item.props.id].flatData).toEqual(
-      flattenNode(item, config)
+      flattenNode(item, config),
     );
     expect(state.indexes.nodes[item.props.id].path).toEqual(path);
   };
@@ -105,7 +149,7 @@ describe("walk-app-state", () => {
         ...appStore.getInitialState(),
         config,
       },
-      true
+      true,
     );
   });
 
@@ -176,7 +220,7 @@ describe("walk-app-state", () => {
           },
         },
       },
-      config
+      config,
     );
 
     expectIndexed(state, state.data.content[0], [rootDroppableId], 0);
@@ -185,14 +229,14 @@ describe("walk-app-state", () => {
       state,
       state.data.zones?.["my-component:zone"][0],
       [rootDroppableId, "my-component:zone"],
-      0
+      0,
     );
 
     expectIndexed(
       state,
       state.data.zones?.["other-component:zone"][0],
       [rootDroppableId, "my-component:zone", "other-component:zone"],
-      0
+      0,
     );
 
     expectIndexed(
@@ -204,7 +248,7 @@ describe("walk-app-state", () => {
         "other-component:zone",
         "another-id:slotA",
       ],
-      0
+      0,
     );
 
     expectIndexed(
@@ -216,7 +260,7 @@ describe("walk-app-state", () => {
         "other-component:zone",
         "another-id:slotB",
       ],
-      0
+      0,
     );
 
     expectIndexed(
@@ -228,7 +272,7 @@ describe("walk-app-state", () => {
         "other-component:zone",
         "another-id:array[0].slot",
       ],
-      0
+      0,
     );
 
     expectIndexed(
@@ -240,7 +284,7 @@ describe("walk-app-state", () => {
         "other-component:zone",
         "another-id:object.slot",
       ],
-      0
+      0,
     );
 
     expect(state.indexes).toMatchInlineSnapshot(`
@@ -630,7 +674,7 @@ describe("walk-app-state", () => {
           zones: {},
         },
       },
-      config
+      config,
     );
 
     expect(state.indexes).toMatchInlineSnapshot(`

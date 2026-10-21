@@ -32,13 +32,13 @@ export function walkAppState<UserData extends Data = Data>(
   mapContent: (
     content: Content,
     zoneCompound: string,
-    zoneType: ZoneType
+    zoneType: ZoneType,
   ) => Content | void = (content) => content,
   mapNodeOrSkip: (
     item: ComponentData,
     path: string[],
-    index: number
-  ) => ComponentData | null = (item) => item
+    index: number,
+  ) => ComponentData | null = (item) => item,
 ): PrivateAppState<UserData> {
   let newZones: Record<string, Content> = {};
   const newZoneIndex: ZoneIndex = {};
@@ -49,7 +49,7 @@ export function walkAppState<UserData extends Data = Data>(
     zoneCompound: string,
     content: Content,
     zoneType: ZoneType,
-    newId?: string
+    newId?: string,
   ): [string, Content] => {
     const [parentId] = zoneCompound.split(":");
     const mappedContent =
@@ -59,7 +59,7 @@ export function walkAppState<UserData extends Data = Data>(
     const newZoneCompound = `${newId || parentId}:${zone}`;
 
     const newContent = mappedContent.map((zoneChild, index) =>
-      processItem(zoneChild, [...path, newZoneCompound], index)
+      processItem(zoneChild, [...path, newZoneCompound], index),
     );
 
     newZoneIndex[newZoneCompound] = {
@@ -73,7 +73,7 @@ export function walkAppState<UserData extends Data = Data>(
   const processRelatedZones = (
     item: ComponentData,
     newId: string,
-    initialPath: string[]
+    initialPath: string[],
   ) => {
     forRelatedZones(
       item,
@@ -84,19 +84,19 @@ export function walkAppState<UserData extends Data = Data>(
           relatedZoneCompound,
           relatedContent,
           "dropzone",
-          newId
+          newId,
         );
 
         newZones[zoneCompound] = newContent;
       },
-      initialPath
+      initialPath,
     );
   };
 
   const processItem = (
     item: ComponentData,
     path: string[],
-    index: number
+    index: number,
   ): ComponentData => {
     const mappedItem = mapNodeOrSkip(item, path, index);
 
@@ -118,13 +118,27 @@ export function walkAppState<UserData extends Data = Data>(
               zoneCompound,
               content,
               "slot",
-              parentId
+              parentId,
             );
 
             return newContent;
           },
         },
-        config
+        // Root content is indexed separately. Its reserved field can express
+        // constraints, but must not overwrite that canvas with a second slot.
+        mappedItem.props.id === "root"
+          ? {
+              ...config,
+              root: {
+                ...config.root,
+                fields: Object.fromEntries(
+                  Object.entries(config.root?.fields ?? {}).filter(
+                    ([name]) => name !== "default-zone",
+                  ),
+                ),
+              },
+            }
+          : config,
       ).props,
       id,
     };
@@ -163,7 +177,7 @@ export function walkAppState<UserData extends Data = Data>(
     [],
     rootDroppableId,
     state.data.content,
-    "root"
+    "root",
   );
 
   const processedContent = newContent;
@@ -183,7 +197,7 @@ export function walkAppState<UserData extends Data = Data>(
       zoneCompound,
       zones[zoneCompound],
       "dropzone",
-      parentId
+      parentId,
     );
 
     newZones[zoneCompound] = newContent;
