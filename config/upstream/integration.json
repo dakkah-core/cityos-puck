@@ -47,7 +47,6 @@
         ".github/scripts/run-recorded-check.sh",
         ".github/workflows/ci.yml",
         ".github/workflows/publish-canary.yml",
-        ".github/workflows/publish-cityos.yml",
         ".github/workflows/publish.yml",
         ".gitignore",
         "apps/demo/next.config.js",
@@ -333,7 +332,6 @@
         "scripts/cityos/toolchain-behavior.test.mjs",
         "scripts/cityos/toolchain-source.test.mjs",
         "scripts/cityos/tooling-api.test.mjs",
-        "scripts/cityos/verification-evidence.test.mjs",
         "scripts/create-changelog.js",
         "scripts/e2e/smoke-framework.mjs",
         "scripts/e2e/smoke.mjs",
@@ -761,6 +759,23 @@
       "tests": [
         "packages/core/lib/data/__tests__/walk-app-state.spec.tsx",
         "packages/core/lib/data/__tests__/resolve-zone-constraints.spec.tsx"
+      ]
+    },
+    {
+      "id": "recorded-check-windows-portability",
+      "purpose": "Execute source/evidence fixtures through the installed Git Bash rather than an ambient WSL launcher.",
+      "invariant": "Recorded command exit codes, stdout/stderr and exact-source identities remain testable on Windows and POSIX.",
+      "paths": ["scripts/cityos/verification-evidence.test.mjs"],
+      "tests": ["scripts/cityos/verification-evidence.test.mjs"]
+    },
+    {
+      "id": "qualified-tarball-publication",
+      "purpose": "Publish the tested tarball from a SHA-bound qualification bundle without rebuilding an unverified replacement.",
+      "invariant": "Clean source, exact lock/artifact/log digests, executed required checks and owned package/version are verified before npm publication.",
+      "paths": [".github/workflows/publish-cityos.yml"],
+      "tests": [
+        "scripts/upstream/integration.test.mjs",
+        "scripts/upstream/publication-input.test.mjs"
       ]
     }
   ],

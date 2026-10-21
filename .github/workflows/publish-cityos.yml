@@ -2,6 +2,11 @@ name: Publish CityOS Puck package
 
 on:
   workflow_dispatch:
+    inputs:
+      qualification_run_id:
+        description: Actions run containing the SHA-bound qualified tarball, receipt and executed-check logs
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -15,11 +20,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
       id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -29,14 +36,21 @@ jobs:
         run: |
           source scripts/toolchains/select-workspace-node.sh
           node scripts/toolchains/project-toolchain.mjs --check
-      - uses: pnpm/action-setup@v4
-      - run: |
-          source scripts/toolchains/select-workspace-node.sh
-          node scripts/toolchains/run-pinned-pnpm.mjs install --frozen-lockfile
-      - run: |
-          source scripts/toolchains/select-workspace-node.sh
-          node scripts/toolchains/run-pinned-pnpm.mjs --filter @cityos-core/puck build
-      - working-directory: packages/core
+      - name: Download the qualified distribution without rebuilding it
+        uses: actions/download-artifact@v4
+        with:
+          name: cityos-puck-qualified-${{ github.sha }}
+          path: .build/upstream/qualified
+          run-id: ${{ inputs.qualification_run_id }}
+          github-token: ${{ github.token }}
+      - name: Verify source, lockfile, required checks, logs and exact tarball bytes
+        shell: bash
         run: |
-          source "$GITHUB_WORKSPACE/scripts/toolchains/select-workspace-node.sh"
-          npm publish --access public --tag cityos --provenance --ignore-scripts
+          source scripts/toolchains/select-workspace-node.sh
+          node scripts/upstream/integration.mjs --receipt .build/upstream/qualified/receipt.json
+          node scripts/upstream/publication-input.mjs .build/upstream/qualified/receipt.json
+      - name: Publish the same qualified tarball
+        shell: bash
+        run: |
+          source scripts/toolchains/select-workspace-node.sh
+          npm publish "$GITHUB_WORKSPACE/.build/upstream/qualified/package.tgz" --access public --tag cityos --provenance --ignore-scripts

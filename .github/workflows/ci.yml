@@ -36,7 +36,7 @@ jobs:
         shell: bash
         run: |
           source scripts/toolchains/select-workspace-node.sh
-          node --test scripts/upstream/integration.test.mjs scripts/upstream/extension-boundary.test.mjs
+          node --test scripts/upstream/*.test.mjs
           node scripts/upstream/integration.mjs > .build/cityos-registration/upstream-source.json
       - name: Check registration formatting with pinned tool
         shell: bash
