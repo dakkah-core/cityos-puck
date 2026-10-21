@@ -707,12 +707,13 @@
     },
     {
       "id": "puck-runtime",
-      "purpose": "Assemble public bundles and type exports with stable dependency APIs.",
+      "purpose": "Assemble public bundles and type exports with stable dependency APIs. Declare the host React DOM runtime as a catalog-derived peer.",
       "invariant": "Data transforms, public exports and prepared consumers stay executable.",
       "paths": [
         "packages/core/__test_support__/run-built-consumer.ts",
         "packages/core/__tests__/heading-analyzer.spec.tsx",
         "packages/core/bundle/index.ts",
+        "packages/core/bundle/internal.ts",
         "packages/core/components/Puck/__tests__/__snapshots__/index.tsx.snap",
         "packages/core/globals.d.ts",
         "packages/core/jest.config.cjs",
@@ -727,7 +728,9 @@
       ],
       "tests": [
         "packages/core/__tests__/cityos-built-consumers.spec.ts",
-        "packages/core/lib/data/__tests__/flatten-node.spec.ts"
+        "packages/core/lib/data/__tests__/flatten-node.spec.ts",
+        "scripts/upstream/extension-boundary.test.mjs",
+        "scripts/upstream/public-peer-contract.test.mjs"
       ]
     },
     {

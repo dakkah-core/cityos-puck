@@ -149,6 +149,7 @@
     "@tiptap/static-renderer": "catalog:"
   },
   "peerDependencies": {
-    "react": "catalog:peers"
+    "react": "catalog:peers",
+    "react-dom": "catalog:peers"
   }
 }

@@ -150,6 +150,7 @@ catalogs:
     "contentful": "^11.12.10"
     "eslint": "^10.13.0"
     "react": "^19.3.1"
+    "react-dom": "^19.3.1"
   typescript-api:
     # Third-party compiler API compatibility until the tools support the stable TS7 API.
     # First-party checks always resolve catalog.typescript through the CLI runner.
@@ -175,13 +176,13 @@ overrides:
   "@xmldom/xmldom": "catalog:"
   "pacote": "catalog:"
 
-# Keep Next's API consumers on the catalog-selected family and reviewed rule plugins.
+  # Keep Next's API consumers on the catalog-selected family and reviewed rule plugins.
   "eslint-config-next@16.4.2>typescript-eslint": "catalog:"
   "eslint-config-next@16.4.2>eslint-plugin-react": "catalog:"
   "eslint-config-next@16.4.2>eslint-plugin-import": "catalog:"
   "eslint-config-next@16.4.2>eslint-plugin-jsx-a11y": "catalog:"
 
-# Exact third-party API consumers only; never override TypeScript globally.
+  # Exact third-party API consumers only; never override TypeScript globally.
   "twoslash@0.3.9>typescript": "catalog:typescript-api"
   "tsconfck@3.1.6>typescript": "catalog:typescript-api"
   "typescript-eslint@8.72.0>typescript": "catalog:typescript-api"
