@@ -45,12 +45,12 @@ function installed(): CityOSPuckInstalledRenderer {
 }
 async function bind(
   source: CityOSPuckRegistrationManifest,
-  renderer = installed()
+  renderer = installed(),
 ) {
   return bindCityOSPuckRegistration(
     source,
     await digestCityOSPuckRegistration(source),
-    () => renderer
+    () => renderer,
   );
 }
 
@@ -60,7 +60,7 @@ describe("versioned compiler-generated structured fields", () => {
     const parsed = parseCityOSPuckRegistration(source);
     const config = await bind(source);
     expect(parsed.schemaVersion).toBe(
-      CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION
+      CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION,
     );
     expect(config.components.GeneratedProfile.fields).toEqual(fixtureFields());
     expect(Object.isFrozen(parsed.components[0].fields)).toBe(true);
@@ -86,9 +86,9 @@ describe("versioned compiler-generated structured fields", () => {
       const source = structuredRegistration({ [name]: fixtureFields()[name] });
       source.schemaVersion = CITYOS_PUCK_REGISTRATION_VERSION;
       expect(() => parseCityOSPuckRegistration(source)).toThrow(
-        "CITYOS_PUCK_UNSUPPORTED_FIELD"
+        "CITYOS_PUCK_UNSUPPORTED_FIELD",
       );
-    }
+    },
   );
 
   it.each(["value.name", "rows[0]", "bad-name", "0name", "bad name"])(
@@ -96,7 +96,7 @@ describe("versioned compiler-generated structured fields", () => {
     (name) => {
       const source = structuredRegistration({ [name]: text() });
       expect(() => parseCityOSPuckRegistration(source)).toThrow();
-    }
+    },
   );
 
   it("keeps the original V1 name grammar explicit", () => {
@@ -109,7 +109,7 @@ describe("versioned compiler-generated structured fields", () => {
     const source = structuredRegistration();
     expect(() => parseCityOSPuckRegistration(source)).not.toThrow();
     expect(() =>
-      parseCityOSPuckRegistration(structuredRegistration({ id: text() }))
+      parseCityOSPuckRegistration(structuredRegistration({ id: text() })),
     ).toThrow("SYSTEM_FIELD");
   });
 
@@ -127,7 +127,7 @@ describe("versioned compiler-generated structured fields", () => {
       const source = structuredRegistration();
       Object.assign(source.components[0].fields, { nested: raw });
       expect(() => parseCityOSPuckRegistration(source)).toThrow("NESTED_SLOT");
-    }
+    },
   );
 
   it.each([
@@ -177,10 +177,10 @@ describe("versioned compiler-generated structured fields", () => {
 
   it("bounds schema depth independently of the JSON budget", () => {
     expect(() =>
-      parseCityOSPuckRegistration(structuredRegistration({ value: nested(4) }))
+      parseCityOSPuckRegistration(structuredRegistration({ value: nested(4) })),
     ).not.toThrow();
     expect(() =>
-      parseCityOSPuckRegistration(structuredRegistration({ value: nested(5) }))
+      parseCityOSPuckRegistration(structuredRegistration({ value: nested(5) })),
     ).toThrow("FIELD_DEPTH");
   });
 
@@ -191,7 +191,7 @@ describe("versioned compiler-generated structured fields", () => {
         type: "object",
         label: "Group",
         objectFields: Object.fromEntries(
-          Array.from({ length: 127 }, (_, i) => [`field${i}`, text()])
+          Array.from({ length: 127 }, (_, i) => [`field${i}`, text()]),
         ),
       };
     }
@@ -207,7 +207,7 @@ describe("versioned compiler-generated structured fields", () => {
       const source = structuredRegistration();
       Object.assign(source.components[0].fields.rows, { [name]: {} });
       expect(() => parseCityOSPuckRegistration(source)).toThrow("SHAPE");
-    }
+    },
   );
 
   it("rejects a nested accessor before executing it", () => {
@@ -228,7 +228,7 @@ describe("versioned compiler-generated structured fields", () => {
     const source = structuredRegistration();
     Object.assign(source.components[0].fields.profile, { type: "richtext" });
     expect(() => parseCityOSPuckRegistration(source)).toThrow(
-      "UNSUPPORTED_FIELD"
+      "UNSUPPORTED_FIELD",
     );
   });
 
@@ -252,7 +252,7 @@ describe("versioned compiler-generated structured fields", () => {
     const pending = bindCityOSPuckRegistration(source, digest, installed);
     source.components[0].fields.profile.label = "Changed";
     expect((await pending).components.GeneratedProfile.fields).toEqual(
-      fixtureFields()
+      fixtureFields(),
     );
   });
 
@@ -261,7 +261,7 @@ describe("versioned compiler-generated structured fields", () => {
     Object.assign(source.components[0].fields.rows, { max: 1001 });
     const resolver = jest.fn(installed);
     await expect(
-      bindCityOSPuckRegistration(source, fixtureDigest, resolver)
+      bindCityOSPuckRegistration(source, fixtureDigest, resolver),
     ).rejects.toThrow("ARRAY_BOUNDS");
     expect(resolver).not.toHaveBeenCalled();
   });
@@ -274,7 +274,7 @@ describe("versioned compiler-generated structured fields", () => {
       config.components.GeneratedProfile.render({
         id: "node",
         puck: {},
-      } as never)
+      } as never),
     ).toThrow("RENDERER_UNAVAILABLE");
   });
 
@@ -285,17 +285,17 @@ describe("versioned compiler-generated structured fields", () => {
     if (rows.type !== "array") throw new Error("Expected array");
     rows.max = 3;
     await expect(
-      bindCityOSPuckRegistration(source, digest, installed)
+      bindCityOSPuckRegistration(source, digest, installed),
     ).rejects.toThrow("MANIFEST_MISMATCH");
   });
 
   it("exports the new contract in the prepared package", () => {
     const built = require("../dist/cityos.js");
     expect(built.CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION).toBe(
-      CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION
+      CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION,
     );
     expect(built.parseCityOSPuckRegistration(structuredRegistration())).toEqual(
-      structuredRegistration()
+      structuredRegistration(),
     );
   });
 });

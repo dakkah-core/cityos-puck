@@ -39,7 +39,7 @@ export function fixtureFields(): Record<string, CityOSPuckField> {
 
 export function structuredRegistration(
   fields = fixtureFields(),
-  type = "GeneratedProfile"
+  type = "GeneratedProfile",
 ): CityOSPuckRegistrationManifest {
   return {
     schemaVersion: CITYOS_PUCK_STRUCTURED_REGISTRATION_VERSION,

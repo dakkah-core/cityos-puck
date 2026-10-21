@@ -52,7 +52,7 @@ it("renders newly named config-only components through the real Puck renderer", 
     const config = await bindCityOSPuckRegistration(
       source,
       await digestCityOSPuckRegistration(source),
-      () => installed
+      () => installed,
     );
     const html = renderToStaticMarkup(
       <Render
@@ -61,7 +61,7 @@ it("renders newly named config-only components through the real Puck renderer", 
           root: {},
           content: [{ type, props: { id: "stable-node", text: "نص مولّد" } }],
         }}
-      />
+      />,
     );
     expect(html).toContain("نص مولّد");
   }
@@ -79,7 +79,7 @@ it("does not let a cached config render after its installed code is revoked", as
   const config = await bindCityOSPuckRegistration(
     source,
     await digestCityOSPuckRegistration(source),
-    () => installed
+    () => installed,
   );
   installed.enabled = false;
   expect(() =>
@@ -95,7 +95,7 @@ it("does not let a cached config render after its installed code is revoked", as
             },
           ],
         }}
-      />
-    )
+      />,
+    ),
   ).toThrow("CITYOS_PUCK_RENDERER_UNAVAILABLE");
 });

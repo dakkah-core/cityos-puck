@@ -89,7 +89,7 @@ async function fixture({
   const config = await bindCityOSPuckRegistration(
     source,
     await digestCityOSPuckRegistration(source),
-    () => installed
+    () => installed,
   );
   const data: Data<DefaultComponents, { id: string }> = {
     root: { props: { id: "root" } },
@@ -117,14 +117,14 @@ async function fixture({
         iframe={{ enabled: false }}
       >
         <Puck.Fields />
-      </Puck>
+      </Puck>,
     );
   });
   // The existing Jest CSS mock does not load the real visibility rule.
   // Model that rule only; do not modify application permission or validation.
   const css = readFileSync(
     join(__dirname, "../components/Puck/components/Layout/styles.module.css"),
-    "utf8"
+    "utf8",
   );
   expect(css).toMatch(/\.Puck\s*\{[^}]*visibility:\s*visible\s*!important/);
   const editor = document.querySelector<HTMLElement>(".Puck");
@@ -139,12 +139,12 @@ describe("compiler-admitted scalar lists in real Puck field controls", () => {
     const f = await fixture();
     const inputs = await screen.findAllByRole("textbox");
     expect(inputs.map((input) => (input as HTMLTextAreaElement).value)).toEqual(
-      initialValues
+      initialValues,
     );
     expect(f.change).not.toHaveBeenCalled();
     expect(f.data.content[0].props.items).toEqual(initialValues);
     expect(f.config.components.FutureScalarList.fields?.items.type).toBe(
-      "custom"
+      "custom",
     );
   });
 
@@ -180,13 +180,13 @@ describe("compiler-admitted scalar lists in real Puck field controls", () => {
   it("supports keyboard-invocable reorder and removal with focus recovery", async () => {
     const f = await fixture({ value: ["first", "second"] });
     fireEvent.click(
-      await screen.findByRole("button", { name: "Move down: Item #1" })
+      await screen.findByRole("button", { name: "Move down: Item #1" }),
     );
     await waitFor(() => {
       expect(f.latest()?.content[0].props.items).toEqual(["second", "first"]);
     });
     expect(document.activeElement).toBe(
-      screen.getByRole("textbox", { name: "List items: Item #2" })
+      screen.getByRole("textbox", { name: "List items: Item #2" }),
     );
     fireEvent.click(screen.getByRole("button", { name: "Delete: Item #2" }));
     await waitFor(() => {
@@ -218,7 +218,7 @@ describe("compiler-admitted scalar lists in real Puck field controls", () => {
       },
     });
     fireEvent.click(
-      await screen.findByRole("button", { name: "نقل لأسفل: العنصر 1" })
+      await screen.findByRole("button", { name: "نقل لأسفل: العنصر 1" }),
     );
     await waitFor(() => {
       expect(f.latest()?.content[0].props.items).toEqual(["ثان", "أول"]);
@@ -241,7 +241,7 @@ describe("compiler-admitted scalar lists in real Puck field controls", () => {
     cleanup();
     render(<Render config={f.config} data={f.data} />);
     expect(screen.getByTestId("scalar-render").textContent).toBe(
-      JSON.stringify(initialValues)
+      JSON.stringify(initialValues),
     );
   });
 });

@@ -42,7 +42,7 @@ afterEach(cleanup);
 async function fixture(
   readOnly = false,
   type = "GeneratedProfile",
-  dictionary: Dictionary = {}
+  dictionary: Dictionary = {},
 ) {
   const source = structuredRegistration(undefined, type);
   const installed: CityOSPuckInstalledRenderer = {
@@ -55,7 +55,7 @@ async function fixture(
   const config = await bindCityOSPuckRegistration(
     source,
     await digestCityOSPuckRegistration(source),
-    () => installed
+    () => installed,
   );
   const data: Data<DefaultComponents, { id: string }> = {
     root: { props: { id: "root" } },
@@ -84,7 +84,7 @@ async function fixture(
         iframe={{ enabled: false }}
       >
         <Puck.Fields />
-      </Puck>
+      </Puck>,
     );
   });
   // Jest mocks CSS modules. In the real host, this exact stylesheet rule
@@ -92,7 +92,7 @@ async function fixture(
   // do not change production visibility, permission checks or field behavior.
   const css = readFileSync(
     join(__dirname, "../components/Puck/components/Layout/styles.module.css"),
-    "utf8"
+    "utf8",
   );
   expect(css).toMatch(/\.Puck\s*\{[^}]*visibility:\s*visible\s*!important/);
   const editor = document.querySelector<HTMLElement>(".Puck");
@@ -127,7 +127,7 @@ describe("generated structured fields in the actual editor", () => {
     await waitFor(() => {
       const calls = f.change.mock.calls;
       expect(calls[calls.length - 1]?.[0].content[0].props.rows).toHaveLength(
-        2
+        2,
       );
     });
     expect(screen.queryByRole("button", { name: /add/i })).toBeNull();
@@ -147,7 +147,7 @@ describe("generated structured fields in the actual editor", () => {
     await waitFor(() => {
       const calls = f.change.mock.calls;
       expect(calls[calls.length - 1]?.[0].content[0].props.rows).toHaveLength(
-        2
+        2,
       );
     });
     expect(screen.queryByRole("button", { name: "إضافة عنصر" })).toBeNull();
@@ -190,15 +190,15 @@ describe("generated structured fields in the actual editor", () => {
       await screen.findByRole("textbox", { name: "Business ID" }),
       {
         target: { value: "domain-next" },
-      }
+      },
     );
     await waitFor(() => {
       const calls = f.change.mock.calls;
       expect(calls[calls.length - 1]?.[0].content[0].type).toBe(
-        "FutureConfigOnlyProfile"
+        "FutureConfigOnlyProfile",
       );
       expect(calls[calls.length - 1]?.[0].content[0].props.profile.id).toBe(
-        "domain-next"
+        "domain-next",
       );
     });
   });

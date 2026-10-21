@@ -111,10 +111,10 @@ export type Dictionary = Partial<
  */
 const interpolate = (
   template: string,
-  params: Record<string, string | number>
+  params: Record<string, string | number>,
 ): string =>
   template.replace(/\{(\w+)\}/g, (match, key) =>
-    params[key] !== undefined ? String(params[key]) : match
+    params[key] !== undefined ? String(params[key]) : match,
   );
 
 /**
@@ -127,7 +127,7 @@ const interpolate = (
 export const getMessage = (
   dictionary: Dictionary,
   key: DictionaryKey,
-  params?: Record<string, string | number>
+  params?: Record<string, string | number>,
 ): string => {
   const message = dictionary[key] ?? defaultDictionary[key];
 
