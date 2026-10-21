@@ -11,12 +11,65 @@ import { materializeManifest, resolveCatalog } from "../../packages/create-puck-
 import { readDefaultCatalog } from "../toolchains/catalog-version.mjs";
 import { formatSource } from "./format-source.mjs";
 import { loadBootstrapCatalog } from "../../packages/create-puck-app/bootstrap-catalog.js";
+import { prepareAmbientTypes } from "../toolchains/nextra-stable-docs/prepare-types.mjs";
+import { planPacketInputCapture } from "../toolchains/nextra-stable-docs/source-inputs.mjs";
 
 const root = new URL("../../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
 const json = (path) => JSON.parse(read(path));
 const catalog = readDefaultCatalog();
 const core = json("packages/core/package.json");
+
+test("Puppeteer release-age exceptions cover only the two approved exact versions", () => {
+  const workspace = loadBootstrapCatalog().workspace;
+  const exceptions = workspace.minimumReleaseAgeExclude;
+  assert.ok(Array.isArray(exceptions));
+  assert.deepEqual(
+    exceptions.filter((entry) => entry.startsWith("puppeteer")),
+    ["puppeteer@25.15.0", "puppeteer-core@25.15.0"],
+  );
+  assert.equal(workspace.minimumReleaseAge, undefined, "Preserve the native pnpm release-age default");
+});
+
+test("Nextra ambient source uses type queries without relative ambient import declarations", () => {
+  const original = [
+    "declare namespace globalThis {",
+    "  import type { PagefindSearchOptions } from './types.js'",
+    "  var pagefind: { options: PagefindSearchOptions } | undefined",
+    "}",
+    "declare module '*.svg' {",
+    "  export { ReactComponent } from './icon.js'",
+    "}",
+    "declare module 'next-mdx-import-source-file' {",
+    "  export { useMDXComponents } from 'nextra/mdx-components'",
+    "}",
+  ].join("\n");
+  const expected = original
+    .replace("import type { PagefindSearchOptions } from './types.js'", "type PagefindSearchOptions = import('./types.js').PagefindSearchOptions")
+    .replace("export { ReactComponent } from './icon.js'", "const ReactComponent: typeof import('./icon.js').ReactComponent\n  export { ReactComponent }");
+  assert.equal(prepareAmbientTypes(original), expected);
+  assert.equal(prepareAmbientTypes(original.replaceAll("\n", "\r\n")).replaceAll("\r\n", "\n"), expected);
+  for (const changed of [original.replace("PagefindSearchOptions } from", "ChangedOptions } from"), `${original}\n${original}`, expected]) {
+    assert.throws(() => prepareAmbientTypes(changed), /NEXTRA_AMBIENT_SOURCE_CHANGED/u);
+  }
+  assert.doesNotMatch(read("scripts/toolchains/nextra-stable-docs/source-overlays/src/client/components/index.ts"), /@ts-expect-error/u);
+});
+
+test("Nextra source input capture refuses unnamed changes, removals and invalid paths", () => {
+  const first = "a".repeat(64), second = "b".repeat(64);
+  const previous = { schemaVersion: "cityos.nextra-stable-docs.packet-integrity-input.v1", status: "source-only", files: [{ path: "source.ts", sha256: first }] };
+  const actual = [{ path: "source.ts", sha256: second }, { path: "new.ts", sha256: first }];
+  const result = planPacketInputCapture(previous, actual, ["source.ts", "new.ts"]);
+  assert.equal(result.status, previous.status);
+  assert.deepEqual(result.files.map(({ path }) => path), ["new.ts", "source.ts"]);
+  assert.equal(previous.files[0].sha256, first, "Never mutate the old input record");
+  assert.throws(() => planPacketInputCapture(previous, actual, ["source.ts"]), /explicitly named/u);
+  assert.throws(() => planPacketInputCapture(previous, [], []), /was removed/u);
+  assert.throws(() => planPacketInputCapture(previous, actual, ["source.ts", "new.ts", "new.ts"]), /Duplicate/u);
+  for (const path of ["../escape.ts", "/absolute.ts", "C:/absolute.ts", "source\\escape.ts", "./source.ts"]) {
+    assert.throws(() => planPacketInputCapture(previous, [{ path, sha256: first }], [path]), /Invalid/u);
+  }
+});
 
 test("Nextra source generation tools have direct owning catalog bindings", () => {
   const producer = json("scripts/toolchains/nextra-stable-docs/producer-inputs.json");

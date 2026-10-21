@@ -9,6 +9,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import catalogReader from "../read-default-catalog.cjs";
 import { assertNodeVersion, loadToolchain } from "../toolchain.mjs";
 import { createCompletePackagePatch, inventoryPackage } from "./package-patch.mjs";
+import { prepareAmbientTypes } from "./prepare-types.mjs";
+import { planPacketInputCapture } from "./source-inputs.mjs";
 
 // Explicit generation only. Importing this module has no filesystem effects.
 // There is deliberately no install, patch-registration or activation operation.
@@ -211,6 +213,8 @@ async function emit(packageRoot, work, context) {
   const esbuild = await import(pathToFileURL(ownerRequire.resolve("esbuild")).href);
   const svgr = await import(pathToFileURL(ownerRequire.resolve("@svgr/core")).href);
   const transforms = await prepareSvgAndImports(packageRoot, svgr);
+  const ambientPath = join(packageRoot, "src/env.d.ts");
+  await writeFile(ambientPath, prepareAmbientTypes(await readFile(ambientPath, "utf8")));
   const bootstrap = join(packageRoot, ".producer");
   await mkdir(bootstrap);
   // setup-files.ts remains the owner of schema-derived configuration types.
@@ -332,7 +336,44 @@ export async function generate(workDirectory) {
   return { packageRoot: candidateRoot, patchPath, provenancePath: `${patchPath}.provenance.json` };
 }
 
+export async function capturePacketInputs(expectedIntegritySha256, changedPaths) {
+  assertNodeVersion(loadToolchain());
+  assert.match(expectedIntegritySha256, /^[a-f0-9]{64}$/u);
+  const integrityPath = join(packet, "acceptance-inputs/packet-integrity.json");
+  const before = readFileSync(integrityPath);
+  assert.equal(digest(before), expectedIntegritySha256, "Packet integrity changed before source capture");
+  const actualFiles = [...files(packet)].filter((path) => path !== integrityPath).map((path) => ({
+    path: relative(packet, path).replaceAll(sep, "/"), sha256: digest(readFileSync(path)),
+  }));
+  const next = planPacketInputCapture(JSON.parse(before), actualFiles, changedPaths);
+  const output = `${JSON.stringify(next, null, 2)}\n`;
+  const archive = join(repository, ".build/nextra-stable-docs/source-input-captures");
+  for (const path of [join(repository, ".build"), dirname(archive), archive]) {
+    if (existsSync(path) && (lstatSync(path).isSymbolicLink() || !within(realpathSync(repository), realpathSync(path)))) {
+      fail(`Unsafe source-capture archive ancestor: ${path}`);
+    }
+  }
+  await mkdir(archive, { recursive: true });
+  const priorPath = join(archive, `${expectedIntegritySha256}.json`);
+  if (existsSync(priorPath)) assert.deepEqual(readFileSync(priorPath), before);
+  else await writeFile(priorPath, before, { flag: "wx" });
+  assert.deepEqual(readFileSync(integrityPath), before, "Packet integrity changed during source capture");
+  // A concurrent source edit must not be folded into a different capture.
+  const confirmedFiles = [...files(packet)].filter((path) => path !== integrityPath).map((path) => ({
+    path: relative(packet, path).replaceAll(sep, "/"), sha256: digest(readFileSync(path)),
+  }));
+  assert.deepEqual(confirmedFiles, actualFiles, "Packet sources changed during source capture");
+  await writeFile(integrityPath, output);
+  return { scope: "authored-source input capture only; no generation, acceptance or activation evidence",
+    previousIntegritySha256: expectedIntegritySha256, integritySha256: digest(output),
+    changedInputs: [...changedPaths].sort(), archivedPreviousInput: relative(repository, priorPath).replaceAll(sep, "/") };
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  if (process.argv.length !== 4 || process.argv[2] !== "--work-dir") fail("Usage: generate.mjs --work-dir <new .build/nextra-stable-docs child>");
-  console.log(JSON.stringify(await generate(process.argv[3])));
+  if (process.argv[2] === "--capture-source-inputs" && process.argv.length >= 5) {
+    console.log(JSON.stringify(await capturePacketInputs(process.argv[3], process.argv.slice(4))));
+  } else {
+    if (process.argv.length !== 4 || process.argv[2] !== "--work-dir") fail("Usage: generate.mjs --work-dir <new .build/nextra-stable-docs child>, or --capture-source-inputs <previous integrity SHA-256> <every changed source path>");
+    console.log(JSON.stringify(await generate(process.argv[3])));
+  }
 }

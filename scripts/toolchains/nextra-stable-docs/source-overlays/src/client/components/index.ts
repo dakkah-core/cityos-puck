@@ -1,4 +1,3 @@
-// @ts-expect-error -- types available only with "moduleResolution": "bundler" in tsconfig
 export { Mermaid } from '@theguild/remark-mermaid/mermaid'
 
 export { Banner } from './banner/index.js'

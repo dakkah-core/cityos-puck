@@ -274,3 +274,5 @@ minimumReleaseAgeExclude:
   - "@inquirer/select@5.2.7"
   - inquirer@14.2.4
   - lucide-react@1.60.0
+  - puppeteer@25.15.0
+  - puppeteer-core@25.15.0
