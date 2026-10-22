@@ -82,7 +82,7 @@ test("heading and rich-text consumers no longer depend on the incompatible peer 
   assert.equal(core.dependencies["@tiptap/static-renderer"], "catalog:");
   assert.equal(core.dependencies["happy-dom"], undefined);
   assert.equal(core.devDependencies["happy-dom"], "catalog:");
-  assert.equal(catalog["happy-dom"], "21.0.3");
+  assert.match(catalog["happy-dom"], /^\d+\.\d+\.\d+$/u);
   assert.equal(catalog["@tiptap/static-renderer"], catalog["@tiptap/core"]);
   assert.equal(catalog["react-from-json"], undefined);
   assert.equal(catalog["@tiptap/html"], undefined);

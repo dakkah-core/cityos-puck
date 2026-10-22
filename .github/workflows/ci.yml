@@ -26,6 +26,26 @@ jobs:
         run: |
           source scripts/toolchains/select-workspace-node.sh
           node scripts/toolchains/project-toolchain.mjs --check
+      - name: Install native pnpm
+        id: pnpm
+        uses: pnpm/setup@v3
+        with:
+          install: false
+          node-version-file: false
+      - name: Bind and verify the native manager
+        shell: bash
+        env:
+          PNPM_BIN_DEST: ${{ steps.pnpm.outputs.bin-dest }}
+        run: |
+          source scripts/toolchains/select-workspace-node.sh
+          export PUCK_PNPM_EXECUTABLE="$PNPM_BIN_DEST/pnpm"
+          node scripts/toolchains/run-pinned-pnpm.mjs --version
+          printf 'PUCK_PNPM_EXECUTABLE=%s\n' "$PUCK_PNPM_EXECUTABLE" >> "$GITHUB_ENV"
+      - name: Install dependencies for the source suite
+        shell: bash
+        run: |
+          source scripts/toolchains/select-workspace-node.sh
+          node scripts/toolchains/run-pinned-pnpm.mjs install --frozen-lockfile
       - name: Verify data-only registration and revocation
         shell: bash
         run: |
@@ -68,7 +88,20 @@ jobs:
           source scripts/toolchains/select-workspace-node.sh
           node scripts/toolchains/project-toolchain.mjs --check
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        id: pnpm
+        uses: pnpm/setup@v3
+        with:
+          install: false
+          node-version-file: false
+      - name: Bind and verify the native manager
+        shell: bash
+        env:
+          PNPM_BIN_DEST: ${{ steps.pnpm.outputs.bin-dest }}
+        run: |
+          source scripts/toolchains/select-workspace-node.sh
+          export PUCK_PNPM_EXECUTABLE="$PNPM_BIN_DEST/pnpm"
+          node scripts/toolchains/run-pinned-pnpm.mjs --version
+          printf 'PUCK_PNPM_EXECUTABLE=%s\n' "$PUCK_PNPM_EXECUTABLE" >> "$GITHUB_ENV"
       - name: Record exact verification inputs
         shell: bash
         run: |

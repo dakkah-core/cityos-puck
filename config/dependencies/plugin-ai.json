@@ -6,7 +6,7 @@
   "corePackage": "@cityos-core/puck",
   "coreSourceVersion": "0.23.0-cityos.3",
   "patchPath": "patches/@puckeditor__plugin-ai@0.8.3.patch",
-  "patchSha256": "0b8cb4d091a56b1c1339f6cf6221a9fc10a963c8aed2ef691ab9c2e5b46a18bf",
+  "patchSha256": "4627b75afa9934ebf8ec643f2f27cd1bc021717394c847c3162707dfac01bca9",
   "runtimeCoreExports": [
     "AutoField",
     "FieldLabel",

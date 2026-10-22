@@ -308,6 +308,7 @@
         "recipes/react-router/package.json",
         "recipes/react-router/tsconfig.json",
         "scripts/cityos/check-registration-format.mjs",
+        "scripts/cityos/ci-pnpm.test.mjs",
         "scripts/cityos/compiler-conformance.test.mjs",
         "scripts/cityos/compiler-structured-conformance.test.mjs",
         "scripts/cityos/dependency-migration.test.mjs",
