@@ -668,7 +668,7 @@
     },
     {
       "path": "packages/core/bundle/internal.ts",
-      "sha256": "4621f90001bf1d8c1a6a68f7fd4837971a00c8d8526f141012c706391821adf0"
+      "sha256": "73c23862cb4e0663d5fbe08017302b4900e48a61b90fee2fb51a46747449e2b4"
     },
     {
       "path": "packages/core/bundle/no-external.ts",
