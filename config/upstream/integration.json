@@ -342,7 +342,8 @@
       "tests": [
         "scripts/cityos/dependency-migration.test.mjs",
         "scripts/cityos/peer-boundaries.test.mjs",
-        "packages/core/__tests__/cityos-build-graph.spec.ts"
+        "packages/core/__tests__/cityos-build-graph.spec.ts",
+        "scripts/upstream/package-cleanup.test.mjs"
       ]
     },
     {
@@ -730,7 +731,8 @@
         "packages/core/__tests__/cityos-built-consumers.spec.ts",
         "packages/core/lib/data/__tests__/flatten-node.spec.ts",
         "scripts/upstream/extension-boundary.test.mjs",
-        "scripts/upstream/public-peer-contract.test.mjs"
+        "scripts/upstream/public-peer-contract.test.mjs",
+        "scripts/upstream/package-cleanup.test.mjs"
       ]
     },
     {
@@ -768,17 +770,34 @@
       "id": "recorded-check-windows-portability",
       "purpose": "Execute source/evidence fixtures through the installed Git Bash rather than an ambient WSL launcher.",
       "invariant": "Recorded command exit codes, stdout/stderr and exact-source identities remain testable on Windows and POSIX.",
-      "paths": ["scripts/cityos/verification-evidence.test.mjs"],
-      "tests": ["scripts/cityos/verification-evidence.test.mjs"]
+      "paths": [
+        "scripts/cityos/verification-evidence.test.mjs"
+      ],
+      "tests": [
+        "scripts/cityos/verification-evidence.test.mjs"
+      ]
     },
     {
       "id": "qualified-tarball-publication",
       "purpose": "Publish the tested tarball from a SHA-bound qualification bundle without rebuilding an unverified replacement.",
       "invariant": "Clean source, exact lock/artifact/log digests, executed required checks and owned package/version are verified before npm publication.",
-      "paths": [".github/workflows/publish-cityos.yml"],
+      "paths": [
+        ".github/workflows/publish-cityos.yml"
+      ],
       "tests": [
         "scripts/upstream/integration.test.mjs",
         "scripts/upstream/publication-input.test.mjs"
+      ]
+    },
+    {
+      "id": "portable-package-cleanup",
+      "purpose": "Use the selected Node runtime for workspace package output cleanup on Windows and POSIX.",
+      "invariant": "Only the verified package dist child can be removed; linked output and foreign directories are refused.",
+      "paths": [
+        "scripts/toolchains/clean-package-dist.mjs"
+      ],
+      "tests": [
+        "scripts/upstream/package-cleanup.test.mjs"
       ]
     }
   ],

@@ -16,7 +16,7 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
-    "build": "rm -rf dist && tsup index.tsx",
+    "build": "node ../../scripts/toolchains/clean-package-dist.mjs && tsup index.tsx",
     "prepare": "node ../../scripts/toolchains/run-pinned-pnpm.mjs build",
     "typecheck": "node ../../scripts/toolchains/typecheck.mjs --noEmit"
   },
