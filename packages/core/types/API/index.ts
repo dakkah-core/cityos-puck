@@ -40,7 +40,7 @@ export type DndConfig = {
 export type OnAction<UserData extends Data = Data> = (
   action: PuckAction,
   appState: AppState<UserData>,
-  prevAppState: AppState<UserData>
+  prevAppState: AppState<UserData>,
 ) => void;
 
 export type Plugin<UserConfig extends Config = Config> = {
@@ -71,13 +71,12 @@ type InitialHistoryNoAppend<AS = Partial<AppState>> = {
 };
 
 export type InitialHistory<AS = Partial<AppState>> =
-  | InitialHistoryAppend<AS>
-  | InitialHistoryNoAppend<AS>;
+  InitialHistoryAppend<AS> | InitialHistoryNoAppend<AS>;
 
 export type Slot<
   Props extends { [key: string]: DefaultComponentProps } = {
     [key: string]: DefaultComponentProps;
-  }
+  },
 > = {
   [K in keyof Props]: ComponentDataOptionalId<
     Props[K],
@@ -88,7 +87,7 @@ export type Slot<
 export type WithSlotProps<
   Target extends Record<string, any>,
   Components extends DefaultComponents = DefaultComponents,
-  SlotType extends Content<Components> = Content<Components>
+  SlotType extends Content<Components> = Content<Components>,
 > = WithDeepSlots<Target, SlotType>;
 
 export type RichText = string | ReactNode;

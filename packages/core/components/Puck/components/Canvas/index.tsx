@@ -50,7 +50,7 @@ export const Canvas = () => {
       status: s.status,
       iframe: s.iframe,
       _experimentalFullScreenCanvas: s._experimentalFullScreenCanvas,
-    }))
+    })),
   );
   const {
     leftSideBarVisible,
@@ -65,7 +65,7 @@ export const Canvas = () => {
       leftSideBarWidth: s.state.ui.leftSideBarWidth,
       rightSideBarWidth: s.state.ui.rightSideBarWidth,
       viewports: s.state.ui.viewports,
-    }))
+    })),
   );
 
   const [showTransition, setShowTransition] = useState(false);
@@ -83,7 +83,7 @@ export const Canvas = () => {
 
   const CustomPreview = useMemo(
     () => overrides.preview || defaultRender,
-    [overrides]
+    [overrides],
   );
 
   const getFrameDimensions = useCallback(() => {
@@ -171,7 +171,7 @@ export const Canvas = () => {
     if (viewportOptions.length === 0) return;
 
     const fullWidthViewport = Object.values(viewportOptions).find(
-      (v) => v.width === "100%"
+      (v) => v.width === "100%",
     );
 
     const containsFullWidthViewport = !!fullWidthViewport;
@@ -182,7 +182,7 @@ export const Canvas = () => {
         key,
         diff: Math.abs(
           viewportWidth -
-            (typeof value.width === "string" ? viewportWidth : value.width)
+            (typeof value.width === "string" ? viewportWidth : value.width),
         ),
         value,
       }))

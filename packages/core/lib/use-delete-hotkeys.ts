@@ -62,7 +62,7 @@ export const shouldBlockDeleteHotkey = (e?: KeyboardEvent): boolean => {
   }
 
   const modal = document.querySelector(
-    'dialog[open], [aria-modal="true"], [role="dialog"], [role="alertdialog"]'
+    'dialog[open], [aria-modal="true"], [role="dialog"], [role="alertdialog"]',
   );
 
   if (modal && isElementVisible(modal as HTMLElement)) {
@@ -98,7 +98,7 @@ export const useDeleteHotkeys = () => {
       });
       return true;
     },
-    [appStore]
+    [appStore],
   );
 
   useHotkey({ delete: true }, deleteSelectedComponent);

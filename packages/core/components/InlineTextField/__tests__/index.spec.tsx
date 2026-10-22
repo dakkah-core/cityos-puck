@@ -38,7 +38,7 @@ describe("InlineTextField", () => {
         value={null}
         isReadOnly={false}
         placeholder="Enter a subtitle"
-      />
+      />,
     );
 
     const span = container.querySelector("span");
@@ -54,7 +54,7 @@ describe("InlineTextField", () => {
         value={undefined}
         isReadOnly={false}
         placeholder="Enter a subtitle"
-      />
+      />,
     );
 
     const span = container.querySelector("span");
@@ -70,7 +70,7 @@ describe("InlineTextField", () => {
         value={""}
         isReadOnly={false}
         placeholder="Enter a subtitle"
-      />
+      />,
     );
 
     const span = container.querySelector("span");
@@ -87,7 +87,7 @@ describe("InlineTextField", () => {
         value="Hello world"
         isReadOnly={false}
         placeholder="Enter a subtitle"
-      />
+      />,
     );
 
     const span = container.querySelector("span");
@@ -102,7 +102,7 @@ describe("InlineTextField", () => {
         value="Initial"
         isReadOnly={false}
         placeholder="Enter a subtitle"
-      />
+      />,
     );
 
     const span = container.querySelector("span");
@@ -121,7 +121,7 @@ describe("InlineTextField", () => {
         value=""
         isReadOnly={false}
         placeholder="Enter a subtitle"
-      />
+      />,
     );
 
     // After normalization, the <br> should be removed and element should be empty

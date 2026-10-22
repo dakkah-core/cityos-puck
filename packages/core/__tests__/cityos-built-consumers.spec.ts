@@ -4,10 +4,10 @@ import { resolve } from "node:path";
 const repositoryRoot = resolve(__dirname, "../../..");
 const coreRoot = resolve(repositoryRoot, "packages/core");
 const manifest = JSON.parse(
-  readFileSync(resolve(coreRoot, "package.json"), "utf8")
+  readFileSync(resolve(coreRoot, "package.json"), "utf8"),
 );
 const demo = JSON.parse(
-  readFileSync(resolve(repositoryRoot, "apps/demo/tsconfig.json"), "utf8")
+  readFileSync(resolve(repositoryRoot, "apps/demo/tsconfig.json"), "utf8"),
 );
 
 /**

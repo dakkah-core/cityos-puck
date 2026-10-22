@@ -19,7 +19,7 @@ export const insertComponent = async (
   componentType: string,
   zone: string,
   index: number,
-  appStore: ReturnType<typeof useAppStoreApi>
+  appStore: ReturnType<typeof useAppStoreApi>,
 ) => {
   const { getState } = appStore;
 

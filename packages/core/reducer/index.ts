@@ -32,11 +32,11 @@ export type StateReducer<UserData extends Data = Data> = Reducer<
 function storeInterceptor<UserData extends Data = Data>(
   reducer: StateReducer<UserData>,
   record?: (appState: AppState<UserData>) => void,
-  onAction?: OnAction<UserData>
+  onAction?: OnAction<UserData>,
 ) {
   return (
     state: PrivateAppState<UserData>,
-    action: PuckAction
+    action: PuckAction,
   ): PrivateAppState<UserData> => {
     const newAppState = reducer(state, action);
 
@@ -124,6 +124,6 @@ export function createReducer<UserData extends Data>({
       return state;
     },
     record,
-    onAction
+    onAction,
   );
 }

@@ -44,10 +44,10 @@ const NON_FORWARDABLE_PROP_KEYS: Record<NonForwardableKey, true> = {
 };
 
 const CONSUMED_KEY_SET: ReadonlySet<string> = new Set(
-  Object.keys(CONSUMED_PROP_KEYS)
+  Object.keys(CONSUMED_PROP_KEYS),
 );
 const NON_FORWARDABLE_KEY_SET: ReadonlySet<string> = new Set(
-  Object.keys(NON_FORWARDABLE_PROP_KEYS)
+  Object.keys(NON_FORWARDABLE_PROP_KEYS),
 );
 
 /**
@@ -62,7 +62,7 @@ const NON_FORWARDABLE_KEY_SET: ReadonlySet<string> = new Set(
  * @returns An object containing the three prop groups: {@link DropZonePropGroups.props props}, {@link DropZonePropGroups.forwardableProps forwardableProps}, and {@link DropZonePropGroups.nonForwardableProps nonForwardableProps}.
  */
 export const getDropZoneProps = <Props extends Record<string, any>>(
-  allProps: Props
+  allProps: Props,
 ): DropZonePropGroups<Props> => {
   // Null-prototype so an own `__proto__` key is stored as data instead of
   // mutating the target's prototype (prototype pollution / lost key).
@@ -74,7 +74,7 @@ export const getDropZoneProps = <Props extends Record<string, any>>(
     if (NON_FORWARDABLE_KEY_SET.has(key)) {
       console.warn(
         "The following prop is not supported by Puck DropZones or slots and will not be forwarded to the `as` element:",
-        key
+        key,
       );
       nonForwardableProps[key] = allProps[key];
     } else if (CONSUMED_KEY_SET.has(key)) {

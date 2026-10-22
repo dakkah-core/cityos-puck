@@ -61,7 +61,7 @@ const getStyleMap = (target: Document) => {
 const attachStyleElement = (
   target: Document,
   el: HTMLStyleElement,
-  prepend = false
+  prepend = false,
 ) => {
   const head = target.head;
 
@@ -92,7 +92,7 @@ const createStyleElement = (
   target: Document,
   id: PuckStyleId,
   cssText: string,
-  prepend = false
+  prepend = false,
 ) => {
   const el = target.createElement("style");
 
@@ -109,7 +109,7 @@ export const isPuckStyleElement = (el?: Element | null) =>
   el?.getAttribute(PUCK_STYLE_SOURCE_ATTRIBUTE) === PUCK_STYLE_SOURCE_VALUE;
 
 export const useInjectStyleSheet = (
-  options: InjectStyleSheetOptions | null
+  options: InjectStyleSheetOptions | null,
 ) => {
   const targetDocument = getTargetDocument(options?.document);
 
@@ -134,7 +134,7 @@ export const useInjectStyleSheet = (
         targetDocument,
         options.id,
         options.cssText,
-        options.prepend
+        options.prepend,
       );
 
       registry.set(options.id, {
@@ -190,13 +190,13 @@ export const useInjectUiCss = () => {
           cssText: defaultUiStyles,
           id: PUCK_STYLE_IDS.uiDefault,
           prepend: true,
-        }
+        },
   );
 
   useEffect(() => {
     if (skip && process.env.NODE_ENV !== "production") {
       console.info(
-        "Puck: Skipped runtime style injection as Puck styles are already loaded. As of Puck 0.22, you can safely remove CSS imports, or ignore this message."
+        "Puck: Skipped runtime style injection as Puck styles are already loaded. As of Puck 0.22, you can safely remove CSS imports, or ignore this message.",
       );
     }
   }, []);
@@ -210,6 +210,6 @@ export const useInjectIframeCss = (targetDocument?: Document) => {
           document: targetDocument,
           id: PUCK_STYLE_IDS.iframeInteractions,
         }
-      : null
+      : null,
   );
 };

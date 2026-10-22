@@ -54,7 +54,7 @@ type ComponentState = Record<string, { loadingCount: number }>;
 
 export type AppStore<
   UserConfig extends Config = Config,
-  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
 > = {
   instanceId: string;
   state: G["UserAppState"];
@@ -65,13 +65,13 @@ export type AppStore<
   setComponentLoading: (
     id: string,
     loading?: boolean,
-    defer?: number
+    defer?: number,
   ) => () => void;
   unsetComponentLoading: (id: string) => void;
   pendingLoadTimeouts: Record<string, NodeJS.Timeout>;
   resolveComponentData: <T extends ComponentData | RootDataWithProps>(
     componentData: T,
-    trigger: ResolveDataTrigger
+    trigger: ResolveDataTrigger,
   ) => Promise<{ node: T; didChange: boolean }>;
   resolveAndCommitData: () => void;
   plugins: Plugin[];
@@ -150,13 +150,13 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
         return type && type !== "root"
           ? config.components[type]
           : selectedItem
-          ? config.components[selectedItem.type]
-          : ({ ...config.root, fields: rootFields } as ComponentConfig);
+            ? config.components[selectedItem.type]
+            : ({ ...config.root, fields: rootFields } as ComponentConfig);
       },
       selectedItem: initialAppStore?.state?.ui.itemSelector
         ? getItem(
             initialAppStore?.state?.ui.itemSelector,
-            initialAppStore.state
+            initialAppStore.state,
           )
         : null,
       dispatch: (action: PuckAction) =>
@@ -185,7 +185,7 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
       setComponentLoading: (
         id: string,
         loading: boolean = true,
-        defer: number = 0
+        defer: number = 0,
       ) => {
         const { setComponentState, pendingLoadTimeouts } = get();
 
@@ -218,7 +218,7 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
               ...componentState[id],
               loadingCount: Math.max(
                 (componentState[id]?.loadingCount || 0) - 1,
-                0
+                0,
               ),
             },
           });
@@ -302,7 +302,7 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
           },
           trigger,
           parentData,
-          state.data.root
+          state.data.root,
         );
       },
       resolveAndCommitData: async () => {
@@ -335,7 +335,7 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
                   const parentZone = state.indexes.zones[zoneCompound];
 
                   const index = parentZone.contentIds.indexOf(
-                    resolved.node.props.id
+                    resolved.node.props.id,
                   );
 
                   dispatch({
@@ -349,10 +349,10 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
             });
 
             return childItem;
-          }
+          },
         );
       },
-    }))
+    })),
   );
 
 // Derived from createAppStore so it keeps the zustand middleware augmentations

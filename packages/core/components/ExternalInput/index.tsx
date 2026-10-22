@@ -111,7 +111,7 @@ export const ExternalInput = ({
         }
       }
     },
-    [id, field]
+    [id, field],
   );
 
   const Footer = useCallback(
@@ -121,7 +121,7 @@ export const ExternalInput = ({
       ) : (
         <DefaultFooter count={props.items.length} />
       ),
-    [field.renderFooter]
+    [field.renderFooter],
   );
 
   useEffect(() => {

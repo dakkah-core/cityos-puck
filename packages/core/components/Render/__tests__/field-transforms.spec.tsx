@@ -92,7 +92,7 @@ describe("Render fieldTransforms", () => {
         fieldTransforms={{
           text: ({ value }) => <mark>{value}</mark>,
         }}
-      />
+      />,
     );
 
     expect(html).toContain("<span><mark>Root title</mark></span>");
@@ -122,7 +122,7 @@ describe("Render fieldTransforms", () => {
           ],
         }}
         fieldTransforms={{ text: ({ value }) => <mark>{value}</mark> }}
-      />
+      />,
     );
 
     expect(html).toContain("<h2><mark>Top level</mark></h2>");
@@ -183,7 +183,7 @@ describe("Render fieldTransforms", () => {
         config={richtextRootConfig}
         data={richtextRootData}
         fieldTransforms={{ text: ({ value }) => <mark>{value}</mark> }}
-      />
+      />,
     );
 
     expect(html).not.toContain("RAW:");
@@ -219,12 +219,12 @@ describe("Render fieldTransforms", () => {
         fieldTransforms={{
           richtext: ({ value }) => <pre>{value}</pre>,
         }}
-      />
+      />,
     );
 
     expect(html).toContain("<pre>");
     expect(html).toContain(
-      "&lt;p&gt;Hello &lt;strong&gt;world&lt;/strong&gt;&lt;/p&gt;"
+      "&lt;p&gt;Hello &lt;strong&gt;world&lt;/strong&gt;&lt;/p&gt;",
     );
     expect(html).not.toContain('<div class="RichTextEditor">');
   });
@@ -264,7 +264,7 @@ describe("Render fieldTransforms", () => {
         fieldTransforms={{
           object: ({ value }) => `meta:${Object.keys(value).length}`,
         }}
-      />
+      />,
     );
 
     expect(html).toContain("meta:1");
@@ -307,7 +307,7 @@ describe("Render fieldTransforms", () => {
         fieldTransforms={{
           array: ({ value }) => `rows:${value.length}`,
         }}
-      />
+      />,
     );
 
     expect(html).toContain("rows:2");

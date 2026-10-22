@@ -97,7 +97,7 @@ describe("ServerRender fieldTransforms", () => {
         fieldTransforms={{
           text: ({ value }) => <mark>{value}</mark>,
         }}
-      />
+      />,
     );
 
     // Root props
@@ -123,7 +123,7 @@ describe("ServerRender fieldTransforms", () => {
             return value;
           },
         }}
-      />
+      />,
     );
 
     expect(seen).toContainEqual({
@@ -190,7 +190,7 @@ describe("ServerRender fieldTransforms", () => {
             return <mark>{value}</mark>;
           },
         }}
-      />
+      />,
     );
 
     expect(propPaths).toEqual([
@@ -216,7 +216,7 @@ describe("ServerRender fieldTransforms", () => {
             return value;
           },
         }}
-      />
+      />,
     );
 
     expect(seen.length).toBeGreaterThan(0);
@@ -253,12 +253,12 @@ describe("ServerRender fieldTransforms", () => {
         fieldTransforms={{
           richtext: ({ value }) => <pre>{value}</pre>,
         }}
-      />
+      />,
     );
 
     expect(html).toContain("<pre>");
     expect(html).toContain(
-      "&lt;p&gt;Hello &lt;strong&gt;world&lt;/strong&gt;&lt;/p&gt;"
+      "&lt;p&gt;Hello &lt;strong&gt;world&lt;/strong&gt;&lt;/p&gt;",
     );
     expect(html).not.toContain('<div class="RichTextEditor">');
   });
@@ -284,7 +284,7 @@ describe("ServerRender fieldTransforms", () => {
         fieldTransforms={{
           slot: ({ value }) => `slot has ${value.length} item(s)`,
         }}
-      />
+      />,
     );
 
     expect(html).toContain("slot has 1 item(s)");
@@ -325,7 +325,7 @@ describe("ServerRender fieldTransforms", () => {
         fieldTransforms={{
           object: ({ value }) => `meta:${Object.keys(value).length}`,
         }}
-      />
+      />,
     );
 
     expect(html).toContain("meta:1");
@@ -389,7 +389,7 @@ describe("ServerRender root prop resolution", () => {
         config={config}
         data={data}
         fieldTransforms={{ text: ({ value }) => <mark>{value}</mark> }}
-      />
+      />,
     );
 
     expect(html).not.toContain("RAW:");

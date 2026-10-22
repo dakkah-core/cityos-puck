@@ -26,5 +26,5 @@ export const Section = forwardRef<HTMLDivElement, SectionProps>(
         </div>
       </div>
     );
-  }
+  },
 );

@@ -10,22 +10,22 @@ import { defaultData } from "./data/default-data";
 
 type PropTransform<
   Components extends DefaultComponents = DefaultComponents,
-  RootProps extends DefaultComponentProps = DefaultRootFieldProps
+  RootProps extends DefaultComponentProps = DefaultRootFieldProps,
 > = Partial<
   {
     [ComponentName in keyof Components]: (
-      props: Components[ComponentName] & { [key: string]: any }
+      props: Components[ComponentName] & { [key: string]: any },
     ) => Components[ComponentName];
   } & { root: (props: RootProps & { [key: string]: any }) => RootProps }
 >;
 
 export function transformProps<
   Components extends DefaultComponents = DefaultComponents,
-  RootProps extends DefaultComponentProps = DefaultRootFieldProps
+  RootProps extends DefaultComponentProps = DefaultRootFieldProps,
 >(
   data: Partial<Data>,
   propTransforms: PropTransform<Components, RootProps>,
-  config: Config = { components: {} }
+  config: Config = { components: {} },
 ): Data {
   const mapItem = (item: any) => {
     if (propTransforms[item.type]) {
@@ -53,7 +53,7 @@ export function transformProps<
   const dataWithUpdatedRoot = { ...defaultedData, root: newRoot };
 
   const updatedData = walkTree(dataWithUpdatedRoot, config, (content) =>
-    content.map(mapItem)
+    content.map(mapItem),
   );
 
   // DEPRECATED - handle legacy root props

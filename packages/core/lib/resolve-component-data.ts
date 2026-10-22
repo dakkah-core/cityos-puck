@@ -19,7 +19,7 @@ export type ResolveDataCache = {
 export const cache: ResolveDataCache = { lastChange: {} };
 
 export const resolveComponentData = async <
-  T extends ComponentData | RootDataWithProps
+  T extends ComponentData | RootDataWithProps,
 >(
   item: T,
   config: Config,
@@ -32,8 +32,8 @@ export const resolveComponentData = async <
   cacheStore: ResolveDataCache = cache,
   resolveChild?: (
     child: ComponentData,
-    parent: ComponentData
-  ) => Promise<ComponentData>
+    parent: ComponentData,
+  ) => Promise<ComponentData>,
 ) => {
   const configForItem =
     "type" in item && item.type !== "root"
@@ -116,14 +116,14 @@ export const resolveComponentData = async <
                     trigger,
                     itemAsComponentData,
                     root,
-                    cacheStore
+                    cacheStore,
                   )
-                ).node
-          )
+                ).node,
+          ),
         );
       },
     },
-    config
+    config,
   );
 
   if (shouldRunResolver && onResolveEnd) {

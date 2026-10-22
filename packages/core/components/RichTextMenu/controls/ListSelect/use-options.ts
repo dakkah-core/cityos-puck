@@ -32,6 +32,6 @@ export const useListOptions = (fieldOptions: RichtextField["options"]) => {
         label: optionLabels[item],
         icon: optionIcons[item],
       })),
-    [blockOptions, optionLabels]
+    [blockOptions, optionLabels],
   );
 };

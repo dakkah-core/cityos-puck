@@ -2,7 +2,7 @@
 
 import { Puck, RichTextMenu } from "@/puck";
 import { ConfigPreview, PuckPreview } from "@/docs/components/Preview";
-import { Highlighter, Quote } from "lucide-react";
+import { Highlighter } from "lucide-react";
 
 export function Example1() {
   return (
@@ -85,9 +85,10 @@ export function Example4() {
           <RichTextMenu>
             {children}
             <RichTextMenu.Group>
-              <RichTextMenu.Control icon={<Quote />} />
+              <RichTextMenu.Blockquote />
               <RichTextMenu.Control
                 icon={<Highlighter />}
+                title="Highlight"
                 onClick={() => {
                   alert("Highlight clicked");
                 }}
@@ -125,6 +126,7 @@ export function Example5() {
                   <RichTextMenu.Blockquote />
                   <RichTextMenu.Control
                     icon={<Highlighter />}
+                    title="Highlight"
                     onClick={() => {
                       alert("Highlight clicked");
                     }}

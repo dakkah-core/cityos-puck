@@ -57,7 +57,7 @@ const tidyState = (state: AppState): AppState => {
 
 export const createHistorySlice = (
   set: (newState: Partial<AppStore>) => void,
-  get: () => AppStore
+  get: () => AppStore,
 ): HistorySlice => {
   const record = debounce((state: AppState) => {
     const { histories, index } = get().history;
@@ -101,7 +101,7 @@ export const createHistorySlice = (
 
       if (history.hasPast()) {
         const state = tidyState(
-          history.prevHistory()?.state || history.initialAppState
+          history.prevHistory()?.state || history.initialAppState,
         );
 
         dispatch({
@@ -158,7 +158,7 @@ export function useRegisterHistorySlice(
     histories: History<any>[];
     index: number;
     initialAppState: AppState;
-  }
+  },
 ) {
   useEffect(
     () =>
@@ -170,7 +170,7 @@ export function useRegisterHistorySlice(
           initialAppState,
         },
       }),
-    [histories, index, initialAppState]
+    [histories, index, initialAppState],
   );
 
   const back = () => {

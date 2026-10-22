@@ -25,7 +25,7 @@ export function AlignSelectLoaded() {
         }
 
         return options?.textAlign
-          ? (options.textAlign.defaultAlignment as AlignDirection) ?? "left"
+          ? ((options.textAlign.defaultAlignment as AlignDirection) ?? "left")
           : "left";
       },
     }) ?? "left";

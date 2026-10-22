@@ -21,7 +21,7 @@ import { getSelectorForId } from "./get-selector-for-id";
 
 export type UsePuckData<
   UserConfig extends Config = Config,
-  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
 > = {
   appState: G["UserPublicAppState"];
   config: UserConfig;
@@ -31,11 +31,11 @@ export type UsePuckData<
   resolveDataById: (id: string, trigger?: ResolveDataTrigger) => void;
   resolveDataBySelector: (
     selector: ItemSelector,
-    trigger?: ResolveDataTrigger
+    trigger?: ResolveDataTrigger,
   ) => void;
   selectedItem: G["UserComponentData"] | null;
   getItemBySelector: (
-    selector: ItemSelector
+    selector: ItemSelector,
   ) => G["UserComponentData"] | undefined;
   getItemById: (id: string) => G["UserComponentData"] | undefined;
   getSelectorForId: (id: string) => Required<ItemSelector> | undefined;
@@ -71,7 +71,7 @@ type PickedStore = Pick<
 
 export const generateUsePuck = (
   store: PickedStore,
-  getState: ReturnType<typeof useAppStoreApi>["getState"]
+  getState: ReturnType<typeof useAppStoreApi>["getState"],
 ): UsePuckStore => {
   const history: UsePuckStore["history"] = {
     back: store.history.back,
@@ -117,7 +117,7 @@ export const generateUsePuck = (
 };
 
 export const UsePuckStoreContext = createContext<StoreApi<UsePuckStore> | null>(
-  null
+  null,
 );
 
 const convertToPickedStore = (store: AppStore): PickedStore => {
@@ -136,15 +136,15 @@ const convertToPickedStore = (store: AppStore): PickedStore => {
  * Mirror changes in appStore to usePuckStore
  */
 export const useRegisterUsePuckStore = (
-  appStore: ReturnType<typeof useAppStoreApi>
+  appStore: ReturnType<typeof useAppStoreApi>,
 ) => {
   const [usePuckStore] = useState(() =>
     createStore(() =>
       generateUsePuck(
         convertToPickedStore(appStore.getState()),
-        appStore.getState
-      )
-    )
+        appStore.getState,
+      ),
+    ),
   );
 
   useEffect(() => {
@@ -153,7 +153,7 @@ export const useRegisterUsePuckStore = (
       (store) => convertToPickedStore(store),
       (pickedStore) => {
         usePuckStore.setState(generateUsePuck(pickedStore, appStore.getState));
-      }
+      },
     );
   }, []);
 
@@ -171,7 +171,7 @@ export const useRegisterUsePuckStore = (
  */
 export function createUsePuck<UserConfig extends Config = Config>() {
   return function usePuck<T = PuckApi<UserConfig>>(
-    selector: (state: UsePuckStore<UserConfig>) => T
+    selector: (state: UsePuckStore<UserConfig>) => T,
   ): T {
     const usePuckApi = useContext(UsePuckStoreContext);
 
@@ -181,7 +181,7 @@ export function createUsePuck<UserConfig extends Config = Config>() {
 
     const result = useStore(
       usePuckApi as unknown as StoreApi<UsePuckStore<UserConfig>>,
-      selector ?? ((s) => s as T)
+      selector ?? ((s) => s as T),
     );
 
     return result;
@@ -191,7 +191,7 @@ export function createUsePuck<UserConfig extends Config = Config>() {
 export function usePuck<UserConfig extends Config = Config>() {
   useEffect(() => {
     console.warn(
-      "You're using the `usePuck` method without a selector, which may cause unnecessary re-renders. Replace with `createUsePuck` and provide a selector for improved performance."
+      "You're using the `usePuck` method without a selector, which may cause unnecessary re-renders. Replace with `createUsePuck` and provide a selector for improved performance.",
     );
   }, []);
 

@@ -69,7 +69,8 @@ const theme = {
           ),
         }
       : {},
-  docsRepositoryBase: "https://github.com/puckeditor/puck/tree/main/apps/docs/content",
+  docsRepositoryBase:
+    "https://github.com/puckeditor/puck/tree/main/apps/docs/content",
   navbar: {
     extraContent: () => (
       <Viewport desktop>

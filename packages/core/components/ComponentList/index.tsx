@@ -21,14 +21,14 @@ const ComponentListItem = ({
     (s) =>
       s.permissions.getPermissions({
         type: name,
-      }).insert
+      }).insert,
   );
 
   // DEPRECATED
   useEffect(() => {
     if (overrides.componentItem) {
       console.warn(
-        "The `componentItem` override has been deprecated and renamed to `drawerItem`"
+        "The `componentItem` override has been deprecated and renamed to `drawerItem`",
       );
     }
   }, [overrides]);

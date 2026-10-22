@@ -7,7 +7,7 @@ import { AppStore } from "../../store";
 export const reorderAction = <UserData extends Data>(
   state: PrivateAppState<UserData>,
   action: ReorderAction,
-  appStore: AppStore
+  appStore: AppStore,
 ): PrivateAppState<UserData> => {
   return moveAction(
     state,
@@ -18,6 +18,6 @@ export const reorderAction = <UserData extends Data>(
       destinationIndex: action.destinationIndex,
       destinationZone: action.destinationZone,
     },
-    appStore
+    appStore,
   );
 };

@@ -37,7 +37,7 @@ let flushNext: UniqueIdentifier = "";
  */
 export const createDynamicCollisionDetector = (
   dragAxis: DragAxis,
-  midpointOffset: number = 0.05
+  midpointOffset: number = 0.05,
 ) =>
   ((input) => {
     const { dragOperation, droppable } = input;
@@ -66,7 +66,7 @@ export const createDynamicCollisionDetector = (
       dragShape,
       dropShape,
       interval.direction,
-      midpointOffset
+      midpointOffset,
     );
 
     if (dragOperation.source?.id === droppable.id) {
@@ -96,7 +96,7 @@ export const createDynamicCollisionDetector = (
         dropCenter,
         droppable.id.toString(),
         "green",
-        interval.direction
+        interval.direction,
       );
 
       const collision: Collision = {
@@ -148,7 +148,7 @@ export const createDynamicCollisionDetector = (
               dropCenter,
               droppable.id.toString(),
               "red",
-              direction || ""
+              direction || "",
             );
 
             // HACK: We always flush the ID after this collision to ensure dnd-kit triggers onDragMove
@@ -166,7 +166,7 @@ export const createDynamicCollisionDetector = (
             dropCenter,
             droppable.id.toString(),
             "orange",
-            direction || ""
+            direction || "",
           );
 
           return {

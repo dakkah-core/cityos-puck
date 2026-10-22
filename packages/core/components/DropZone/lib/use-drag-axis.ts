@@ -8,12 +8,12 @@ const DEFAULT_DRAG_AXIS: DragAxis = "y";
 
 export const useDragAxis = (
   ref: RefObject<HTMLElement | null>,
-  collisionAxis?: DragAxis
+  collisionAxis?: DragAxis,
 ): [DragAxis, () => void] => {
   const status = useAppStore((s) => s.status);
 
   const [dragAxis, setDragAxis] = useState<DragAxis>(
-    collisionAxis || DEFAULT_DRAG_AXIS
+    collisionAxis || DEFAULT_DRAG_AXIS,
   );
 
   const calculateDragAxis = useCallback(() => {

@@ -4,13 +4,19 @@ import { test } from "node:test";
 import { parse } from "yaml";
 
 const workflow = parse(
-  readFileSync(new URL("../../.github/workflows/ci.yml", import.meta.url), "utf8"),
+  readFileSync(
+    new URL("../../.github/workflows/ci.yml", import.meta.url),
+    "utf8",
+  ),
 );
 
 for (const [name, job] of Object.entries(workflow.jobs)) {
   test(`${name} verifies native pnpm before any manager-dependent check`, () => {
     const setup = job.steps.findIndex((step) => step.uses === "pnpm/setup@v3");
-    assert.ok(setup >= 0, "Provision the native executable, not a bootstrap shim");
+    assert.ok(
+      setup >= 0,
+      "Provision the native executable, not a bootstrap shim",
+    );
     assert.equal(job.steps[setup].with.install, false);
     assert.equal(job.steps[setup].with["node-version-file"], false);
     assert.equal(job.steps[setup].with.version, undefined);
@@ -25,7 +31,9 @@ for (const [name, job] of Object.entries(workflow.jobs)) {
     assert.match(job.steps[binding].run, /run-pinned-pnpm\.mjs --version/u);
     assert.match(job.steps[binding].run, /GITHUB_ENV/u);
     const consumer = job.steps.findIndex((step) =>
-      /bash \.github\/scripts\/run-recorded-check\.sh|node scripts\/cityos\/registration-source-suite/u.test(step.run ?? ""),
+      /bash \.github\/scripts\/run-recorded-check\.sh|node scripts\/cityos\/registration-source-suite/u.test(
+        step.run ?? "",
+      ),
     );
     assert.ok(consumer > binding);
     const install = job.steps.findIndex((step) =>

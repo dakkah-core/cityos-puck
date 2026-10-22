@@ -23,7 +23,7 @@ const getClassNameFactory =
   (
     rootClass: string,
     styles: Record<string, string>,
-    config: { baseClass?: string } = { baseClass: "" }
+    config: { baseClass?: string } = { baseClass: "" },
   ) =>
   (options: Options = {}) => {
     if (typeof options === "string") {

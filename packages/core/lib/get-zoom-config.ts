@@ -6,7 +6,7 @@ const RESET_ZOOM_SMALLER_THAN_FRAME = true;
 export const getZoomConfig = (
   uiViewport: AppState["ui"]["viewports"]["current"],
   frame: HTMLElement,
-  zoom: number
+  zoom: number,
 ) => {
   const box = getBox(frame);
 

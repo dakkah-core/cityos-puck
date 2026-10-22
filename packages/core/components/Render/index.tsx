@@ -34,7 +34,7 @@ export const renderContext = React.createContext<{
 
 export function Render<
   UserConfig extends Config = Config,
-  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
 >({
   config,
   data,
@@ -87,7 +87,7 @@ export function Render<
         fieldTransforms={fieldTransforms}
       />
     ),
-    fieldTransforms
+    fieldTransforms,
   );
 
   const nextContextValue = useMemo<DropZoneContext>(
@@ -95,7 +95,7 @@ export function Render<
       mode: "render",
       depth: 0,
     }),
-    []
+    [],
   );
 
   if (config.root?.render) {

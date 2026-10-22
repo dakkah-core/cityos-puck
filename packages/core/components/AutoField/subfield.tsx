@@ -27,7 +27,7 @@ const SubFieldInternal = ({
   const localIndexName =
     typeof index !== "undefined"
       ? `${localName}[${index}]`
-      : localName ?? subName;
+      : (localName ?? subName);
   const localWildcardName =
     typeof index !== "undefined" ? `${localName}[*]` : localName;
   const localSubPath = `${localIndexName}.${subName}`;
@@ -38,8 +38,8 @@ const SubFieldInternal = ({
   const subReadOnly = forceReadOnly
     ? forceReadOnly
     : typeof readOnlyFields[subPath] !== "undefined"
-    ? readOnlyFields[localSubPath]
-    : readOnlyFields[localWildcardSubPath];
+      ? readOnlyFields[localSubPath]
+      : readOnlyFields[localWildcardSubPath];
 
   const label = field.label || subName;
 

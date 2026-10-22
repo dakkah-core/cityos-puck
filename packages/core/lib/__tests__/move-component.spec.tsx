@@ -47,7 +47,7 @@ const config: Config = {
 const moveChildTo = (
   targetItemSelector: ItemSelector,
   sourceItemSelector: ItemSelector = { zone: "Parent-1:items", index: 0 },
-  id = "Child-1"
+  id = "Child-1",
 ) => {
   moveComponent(id, sourceItemSelector, targetItemSelector, appStore);
 };
@@ -99,10 +99,10 @@ function resetStores() {
             ],
           },
         },
-        config
+        config,
       ),
     },
-    true
+    true,
   );
 }
 
@@ -131,7 +131,7 @@ describe("moveComponent", () => {
     // Then: ---------------
     const componentAtTarget = getItem(
       targetItemSelector,
-      appStore.getState().state
+      appStore.getState().state,
     );
     expect(componentAtTarget?.props.id).toEqual("Child-1");
   });
@@ -147,7 +147,7 @@ describe("moveComponent", () => {
     const expectedCalls = resolveAndCommitDataCalls + 1;
     expect(childResolveData).toHaveBeenCalledTimes(expectedCalls);
     expect(
-      childResolveData.mock.calls[expectedCalls - 1][1].parent
+      childResolveData.mock.calls[expectedCalls - 1][1].parent,
     ).toStrictEqual({
       type: "Parent",
       props: {
@@ -163,8 +163,8 @@ describe("moveComponent", () => {
         ],
       },
     });
-    const mockedReturn = await childResolveData.mock.results[expectedCalls - 1]
-      .value;
+    const mockedReturn =
+      await childResolveData.mock.results[expectedCalls - 1].value;
     expect(mockedReturn.props.resolvedProp).toBe("Resolved moved");
   });
 
@@ -179,7 +179,7 @@ describe("moveComponent", () => {
     expect(childResolveData).toHaveBeenCalledTimes(resolveAndCommitDataCalls);
     const mockedCalls = childResolveData.mock.calls;
     expect(
-      mockedCalls.find((call) => call[1].trigger === "move")
+      mockedCalls.find((call) => call[1].trigger === "move"),
     ).toBeUndefined();
   });
 
@@ -191,10 +191,10 @@ describe("moveComponent", () => {
     const expectedCalls = resolveAndCommitDataCalls + 1;
     expect(childResolveData).toHaveBeenCalledTimes(expectedCalls);
     expect(childResolveData.mock.calls[expectedCalls - 1][1].trigger).toBe(
-      "move"
+      "move",
     );
-    const mockedReturn = await childResolveData.mock.results[expectedCalls - 1]
-      .value;
+    const mockedReturn =
+      await childResolveData.mock.results[expectedCalls - 1].value;
     expect(mockedReturn.props.resolvedProp).toBe("Resolved moved");
   });
 });

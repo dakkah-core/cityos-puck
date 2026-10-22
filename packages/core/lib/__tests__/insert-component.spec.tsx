@@ -69,7 +69,7 @@ describe("use-insert-component", () => {
             return data as any;
           },
         },
-        true
+        true,
       );
     });
 

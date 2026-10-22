@@ -26,9 +26,9 @@ export function SelectControl<ValueType extends string = string>({
     () =>
       options.reduce<OptionsByValue>(
         (acc, option) => ({ ...acc, [option.value]: option }),
-        {} as OptionsByValue
+        {} as OptionsByValue,
       ),
-    [options]
+    [options],
   );
 
   const Node = (value && optionsByValue[value]?.icon) ?? renderDefaultIcon;

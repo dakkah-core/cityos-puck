@@ -46,7 +46,7 @@ export const LinePlaceholder = ({
       // Exclude the flying drag element: in same-zone line drags the item's
       // in-flow position is represented by its placeholder clone.
       const el = zoneEl.querySelector(
-        `:scope > ${getComponentSelector(id)}:not([data-dnd-dragging])`
+        `:scope > ${getComponentSelector(id)}:not([data-dnd-dragging])`,
       );
 
       if (!el) return undefined;
@@ -68,7 +68,7 @@ export const LinePlaceholder = ({
     const gap = px(horizontal ? zoneStyle.columnGap : zoneStyle.rowGap);
     const marginOf = (
       el: Element | null | undefined,
-      edge: "start" | "end"
+      edge: "start" | "end",
     ) => {
       const side =
         (edge === "start") === !reversed
@@ -76,8 +76,8 @@ export const LinePlaceholder = ({
             ? "marginLeft"
             : "marginTop"
           : horizontal
-          ? "marginRight"
-          : "marginBottom";
+            ? "marginRight"
+            : "marginBottom";
 
       return px(styleOf(el)?.[side]);
     };
@@ -112,8 +112,8 @@ export const LinePlaceholder = ({
           ? zoneRect.right - borderRight - px(zoneStyle.paddingRight)
           : zoneRect.left + borderLeft + px(zoneStyle.paddingLeft)
         : reversed
-        ? zoneRect.bottom - borderBottom - px(zoneStyle.paddingBottom)
-        : zoneRect.top + borderTop + px(zoneStyle.paddingTop);
+          ? zoneRect.bottom - borderBottom - px(zoneStyle.paddingBottom)
+          : zoneRect.top + borderTop + px(zoneStyle.paddingTop);
     }
 
     if (horizontal) {
@@ -136,7 +136,7 @@ export const LinePlaceholder = ({
         left: clamp(
           main - zoneRect.left + zoneEl.scrollLeft - borderLeft,
           0,
-          zoneEl.scrollWidth
+          zoneEl.scrollWidth,
         ),
         width: LINE_SIZE,
         transform: "translateX(-50%)",
@@ -161,7 +161,7 @@ export const LinePlaceholder = ({
         top: clamp(
           main - zoneRect.top + zoneEl.scrollTop - borderTop,
           0,
-          zoneEl.scrollHeight
+          zoneEl.scrollHeight,
         ),
         height: LINE_SIZE,
         transform: "translateY(-50%)",

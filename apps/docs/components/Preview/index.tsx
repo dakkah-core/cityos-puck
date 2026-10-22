@@ -30,7 +30,7 @@ import { useContextStore } from "@/core/lib/use-context-store";
 import { Button, registerOverlayPortal } from "@/core";
 
 export const PreviewStoreContext = createContext(
-  createStore(() => ({ drawerVisible: false }))
+  createStore(() => ({ drawerVisible: false })),
 );
 
 const getClassNamePreview = getClassNameFactory("PreviewFrame", styles);
@@ -38,7 +38,7 @@ const getClassNamePreview = getClassNameFactory("PreviewFrame", styles);
 const DrawerButton = () => {
   const drawerVisible = useContextStore(
     PreviewStoreContext,
-    (s) => s.drawerVisible
+    (s) => s.drawerVisible,
   );
 
   const previewStore = useContext(PreviewStoreContext);
@@ -67,7 +67,7 @@ const DrawerButton = () => {
 const Drawer = ({ renderDrawer }: { renderDrawer: () => ReactNode }) => {
   const drawerVisible = useContextStore(
     PreviewStoreContext,
-    (s) => s.drawerVisible
+    (s) => s.drawerVisible,
   );
 
   return drawerVisible ? (
@@ -172,7 +172,12 @@ export const PuckPreview = ({
   const [store] = useState(createStore(() => ({ drawerVisible: false })));
 
   return (
-    <Puck config={{}} data={{}} {...puckProps} iframe={{ enabled: false }}>
+    <Puck
+      config={{ components: {} }}
+      data={{}}
+      {...puckProps}
+      iframe={{ enabled: false }}
+    >
       <PreviewStoreContext value={store}>
         <PreviewFrame
           label={label}
@@ -233,15 +238,19 @@ export const ConfigPreview = ({
   children,
   componentConfig,
   label,
+  hideActionBar = true,
 }: {
   children?: ReactNode;
   componentConfig: Partial<ComponentConfig>;
   label: string;
+  hideActionBar?: boolean;
 }) => {
   return (
     <PuckPreview
       label={label}
-      config={{ components: { Example: { render: () => null, ...componentConfig } } }}
+      config={{
+        components: { Example: { render: () => null, ...componentConfig } },
+      }}
       data={{
         content: [
           {
@@ -269,7 +278,10 @@ export const ConfigPreview = ({
           }}
         />
       )}
-      overrides={{ actionBar: () => null, componentOverlay: () => null }}
+      overrides={{
+        ...(hideActionBar ? { actionBar: () => null } : {}),
+        componentOverlay: () => null,
+      }}
       style={{ padding: 0 }}
     >
       <ConfigPreviewInner componentConfig={componentConfig}>

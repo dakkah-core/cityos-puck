@@ -14,7 +14,7 @@ type MigrationOptions<UserConfig extends Config> = {
   migrateDynamicZonesForComponent?: {
     [ComponentName in keyof UserConfig["components"]]: (
       props: WithId<UserGenerics<UserConfig>["UserProps"][ComponentName]>,
-      zones: Record<string, Content>
+      zones: Record<string, Content>,
     ) => ComponentData["props"];
   };
 };
@@ -22,7 +22,7 @@ type MigrationOptions<UserConfig extends Config> = {
 type Migration = (
   props: Data & { [key: string]: any },
   config?: Config,
-  migrationOptions?: MigrationOptions<Config>
+  migrationOptions?: MigrationOptions<Config>,
 ) => Data;
 
 const migrations: Migration[] = [
@@ -32,7 +32,7 @@ const migrations: Migration[] = [
 
     if (Object.keys(data.root).length > 0 && !data.root.props) {
       console.warn(
-        "Migration applied: Root props moved from `root` to `root.props`."
+        "Migration applied: Root props moved from `root` to `root.props`.",
       );
 
       return {
@@ -96,13 +96,13 @@ const migrations: Migration[] = [
       (content) => content,
       (item) => {
         return updatedItems[item.props.id] ?? item;
-      }
+      },
     );
 
     deletedCompounds.forEach((zoneCompound) => {
       const [_, propName] = zoneCompound.split(":");
       console.log(
-        `✓ Success: Migrated "${zoneCompound}" from DropZone to slot field "${propName}"`
+        `✓ Success: Migrated "${zoneCompound}" from DropZone to slot field "${propName}"`,
       );
       delete updated.data.zones?.[zoneCompound];
     });
@@ -167,7 +167,7 @@ const migrations: Migration[] = [
       const [_, propName] = zoneCompound.split(":");
 
       throw new Error(
-        `Could not migrate DropZone "${zoneCompound}" to slot field. No slot exists with the name "${propName}".`
+        `Could not migrate DropZone "${zoneCompound}" to slot field. No slot exists with the name "${propName}".`,
       );
     });
 
@@ -180,10 +180,10 @@ const migrations: Migration[] = [
 export function migrate<UserConfig extends Config = Config>(
   data: Data,
   config?: UserConfig,
-  migrationOptions?: MigrationOptions<UserConfig>
+  migrationOptions?: MigrationOptions<UserConfig>,
 ): Data {
   return migrations?.reduce(
     (acc, migration) => migration(acc, config, migrationOptions),
-    data
+    data,
   ) as Data;
 }

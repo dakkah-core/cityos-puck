@@ -52,7 +52,7 @@ export type UseLinePlaceholderApi = {
  * @returns An object with methods to manage the line placeholder.
  */
 export const useLinePlaceholder = (
-  zoneStore: StoreApi<ZoneStore>
+  zoneStore: StoreApi<ZoneStore>,
 ): UseLinePlaceholderApi => {
   const appStore = useAppStoreApi();
   const scrollCleanup = useRef<(() => void) | null>(null);
@@ -75,14 +75,14 @@ export const useLinePlaceholder = (
 
       const pointerPosition = getFramePointer(
         zoneEl,
-        manager.dragOperation.position.current
+        manager.dragOperation.position.current,
       );
 
       const zoneContentIds = getZoneContentIds(appStore.getState().state, zone);
 
       return getNearestGapIndex(zoneEl, pointerPosition, zoneContentIds);
     },
-    [appStore]
+    [appStore],
   );
 
   const update = useCallback(
@@ -90,7 +90,7 @@ export const useLinePlaceholder = (
       // Find the first zone with a line placeholder
       const { previewIndex = {} } = zoneStore.getState();
       const linePreview = Object.values(previewIndex).find(
-        (preview) => preview?.linePlaceholder
+        (preview) => preview?.linePlaceholder,
       );
 
       if (!linePreview) return;
@@ -98,14 +98,14 @@ export const useLinePlaceholder = (
       // Find the zone element for the line placeholder
       // and check if the pointer is inside it.
       const zoneEl = getFrame()?.querySelector(
-        getZoneSelector(linePreview.zone)
+        getZoneSelector(linePreview.zone),
       );
 
       if (!zoneEl) return;
 
       const pointer = getFramePointer(
         zoneEl,
-        manager.dragOperation.position.current
+        manager.dragOperation.position.current,
       );
       const zoneRect = zoneEl.getBoundingClientRect();
       const insideZone =
@@ -120,7 +120,7 @@ export const useLinePlaceholder = (
       const nearestIndex = getNearestGapIndex(
         zoneEl,
         pointer,
-        getZoneContentIds(appStore.getState().state, linePreview.zone)
+        getZoneContentIds(appStore.getState().state, linePreview.zone),
       );
 
       if (nearestIndex !== null && nearestIndex !== linePreview.index) {
@@ -132,7 +132,7 @@ export const useLinePlaceholder = (
         });
       }
     },
-    [appStore, zoneStore]
+    [appStore, zoneStore],
   );
 
   const stopScrollTracking = useCallback(() => {
@@ -172,7 +172,7 @@ export const useLinePlaceholder = (
         });
       };
     },
-    [stopScrollTracking, update]
+    [stopScrollTracking, update],
   );
 
   useEffect(() => stopScrollTracking, [stopScrollTracking]);

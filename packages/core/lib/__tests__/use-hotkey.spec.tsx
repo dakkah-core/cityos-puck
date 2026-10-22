@@ -16,7 +16,7 @@ const keydown = (code: string, modifiers: Modifiers = {}) =>
       ctrlKey: false,
       shiftKey: false,
       ...modifiers,
-    })
+    }),
   );
 
 describe("monitorHotkeys", () => {

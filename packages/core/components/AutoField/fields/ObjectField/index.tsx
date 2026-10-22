@@ -25,7 +25,7 @@ export const ObjectField = ({
   const fieldStore = useFieldStoreApi();
 
   const canEdit = useAppStore(
-    (s) => s.permissions.getPermissions({ item: s.selectedItem }).edit
+    (s) => s.permissions.getPermissions({ item: s.selectedItem }).edit,
   );
 
   const getValue = () => getDeep(fieldStore.getState(), name) ?? {};

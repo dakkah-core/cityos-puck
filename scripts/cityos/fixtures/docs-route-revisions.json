@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "cityos.docs-maintained-route-revisions.v1",
+  "scope": "Explicit current executable-example source revisions; original migration observations remain immutable. No acceptance or release claim.",
+  "routes": [
+    {
+      "path": "docs/api-reference/components/drawer-item.mdx",
+      "originalMigrationSha256": "7d474835be3bb2e4795bc672f1e3faabab7413eef50c5dca0e06d788758f8a30",
+      "sha256": "0dc545cb1fa772516494e5d9ce12a046faa2d77fa309499bf035c2c31d711267",
+      "baselineRevision": "e83a997fb380e960e5f7be8eafc1e82188a8b09f",
+      "reason": "Align the executable documentation example with the current Puck API; verified by the owning docs TypeScript check."
+    },
+    {
+      "path": "docs/api-reference/components/inline-text-field.mdx",
+      "originalMigrationSha256": "60e3fc735c0d0be8d7e4ec315835064c6f04011cf198b48bfe2b6cf7742bcb0a",
+      "sha256": "56da8e70074c1ddc5f60cc1222a4c7e8bb04b31b5de9056c9ea72fd72a442590",
+      "baselineRevision": "e83a997fb380e960e5f7be8eafc1e82188a8b09f",
+      "reason": "Align the executable documentation example with the current Puck API; verified by the owning docs TypeScript check."
+    },
+    {
+      "path": "docs/api-reference/components/puck-components.mdx",
+      "originalMigrationSha256": "2fbb963a0be87d091ebb46277a898e5e271559023f92dcac12cd7db29f8c4849",
+      "sha256": "a1d071e45a38622014ee4a8c2456b47a30f8ef1d783bdde40cd0a45a2afd237b",
+      "baselineRevision": "e83a997fb380e960e5f7be8eafc1e82188a8b09f",
+      "reason": "Align the executable documentation example with the current Puck API; verified by the owning docs TypeScript check."
+    },
+    {
+      "path": "docs/api-reference/components/puck-fields.mdx",
+      "originalMigrationSha256": "ad1599bf40d952e3824fe99dac40bb61bfde873d465eba627df6655da830cbf3",
+      "sha256": "551614c9015d26736bbc2e66153a96cb058513c2f78e58ba679b8ed68c90982e",
+      "baselineRevision": "e83a997fb380e960e5f7be8eafc1e82188a8b09f",
+      "reason": "Align the executable documentation example with the current Puck API; verified by the owning docs TypeScript check."
+    },
+    {
+      "path": "docs/api-reference/components/puck-outline.mdx",
+      "originalMigrationSha256": "61c25b9d94453c15d7aab3d35451f66314bc71748181ad4646ff0e3b2e552ccc",
+      "sha256": "6e477428636083853380dc071138dfdfdbff98226ab91c449d8e36e1951769a2",
+      "baselineRevision": "e83a997fb380e960e5f7be8eafc1e82188a8b09f",
+      "reason": "Align the executable documentation example with the current Puck API; verified by the owning docs TypeScript check."
+    },
+    {
+      "path": "docs/api-reference/components/rich-text-menu.mdx",
+      "originalMigrationSha256": "a6cac897617eeb88152a91c68a6479ccf202bc981d38727f7ceb1ef73e5e7a1c",
+      "sha256": "f2b3c1b362259fe53940378a364177a87df4bf45dc4bbf9a6a8a12c22b448758",
+      "baselineRevision": "e83a997fb380e960e5f7be8eafc1e82188a8b09f",
+      "reason": "Align the executable documentation example with the current Puck API; verified by the owning docs TypeScript check."
+    },
+    {
+      "path": "docs/api-reference/configuration/component-config.mdx",
+      "originalMigrationSha256": "4c0f5273ef26aa3adfa9de0146615e6ea81c637000ee289cf410127f184bffd2",
+      "sha256": "f4e678f1da186b16506f23a7d95667ecdb8a84bf02740a7a738bdf8389295a7d",
+      "baselineRevision": "e83a997fb380e960e5f7be8eafc1e82188a8b09f",
+      "reason": "Align the executable documentation example with the current Puck API; verified by the owning docs TypeScript check."
+    },
+    {
+      "path": "docs/api-reference/fields/richtext.mdx",
+      "originalMigrationSha256": "2d804a63e9490083f43245f15a99cb4802544f8f2c85fd0abbe9220c8b0aeee3",
+      "sha256": "2ead0818bea79050d805e2e5f28160670d9ad33448fe348ad78300689d0fd5b9",
+      "baselineRevision": "e83a997fb380e960e5f7be8eafc1e82188a8b09f",
+      "reason": "Align the executable documentation example with the current Puck API; verified by the owning docs TypeScript check."
+    },
+    {
+      "path": "docs/integrating-puck/dynamic-fields.mdx",
+      "originalMigrationSha256": "8c33dd9804cbcc6083bd8d501641521b20e1373dd4da45eca320fa3d7cea69dc",
+      "sha256": "628deb0f48002200971cb9be12d04a3e8dbbba7fa2e1f8bf3c331199c64af123",
+      "baselineRevision": "e83a997fb380e960e5f7be8eafc1e82188a8b09f",
+      "reason": "Align the executable documentation example with the current Puck API; verified by the owning docs TypeScript check."
+    },
+    {
+      "path": "docs/integrating-puck/external-data-sources.mdx",
+      "originalMigrationSha256": "38b16781e63e77aca2d6673d073ba290f65b594e859c5d9e2f44a676ca445831",
+      "sha256": "2bd70d7d5a85e0a8a714cbf3d121212724c33cb16398761e2e500219ba69dc87",
+      "baselineRevision": "e83a997fb380e960e5f7be8eafc1e82188a8b09f",
+      "reason": "Align the executable documentation example with the current Puck API; verified by the owning docs TypeScript check."
+    },
+    {
+      "path": "docs/integrating-puck/multi-column-layouts.mdx",
+      "originalMigrationSha256": "48cbf074f1a8ad20607b967dd27e34bdcc0a857cc43f2a301e4f062979176e69",
+      "sha256": "d0db7778b4dde0369b77b7135fb8daffe0661f8a8d8457376e9556029b97ed67",
+      "baselineRevision": "e83a997fb380e960e5f7be8eafc1e82188a8b09f",
+      "reason": "Align the executable documentation example with the current Puck API; verified by the owning docs TypeScript check."
+    }
+  ]
+}

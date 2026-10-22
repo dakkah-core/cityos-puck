@@ -8,11 +8,11 @@ import { Field, Fields } from "../../types";
  */
 export function getFieldByPath(
   path: string,
-  fields?: Fields
+  fields?: Fields,
 ): Field | undefined {
   if (typeof path !== "string") {
     throw new Error(
-      `Can't get field definition for path (${path}): Path should be a string`
+      `Can't get field definition for path (${path}): Path should be a string`,
     );
   }
 

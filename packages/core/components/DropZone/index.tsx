@@ -92,7 +92,7 @@ const InsertPreview = ({
 };
 
 export const DropZoneEditPure = <ComponentType extends ElementType = "div">(
-  props: DropZoneProps<ComponentType>
+  props: DropZoneProps<ComponentType>,
 ) => <DropZoneEdit {...(props as DropZoneProps)} />;
 
 const DropZoneChild = ({
@@ -122,11 +122,11 @@ const DropZoneChild = ({
   const nodeProps = useAppStore(
     useShallow((s) => {
       return s.state.indexes.nodes[componentId]?.flatData.props;
-    })
+    }),
   );
 
   const nodeType = useAppStore(
-    (s) => s.state.indexes.nodes[componentId]?.data.type
+    (s) => s.state.indexes.nodes[componentId]?.data.type,
   );
 
   const appStore = useAppStoreApi();
@@ -156,7 +156,7 @@ const DropZoneChild = ({
   }, [appStore, componentId, zoneCompound, nodeType, nodeProps]);
 
   const componentConfig = useAppStore((s) =>
-    item?.type ? s.config.components[item.type] : null
+    item?.type ? s.config.components[item.type] : null,
   );
 
   const puckProps: PuckContext = useMemo(
@@ -166,15 +166,15 @@ const DropZoneChild = ({
       dragRef: null,
       metadata: { ...metadata, ...componentConfig?.metadata },
     }),
-    [metadata, componentConfig?.metadata]
+    [metadata, componentConfig?.metadata],
   );
 
   const overrides = useAppStore((s) => s.overrides);
   const isLoading = useAppStore(
-    (s) => s.componentState[componentId]?.loadingCount > 0
+    (s) => s.componentState[componentId]?.loadingCount > 0,
   );
   const isSelected = useAppStore(
-    (s) => s.selectedItem?.props.id === componentId || false
+    (s) => s.selectedItem?.props.id === componentId || false,
   );
 
   const componentLabel = useMessage("label-component");
@@ -191,12 +191,12 @@ const DropZoneChild = ({
       puck: puckProps,
       editMode: true, // DEPRECATED
     }),
-    [componentConfig?.defaultProps, item?.props, puckProps]
+    [componentConfig?.defaultProps, item?.props, puckProps],
   );
 
   const defaultedNode = useMemo(
     () => ({ type: item?.type ?? nodeType, props: defaultsProps }),
-    [item?.type, nodeType, defaultsProps]
+    [item?.type, nodeType, defaultsProps],
   );
 
   const transformedProps = useEditorProps({ component: defaultedNode });
@@ -296,7 +296,7 @@ export const DropZoneEdit = forwardRef<HTMLDivElement, DropZoneProps>(
     } = ctx ?? {};
 
     const path = useAppStore(
-      useShallow((s) => (areaId ? s.state.indexes.nodes[areaId]?.path : null))
+      useShallow((s) => (areaId ? s.state.indexes.nodes[areaId]?.path : null)),
     );
 
     let zoneCompound = rootDroppableId;
@@ -314,18 +314,18 @@ export const DropZoneEdit = forwardRef<HTMLDivElement, DropZoneProps>(
 
     const inNextDeepestArea = useContextStore(
       ZoneStoreContext,
-      (s) => s.nextAreaDepthIndex[areaId || ""]
+      (s) => s.nextAreaDepthIndex[areaId || ""],
     );
 
     const zoneContentIds = useAppStore(
       useShallow((s) => {
         return s.state.indexes.zones[zoneCompound]?.contentIds;
-      })
+      }),
     );
     const zoneType = useAppStore(
       useShallow((s) => {
         return s.state.indexes.zones[zoneCompound]?.type;
-      })
+      }),
     );
 
     // Register zone on mount
@@ -341,7 +341,7 @@ export const DropZoneEdit = forwardRef<HTMLDivElement, DropZoneProps>(
       if (zoneType === "dropzone") {
         if (zoneCompound !== rootDroppableId) {
           console.warn(
-            "DropZones have been deprecated in favor of slot fields and will be removed in a future version of Puck. Please see the migration guide: https://www.puckeditor.com/docs/guides/migrations/dropzones-to-slots"
+            "DropZones have been deprecated in favor of slot fields and will be removed in a future version of Puck. Please see the migration guide: https://www.puckeditor.com/docs/guides/migrations/dropzones-to-slots",
           );
         }
       }
@@ -356,7 +356,7 @@ export const DropZoneEdit = forwardRef<HTMLDivElement, DropZoneProps>(
     const acceptsTarget = useCallback(
       (componentType: string | null | undefined) =>
         isComponentAllowed(componentType, { allow, disallow }),
-      [allow, disallow]
+      [allow, disallow],
     );
 
     const targetAccepted = useContextStore(ZoneStoreContext, (s) => {
@@ -393,7 +393,7 @@ export const DropZoneEdit = forwardRef<HTMLDivElement, DropZoneProps>(
 
     const [contentIdsWithPreview, preview] = useContentIdsWithPreview(
       contentIds,
-      zoneCompound
+      zoneCompound,
     );
 
     // contentIdsWithPreview counts a non-line preview as one injected
@@ -431,7 +431,7 @@ export const DropZoneEdit = forwardRef<HTMLDivElement, DropZoneProps>(
     const { ref: dropRef } = useDroppable(droppableConfig);
 
     const isAreaSelected = useAppStore(
-      (s) => s?.selectedItem && areaId === s?.selectedItem.props.id
+      (s) => s?.selectedItem && areaId === s?.selectedItem.props.id,
     );
 
     const [dragAxis] = useDragAxis(ref, collisionAxis);
@@ -446,11 +446,11 @@ export const DropZoneEdit = forwardRef<HTMLDivElement, DropZoneProps>(
       (node: any) => {
         assignRefs<any>([ref, dropRef, userRef], node);
       },
-      [dropRef]
+      [dropRef],
     );
 
     const _experimentalVirtualization = useAppStore(
-      (s) => s._experimentalVirtualization
+      (s) => s._experimentalVirtualization,
     );
 
     const El = as ?? "div";
@@ -520,7 +520,7 @@ export const DropZoneEdit = forwardRef<HTMLDivElement, DropZoneProps>(
         )}
       </El>
     );
-  }
+  },
 );
 
 const DropZoneRenderItem = ({
@@ -547,7 +547,7 @@ const DropZoneRenderItem = ({
         fieldTransforms={fieldTransforms}
       />
     ),
-    fieldTransforms
+    fieldTransforms,
   );
 
   const nextContextValue = useMemo<DropZoneContext>(
@@ -555,7 +555,7 @@ const DropZoneRenderItem = ({
       areaId: renderProps.id,
       depth: 1,
     }),
-    [renderProps.id]
+    [renderProps.id],
   );
 
   return (
@@ -573,7 +573,7 @@ const DropZoneRenderItem = ({
 };
 
 export const DropZoneRenderPure = <ComponentType extends ElementType = "div">(
-  props: DropZoneProps<ComponentType>
+  props: DropZoneProps<ComponentType>,
 ) => <DropZoneRender {...(props as DropZoneProps)} />;
 
 const DropZoneRender = forwardRef<HTMLDivElement, DropZoneProps>(
@@ -629,11 +629,11 @@ const DropZoneRender = forwardRef<HTMLDivElement, DropZoneProps>(
         })}
       </El>
     );
-  }
+  },
 );
 
 export const DropZonePure = <ComponentType extends ElementType = "div">(
-  props: DropZoneProps<ComponentType>
+  props: DropZoneProps<ComponentType>,
 ) => <DropZone {...props} />;
 
 const DropZoneImpl = forwardRef<HTMLDivElement, DropZoneProps>(
@@ -653,7 +653,7 @@ const DropZoneImpl = forwardRef<HTMLDivElement, DropZoneProps>(
         <DropZoneRender {...props} ref={ref} />
       </>
     );
-  }
+  },
 );
 
 // Public DropZone component.
@@ -662,7 +662,7 @@ const DropZoneImpl = forwardRef<HTMLDivElement, DropZoneProps>(
 //
 // We need a cast because `forwardRef` doesn't support generic parameters.
 export const DropZone = DropZoneImpl as <
-  ComponentType extends ElementType = "div"
+  ComponentType extends ElementType = "div",
 >(
-  props: DropZoneProps<ComponentType> & { ref?: Ref<HTMLDivElement> }
+  props: DropZoneProps<ComponentType> & { ref?: Ref<HTMLDivElement> },
 ) => ReactElement | null;

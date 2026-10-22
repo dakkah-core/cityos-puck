@@ -10,7 +10,7 @@ import {
 const makeNode = (
   id: string,
   type: string,
-  path: string[] = []
+  path: string[] = [],
 ): PuckNodeData => ({
   data: { type, props: { id } },
   flatData: { type, props: { id } },
@@ -56,11 +56,23 @@ describe("outline compute", () => {
   describe("zoneAcceptsComponent", () => {
     it("applies the zone's config constraints to the dragged type", () => {
       expect(
-        zoneAcceptsComponent(new Map(), "grid-1:items", "Card", config, indexes)
+        zoneAcceptsComponent(
+          new Map(),
+          "grid-1:items",
+          "Card",
+          config,
+          indexes,
+        ),
       ).toBe(true);
 
       expect(
-        zoneAcceptsComponent(new Map(), "grid-1:items", "Grid", config, indexes)
+        zoneAcceptsComponent(
+          new Map(),
+          "grid-1:items",
+          "Grid",
+          config,
+          indexes,
+        ),
       ).toBe(false);
 
       expect(
@@ -69,8 +81,8 @@ describe("outline compute", () => {
           "grid-1:header",
           "Heading",
           config,
-          indexes
-        )
+          indexes,
+        ),
       ).toBe(true);
 
       expect(
@@ -79,8 +91,8 @@ describe("outline compute", () => {
           "grid-1:header",
           "Card",
           config,
-          indexes
-        )
+          indexes,
+        ),
       ).toBe(false);
     });
 
@@ -91,7 +103,7 @@ describe("outline compute", () => {
 
       // Cache is false even though config sets it as allowed
       expect(
-        zoneAcceptsComponent(cache, "grid-1:items", "Card", config, indexes)
+        zoneAcceptsComponent(cache, "grid-1:items", "Card", config, indexes),
       ).toBe(false);
     });
   });
@@ -100,19 +112,19 @@ describe("outline compute", () => {
     it("returns true when at least one child zone accepts the type", () => {
       // items accepts Card even though header rejects it
       expect(
-        itemAcceptsComponent(new Map(), "grid-1", "Card", config, indexes)
+        itemAcceptsComponent(new Map(), "grid-1", "Card", config, indexes),
       ).toBe(true);
     });
 
     it("returns false when every child zone rejects the type", () => {
       expect(
-        itemAcceptsComponent(new Map(), "grid-1", "Grid", config, indexes)
+        itemAcceptsComponent(new Map(), "grid-1", "Grid", config, indexes),
       ).toBe(false);
     });
 
     it("returns false for items without child zones", () => {
       expect(
-        itemAcceptsComponent(new Map(), "card-1", "Card", config, indexes)
+        itemAcceptsComponent(new Map(), "card-1", "Card", config, indexes),
       ).toBe(false);
     });
   });
@@ -120,23 +132,23 @@ describe("outline compute", () => {
   describe("isSourceOrDescendantOfSource", () => {
     it("matches the source itself", () => {
       expect(
-        isSourceOrDescendantOfSource(new Map(), "grid-1", "grid-1", nodes)
+        isSourceOrDescendantOfSource(new Map(), "grid-1", "grid-1", nodes),
       ).toBe(true);
     });
 
     it("matches descendants of the source via their path", () => {
       expect(
-        isSourceOrDescendantOfSource(new Map(), "card-1", "grid-1", nodes)
+        isSourceOrDescendantOfSource(new Map(), "card-1", "grid-1", nodes),
       ).toBe(true);
     });
 
     it("does not match siblings or ancestors", () => {
       expect(
-        isSourceOrDescendantOfSource(new Map(), "card-2", "grid-1", nodes)
+        isSourceOrDescendantOfSource(new Map(), "card-2", "grid-1", nodes),
       ).toBe(false);
 
       expect(
-        isSourceOrDescendantOfSource(new Map(), "grid-1", "card-1", nodes)
+        isSourceOrDescendantOfSource(new Map(), "grid-1", "card-1", nodes),
       ).toBe(false);
     });
   });

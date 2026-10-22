@@ -104,18 +104,18 @@ export const expectIndexed = (
   item: ComponentData | undefined,
   path: string[],
   index: number,
-  _config: Config = config
+  _config: Config = config,
 ) => {
   if (!item) return;
 
   const zoneCompound = path[path.length - 1];
 
   expect(state.indexes.zones[zoneCompound].contentIds[index]).toEqual(
-    item.props.id
+    item.props.id,
   );
   expect(state.indexes.nodes[item.props.id].data).toEqual(item);
   expect(state.indexes.nodes[item.props.id].flatData).toEqual(
-    flattenNode(item, _config)
+    flattenNode(item, _config),
   );
   expect(state.indexes.nodes[item.props.id].path).toEqual(path);
 };
@@ -124,7 +124,7 @@ export const executeSequenceFactory =
   (reducer: Reducer<any, any>) =>
   <UserData extends Data>(
     initialState: PrivateAppState<UserData>,
-    actions: ((currentState: PrivateAppState<UserData>) => PuckAction)[]
+    actions: ((currentState: PrivateAppState<UserData>) => PuckAction)[],
   ) => {
     let currentState: PrivateAppState<UserData> = initialState;
 
@@ -159,7 +159,7 @@ export const testSetup = () => {
 
   const executeSequence = (
     initialState: PrivateAppState<UserData>,
-    actions: ((currentState: PrivateAppState<UserData>) => PuckAction)[]
+    actions: ((currentState: PrivateAppState<UserData>) => PuckAction)[],
   ) => {
     let currentState: PrivateAppState<UserData> = initialState;
 
@@ -168,7 +168,7 @@ export const testSetup = () => {
 
       currentState = _reducer(
         currentState,
-        action
+        action,
       ) as PrivateAppState<UserData>;
     });
 

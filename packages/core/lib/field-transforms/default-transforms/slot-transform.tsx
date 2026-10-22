@@ -6,8 +6,8 @@ import { FieldTransforms } from "../../../types/API/FieldTransforms";
 export const getSlotTransform = (
   renderSlotEdit: (dzProps: DropZoneProps & { content: Content }) => ReactNode,
   renderSlotRender: (
-    dzProps: DropZoneProps & { content: Content }
-  ) => ReactNode = renderSlotEdit
+    dzProps: DropZoneProps & { content: Content },
+  ) => ReactNode = renderSlotEdit,
 ): FieldTransforms => ({
   slot: ({ value: content, propName, field, isReadOnly }) => {
     const render = isReadOnly ? renderSlotRender : renderSlotEdit;

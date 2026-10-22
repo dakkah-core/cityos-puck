@@ -7,11 +7,11 @@ import { walkAppState } from "../../lib/data/walk-app-state";
 export const setDataAction = <UserData extends Data>(
   state: PrivateAppState<UserData>,
   action: SetDataAction,
-  appStore: AppStore
+  appStore: AppStore,
 ): PrivateAppState<UserData> => {
   if (typeof action.data === "object") {
     console.warn(
-      "`setData` is expensive and may cause unnecessary re-renders. Consider using a more atomic action instead."
+      "`setData` is expensive and may cause unnecessary re-renders. Consider using a more atomic action instead.",
     );
 
     return walkAppState(
@@ -22,7 +22,7 @@ export const setDataAction = <UserData extends Data>(
           ...action.data,
         },
       },
-      appStore.config
+      appStore.config,
     );
   }
 
@@ -34,6 +34,6 @@ export const setDataAction = <UserData extends Data>(
         ...action.data(state.data),
       },
     },
-    appStore.config
+    appStore.config,
   );
 };

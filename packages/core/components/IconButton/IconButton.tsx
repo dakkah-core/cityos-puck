@@ -36,7 +36,7 @@ export const IconButton = forwardRef<
       suppressHydrationWarning,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const [loading, setLoading] = useState(false);
 
@@ -78,7 +78,7 @@ export const IconButton = forwardRef<
         )}
       </ElementType>
     );
-  }
+  },
 );
 
 IconButton.displayName = "IconButton";

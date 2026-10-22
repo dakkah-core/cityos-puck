@@ -5,7 +5,7 @@ import { walkTree } from "./walk-tree";
 export const populateIds = (
   data: ComponentData,
   config: Config,
-  override: boolean = false
+  override: boolean = false,
 ): ComponentData => {
   const id = generateId(data.type);
 
@@ -23,6 +23,6 @@ export const populateIds = (
           ...item,
           props: override ? { ...item.props, id } : { id, ...item.props },
         };
-      })
+      }),
   );
 };

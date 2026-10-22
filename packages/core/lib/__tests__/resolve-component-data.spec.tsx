@@ -119,7 +119,7 @@ describe("resolveComponentData", () => {
   it("should run resolvers for every node in the tree", async () => {
     const { node: newRoot, didChange } = await resolveComponentData(
       toComponent(appStore.getState().state.data.root),
-      appStore.getState().config
+      appStore.getState().config,
     );
 
     expect(newRoot.props?.title).toBe("Resolved title");
@@ -155,7 +155,7 @@ describe("resolveComponentData", () => {
           },
         },
       }),
-      appStore.getState().config
+      appStore.getState().config,
     );
 
     expect(newRoot.props?.title).toBe("Resolved title");
@@ -169,12 +169,12 @@ describe("resolveComponentData", () => {
   it("should not re-run when node doesn't change", async () => {
     await resolveComponentData(
       toComponent(appStore.getState().state.data.root),
-      appStore.getState().config
+      appStore.getState().config,
     );
 
     const { node: newRoot, didChange } = await resolveComponentData(
       toComponent(appStore.getState().state.data.root),
-      appStore.getState().config
+      appStore.getState().config,
     );
 
     expect(rootResolveData).toHaveBeenCalledTimes(1);
@@ -190,7 +190,7 @@ describe("resolveComponentData", () => {
     // When: ---------------
     await resolveComponentData(
       toComponent(appStore.getState().state.data.root),
-      appStore.getState().config
+      appStore.getState().config,
     );
 
     const { node: newRoot, didChange } = await resolveComponentData(
@@ -199,7 +199,7 @@ describe("resolveComponentData", () => {
       undefined,
       undefined,
       undefined,
-      "force"
+      "force",
     );
 
     // Then: ---------------
@@ -239,7 +239,7 @@ describe("resolveComponentData", () => {
             },
           ],
         },
-      }
+      },
     );
 
     const movedResolution = await resolveComponentData(
@@ -263,7 +263,7 @@ describe("resolveComponentData", () => {
             },
           ],
         },
-      }
+      },
     );
 
     // Then: ---------------
@@ -329,7 +329,7 @@ describe("resolveComponentData", () => {
       undefined,
       undefined,
       "load",
-      parent
+      parent,
     );
 
     const movedResolution = await resolveComponentData(
@@ -342,7 +342,7 @@ describe("resolveComponentData", () => {
       undefined,
       undefined,
       "move",
-      parent
+      parent,
     );
 
     // Then: ---------------
@@ -391,7 +391,7 @@ describe("resolveComponentData", () => {
       undefined,
       "force",
       null,
-      root
+      root,
     );
 
     // Then: ---------------
@@ -423,7 +423,7 @@ describe("resolveComponentData", () => {
             },
           ],
         },
-      }
+      },
     );
 
     const insertedResolution = await resolveComponentData(
@@ -447,7 +447,7 @@ describe("resolveComponentData", () => {
             },
           ],
         },
-      }
+      },
     );
 
     // Then: ---------------

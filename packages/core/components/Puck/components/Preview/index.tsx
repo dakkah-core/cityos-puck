@@ -44,7 +44,7 @@ const useBubbleIframeEvents = (ref: RefObject<HTMLIFrameElement | null>) => {
           handlePointerMove,
           {
             capture: true,
-          }
+          },
         );
       };
 
@@ -52,7 +52,7 @@ const useBubbleIframeEvents = (ref: RefObject<HTMLIFrameElement | null>) => {
         // Clean up event listeners
         iframe.contentDocument?.removeEventListener(
           "pointermove",
-          handlePointerMove
+          handlePointerMove,
         );
       };
 

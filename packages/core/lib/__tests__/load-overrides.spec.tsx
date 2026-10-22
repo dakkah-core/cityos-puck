@@ -26,7 +26,7 @@ describe("load-overrides", () => {
     });
 
     expect(loaded.header!({ actions: "", children: "0" })).toBe(
-      "0 | 1 | 2 | 3"
+      "0 | 1 | 2 | 3",
     );
   });
 
@@ -55,7 +55,7 @@ describe("load-overrides", () => {
     });
 
     expect(loaded.fieldTypes!.text!({ children: "0" } as any)).toBe(
-      "0 | 1 | 2 | 3"
+      "0 | 1 | 2 | 3",
     );
   });
 
@@ -121,7 +121,7 @@ describe("load-overrides", () => {
     });
 
     expect(loaded.fieldTypes!.text!({ children: "0" } as any)).toBe(
-      "0 | 1 | 2 | 3"
+      "0 | 1 | 2 | 3",
     );
   });
 
@@ -159,7 +159,7 @@ describe("load-overrides", () => {
 
     expect(loaded.fieldTypes!.text).toBeNull();
     expect(loaded.fieldTypes!.number!({ children: "0" } as any)).toBe(
-      "Number: 0 | 1 | 2"
+      "Number: 0 | 1 | 2",
     );
   });
 

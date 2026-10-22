@@ -116,7 +116,7 @@ describe("walk-tree", () => {
           type: "Comp",
         },
       ],
-      { parentId: "another-id", propName: "slotA" }
+      { parentId: "another-id", propName: "slotA" },
     );
 
     expect(mockMap).toHaveBeenCalledWith(
@@ -131,7 +131,7 @@ describe("walk-tree", () => {
           type: "Comp",
         },
       ],
-      { parentId: "another-id", propName: "slotB" }
+      { parentId: "another-id", propName: "slotB" },
     );
   });
 
@@ -157,7 +157,7 @@ describe("walk-tree", () => {
           type: "Comp",
         },
       ],
-      { parentId: "another-id", propName: "slotA" }
+      { parentId: "another-id", propName: "slotA" },
     );
 
     expect(mockMap).toHaveBeenCalledWith(
@@ -172,7 +172,7 @@ describe("walk-tree", () => {
           type: "Comp",
         },
       ],
-      { parentId: "another-id", propName: "slotB" }
+      { parentId: "another-id", propName: "slotB" },
     );
   });
 
@@ -181,7 +181,7 @@ describe("walk-tree", () => {
       content.map((item) => ({
         ...item,
         props: { ...item.props, example: "Hello, world" },
-      }))
+      })),
     );
 
     expect(data).toMatchInlineSnapshot(`
@@ -262,7 +262,7 @@ describe("walk-tree", () => {
       content.map((item) => ({
         ...item,
         props: { ...item.props, example: "Hello, world" },
-      }))
+      })),
     );
 
     expect(data).toMatchInlineSnapshot(`
@@ -362,7 +362,7 @@ describe("walk-tree", () => {
           type: "Comp",
         },
       ],
-      { parentId: "my-component", propName: "array[0].arraySlot" }
+      { parentId: "my-component", propName: "array[0].arraySlot" },
     );
   });
 

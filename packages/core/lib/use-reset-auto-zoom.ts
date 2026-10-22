@@ -21,7 +21,7 @@ export const useResetAutoZoom = (frameRef: RefObject<HTMLElement | null>) => {
 
     if (frameRef.current) {
       setZoomConfig(
-        getZoomConfig(newViewports?.current, frameRef.current, zoomConfig.zoom)
+        getZoomConfig(newViewports?.current, frameRef.current, zoomConfig.zoom),
       );
     }
   };

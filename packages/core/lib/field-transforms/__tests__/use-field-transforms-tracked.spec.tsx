@@ -58,7 +58,7 @@ describe("useFieldTransformsTracked", () => {
 
     const { result } = renderHook(
       ({ config }) => useFieldTransformsTracked(config, item, transforms),
-      { initialProps: { config: makeConfig() } }
+      { initialProps: { config: makeConfig() } },
     );
 
     expect(result.current.body).toBe("transformed:body:<p>Hello</p>");
@@ -71,7 +71,7 @@ describe("useFieldTransformsTracked", () => {
 
     const { result, rerender } = renderHook(
       ({ item }) => useFieldTransformsTracked(config, item, transforms),
-      { initialProps: { item: makeItem({ body: "<p>Hello</p>" }) } }
+      { initialProps: { item: makeItem({ body: "<p>Hello</p>" }) } },
     );
 
     rerender({ item: makeItem({ body: "<p>Edited</p>" }) });
@@ -87,7 +87,7 @@ describe("useFieldTransformsTracked", () => {
 
     const { result, rerender } = renderHook(
       ({ item }) => useFieldTransformsTracked(config, item, transforms),
-      { initialProps: { item: makeItem(props) } }
+      { initialProps: { item: makeItem(props) } },
     );
 
     // `other` keeps the same value identity; only `body` changes
@@ -116,9 +116,9 @@ describe("useFieldTransformsTracked", () => {
           item,
           transforms,
           undefined,
-          forceReadOnly
+          forceReadOnly,
         ),
-      { initialProps: { forceReadOnly: true } }
+      { initialProps: { forceReadOnly: true } },
     );
 
     expect(result.current.body).toBe("transformed:body:<p>Hello</p>:true");
@@ -141,7 +141,7 @@ describe("useFieldTransformsTracked", () => {
     const item = makeItem({ body: "Hello" }); // no slot props
 
     renderHook(() =>
-      useFieldTransformsTracked(makeSlotConfig(), item, transforms)
+      useFieldTransformsTracked(makeSlotConfig(), item, transforms),
     );
 
     expect(slotCalls).toHaveLength(0);
@@ -160,7 +160,7 @@ describe("useFieldTransformsTracked", () => {
 
     const { rerender } = renderHook(
       ({ item }) => useFieldTransformsTracked(config, item, transforms),
-      { initialProps: { item: makeItem({ slotA: [] }) } } // one slot set, slotB unset
+      { initialProps: { item: makeItem({ slotA: [] }) } }, // one slot set, slotB unset
     );
 
     // The first walk defaults the unset slotB, so it is walked too

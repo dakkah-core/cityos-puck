@@ -13,7 +13,7 @@ function resetStores() {
     {
       ...appStore.getInitialState(),
     },
-    true
+    true,
   );
 }
 
@@ -105,7 +105,7 @@ describe("permissions slice", () => {
     });
 
     renderHook(() =>
-      useRegisterPermissionsSlice(appStore, { globalTest: true })
+      useRegisterPermissionsSlice(appStore, { globalTest: true }),
     );
 
     await act(async () => {
@@ -145,7 +145,7 @@ describe("permissions slice", () => {
     });
 
     renderHook(() =>
-      useRegisterPermissionsSlice(appStore, { globalTest: true })
+      useRegisterPermissionsSlice(appStore, { globalTest: true }),
     );
 
     await act(async () => {
@@ -160,7 +160,7 @@ describe("permissions slice", () => {
   describe("getPermissions()", () => {
     it("returns global permissions by default", () => {
       renderHook(() =>
-        useRegisterPermissionsSlice(appStore, { testGlobal: true })
+        useRegisterPermissionsSlice(appStore, { testGlobal: true }),
       );
 
       const perms = appStore.getState().permissions.getPermissions();
@@ -181,7 +181,7 @@ describe("permissions slice", () => {
       });
 
       renderHook(() =>
-        useRegisterPermissionsSlice(appStore, { fromGlobal: true })
+        useRegisterPermissionsSlice(appStore, { fromGlobal: true }),
       );
 
       const perms = appStore.getState().permissions.getPermissions({
@@ -202,7 +202,7 @@ describe("permissions slice", () => {
       });
 
       renderHook(() =>
-        useRegisterPermissionsSlice(appStore, { fromGlobal: true })
+        useRegisterPermissionsSlice(appStore, { fromGlobal: true }),
       );
 
       const perms = appStore
@@ -240,12 +240,12 @@ describe("permissions slice", () => {
               content: [{ type: "MyComponent", props: { id: "comp-1" } }],
             },
           },
-          config
+          config,
         ),
       });
 
       renderHook(() =>
-        useRegisterPermissionsSlice(appStore, { globalTest: true })
+        useRegisterPermissionsSlice(appStore, { globalTest: true }),
       );
 
       await act(async () => {
@@ -274,7 +274,7 @@ describe("permissions slice", () => {
             insert: true,
           },
           parent: { type: "root", props: { id: "root" } },
-        }
+        },
       );
 
       // Confirm that getPermissions merges in resolved perms
@@ -310,12 +310,12 @@ describe("permissions slice", () => {
               content: [{ type: "MyComponent", props: { id: "comp-1" } }],
             },
           },
-          config
+          config,
         ),
       });
 
       renderHook(() =>
-        useRegisterPermissionsSlice(appStore, { globalTest: true })
+        useRegisterPermissionsSlice(appStore, { globalTest: true }),
       );
 
       await act(async () => {
@@ -359,7 +359,7 @@ describe("permissions slice", () => {
             insert: true,
           },
           parent: { type: "root", props: { id: "root" } },
-        }
+        },
       );
 
       // Confirm that getPermissions merges in resolved perms
@@ -397,7 +397,7 @@ describe("permissions slice", () => {
       });
 
       renderHook(() =>
-        useRegisterPermissionsSlice(appStore, { testGlobal: true })
+        useRegisterPermissionsSlice(appStore, { testGlobal: true }),
       );
 
       // Initial
@@ -483,27 +483,27 @@ describe("permissions slice", () => {
             ...defaultAppState,
             data: initialData,
           },
-          config
+          config,
         ),
       });
 
       // When: --------------
       renderHook(() =>
-        useRegisterPermissionsSlice(appStore, { testGlobal: true })
+        useRegisterPermissionsSlice(appStore, { testGlobal: true }),
       );
 
       // Wait for the initial resolvePermissions promises to resolve
       await waitFor(
-        () => Object.keys(appStore.getState().permissions.cache).length > 0
+        () => Object.keys(appStore.getState().permissions.cache).length > 0,
       );
 
       // Then: --------------
       expect(resolvePermissions).toHaveBeenCalledTimes(1);
       expect(resolvePermissions.mock.calls[0][1].parent).toEqual(
-        parentComponent
+        parentComponent,
       );
       expect(resolvePermissions.mock.results[0].value).toEqual(
-        parentPermissions
+        parentPermissions,
       );
     });
 
@@ -556,18 +556,18 @@ describe("permissions slice", () => {
             ...defaultAppState,
             data: initialData,
           },
-          config
+          config,
         ),
       });
 
       // When: --------------
       renderHook(() =>
-        useRegisterPermissionsSlice(appStore, { testGlobal: true })
+        useRegisterPermissionsSlice(appStore, { testGlobal: true }),
       );
 
       // Wait for the initial resolvePermissions promises to resolve
       await waitFor(
-        () => Object.keys(appStore.getState().permissions.cache).length > 0
+        () => Object.keys(appStore.getState().permissions.cache).length > 0,
       );
 
       await act(async () => {
@@ -586,10 +586,10 @@ describe("permissions slice", () => {
       // Then: --------------
       expect(resolvePermissions).toHaveBeenCalledTimes(2);
       expect(resolvePermissions.mock.calls[0][1].parent).toEqual(
-        parentComponent
+        parentComponent,
       );
       expect(resolvePermissions.mock.results[0].value).toEqual(
-        parentPermissions
+        parentPermissions,
       );
 
       expect(resolvePermissions.mock.calls[1][1].parent).toEqual({
@@ -597,7 +597,7 @@ describe("permissions slice", () => {
         props: { id: "root" },
       });
       expect(resolvePermissions.mock.results[1].value).toEqual(
-        outsideParentPermissions
+        outsideParentPermissions,
       );
     });
 
@@ -654,18 +654,18 @@ describe("permissions slice", () => {
             ...defaultAppState,
             data: initialData,
           },
-          config
+          config,
         ),
       });
 
       // When: --------------
       renderHook(() =>
-        useRegisterPermissionsSlice(appStore, { testGlobal: true })
+        useRegisterPermissionsSlice(appStore, { testGlobal: true }),
       );
 
       // Wait for the initial resolvePermissions promises to resolve
       await waitFor(
-        () => Object.keys(appStore.getState().permissions.cache).length > 0
+        () => Object.keys(appStore.getState().permissions.cache).length > 0,
       );
 
       await act(async () => {
@@ -685,17 +685,17 @@ describe("permissions slice", () => {
       expect(resolvePermissions).toHaveBeenCalledTimes(2);
       // child-1
       expect(resolvePermissions.mock.calls[0][1].parent).toEqual(
-        parentComponent
+        parentComponent,
       );
       expect(resolvePermissions.mock.results[0].value).toEqual(
-        parentPermissions
+        parentPermissions,
       );
       // child-2
       expect(resolvePermissions.mock.calls[1][1].parent).toEqual(
-        parentComponent
+        parentComponent,
       );
       expect(resolvePermissions.mock.results[1].value).toEqual(
-        parentPermissions
+        parentPermissions,
       );
     });
   });
@@ -728,7 +728,7 @@ describe("permissions slice", () => {
       });
 
       renderHook(() =>
-        useRegisterPermissionsSlice(appStore, { testGlobal: true })
+        useRegisterPermissionsSlice(appStore, { testGlobal: true }),
       );
 
       // Initial
@@ -770,7 +770,7 @@ describe("permissions slice", () => {
       });
 
       renderHook(() =>
-        useRegisterPermissionsSlice(appStore, { fromGlobal: true })
+        useRegisterPermissionsSlice(appStore, { fromGlobal: true }),
       );
 
       // config is already set before hooking, so do a manual "change" to trigger subscription

@@ -47,7 +47,7 @@ const Item = ({
         fieldTransforms={fieldTransforms}
       />
     ),
-    fieldTransforms
+    fieldTransforms,
   );
 
   return (
@@ -102,5 +102,5 @@ export const SlotRender = forwardRef<HTMLDivElement, SlotRenderProps>(
         })}
       </El>
     );
-  }
+  },
 );

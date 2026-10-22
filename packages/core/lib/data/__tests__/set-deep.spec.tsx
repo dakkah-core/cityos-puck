@@ -27,8 +27,8 @@ describe("setDeep", () => {
         setDeep(
           { a: { b: [{ c: { d: 1 } }, { c: { d: 2 } }] } },
           "a.b[1].c.d",
-          9
-        )
+          9,
+        ),
       ).toEqual({ a: { b: [{ c: { d: 1 } }, { c: { d: 9 } }] } });
     });
 

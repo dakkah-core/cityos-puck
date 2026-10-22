@@ -6,7 +6,7 @@ export function timeout(callback: () => void, duration: number): () => void {
 
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
-  limit: number
+  limit: number,
 ): (...args: Parameters<T>) => void {
   const time = () => performance.now();
   let cancel: (() => void) | undefined;
@@ -23,10 +23,13 @@ export function throttle<T extends (...args: any[]) => any>(
     } else {
       // Otherwise, schedule it to run after the remaining time
       cancel?.(); // Cancel any previously scheduled call
-      cancel = timeout(() => {
-        func.apply(context, args);
-        lastRan = time();
-      }, limit - (now - lastRan));
+      cancel = timeout(
+        () => {
+          func.apply(context, args);
+          lastRan = time();
+        },
+        limit - (now - lastRan),
+      );
     }
   };
 }

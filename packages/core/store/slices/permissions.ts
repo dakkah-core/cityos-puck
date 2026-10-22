@@ -7,7 +7,7 @@ import { makeStatePublic } from "../../lib/data/make-state-public";
 
 type PermissionsArgs<
   UserConfig extends Config = Config,
-  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
 > = {
   item?: G["UserComponentData"] | null;
   type?: keyof G["UserProps"];
@@ -15,17 +15,17 @@ type PermissionsArgs<
 };
 
 export type GetPermissions<UserConfig extends Config = Config> = (
-  params?: PermissionsArgs<UserConfig>
+  params?: PermissionsArgs<UserConfig>,
 ) => Permissions;
 
 type ResolvePermissions<UserConfig extends Config = Config> = (
   params?: PermissionsArgs<UserConfig>,
-  force?: boolean
+  force?: boolean,
 ) => void;
 
 export type RefreshPermissions<UserConfig extends Config = Config> = (
   params?: PermissionsArgs<UserConfig>,
-  force?: boolean
+  force?: boolean,
 ) => void;
 
 type Cache = Record<
@@ -48,7 +48,7 @@ export type PermissionsSlice = {
 
 export const createPermissionsSlice = (
   set: (newState: Partial<AppStore>) => void,
-  get: () => AppStore
+  get: () => AppStore,
 ): PermissionsSlice => {
   const resolvePermissions: ResolvePermissions = async (params = {}, force) => {
     const { state, permissions, config } = get();
@@ -56,7 +56,7 @@ export const createPermissionsSlice = (
 
     const resolvePermissionsForItem = async (
       item: ComponentData,
-      force: boolean = false
+      force: boolean = false,
     ) => {
       const { config, state: appState, setComponentLoading } = get();
       const itemCache: Cache[string] | undefined = cache[item.props.id];
@@ -94,7 +94,7 @@ export const createPermissionsSlice = (
               appState: makeStatePublic(appState),
               lastData: itemCache?.lastData || null,
               parent: parentData,
-            }
+            },
           );
 
           const latest = get().permissions;
@@ -131,7 +131,7 @@ export const createPermissionsSlice = (
           type: "root",
           props: { ...appState.data.root.props, id: "root" },
         },
-        force
+        force,
       );
     };
 
@@ -222,7 +222,7 @@ export const createPermissionsSlice = (
 
 export const useRegisterPermissionsSlice = (
   appStore: ReturnType<typeof useAppStoreApi>,
-  globalPermissions: Partial<Permissions>
+  globalPermissions: Partial<Permissions>,
 ) => {
   useEffect(() => {
     const { permissions } = appStore.getState();
@@ -245,7 +245,7 @@ export const useRegisterPermissionsSlice = (
       (s) => s.state.data,
       () => {
         appStore.getState().permissions.resolvePermissions();
-      }
+      },
     );
   }, []);
 
@@ -254,7 +254,7 @@ export const useRegisterPermissionsSlice = (
       (s) => s.config,
       () => {
         appStore.getState().permissions.resolvePermissions();
-      }
+      },
     );
   }, []);
 };

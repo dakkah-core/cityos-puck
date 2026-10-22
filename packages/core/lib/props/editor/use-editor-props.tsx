@@ -35,10 +35,10 @@ const useEditorProps = ({
 
   const componentId = component.props.id;
   const componentIsLoading = useAppStore(
-    (s) => s.componentState[componentId]?.loadingCount > 0
+    (s) => s.componentState[componentId]?.loadingCount > 0,
   );
   const componentReadOnly = useAppStore(
-    useShallow((s) => s.state.indexes.nodes[componentId]?.data.readOnly)
+    useShallow((s) => s.state.indexes.nodes[componentId]?.data.readOnly),
   );
 
   const combinedFieldTransforms = useMemo(
@@ -59,7 +59,7 @@ const useEditorProps = ({
       }, {}),
       ...userFieldTransforms,
     }),
-    [plugins, userFieldTransforms, componentId]
+    [plugins, userFieldTransforms, componentId],
   );
 
   return useFieldTransformsTracked(
@@ -67,7 +67,7 @@ const useEditorProps = ({
     component,
     combinedFieldTransforms,
     componentReadOnly,
-    componentIsLoading
+    componentIsLoading,
   );
 };
 

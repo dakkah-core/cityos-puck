@@ -36,7 +36,7 @@ describe("mapFields", () => {
     const result: any = mapFields(
       { type: "Comp", props: { id: "abc" } },
       mappers,
-      config
+      config,
     );
 
     // `title` has a mapper but no value in props — it should still be visited
@@ -48,7 +48,7 @@ describe("mapFields", () => {
     const result: any = mapFields(
       { type: "Comp", props: { id: "abc", title: "Hello" } },
       mappers,
-      config
+      config,
     );
 
     expect(result.props.title).toBe("mapped:title:Hello");
@@ -59,7 +59,7 @@ describe("mapFields", () => {
       { type: "Comp", props: { id: "abc" } },
       // No mapper registered at all
       {},
-      config
+      config,
     );
 
     expect("title" in result.props).toBe(false);
@@ -70,7 +70,7 @@ describe("mapFields", () => {
     const result: any = mapFields(
       { type: "Comp", props: { id: "abc", nested: {} } },
       mappers,
-      config
+      config,
     );
 
     expect(result.props.nested.title).toBe("mapped:nested.title:undefined");
@@ -83,7 +83,7 @@ describe("mapFields", () => {
       config,
       false,
       true,
-      ["id", "title"]
+      ["id", "title"],
     );
 
     expect(result.props.title).toBe("mapped:title:Hello");
@@ -97,7 +97,7 @@ describe("mapFields", () => {
       config,
       false,
       true,
-      ["id", "title"]
+      ["id", "title"],
     );
 
     // e.g. a prop that was just deleted still gets its transform run
@@ -111,7 +111,7 @@ describe("mapFields", () => {
       config,
       false,
       true,
-      ["nested"]
+      ["nested"],
     );
 
     expect(result.props.nested.title).toBe("mapped:nested.title:undefined");

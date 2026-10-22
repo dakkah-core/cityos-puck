@@ -22,16 +22,20 @@ export function RichTextRender({
 }) {
   const { tiptap = {}, options } = field;
   const { extensions = [] } = tiptap;
-  const browserReady = useSyncExternalStore(subscribe, browserSnapshot, serverSnapshot);
+  const browserReady = useSyncExternalStore(
+    subscribe,
+    browserSnapshot,
+    serverSnapshot,
+  );
 
   const loadedExtensions = useMemo(
     () => [PuckRichText.configure(options), ...extensions],
-    [field, extensions]
+    [field, extensions],
   );
 
   const html = useMemo(
     () => renderRichTextHTML(content, loadedExtensions, browserReady),
-    [content, loadedExtensions, browserReady]
+    [content, loadedExtensions, browserReady],
   );
 
   return (

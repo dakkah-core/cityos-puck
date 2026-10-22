@@ -124,7 +124,7 @@ describe("outline dnd store", () => {
       .getState()
       .setTarget(
         { targetId: "grid-1", position: "before" },
-        { zone: "grid-1:items", index: 0 }
+        { zone: "grid-1:items", index: 0 },
       );
 
     store.getState().endDrag();

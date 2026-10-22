@@ -50,24 +50,24 @@ function decodeEmptyObjects(props: Record<string, any> = {}) {
 
 export const flattenNode = <
   UserConfig extends Config = Config,
-  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
 >(
   node: ComponentData | RootData,
-  config: UserConfig
+  config: UserConfig,
 ) => {
   return {
     ...node,
     props: encodeEmptyObjects(
       flatten<Record<string, any>, Record<string, any>>(
-        stripSlots(node, config).props ?? {}
-      )
+        stripSlots(node, config).props ?? {},
+      ),
     ),
   };
 };
 
 export const expandNode = (node: ComponentData | RootData) => {
   const props = unflatten<Record<string, any>, Record<string, any>>(
-    decodeEmptyObjects(node.props)
+    decodeEmptyObjects(node.props),
   );
 
   return {

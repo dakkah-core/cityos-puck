@@ -22,7 +22,7 @@ const getClassName = getClassNameFactory("PuckHeader", styles);
 
 const HeaderInner = <
   UserConfig extends Config = Config,
-  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
 >({
   hidePlugins,
 }: {
@@ -44,7 +44,7 @@ const HeaderInner = <
   const defaultHeaderRender = useMemo((): Overrides["header"] => {
     if (renderHeader) {
       console.warn(
-        "`renderHeader` is deprecated. Please use `overrides.header` and the `usePuck` hook instead"
+        "`renderHeader` is deprecated. Please use `overrides.header` and the `usePuck` hook instead",
       );
 
       const RenderHeader = ({ actions, ...props }: any) => {
@@ -69,7 +69,7 @@ const HeaderInner = <
   const defaultHeaderActionsRender = useMemo((): Overrides["headerActions"] => {
     if (renderHeaderActions) {
       console.warn(
-        "`renderHeaderActions` is deprecated. Please use `overrides.headerActions` and the `usePuck` hook instead."
+        "`renderHeaderActions` is deprecated. Please use `overrides.headerActions` and the `usePuck` hook instead.",
       );
 
       const RenderHeader = (props: any) => {
@@ -87,11 +87,11 @@ const HeaderInner = <
   }, [renderHeaderActions]);
 
   const CustomHeader = useAppStore(
-    (s) => s.overrides.header || defaultHeaderRender
+    (s) => s.overrides.header || defaultHeaderRender,
   );
 
   const CustomHeaderActions = useAppStore(
-    (s) => s.overrides.headerActions || defaultHeaderActionsRender
+    (s) => s.overrides.headerActions || defaultHeaderActionsRender,
   );
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -104,7 +104,7 @@ const HeaderInner = <
 
   const leftSideBarVisible = useAppStore((s) => s.state.ui.leftSideBarVisible);
   const rightSideBarVisible = useAppStore(
-    (s) => s.state.ui.rightSideBarVisible
+    (s) => s.state.ui.rightSideBarVisible,
   );
 
   const toggleSidebars = useCallback(
@@ -123,7 +123,7 @@ const HeaderInner = <
         },
       });
     },
-    [dispatch, leftSideBarVisible, rightSideBarVisible]
+    [dispatch, leftSideBarVisible, rightSideBarVisible],
   );
 
   const publishLabel = useMessage("header-publish");

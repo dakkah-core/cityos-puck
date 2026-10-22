@@ -16,7 +16,7 @@ export const moveComponent = async (
   id: string,
   sourceSelector: ItemSelector,
   destinationSelector: ItemSelector,
-  appStore: ReturnType<typeof useAppStoreApi>
+  appStore: ReturnType<typeof useAppStoreApi>,
 ) => {
   const dispatch = appStore.getState().dispatch;
   dispatch({

@@ -31,7 +31,7 @@ export type OutlineAcceptCache = Map<string, boolean>;
 const cached = (
   cache: OutlineAcceptCache,
   key: string,
-  compute: () => boolean
+  compute: () => boolean,
 ) => {
   const hit = cache.get(key);
 
@@ -55,13 +55,13 @@ export const zoneAcceptsComponent = (
   zoneCompound: string,
   componentType: string,
   config: Config,
-  indexes: OutlineIndexes
+  indexes: OutlineIndexes,
 ) =>
   cached(cache, `zone:${zoneCompound}`, () => {
     const targetZoneConstraints = getZoneConstraints(
       zoneCompound,
       config,
-      indexes
+      indexes,
     );
 
     return isComponentAllowed(componentType, targetZoneConstraints);
@@ -73,7 +73,7 @@ export const itemAcceptsComponent = (
   itemId: string,
   componentType: string,
   config: Config,
-  indexes: OutlineIndexes
+  indexes: OutlineIndexes,
 ) =>
   cached(cache, `childZones:${itemId}`, () => {
     return Object.keys(indexes.zones).some(
@@ -84,8 +84,8 @@ export const itemAcceptsComponent = (
           zoneCompound,
           componentType,
           config,
-          indexes
-        )
+          indexes,
+        ),
     );
   });
 
@@ -97,7 +97,7 @@ export const isSourceOrDescendantOfSource = (
   cache: OutlineAcceptCache,
   itemId: string,
   sourceItemId: string,
-  nodes: NodeIndex
+  nodes: NodeIndex,
 ) =>
   cached(cache, `subtree:${itemId}`, () => {
     if (itemId === sourceItemId) {
@@ -107,7 +107,7 @@ export const isSourceOrDescendantOfSource = (
     const path = nodes[itemId]?.path || [];
 
     return path.some(
-      (zoneCompound) => zoneCompound.split(":")[0] === sourceItemId
+      (zoneCompound) => zoneCompound.split(":")[0] === sourceItemId,
     );
   });
 
@@ -126,7 +126,7 @@ export const createOutlineAccept =
       appStore: ReturnType<typeof useAppStoreApi>;
       outlineStore: StoreApi<OutlineDndStore>;
     },
-    target: OutlineAcceptTarget
+    target: OutlineAcceptTarget,
   ) =>
   (source: Draggable): boolean => {
     if (source.type !== OUTLINE_ITEM_TYPE) return false;
@@ -144,7 +144,7 @@ export const createOutlineAccept =
         cache,
         anchorId,
         sourceData.itemId,
-        indexes.nodes
+        indexes.nodes,
       )
     ) {
       return false;
@@ -156,7 +156,7 @@ export const createOutlineAccept =
         target.zoneCompound,
         sourceData.componentType,
         config,
-        indexes
+        indexes,
       );
     }
 
@@ -168,14 +168,14 @@ export const createOutlineAccept =
         target.zoneCompound,
         sourceData.componentType,
         config,
-        indexes
+        indexes,
       ) ||
       itemAcceptsComponent(
         cache,
         target.itemId,
         sourceData.componentType,
         config,
-        indexes
+        indexes,
       )
     );
   };

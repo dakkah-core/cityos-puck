@@ -3,7 +3,7 @@ import { useAppStoreApi } from "../../store";
 
 export const useOnDragFinished = (
   cb: (finished: boolean) => void,
-  deps: any[] = []
+  deps: any[] = [],
 ) => {
   const appStore = useAppStoreApi();
 
@@ -31,7 +31,7 @@ export const useOnDragFinished = (
         (s) => s.state.ui.isDragging,
         (isDragging) => {
           processDragging(isDragging);
-        }
+        },
       );
     }
 

@@ -55,11 +55,11 @@ export const useComponentList = () => {
               })}
             </ComponentList>
           );
-        }
+        },
       );
 
       const remainingComponents = Object.keys(config.components).filter(
-        (component) => matchedComponents.indexOf(component) === -1
+        (component) => matchedComponents.indexOf(component) === -1,
       );
 
       if (
@@ -85,7 +85,7 @@ export const useComponentList = () => {
                 />
               );
             })}
-          </ComponentList>
+          </ComponentList>,
         );
       }
 

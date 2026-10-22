@@ -5,7 +5,7 @@
 export function shallowEqual(
   obj1: any,
   obj2: any,
-  keysToIgnore: readonly string[] = []
+  keysToIgnore: readonly string[] = [],
 ): boolean {
   // Quick reference/value check
   if (Object.is(obj1, obj2)) return true;

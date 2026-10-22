@@ -11,11 +11,11 @@ import { insert } from "../../lib/data/insert";
 export function duplicateAction<UserData extends Data>(
   state: PrivateAppState<UserData>,
   action: DuplicateAction,
-  appStore: AppStore
+  appStore: AppStore,
 ): PrivateAppState<UserData> {
   const item = getItem(
     { index: action.sourceIndex, zone: action.sourceZone },
-    state
+    state,
   )!;
 
   const idsInPath = getIdsForParent(action.sourceZone, state);
@@ -70,7 +70,7 @@ export function duplicateAction<UserData extends Data>(
       }
 
       return null;
-    }
+    },
   );
 
   return {

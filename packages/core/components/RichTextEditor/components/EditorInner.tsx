@@ -32,7 +32,8 @@ export const EditorInner = memo(
     const { initialHeight } = field;
 
     const isActive = useAppStore(
-      (s) => s.currentRichText?.id === id && inline === s.currentRichText.inline
+      (s) =>
+        s.currentRichText?.id === id && inline === s.currentRichText.inline,
     );
 
     const appStoreApi = useAppStoreApi();
@@ -55,13 +56,13 @@ export const EditorInner = memo(
           event.stopPropagation();
         }
       },
-      [editor]
+      [editor],
     );
 
     const handleBlur = useCallback<FocusEventHandler<HTMLDivElement>>(
       (e) => {
         const targetInMenu = !!e.relatedTarget?.closest?.(
-          "[data-puck-rte-menu]"
+          "[data-puck-rte-menu]",
         );
 
         if (e.relatedTarget && !targetInMenu) {
@@ -72,7 +73,7 @@ export const EditorInner = memo(
           e.stopPropagation();
         }
       },
-      [appStoreApi]
+      [appStoreApi],
     );
 
     return (
@@ -93,7 +94,7 @@ export const EditorInner = memo(
         {children}
       </div>
     );
-  }
+  },
 );
 
 EditorInner.displayName = "EditorInner";

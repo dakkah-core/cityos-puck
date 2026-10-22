@@ -80,10 +80,10 @@ function resetStores() {
             ],
           },
         },
-        config
+        config,
       ),
     },
-    true
+    true,
   );
 }
 
@@ -111,7 +111,7 @@ describe("resolveDataBySelector", () => {
 
     // When: ---------------
     await act(() =>
-      resolveDataBySelector(nonExistentSelector, appStore.getState)
+      resolveDataBySelector(nonExistentSelector, appStore.getState),
     );
 
     // Then: ---------------

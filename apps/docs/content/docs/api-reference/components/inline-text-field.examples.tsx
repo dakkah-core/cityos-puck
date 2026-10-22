@@ -31,9 +31,7 @@ export function Example1() {
   }}
   overrides={{
     fieldTypes: {
-      heading: {
-        render: () => <div />,
-      },
+      heading: () => <div />,
     },
   }}
   fieldTransforms={{

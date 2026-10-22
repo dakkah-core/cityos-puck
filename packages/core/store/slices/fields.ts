@@ -16,7 +16,7 @@ export type FieldsSlice = {
 
 export const createFieldsSlice = (
   _set: (newState: Partial<AppStore>) => void,
-  _get: () => AppStore
+  _get: () => AppStore,
 ): FieldsSlice => {
   return {
     fields: {},
@@ -28,7 +28,7 @@ export const createFieldsSlice = (
 
 export const useRegisterFieldsSlice = (
   appStore: ReturnType<typeof useAppStoreApi>,
-  id?: string
+  id?: string,
 ) => {
   const resolveFields = useCallback(
     async (reset?: boolean) => {
@@ -109,7 +109,7 @@ export const useRegisterFieldsSlice = (
         }));
       }
     },
-    [id]
+    [id],
   );
 
   useEffect(() => {
@@ -117,7 +117,7 @@ export const useRegisterFieldsSlice = (
 
     const unsubscribeData = appStore.subscribe(
       (s) => s.state.indexes.nodes[id || "root"],
-      () => resolveFields()
+      () => resolveFields(),
     );
 
     // The resolved fields are cached on this slice, so a config change (e.g.
@@ -126,7 +126,7 @@ export const useRegisterFieldsSlice = (
     // until another component is selected or data happens to change.
     const unsubscribeConfig = appStore.subscribe(
       (s) => s.config,
-      () => resolveFields(true)
+      () => resolveFields(true),
     );
 
     return () => {

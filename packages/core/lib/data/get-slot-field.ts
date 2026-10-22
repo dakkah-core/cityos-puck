@@ -10,7 +10,7 @@ import { getFieldByPath } from "./get-field-by-path";
 export const getSlotField = (
   zoneCompound: string,
   config: Config,
-  nodes: NodeIndex
+  nodes: NodeIndex,
 ) => {
   const [componentId, slotId] = zoneCompound.split(":");
 

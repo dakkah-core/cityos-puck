@@ -14,7 +14,9 @@ case "$check" in
   test) command=(node scripts/toolchains/run-pinned-pnpm.mjs test) ;;
   lint) command=(node scripts/toolchains/run-pinned-pnpm.mjs lint) ;;
   format) command=(node scripts/toolchains/run-pinned-pnpm.mjs format:check) ;;
-  build) command=(node scripts/toolchains/run-pinned-pnpm.mjs build) ;;
+  # Next/Vite native workers must not exhaust the runner while all consumers build.
+  # Serial scheduling retains every build target and the normal task graph.
+  build) command=(node scripts/toolchains/run-pinned-pnpm.mjs build --concurrency=1) ;;
   *) echo 'Unknown maintained check.' >&2; exit 64 ;;
 esac
 

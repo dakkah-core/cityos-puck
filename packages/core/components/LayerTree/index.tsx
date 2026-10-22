@@ -22,7 +22,7 @@ export const LayerTree = ({
   trees: LayerZone[];
 }) => {
   const disableOutlineDrag = useAppStore(
-    (s) => s.dnd?.disableOutlineDrag ?? false
+    (s) => s.dnd?.disableOutlineDrag ?? false,
   );
 
   return (

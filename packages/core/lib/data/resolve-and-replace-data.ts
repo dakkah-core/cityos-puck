@@ -20,11 +20,11 @@ export async function resolveAndReplaceData(
   getState: ReturnType<typeof useAppStoreApi>["getState"],
   trigger: ResolveDataTrigger = "force",
   writeThrough: boolean = false,
-  ui?: Partial<UiState>
+  ui?: Partial<UiState>,
 ) {
   const resolvedResult = await getState().resolveComponentData(
     currentData,
-    trigger
+    trigger,
   );
   if (!resolvedResult.didChange && !writeThrough) return;
 
@@ -43,11 +43,11 @@ export async function resolveAndReplaceData(
 
   const itemSelector = getSelectorForId(
     getState().state,
-    resolvedResult.node.props.id
+    resolvedResult.node.props.id,
   );
   if (!itemSelector) {
     console.warn(
-      `Warning: Could not find component with id "${currentData.props.id}" to resolve its data. Component may have been removed or the id is invalid.`
+      `Warning: Could not find component with id "${currentData.props.id}" to resolve its data. Component may have been removed or the id is invalid.`,
     );
     return;
   }

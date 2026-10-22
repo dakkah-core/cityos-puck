@@ -8,7 +8,7 @@ export function Example1() {
 <PuckPreview
   config={{
     components: {
-      HeadingBlock: {},
+      HeadingBlock: { render: () => null },
     },
   }}
   data={{ root: { props: {} }, content: [] }}

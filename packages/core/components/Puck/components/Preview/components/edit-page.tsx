@@ -20,7 +20,7 @@ import useEditorProps from "../../../../../lib/props/editor/use-editor-props";
 const EditPage = () => {
   // All the props, slot props are defaulted to null
   const flatRootProps = useAppStore(
-    useShallow((s) => s.state.indexes.nodes.root?.flatData.props)
+    useShallow((s) => s.state.indexes.nodes.root?.flatData.props),
   );
   const config = useAppStore((s) => s.config);
   const metadata = useAppStore((s) => s.metadata);

@@ -11,7 +11,7 @@ describe("isFieldVisible", () => {
 
   it("returns false when the field type override is null", () => {
     expect(
-      isFieldVisible({ text: null }, { type: "text", visible: true })
+      isFieldVisible({ text: null }, { type: "text", visible: true }),
     ).toBe(false);
   });
 
@@ -19,7 +19,7 @@ describe("isFieldVisible", () => {
     expect(isFieldVisible(undefined, { type: "text" })).toBe(true);
     expect(isFieldVisible({ text: undefined }, { type: "text" })).toBe(true);
     expect(isFieldVisible(undefined, { type: "text", visible: false })).toBe(
-      false
+      false,
     );
   });
 });

@@ -9,7 +9,7 @@ function resetStores() {
     {
       ...appStore.getInitialState(),
     },
-    true
+    true,
   );
 }
 
@@ -27,7 +27,7 @@ describe("history slice", () => {
         ],
         index: 1,
         initialAppState: defaultAppState,
-      })
+      }),
     );
 
     const { histories, index, hasPast, hasFuture } =
@@ -48,7 +48,7 @@ describe("history slice", () => {
           histories: [{ id: "initial", state: defaultAppState }],
           index: 0,
           initialAppState: defaultAppState,
-        })
+        }),
       );
 
       act(() => {
@@ -74,7 +74,7 @@ describe("history slice", () => {
           histories: [{ id: "init", state: defaultAppState }],
           index: 0,
           initialAppState: defaultAppState,
-        })
+        }),
       );
 
       jest.spyOn(appStore.getState(), "dispatch");
@@ -96,7 +96,7 @@ describe("history slice", () => {
           ],
           index: 1,
           initialAppState: defaultAppState,
-        })
+        }),
       );
 
       jest.spyOn(appStore.getState(), "dispatch");
@@ -125,7 +125,7 @@ describe("history slice", () => {
           histories: [{ id: "0", state: { ...defaultAppState, data: "A" } }],
           index: 0,
           initialAppState: defaultAppState,
-        })
+        }),
       );
 
       jest.spyOn(appStore.getState(), "dispatch");
@@ -147,7 +147,7 @@ describe("history slice", () => {
           ],
           index: 0,
           initialAppState: defaultAppState,
-        })
+        }),
       );
 
       jest.spyOn(appStore.getState(), "dispatch");
@@ -176,7 +176,7 @@ describe("history slice", () => {
           histories: [{ id: "init", state: defaultAppState }],
           index: 0,
           initialAppState: defaultAppState,
-        })
+        }),
       );
 
       jest.spyOn(appStore.getState(), "dispatch");
@@ -215,7 +215,7 @@ describe("history slice", () => {
           ],
           index: 1,
           initialAppState: defaultAppState,
-        })
+        }),
       );
 
       jest.spyOn(appStore.getState(), "dispatch");
@@ -238,7 +238,7 @@ describe("history slice", () => {
           histories: [{ id: "0", state: defaultAppState }],
           index: 0,
           initialAppState: defaultAppState,
-        })
+        }),
       );
 
       jest.spyOn(appStore.getState(), "dispatch");

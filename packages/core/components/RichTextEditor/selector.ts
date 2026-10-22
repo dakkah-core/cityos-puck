@@ -2,7 +2,7 @@ import type { EditorStateSnapshot } from "@tiptap/react";
 
 export const defaultEditorState = (
   ctx: EditorStateSnapshot,
-  readOnly: boolean
+  readOnly: boolean,
 ) => {
   const editor = ctx.editor;
   if (!editor || editor.isDestroyed) return {};

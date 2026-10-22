@@ -58,7 +58,7 @@ export interface CheckboxField extends BaseField {
 }
 
 export interface RichtextField<
-  UserSelector extends RichTextSelector = RichTextSelector
+  UserSelector extends RichTextSelector = RichTextSelector,
 > extends BaseField {
   type: "richtext";
   contentEditable?: boolean;
@@ -84,7 +84,7 @@ export interface RichtextField<
 
 export interface ArrayField<
   Props extends { [key: string]: any }[] = { [key: string]: any }[],
-  UserField extends {} = {}
+  UserField extends {} = {},
 > extends BaseField {
   type: "array";
   arrayFields: {
@@ -100,7 +100,7 @@ export interface ArrayField<
 
 export interface ObjectField<
   Props extends any = { [key: string]: any },
-  UserField extends {} = {}
+  UserField extends {} = {},
 > extends BaseField {
   type: "object";
   objectFields: {
@@ -114,7 +114,7 @@ export interface ObjectField<
 export type Adaptor<
   AdaptorParams = {},
   TableShape extends Record<string, any> = {},
-  PropShape = TableShape
+  PropShape = TableShape,
 > = {
   name: string;
   fetchList: (adaptorParams?: AdaptorParams) => Promise<TableShape[] | null>;
@@ -125,7 +125,7 @@ type NotUndefined<T> = T extends undefined ? never : T;
 
 // DEPRECATED
 export type ExternalFieldWithAdaptor<
-  Props extends any = { [key: string]: any }
+  Props extends any = { [key: string]: any },
 > = BaseField & {
   type: "external";
   placeholder?: string;
@@ -138,8 +138,9 @@ export type CacheOpts = {
   enabled?: boolean;
 };
 
-export interface ExternalField<Props extends any = { [key: string]: any }>
-  extends BaseField {
+export interface ExternalField<
+  Props extends any = { [key: string]: any },
+> extends BaseField {
   type: "external";
   cache?: CacheOpts;
   placeholder?: string;
@@ -210,7 +211,7 @@ export type Field<ValueType = any, UserField extends {} = {}> =
 
 export type Fields<
   ComponentProps extends DefaultComponentProps = DefaultComponentProps,
-  UserField extends {} = {}
+  UserField extends {} = {},
 > = {
   [PropName in keyof Omit<ComponentProps, "editMode">]: UserField extends {
     type: PropertyKey;

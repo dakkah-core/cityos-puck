@@ -16,7 +16,7 @@ const CurrentTitle = () => {
     const selectedItem = s.selectedItem;
 
     return selectedItem
-      ? s.config.components[selectedItem.type]?.label ?? selectedItem.type
+      ? (s.config.components[selectedItem.type]?.label ?? selectedItem.type)
       : null;
   });
 

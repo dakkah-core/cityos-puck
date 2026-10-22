@@ -8,7 +8,7 @@ export type SortPosition = "before" | "after";
  */
 export const getCollisionPosition = (
   direction: Direction | undefined,
-  dir: "ltr" | "rtl" = "ltr"
+  dir: "ltr" | "rtl" = "ltr",
 ): SortPosition =>
   direction === "up" ||
   (dir === "ltr" && direction === "left") ||

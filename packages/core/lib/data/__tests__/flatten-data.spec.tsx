@@ -113,7 +113,7 @@ describe("flatten-data", () => {
         ...appStore.getInitialState(),
         config,
       },
-      true
+      true,
     );
   });
 
@@ -131,14 +131,14 @@ describe("flatten-data", () => {
 
     // Should contain the Container component
     const containerComponent = result.find(
-      (item) => item.props.id === "container-component"
+      (item) => item.props.id === "container-component",
     );
     expect(containerComponent).toBeDefined();
     expect(containerComponent?.type).toBe("Container");
 
     // Should contain the Heading component
     const headingComponent = result.find(
-      (item) => item.props.id === "heading-component"
+      (item) => item.props.id === "heading-component",
     );
     expect(headingComponent).toBeDefined();
     expect(headingComponent?.type).toBe("Heading");

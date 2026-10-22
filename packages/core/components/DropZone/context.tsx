@@ -62,7 +62,7 @@ export type ZoneStore = {
   hoveringComponent: string | null;
   registerRootVirtualizer: (
     zoneCompound: string,
-    handle: RootVirtualizerHandle
+    handle: RootVirtualizerHandle,
   ) => void;
   unregisterRootVirtualizer: (zoneCompound: string) => void;
   scrollToComponent: (id: string) => void;
@@ -81,7 +81,7 @@ export const ZoneStoreContext = createContext<StoreApi<ZoneStore>>(
     registerRootVirtualizer: () => {},
     unregisterRootVirtualizer: () => {},
     scrollToComponent: () => false,
-  }))
+  })),
 );
 
 export const ZoneStoreProvider = ({
@@ -111,7 +111,7 @@ export const DropZoneProvider = ({
         zone: zoneCompound,
       });
     },
-    [dispatch]
+    [dispatch],
   );
 
   const memoValue = useMemo(
@@ -119,8 +119,8 @@ export const DropZoneProvider = ({
       ({
         registerZone,
         ...value,
-      } as DropZoneContext),
-    [value]
+      }) as DropZoneContext,
+    [value],
   );
 
   return (

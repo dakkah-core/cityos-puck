@@ -7,7 +7,7 @@ describe("resolveDndMode", () => {
 
   it("uses static mode between slots and for new components for auto behavior", () => {
     expect(resolveDndMode("auto", { isDraggingBetweenSlots: true })).toBe(
-      "static"
+      "static",
     );
     expect(resolveDndMode("auto", { isNewComponent: true })).toBe("static");
   });
@@ -15,7 +15,7 @@ describe("resolveDndMode", () => {
   it("always uses fluid mode for fluid behavior", () => {
     expect(resolveDndMode("fluid")).toBe("fluid");
     expect(resolveDndMode("fluid", { isDraggingBetweenSlots: true })).toBe(
-      "fluid"
+      "fluid",
     );
     expect(resolveDndMode("fluid", { isNewComponent: true })).toBe("fluid");
   });
@@ -23,7 +23,7 @@ describe("resolveDndMode", () => {
   it("always uses static mode for static behavior", () => {
     expect(resolveDndMode("static")).toBe("static");
     expect(resolveDndMode("static", { isDraggingBetweenSlots: true })).toBe(
-      "static"
+      "static",
     );
     expect(resolveDndMode("static", { isNewComponent: true })).toBe("static");
   });

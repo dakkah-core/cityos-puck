@@ -21,7 +21,7 @@ function resetStores() {
     {
       ...appStore.getInitialState(),
     },
-    true
+    true,
   );
 }
 
@@ -70,7 +70,7 @@ describe("useBreadcrumbs", () => {
           },
           indexes: { nodes: {}, zones: {} },
         },
-        config
+        config,
       ),
       selectedItem: testItem2,
     });
@@ -85,7 +85,7 @@ describe("useBreadcrumbs", () => {
     render(
       <Context>
         <Comp />
-      </Context>
+      </Context>,
     );
 
     // 5) Expect the result to include the "Page" crumb plus the item crumb
@@ -132,7 +132,7 @@ describe("useBreadcrumbs", () => {
           },
           indexes: { nodes: {}, zones: {} },
         },
-        config
+        config,
       ),
       selectedItem: testItem2,
     });
@@ -147,7 +147,7 @@ describe("useBreadcrumbs", () => {
     render(
       <Context>
         <Comp />
-      </Context>
+      </Context>,
     );
 
     expect(result).toEqual([
@@ -192,7 +192,7 @@ describe("useBreadcrumbs", () => {
           },
           indexes: { nodes: {}, zones: {} },
         },
-        config
+        config,
       ),
       selectedItem: testItem2,
     });
@@ -207,7 +207,7 @@ describe("useBreadcrumbs", () => {
     render(
       <Context>
         <Comp />
-      </Context>
+      </Context>,
     );
 
     // 5) Expect the result to include the "Page" crumb plus the item crumb

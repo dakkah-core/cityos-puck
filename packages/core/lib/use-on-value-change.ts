@@ -4,7 +4,7 @@ export function useOnValueChange<T>(
   value: T,
   onChange: (value: T, oldValue: T) => void,
   compare: (value: T, oldValue: T) => boolean = Object.is,
-  deps: any[] = []
+  deps: any[] = [],
 ) {
   const tracked = useRef<T>(value);
 

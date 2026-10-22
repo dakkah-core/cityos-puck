@@ -74,7 +74,7 @@ const flush = () => act(async () => {});
 const dispatchReplace = (
   appStore: AppStoreApi,
   componentId: string,
-  data: any
+  data: any,
 ) => {
   const node = appStore.getState().state.indexes.nodes[componentId];
   const zoneCompound = `${node.parentId}:${node.zone}`;

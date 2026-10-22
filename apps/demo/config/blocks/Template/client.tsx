@@ -13,7 +13,7 @@ const usePuck = createUsePuck();
 
 async function createComponent<T extends keyof Components>(
   component: T,
-  props?: Partial<Components[T]>
+  props?: Partial<Components[T]>,
 ): Promise<ComponentDataOptionalId<Components[T]>> {
   const { conf: config } = await import("../../index");
 
@@ -36,11 +36,10 @@ export const TemplateInternal: ComponentConfig<TemplateProps> = {
         const templateKey = `puck-demo-templates:${componentKey}`;
 
         const props = usePuck((s) => s.selectedItem?.props) as
-          | TemplateProps
-          | undefined;
+          TemplateProps | undefined;
 
         const [templates, setTemplates] = useState<TemplateData>(
-          JSON.parse(localStorage.getItem(templateKey) ?? "{}")
+          JSON.parse(localStorage.getItem(templateKey) ?? "{}"),
         );
 
         return (
@@ -84,8 +83,8 @@ export const TemplateInternal: ComponentConfig<TemplateProps> = {
                         content.map((item) => ({
                           ...item,
                           props: { ...item.props, id: generateId(item.type) },
-                        }))
-                    )
+                        })),
+                    ),
                   );
 
                   const templateData = {
@@ -98,7 +97,7 @@ export const TemplateInternal: ComponentConfig<TemplateProps> = {
 
                   localStorage.setItem(
                     templateKey,
-                    JSON.stringify(templateData)
+                    JSON.stringify(templateData),
                   );
 
                   setTemplates(templateData);

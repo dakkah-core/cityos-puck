@@ -13,7 +13,7 @@ export type BlocksPluginProps = {
 };
 
 export const blocksPlugin: (props?: BlocksPluginProps) => Plugin = (
-  props = {}
+  props = {},
 ) => ({
   name: "blocks",
   label: props.label ?? "Blocks",

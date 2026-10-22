@@ -77,10 +77,10 @@ function resetStores() {
             ],
           },
         },
-        config
+        config,
       ),
     },
-    true
+    true,
   );
 }
 

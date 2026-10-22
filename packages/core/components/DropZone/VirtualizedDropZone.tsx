@@ -68,7 +68,7 @@ export const VirtualizedDropZone = ({
       // target is described by the non-ghost preview
       const [parentZone] =
         Object.entries(s.previewIndex ?? {}).find(
-          ([, preview]) => !preview?.ghost
+          ([, preview]) => !preview?.ghost,
         ) ?? [];
 
       return parentZone?.split(":")[0];
@@ -112,7 +112,7 @@ export const VirtualizedDropZone = ({
 
       return -1;
     },
-    [appStoreApi, contentIds]
+    [appStoreApi, contentIds],
   );
 
   const pinnedIndexes = useMemo(() => {
@@ -146,7 +146,7 @@ export const VirtualizedDropZone = ({
 
       return indexes;
     },
-    [pinnedIndexes]
+    [pinnedIndexes],
   );
 
   const virtualizer = useVirtualizer<any, HTMLElement>({
@@ -237,7 +237,7 @@ export const VirtualizedDropZone = ({
           <div
             key={`gap:${previousIndex}:${virtualItem.index}`}
             style={{ height: `${gapSize}px` }}
-          />
+          />,
         );
       }
 
@@ -246,7 +246,7 @@ export const VirtualizedDropZone = ({
           componentId,
           index: virtualItem.index,
           measureRef: getMeasureRef(componentId),
-        })
+        }),
       );
 
       previousEnd = virtualItem.end;
@@ -260,7 +260,7 @@ export const VirtualizedDropZone = ({
         <div
           key={`gap:${previousIndex}:end`}
           style={{ height: `${trailingGap}px` }}
-        />
+        />,
       );
     }
 

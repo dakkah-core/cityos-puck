@@ -13,6 +13,7 @@ import { formatSource } from "./format-source.mjs";
 import { loadBootstrapCatalog } from "../../packages/create-puck-app/bootstrap-catalog.js";
 import { prepareAmbientTypes } from "../toolchains/nextra-stable-docs/prepare-types.mjs";
 import { planPacketInputCapture } from "../toolchains/nextra-stable-docs/source-inputs.mjs";
+import { assembledRouteDigest, expectedRouteDigests } from "./docs-route-revisions.mjs";
 
 const root = new URL("../../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
@@ -274,24 +275,9 @@ test("Prettier 3 formatting awaits both configuration and formatting results", a
 
 test("Nextra content migration preserves every MDX route and interactive example body", () => {
   const fixture = json("scripts/cityos/fixtures/docs-route-migration.json");
-  const digest = (source) => createHash("sha256").update(source.replace(/\s+/gu, " ").trim()).digest("hex");
-  for (const { path, sha256 } of fixture.routes) {
-    // Git checkouts may use CRLF. Normalize transport newlines before matching
-    // extracted examples; the retained source/content hashes stay unchanged.
-    let source = read(`apps/docs/content/${path}`).replaceAll("\r\n", "\n");
-    const match = /^import \{ (Example\d+(?:, Example\d+)*) \} from "\.\/([^"\n]+)\.examples";\n/mu.exec(source);
-    if (match) {
-      const examples = read(`apps/docs/content/${path.replace(/[^/]+$/u, "")}${match[2]}.examples.tsx`).replaceAll("\r\n", "\n");
-      assert.ok(examples.startsWith('"use client";'), path);
-      for (const name of match[1].split(", ")) {
-        const body = new RegExp(`export function ${name}\\(\\) \\{\\n  return \\(\\n([\\s\\S]*?)\\n  \\);\\n\\}`).exec(examples);
-        assert.ok(body, `${path}/${name}`);
-        source = source.replace(`<${name} />`, body[1]);
-      }
-      source = source.replace(match[0], "");
-    }
-    assert.equal(digest(source), sha256, path);
-  }
+  const expected = expectedRouteDigests(fixture, json("scripts/cityos/fixtures/docs-route-revisions.json"));
+  for (const { path } of fixture.routes)
+    assert.equal(assembledRouteDigest(path, read), expected.get(path), path);
 });
 
 test("owned Nextra renderer guard rejects MathJax explicitly without changing KaTeX settings", async () => {

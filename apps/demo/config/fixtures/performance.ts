@@ -11,7 +11,7 @@ const createText = (
   pageNumber: number,
   sectionNumber: number,
   rowNumber: number,
-  cellNumber: number
+  cellNumber: number,
 ) =>
   ({
     type: "Text",
@@ -26,12 +26,12 @@ const createText = (
       size: "s",
       text: `Page ${pageNumber}, section ${sectionNumber}, row ${rowNumber}, cell ${cellNumber}`,
     },
-  } satisfies UserData["content"][number]);
+  }) satisfies UserData["content"][number];
 
 const createRow = (
   pageNumber: number,
   sectionNumber: number,
-  rowNumber: number
+  rowNumber: number,
 ) =>
   ({
     type: "Flex",
@@ -40,7 +40,7 @@ const createRow = (
       gap: 16,
       id: `PerformanceRow-${pageNumber}-${sectionNumber}-${rowNumber}`,
       items: Array.from({ length: CELLS_PER_ROW }, (_, cellIndex) =>
-        createText(pageNumber, sectionNumber, rowNumber, cellIndex + 1)
+        createText(pageNumber, sectionNumber, rowNumber, cellIndex + 1),
       ),
       justifyContent: "start",
       layout: {
@@ -49,7 +49,7 @@ const createRow = (
       },
       wrap: "nowrap",
     },
-  } satisfies UserData["content"][number]);
+  }) satisfies UserData["content"][number];
 
 const createSection = (pageNumber: number, sectionNumber: number) =>
   ({
@@ -73,7 +73,7 @@ const createSection = (pageNumber: number, sectionNumber: number) =>
           },
         },
         ...Array.from({ length: ROWS_PER_SECTION }, (_, rowIndex) =>
-          createRow(pageNumber, sectionNumber, rowIndex + 1)
+          createRow(pageNumber, sectionNumber, rowIndex + 1),
         ),
       ],
       justifyContent: "start",
@@ -83,7 +83,7 @@ const createSection = (pageNumber: number, sectionNumber: number) =>
       },
       wrap: "nowrap",
     },
-  } satisfies UserData["content"][number]);
+  }) satisfies UserData["content"][number];
 
 const createPage = (pageNumber: number) =>
   ({
@@ -120,7 +120,7 @@ const createPage = (pageNumber: number) =>
           },
         },
         ...Array.from({ length: SECTIONS_PER_PAGE }, (_, sectionIndex) =>
-          createSection(pageNumber, sectionIndex + 1)
+          createSection(pageNumber, sectionIndex + 1),
         ),
       ],
       justifyContent: "start",
@@ -130,7 +130,7 @@ const createPage = (pageNumber: number) =>
       },
       wrap: "nowrap",
     },
-  } satisfies UserData["content"][number]);
+  }) satisfies UserData["content"][number];
 
 export const performanceData: UserData = {
   root: {
@@ -139,7 +139,7 @@ export const performanceData: UserData = {
     },
   },
   content: Array.from({ length: PAGE_COUNT }, (_, pageIndex) =>
-    createPage(pageIndex + 1)
+    createPage(pageIndex + 1),
   ),
   zones: {},
 };

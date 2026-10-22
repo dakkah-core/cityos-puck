@@ -95,7 +95,7 @@ export const useHotkeyStore = create<{
       set((s) => (s.held[key] ? { held: { ...s.held, [key]: false } } : s)),
     reset: (held = {}) => set(() => ({ held })),
     triggers: {},
-  }))
+  })),
 );
 
 /**
@@ -146,10 +146,10 @@ export const monitorHotkeys = (doc: Document) => {
       Object.values(triggers).forEach(({ combo, cb }) => {
         const conditionMet =
           Object.entries(combo).every(
-            ([key, value]) => value === !!held[key]
+            ([key, value]) => value === !!held[key],
           ) &&
           Object.entries(held).every(
-            ([key, value]) => value === !!(combo as KeyMap)[key]
+            ([key, value]) => value === !!(combo as KeyMap)[key],
           );
 
         // Call hotkey with event; skip preventDefault if callback returns false to allow native input behavior.
@@ -224,6 +224,6 @@ export const useHotkey = (combo: KeyMapStrict, cb: Function) => {
           [`${Object.keys(combo).join("+")}`]: { combo, cb },
         },
       })),
-    []
+    [],
   );
 };

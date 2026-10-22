@@ -13,7 +13,7 @@ const backspaceFrom = (el: Element) => {
 
   doc.addEventListener("keydown", listener);
   el.dispatchEvent(
-    new win.KeyboardEvent("keydown", { code: "Backspace", bubbles: true })
+    new win.KeyboardEvent("keydown", { code: "Backspace", bubbles: true }),
   );
   doc.removeEventListener("keydown", listener);
 

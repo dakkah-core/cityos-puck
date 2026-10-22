@@ -12,7 +12,7 @@ export const Components = () => {
     // DEPRECATED
     if (overrides.components) {
       console.warn(
-        "The `components` override has been deprecated and renamed to `drawer`"
+        "The `components` override has been deprecated and renamed to `drawer`",
       );
     }
     return overrides.components || overrides.drawer || "div";

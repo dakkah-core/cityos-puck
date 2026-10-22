@@ -6,7 +6,7 @@ import { SlotField } from "../../types";
  */
 export const isComponentAllowed = (
   componentType: string | null | undefined,
-  { allow, disallow }: Pick<SlotField, "allow" | "disallow">
+  { allow, disallow }: Pick<SlotField, "allow" | "disallow">,
 ): boolean => {
   if (!componentType) {
     return true;

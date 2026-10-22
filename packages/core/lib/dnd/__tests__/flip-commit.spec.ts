@@ -15,7 +15,7 @@ const rect = (top: number): DOMRect =>
     x: 0,
     y: top,
     toJSON: () => {},
-  } as DOMRect);
+  }) as DOMRect;
 
 const makeItem = (id: string, top: number) => {
   const element = document.createElement("div");
@@ -79,11 +79,11 @@ describe("commit animations", () => {
 
     expect(first.animate).toHaveBeenCalledWith(
       { translate: ["0px -100px 0", "0px 0px 0"] },
-      { duration: 250, easing: "ease" }
+      { duration: 250, easing: "ease" },
     );
     expect(second.animate).toHaveBeenCalledWith(
       { translate: ["0px -100px 0", "0px 0px 0"] },
-      { duration: 250, easing: "ease" }
+      { duration: 250, easing: "ease" },
     );
   });
 });

@@ -104,7 +104,7 @@ const ArrayFieldItemInternal = ({
   });
 
   const canEdit = useAppStore(
-    (s) => s.permissions.getPermissions({ item: s.selectedItem }).edit
+    (s) => s.permissions.getPermissions({ item: s.selectedItem }).edit,
   );
 
   const hasVisibleFields = useMemo(() => {
@@ -113,7 +113,7 @@ const ArrayFieldItemInternal = ({
     }
 
     return Object.values(field.arrayFields).some((subField) =>
-      isFieldVisible(fieldTypeOverrides, subField)
+      isFieldVisible(fieldTypeOverrides, subField),
     );
   }, [field.arrayFields, fieldTypeOverrides]);
 
@@ -251,13 +251,13 @@ export const ArrayField = ({
         },
       };
     },
-    [appStore]
+    [appStore],
   );
 
   const getHighestIndex = useCallback(() => {
     return getArrayState().items.reduce(
       (acc, item) => (item._originalIndex > acc ? item._originalIndex : acc),
-      -1
+      -1,
     );
   }, []);
 
@@ -318,7 +318,7 @@ export const ArrayField = ({
         config,
       });
     },
-    [appStore, field]
+    [appStore, field],
   );
 
   const syncCurrentIndexes = useCallback(() => {
@@ -348,7 +348,7 @@ export const ArrayField = ({
       setUi(mapArrayStateToUi(newArrayState), false);
       onChange(newValue);
     },
-    [regenerateArrayState, setUi, mapArrayStateToUi, onChange]
+    [regenerateArrayState, setUi, mapArrayStateToUi, onChange],
   );
 
   // Reset array state if number of items changes
@@ -408,7 +408,7 @@ export const ArrayField = ({
           const newArrayStateItems: ItemWithId[] = reorder(
             arrayState.items,
             move.source,
-            move.target
+            move.target,
           );
 
           const state = appStore.getState().state;
@@ -461,7 +461,7 @@ export const ArrayField = ({
                           ...data,
                           [subName]: val,
                         }),
-                        ui
+                        ui,
                       );
                     }}
                     onToggleExpand={(id, isExpanded) => {
@@ -469,13 +469,13 @@ export const ArrayField = ({
                         setUi(
                           mapArrayStateToUi({
                             openId: "",
-                          })
+                          }),
                         );
                       } else {
                         setUi(
                           mapArrayStateToUi({
                             openId: id,
-                          })
+                          }),
                         );
                       }
                     }}
@@ -548,11 +548,11 @@ export const ArrayField = ({
                 const defaultProps =
                   typeof field.defaultItemProps === "function"
                     ? field.defaultItemProps(existingValue.length)
-                    : field.defaultItemProps ?? {};
+                    : (field.defaultItemProps ?? {});
 
                 const newItem = defaultSlots(
                   uniqifyItem(defaultProps),
-                  field.arrayFields
+                  field.arrayFields,
                 );
                 const newValue = [...existingValue, newItem];
 

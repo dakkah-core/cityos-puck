@@ -101,7 +101,7 @@ describe("resolved fields react to config changes", () => {
           Object.entries(fields).map(([key, field]) => [
             key,
             translations[key] ? { ...field, label: translations[key] } : field,
-          ])
+          ]),
         );
 
       const original = (base.root as any).resolveFields;
@@ -118,7 +118,7 @@ describe("resolved fields react to config changes", () => {
     };
 
     const { rerender } = render(
-      <Puck config={baseConfig} data={{}} iframe={{ enabled: false }} />
+      <Puck config={baseConfig} data={{}} iframe={{ enabled: false }} />,
     );
 
     await flush();
@@ -130,7 +130,7 @@ describe("resolved fields react to config changes", () => {
         config={translateConfig(baseConfig)}
         data={{}}
         iframe={{ enabled: false }}
-      />
+      />,
     );
 
     await flush();
@@ -140,7 +140,7 @@ describe("resolved fields react to config changes", () => {
 
     // Swap BACK — same module object identity as at mount
     rerender(
-      <Puck config={baseConfig} data={{}} iframe={{ enabled: false }} />
+      <Puck config={baseConfig} data={{}} iframe={{ enabled: false }} />,
     );
 
     await flush();
@@ -178,7 +178,7 @@ describe("resolved fields react to config changes", () => {
     };
 
     const { rerender } = render(
-      <Puck config={staleConfig} data={{}} iframe={{ enabled: false }} />
+      <Puck config={staleConfig} data={{}} iframe={{ enabled: false }} />,
     );
 
     await flush();
@@ -190,7 +190,7 @@ describe("resolved fields react to config changes", () => {
 
     // Swap config while the stale resolver is still pending
     rerender(
-      <Puck config={freshConfig} data={{}} iframe={{ enabled: false }} />
+      <Puck config={freshConfig} data={{}} iframe={{ enabled: false }} />,
     );
 
     await flush();

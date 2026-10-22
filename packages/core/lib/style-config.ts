@@ -3,7 +3,7 @@ import type { IframeConfig } from "../types";
 export type NormalizedIframeConfig = Required<IframeConfig>;
 
 export const normalizeIframeConfig = (
-  iframe?: IframeConfig
+  iframe?: IframeConfig,
 ): NormalizedIframeConfig => ({
   enabled: true,
   waitForStyles: true,

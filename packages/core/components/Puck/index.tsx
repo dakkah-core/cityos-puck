@@ -59,7 +59,7 @@ import { normalizeIframeConfig } from "../../lib/style-config";
 
 type PuckProps<
   UserConfig extends Config = Config,
-  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
 > = {
   children?: ReactNode;
   config: UserConfig;
@@ -97,7 +97,7 @@ type PuckProps<
 const propsContext = createContext<Partial<PuckProps>>({});
 
 function PropsProvider<UserConfig extends Config = Config>(
-  props: PuckProps<UserConfig>
+  props: PuckProps<UserConfig>,
 ) {
   return (
     <propsContext.Provider value={props as PuckProps}>
@@ -111,7 +111,7 @@ export const usePropsContext = () =>
 
 function PuckProvider<
   UserConfig extends Config = Config,
-  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
 >({ children }: PropsWithChildren) {
   const {
     config,
@@ -135,7 +135,7 @@ function PuckProvider<
 
   const iframe: IframeConfig = useMemo(
     () => normalizeIframeConfig(_iframe),
-    [_iframe]
+    [_iframe],
   );
 
   const [generatedAppState] = useState<G["UserAppState"]>(() => {
@@ -149,7 +149,7 @@ function PuckProvider<
       !initialData?.root?.props
     ) {
       console.warn(
-        "Warning: Defining props on `root` is deprecated. Please use `root.props`, or republish this page to migrate automatically."
+        "Warning: Defining props on `root` is deprecated. Please use `root.props`, or republish this page to migrate automatically.",
       );
     }
 
@@ -163,7 +163,7 @@ function PuckProvider<
 
     const root = populateIds(
       toComponent({ ...initialData?.root, props: defaultedRootProps }),
-      config
+      config,
     );
 
     const newAppState = {
@@ -190,7 +190,7 @@ function PuckProvider<
                   },
                 };
               },
-              {}
+              {},
             )
           : {},
       },
@@ -218,7 +218,7 @@ function PuckProvider<
         ...history,
         state: newState,
       };
-    })
+    }),
   );
 
   const initialHistoryIndex = useMemo(() => {
@@ -244,7 +244,7 @@ function PuckProvider<
     const _plugins: Plugin[] = plugins || [];
     const pluginFieldTransforms = _plugins.reduce<FieldTransforms>(
       (acc, plugin) => ({ ...acc, ...plugin.fieldTransforms }),
-      {}
+      {},
     );
 
     return {
@@ -289,11 +289,11 @@ function PuckProvider<
       dictionary,
       dnd,
       loadedFieldTransforms,
-    ]
+    ],
   );
 
   const [appStore] = useState(() =>
-    createAppStore(generateAppStore(initialAppState))
+    createAppStore(generateAppStore(initialAppState)),
   );
 
   useEffect(() => {
@@ -329,7 +329,7 @@ function PuckProvider<
 
           previousData.current = data;
         }
-      }
+      },
     );
   }, [onChange]);
 
@@ -357,7 +357,7 @@ function PuckProvider<
 
 export function Puck<
   UserConfig extends Config = Config,
-  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
 >(props: PuckProps<UserConfig>) {
   return (
     <PropsProvider {...props}>

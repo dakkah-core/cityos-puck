@@ -24,7 +24,7 @@ export const Editor = memo((props: EditorProps) => {
 
   const loadedExtensions = useMemo(
     () => [PuckRichText.configure(options), ...extensions],
-    [field, extensions]
+    [field, extensions],
   );
 
   const appStoreApi = useAppStoreApi();

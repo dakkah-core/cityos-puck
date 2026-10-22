@@ -24,7 +24,7 @@ export const FrameProvider: React.FC<{ children: React.ReactNode }> = ({
     () => ({
       frameRef,
     }),
-    []
+    [],
   );
 
   return (

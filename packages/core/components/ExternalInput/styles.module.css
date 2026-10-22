@@ -64,7 +64,8 @@
   justify-content: center;
   padding: var(--puck-space-2) var(--puck-space-3);
   position: relative;
-  transition: background-color var(--puck-duration-fast) var(--puck-ease-exit),
+  transition:
+    background-color var(--puck-duration-fast) var(--puck-ease-exit),
     color var(--puck-duration-fast) var(--puck-ease-exit);
   margin-inline-start: -1px;
   cursor: pointer;

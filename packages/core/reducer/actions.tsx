@@ -65,7 +65,7 @@ export type SetAction<UserData extends Data = Data> = {
   state:
     | Partial<PrivateAppState<UserData>>
     | ((
-        previous: PrivateAppState<UserData>
+        previous: PrivateAppState<UserData>,
       ) => Partial<PrivateAppState<UserData>>);
 };
 

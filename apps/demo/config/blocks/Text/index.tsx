@@ -69,8 +69,8 @@ const TextInner: ComponentConfig<TextProps> = {
               align === "center"
                 ? "center"
                 : align === "right"
-                ? "flex-end"
-                : "flex-start",
+                  ? "flex-end"
+                  : "flex-start",
           }}
         >
           {text}

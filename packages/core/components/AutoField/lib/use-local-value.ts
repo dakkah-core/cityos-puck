@@ -29,7 +29,7 @@ type UseLocalValueOptions = {
 export const useLocalValue = (
   path: string,
   onChange: (value: any, ...rest: any[]) => void,
-  { tracked = true, fallback }: UseLocalValueOptions = {}
+  { tracked = true, fallback }: UseLocalValueOptions = {},
 ) => {
   const value = useDeepField(path, tracked);
   const isFocused = useIsFocused(path);
@@ -42,7 +42,7 @@ export const useLocalValue = (
 
       onChange(val, ...rest);
     },
-    [onChange]
+    [onChange],
   );
 
   useEffect(() => {

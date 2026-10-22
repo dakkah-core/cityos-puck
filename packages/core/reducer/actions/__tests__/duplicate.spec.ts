@@ -51,7 +51,7 @@ describe("Reducer", () => {
           newState.data.content[1],
           [rootDroppableId],
           1,
-          config
+          config,
         );
       });
 
@@ -93,7 +93,7 @@ describe("Reducer", () => {
           zone[1],
           [rootDroppableId, dzZoneCompound],
           1,
-          config
+          config,
         );
       });
 
@@ -125,7 +125,7 @@ describe("Reducer", () => {
               },
             },
           },
-          config
+          config,
         );
 
         const newState = reducer(state, {
@@ -152,7 +152,7 @@ describe("Reducer", () => {
           zone2[0],
           [rootDroppableId, zone2ZoneCompound],
           0,
-          config
+          config,
         );
 
         const zone3ZoneCompound = `${zone2[0].props.id}:zone`;
@@ -166,7 +166,7 @@ describe("Reducer", () => {
           zone3[0],
           [rootDroppableId, zone2ZoneCompound, zone3ZoneCompound],
           0,
-          config
+          config,
         );
       });
 
@@ -271,7 +271,7 @@ describe("Reducer", () => {
           content[1],
           ["root:slot", "first:slot"],
           1,
-          config
+          config,
         );
       });
 
@@ -321,7 +321,7 @@ describe("Reducer", () => {
           content[1],
           [rootDroppableId, dzZoneCompound, "first:slot"],
           1,
-          config
+          config,
         );
       });
 
@@ -376,7 +376,7 @@ describe("Reducer", () => {
           zone2[0],
           ["root:slot", zone2ZoneCompound],
           0,
-          config
+          config,
         );
       });
 

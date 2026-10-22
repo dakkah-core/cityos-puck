@@ -35,7 +35,7 @@ type GapCandidate = {
 export const getNearestGapIndex = (
   zoneEl: Element,
   pointer: Point,
-  contentIds: string[]
+  contentIds: string[],
 ): number | null => {
   const win = zoneEl.ownerDocument.defaultView;
 
@@ -48,8 +48,8 @@ export const getNearestGapIndex = (
   // virtualized zones only render a window of their content, so DOM order can't be used as the index directly.
   const rendered = Array.from(
     zoneEl.querySelectorAll(
-      ":scope > [data-puck-component]:not([data-dnd-dragging]):not([data-dnd-placeholder])"
-    )
+      ":scope > [data-puck-component]:not([data-dnd-dragging]):not([data-dnd-placeholder])",
+    ),
   )
     .map((el) => ({
       index: indexById.get(el.getAttribute("data-puck-component") ?? "") ?? -1,
@@ -74,7 +74,7 @@ export const getNearestGapIndex = (
     index: number,
     main: number,
     cross: DOMRect,
-    lane: DOMRect[] = [cross]
+    lane: DOMRect[] = [cross],
   ): GapCandidate => {
     let lane1 = Infinity;
     let lane2 = -Infinity;
@@ -110,7 +110,7 @@ export const getNearestGapIndex = (
   const createEdgeCandidate = (
     index: number,
     rect: DOMRect,
-    side: "before" | "after"
+    side: "before" | "after",
   ) => {
     const main = side === "before" ? start(rect) : end(rect);
 
@@ -149,7 +149,7 @@ export const getNearestGapIndex = (
       const mid = (end(prev.rect) + start(next.rect)) / 2;
 
       candidates.push(
-        getGapAt(next.index, mid, next.rect, [prev.rect, next.rect])
+        getGapAt(next.index, mid, next.rect, [prev.rect, next.rect]),
       );
     }
   }

@@ -3,6 +3,32 @@
 The package is published from `dakkah-core/cityos-puck` by
 `.github/workflows/publish-cityos.yml`.
 
+## Qualification and publication
+
+Run `qualify-cityos.yml` on the selected fork `main` commit and supply the exact
+authoritative CMS/Studio commit as `cms_commit`. The source is fetched from
+`consumerRepository` in `config/upstream/integration.json`, using that exact
+commit without a floating checkout or a substitute from a stale mirror.
+
+Qualification retains source-boundary checks, core tests, packed
+ESM/CommonJS/React server/TypeScript consumers, and actual CMS/Studio host
+qualification against a separately pinned consumer commit. Mounted fork-local
+editor checks supplement the required cross-repository host check.
+
+The successful run uploads `cityos-puck-qualified-<source-sha>`, containing
+`package.tgz`, `receipt.json`, and hashed executed-check logs. The receipt binds
+the clean source identity, lockfile, package version, required checks, and exact
+archive bytes, together with the tested CMS/Studio revision and its relevant
+configuration and dependency identities. Missing or failing host qualification
+blocks publication. Qualification makes no claim about browser drag geometry or
+deployed runtime readiness.
+
+Run `publish-cityos.yml` on the same `main` commit and supply that successful
+run's ID as `qualification_run_id`. Publication verifies the receipt and logs
+again and publishes the same archive with the `cityos` tag, provenance, and
+lifecycle scripts disabled. A subsequent source change requires a new
+qualification run.
+
 ## npm Trusted Publishing
 
 Configure a GitHub Actions trusted publisher on the npm package settings page:

@@ -32,7 +32,7 @@ export const EmptyZonePlaceholder = ({
     <li
       className={mergeClassNames(
         getClassName("helper"),
-        isRoot ? getClassName("helperRoot") : undefined
+        isRoot ? getClassName("helperRoot") : undefined,
       )}
       data-puck-drop-target={isDropTarget || undefined}
       ref={ref}

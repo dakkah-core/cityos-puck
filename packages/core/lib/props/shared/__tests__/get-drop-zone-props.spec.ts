@@ -46,7 +46,7 @@ describe("getDropZoneProps", () => {
     expect(props.allow).toBe(allProps.allow);
     expect(forwardableProps.onClick).toBe(onClick);
     expect(nonForwardableProps.dangerouslySetInnerHTML).toBe(
-      dangerouslySetInnerHTML
+      dangerouslySetInnerHTML,
     );
   });
 
@@ -66,7 +66,7 @@ describe("getDropZoneProps", () => {
   it("uses null-prototype groups so an own `__proto__` key can't pollute prototypes", () => {
     // JSON.parse produces an *own* enumerable `__proto__` key (object literals don't)
     const malicious = JSON.parse(
-      '{ "zone": "z", "__proto__": { "polluted": true } }'
+      '{ "zone": "z", "__proto__": { "polluted": true } }',
     );
 
     const { props, forwardableProps, nonForwardableProps } =

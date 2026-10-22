@@ -12,7 +12,7 @@ import { mapDeep } from "./mapDeep";
 const RichTextRender = lazy(() =>
   import("../components/Render").then((m) => ({
     default: m.RichTextRender,
-  }))
+  })),
 );
 
 type RichtextPath = {
@@ -22,20 +22,16 @@ type RichtextPath = {
 
 export function useRichtextProps(
   fields:
-    | Fields<any, {}>
-    | Fields<any, { type: string } & BaseField>
-    | undefined,
+    Fields<any, {}> | Fields<any, { type: string } & BaseField> | undefined,
   props: {
     [x: string]: any;
   },
-  fieldTransforms?: FieldTransforms
+  fieldTransforms?: FieldTransforms,
 ) {
   const findAllRichtextKeys = (
     fields:
-      | Fields<any, {}>
-      | Fields<any, { type: string } & BaseField>
-      | undefined,
-    path: string[] = []
+      Fields<any, {}> | Fields<any, { type: string } & BaseField> | undefined,
+    path: string[] = [],
   ): RichtextPath[] => {
     if (!fields) return [];
 
@@ -73,7 +69,7 @@ export function useRichtextProps(
 
   const richtextKeys = useMemo(
     () => findAllRichtextKeys(fields),
-    [fields, fieldTransforms]
+    [fields, fieldTransforms],
   );
 
   const richtextProps = useMemo(() => {

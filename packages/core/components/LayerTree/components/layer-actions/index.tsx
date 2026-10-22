@@ -32,7 +32,7 @@ export const LayerActions = ({
     useShallow((s) => {
       const item = getItem(
         { index: node.index, zone: node.zoneCompound },
-        s.state
+        s.state,
       );
       const itemPermissions = s.permissions.getPermissions({ item });
 
@@ -40,7 +40,7 @@ export const LayerActions = ({
         delete: itemPermissions.delete,
         duplicate: itemPermissions.duplicate,
       };
-    })
+    }),
   );
 
   const duplicateMsg = useMessage("outline-item-duplicate");
@@ -61,7 +61,7 @@ export const LayerActions = ({
         zone: node.zoneCompound,
       });
     },
-    [dispatch, outlineStore, node]
+    [dispatch, outlineStore, node],
   );
 
   const duplicateItem = useCallback(
@@ -79,7 +79,7 @@ export const LayerActions = ({
         sourceZone: node.zoneCompound,
       });
     },
-    [dispatch, outlineStore, node.index, node.zoneCompound]
+    [dispatch, outlineStore, node.index, node.zoneCompound],
   );
 
   if (!permissions.delete && !permissions.duplicate) {

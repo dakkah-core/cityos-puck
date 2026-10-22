@@ -117,7 +117,7 @@ describe("Puck", () => {
     componentBRender.mockClear();
     document
       .querySelectorAll(
-        `[${PUCK_STYLE_SOURCE_ATTRIBUTE}="${PUCK_STYLE_SOURCE_VALUE}"]`
+        `[${PUCK_STYLE_SOURCE_ATTRIBUTE}="${PUCK_STYLE_SOURCE_VALUE}"]`,
       )
       .forEach((el) => el.remove());
     document.querySelectorAll("[data-test-style]").forEach((el) => el.remove());
@@ -154,7 +154,7 @@ describe("Puck", () => {
       <>
         <Puck config={config} data={{}} iframe={{ enabled: false }} />
         <Puck config={config} data={{}} iframe={{ enabled: false }} />
-      </>
+      </>,
     );
 
     await flush();
@@ -189,7 +189,7 @@ describe("Puck", () => {
           iframe={{ enabled: false }}
           plugins={[plugin]}
           ui={{ plugin: { current: "custom" } }}
-        />
+        />,
       );
 
       await flush();
@@ -220,7 +220,7 @@ describe("Puck", () => {
           },
         }}
         iframe={{ enabled: false }}
-      />
+      />,
     );
 
     await flush();
@@ -269,15 +269,15 @@ describe("Puck", () => {
       <>
         <Puck config={config} data={{}} iframe={{ enabled: false }} />
         <Puck config={config} data={{}} iframe={{ enabled: false }} />
-      </>
+      </>,
     );
 
     await flush();
 
     expect(
       document.head.querySelectorAll(
-        `[${PUCK_STYLE_ID_ATTRIBUTE}="${PUCK_STYLE_IDS.uiDefault}"]`
-      )
+        `[${PUCK_STYLE_ID_ATTRIBUTE}="${PUCK_STYLE_IDS.uiDefault}"]`,
+      ),
     ).toHaveLength(1);
 
     unmount();
@@ -285,8 +285,8 @@ describe("Puck", () => {
 
     expect(
       document.head.querySelectorAll(
-        `[${PUCK_STYLE_ID_ATTRIBUTE}="${PUCK_STYLE_IDS.uiDefault}"]`
-      )
+        `[${PUCK_STYLE_ID_ATTRIBUTE}="${PUCK_STYLE_IDS.uiDefault}"]`,
+      ),
     ).toHaveLength(0);
   });
 
@@ -298,7 +298,7 @@ describe("Puck", () => {
     puckStyle.textContent = ".puck-ui { color: black; }";
     puckStyle.setAttribute(
       PUCK_STYLE_SOURCE_ATTRIBUTE,
-      PUCK_STYLE_SOURCE_VALUE
+      PUCK_STYLE_SOURCE_VALUE,
     );
 
     expect(shouldMirrorStyleElement(hostStyle)).toBe(true);
@@ -318,12 +318,12 @@ describe("Puck", () => {
     await flush();
 
     const interactionStyle = targetDocument.head.querySelector(
-      `[${PUCK_STYLE_ID_ATTRIBUTE}="${PUCK_STYLE_IDS.iframeInteractions}"]`
+      `[${PUCK_STYLE_ID_ATTRIBUTE}="${PUCK_STYLE_IDS.iframeInteractions}"]`,
     );
 
     expect(interactionStyle).not.toBeNull();
     expect(interactionStyle?.getAttribute(PUCK_STYLE_SOURCE_ATTRIBUTE)).toBe(
-      PUCK_STYLE_SOURCE_VALUE
+      PUCK_STYLE_SOURCE_VALUE,
     );
   });
 
@@ -370,7 +370,7 @@ describe("Puck", () => {
     // like Breadcrumbs (insertBefore NotFoundError). translate="no" is inherited,
     // so marking the root opts the entire chrome out in one place. See PUCK-569.
     const { container } = render(
-      <Puck config={config} data={{}} iframe={{ enabled: false }} />
+      <Puck config={config} data={{}} iframe={{ enabled: false }} />,
     );
 
     await flush();

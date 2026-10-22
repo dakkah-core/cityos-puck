@@ -16,17 +16,17 @@ type Version4Options = {
 function v4(
   options?: Version4Options,
   buf?: undefined,
-  offset?: number
+  offset?: number,
 ): string;
 function v4<TBuf extends Uint8Array = Uint8Array>(
   options: Version4Options | undefined,
   buf: TBuf,
-  offset?: number
+  offset?: number,
 ): TBuf;
 function v4<TBuf extends Uint8Array = Uint8Array>(
   options?: Version4Options,
   buf?: TBuf,
-  offset?: number
+  offset?: number,
 ): UUIDTypes<TBuf> {
   if (!buf && !options && crypto.randomUUID) {
     return crypto.randomUUID();
@@ -42,7 +42,7 @@ function v4<TBuf extends Uint8Array = Uint8Array>(
 function _v4<TBuf extends Uint8Array = Uint8Array>(
   options?: Version4Options,
   buf?: TBuf,
-  offset?: number
+  offset?: number,
 ): UUIDTypes<TBuf> {
   options = options || {};
 
@@ -60,7 +60,7 @@ function _v4<TBuf extends Uint8Array = Uint8Array>(
     offset = offset || 0;
     if (offset < 0 || offset + 16 > buf.length) {
       throw new RangeError(
-        `UUID byte range ${offset}:${offset + 15} is out of buffer bounds`
+        `UUID byte range ${offset}:${offset + 15} is out of buffer bounds`,
       );
     }
 

@@ -16,7 +16,7 @@ export type NodesSlice = {
 
 export const createNodesSlice = (
   _set: (newState: Partial<AppStore>) => void,
-  _get: () => AppStore
+  _get: () => AppStore,
 ): NodesSlice => {
   const registry = new Map<string, NodeHandle>();
 

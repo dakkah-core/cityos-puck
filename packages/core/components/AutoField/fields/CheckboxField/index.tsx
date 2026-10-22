@@ -47,9 +47,9 @@ export const CheckboxField = ({
                     .filter((o) =>
                       o.value === option.value
                         ? e.target.checked
-                        : selected.includes(o.value)
+                        : selected.includes(o.value),
                     )
-                    .map((o) => o.value)
+                    .map((o) => o.value),
                 );
               }}
               disabled={readOnly}

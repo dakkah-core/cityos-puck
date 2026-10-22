@@ -27,12 +27,12 @@ const EMPTY_FIELD_CONFIG = {} as const;
  */
 function useRenderProps<
   T extends ComponentData | RootData,
-  UserConfig extends Config
+  UserConfig extends Config,
 >(
   config: UserConfig,
   component: T,
   renderSlot: (dzProps: DropZoneProps & { content: Content }) => ReactNode,
-  fieldTransforms?: FieldTransforms
+  fieldTransforms?: FieldTransforms,
 ): T["props"] {
   // Apply all transforms
   const transformedProps: T["props"] = useFieldTransforms(
@@ -40,7 +40,7 @@ function useRenderProps<
     component as ComponentData,
     { ...getSlotTransform(renderSlot), ...fieldTransforms },
     undefined,
-    true
+    true,
   );
 
   const isRoot = !("type" in component) || component.type === "root";
@@ -53,7 +53,7 @@ function useRenderProps<
   const richtextProps = useRichtextProps(
     componentFields,
     transformedProps,
-    fieldTransforms
+    fieldTransforms,
   );
 
   // Merge the transformed props with the richtext props and return

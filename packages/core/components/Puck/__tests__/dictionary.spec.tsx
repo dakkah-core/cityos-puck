@@ -93,7 +93,7 @@ describe("Puck dictionary prop", () => {
         data={{}}
         iframe={{ enabled: false }}
         dictionary={{ "header-publish": "Publicar" }}
-      />
+      />,
     );
 
     await flush();
@@ -113,7 +113,7 @@ describe("Puck dictionary prop", () => {
         data={{}}
         iframe={{ enabled: false }}
         dictionary={{ "header-publish": "Publicar" }}
-      />
+      />,
     );
 
     await flush();
@@ -126,7 +126,7 @@ describe("Puck dictionary prop", () => {
         data={{}}
         iframe={{ enabled: false }}
         dictionary={{ "header-publish": "Veröffentlichen" }}
-      />
+      />,
     );
 
     await flush();
@@ -142,7 +142,7 @@ describe("Puck dictionary prop", () => {
         data={{}}
         iframe={{ enabled: false }}
         dictionary={{ "header-publish": "" }}
-      />
+      />,
     );
 
     await flush();
@@ -159,7 +159,7 @@ describe("Puck dictionary prop", () => {
         data={{}}
         iframe={{ enabled: false }}
         dictionary={{}}
-      />
+      />,
     );
 
     await flush();
@@ -189,7 +189,7 @@ describe("Puck dictionary prop", () => {
     const es = { title: "Título", links: "Enlaces" };
 
     const { rerender } = render(
-      <Puck config={makeConfig(en)} data={{}} iframe={{ enabled: false }} />
+      <Puck config={makeConfig(en)} data={{}} iframe={{ enabled: false }} />,
     );
 
     await flush();
@@ -200,7 +200,7 @@ describe("Puck dictionary prop", () => {
     expect(screen.getAllByText("Links").length).toBeGreaterThan(0);
 
     rerender(
-      <Puck config={makeConfig(es)} data={{}} iframe={{ enabled: false }} />
+      <Puck config={makeConfig(es)} data={{}} iframe={{ enabled: false }} />,
     );
 
     await flush();
@@ -212,7 +212,7 @@ describe("Puck dictionary prop", () => {
     // Swapping BACK must also update — this used to get stuck because the
     // fields slice cached the resolved fields and never watched the config.
     rerender(
-      <Puck config={makeConfig(en)} data={{}} iframe={{ enabled: false }} />
+      <Puck config={makeConfig(en)} data={{}} iframe={{ enabled: false }} />,
     );
 
     await flush();
@@ -232,7 +232,7 @@ describe("Puck dictionary prop", () => {
     };
 
     const { rerender } = render(
-      <Puck config={categoryConfig} data={{}} iframe={{ enabled: false }} />
+      <Puck config={categoryConfig} data={{}} iframe={{ enabled: false }} />,
     );
 
     await flush();
@@ -247,7 +247,7 @@ describe("Puck dictionary prop", () => {
         data={{}}
         iframe={{ enabled: false }}
         dictionary={{ "drawer-category-collapse": "Cerrar {title}" }}
-      />
+      />,
     );
 
     await flush();

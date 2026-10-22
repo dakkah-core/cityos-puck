@@ -119,7 +119,7 @@ export const walkField = ({
           id,
           config,
           recurseSlots,
-        })
+        }),
       );
 
       if (containsPromise(newValue)) {
@@ -213,7 +213,7 @@ export function mapFields<T extends ComponentData | RootData>(
   config: Config,
   recurseSlots?: boolean,
   shouldDefaultSlots?: boolean,
-  fieldsToMap?: string[]
+  fieldsToMap?: string[],
 ): T;
 
 export function mapFields<T extends ComponentData | RootData>(
@@ -222,7 +222,7 @@ export function mapFields<T extends ComponentData | RootData>(
   config: Config,
   recurseSlots?: boolean,
   shouldDefaultSlots?: boolean,
-  fieldsToMap?: string[]
+  fieldsToMap?: string[],
 ): Promise<T>;
 
 /**
@@ -243,7 +243,7 @@ export function mapFields(
   config: Config,
   recurseSlots: boolean = false,
   shouldDefaultSlots: boolean = true,
-  fieldsToMap?: string[]
+  fieldsToMap?: string[],
 ): any {
   const itemType = "type" in item ? item.type : "root";
 
@@ -256,7 +256,7 @@ export function mapFields(
       : item.props,
     fields: componentConfig?.fields ?? {},
     mappers,
-    id: item.props ? item.props.id ?? "root" : "root",
+    id: item.props ? (item.props.id ?? "root") : "root",
     getPropPath: (k) => k,
     config,
     recurseSlots,

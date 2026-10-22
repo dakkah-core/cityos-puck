@@ -20,7 +20,7 @@ const createEmotionCachePlugin = (key: string): Plugin => {
                 createCache({
                   key,
                   container: document.head,
-                })
+                }),
               );
             }
           }, 0);

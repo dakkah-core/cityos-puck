@@ -23,7 +23,7 @@ const getZoneLabel = (
   zoneCompound: string,
   nodes: NodeIndex,
   config: Config,
-  label?: string
+  label?: string,
 ) => {
   if (label !== undefined) {
     return label;
@@ -71,7 +71,7 @@ const buildLayerNode = ({
         zoneCompound: childZoneCompound,
         zones,
         zonesByParent,
-      })
+      }),
     ),
     componentType,
     index,
@@ -122,7 +122,7 @@ export const buildLayerTree = ({
         zoneCompound,
         zones,
         zonesByParent,
-      })
+      }),
     ),
     label: getZoneLabel(zoneCompound, nodes, config, label),
     zoneCompound,

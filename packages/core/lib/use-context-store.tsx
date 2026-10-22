@@ -14,7 +14,7 @@ type ExtractState<S> = S extends {
  */
 export function useContextStore<T, U>(
   context: Context<StoreApi<T>>,
-  selector: (s: ExtractState<StoreApi<T>>) => U
+  selector: (s: ExtractState<StoreApi<T>>) => U,
 ): U {
   const store = useContext(context);
 
@@ -26,7 +26,7 @@ export function useContextStore<T, U>(
 }
 
 export function createStoreProvider<ValueType>(
-  ContextComponent: Context<StoreApi<ValueType>>
+  ContextComponent: Context<StoreApi<ValueType>>,
 ) {
   const StoreProvider = ({
     children,
@@ -49,7 +49,7 @@ export function createStoreProvider<ValueType>(
 
 export function createContextStore<ValueType>(defaultValue: ValueType) {
   const ctx = createContext<StoreApi<ValueType>>(
-    createStore(subscribeWithSelector(() => defaultValue))
+    createStore(subscribeWithSelector(() => defaultValue)),
   );
 
   return {

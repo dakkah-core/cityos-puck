@@ -46,9 +46,9 @@ const useOutlineDropZone = ({
         {
           kind: "zone",
           zoneCompound,
-        }
+        },
       ),
-    [appStore, outlineStore, zoneCompound]
+    [appStore, outlineStore, zoneCompound],
   );
 
   const { ref } = useDroppable<OutlineZoneDndData>({
@@ -60,12 +60,12 @@ const useOutlineDropZone = ({
   });
 
   const isDropTarget = useOutlineDndStore(
-    (s) => s.indicator?.targetId === dndId
+    (s) => s.indicator?.targetId === dndId,
   );
 
   const outlineDropZoneObject = useMemo(
     () => ({ isDropTarget, ref }),
-    [isDropTarget, ref]
+    [isDropTarget, ref],
   );
 
   return outlineDropZoneObject;

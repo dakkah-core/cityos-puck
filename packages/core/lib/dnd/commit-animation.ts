@@ -41,7 +41,7 @@ export const waitForCommit = (
     getExpectedOrder,
     initialExpectedOrder = [],
   }: WaitForCommitOptions,
-  callback: (committed: HTMLElement | null) => void
+  callback: (committed: HTMLElement | null) => void,
 ) => {
   const initialIds = new Set(initialExpectedOrder);
 
@@ -56,18 +56,18 @@ export const waitForCommit = (
       itemId ?? expected.find((id) => !initialIds.has(id));
 
     const committed = committedItemId
-      ? zoneEl?.querySelector<HTMLElement>(
+      ? (zoneEl?.querySelector<HTMLElement>(
           `:scope > ${getComponentSelector(
-            committedItemId
-          )}:not([data-dnd-dragging]):not([data-dnd-placeholder])`
-        ) ?? null
+            committedItemId,
+          )}:not([data-dnd-dragging]):not([data-dnd-placeholder])`,
+        ) ?? null)
       : null;
 
     const rendered = zoneEl
       ? Array.from(
           zoneEl.querySelectorAll(
-            ":scope > [data-puck-component]:not([data-dnd-dragging]):not([data-dnd-placeholder])"
-          )
+            ":scope > [data-puck-component]:not([data-dnd-dragging]):not([data-dnd-placeholder])",
+          ),
         ).map((el) => el.getAttribute("data-puck-component"))
       : [];
 
@@ -84,8 +84,8 @@ export const waitForCommit = (
         zone === targetZone ||
         !committedItemId ||
         !doc.querySelector(
-          `${getZoneSelector(zone)} > ${getComponentSelector(committedItemId)}`
-        )
+          `${getZoneSelector(zone)} > ${getComponentSelector(committedItemId)}`,
+        ),
     );
 
     if (

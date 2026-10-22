@@ -29,12 +29,12 @@ export const getDistanceToSegment = (point: Point, segment: Segment) => {
   const x = clamp(
     point.x,
     Math.min(segment.x1, segment.x2),
-    Math.max(segment.x1, segment.x2)
+    Math.max(segment.x1, segment.x2),
   );
   const y = clamp(
     point.y,
     Math.min(segment.y1, segment.y2),
-    Math.max(segment.y1, segment.y2)
+    Math.max(segment.y1, segment.y2),
   );
 
   return Math.hypot(point.x - x, point.y - y);

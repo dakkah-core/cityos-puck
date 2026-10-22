@@ -27,13 +27,13 @@ import { getSelectorForId } from "../../get-selector-for-id";
 const Editor = lazy(() =>
   import("../../../components/RichTextEditor/components/Editor").then((m) => ({
     default: m.Editor,
-  }))
+  })),
 );
 
 const RichTextRender = lazy(() =>
   import("../../../components/RichTextEditor/components/Render").then((m) => ({
     default: m.RichTextRender,
-  }))
+  })),
 );
 
 const InlineEditorWrapper = memo(
@@ -64,7 +64,7 @@ const InlineEditorWrapper = memo(
 
       const itemSelector = getSelectorForId(
         appStoreApi.getState().state,
-        componentId
+        componentId,
       );
 
       appStoreApi.getState().setUi({ itemSelector });
@@ -91,10 +91,10 @@ const InlineEditorWrapper = memo(
           appStoreApi.getState,
           "replace",
           true,
-          ui
+          ui,
         );
       },
-      [appStoreApi, componentId, propPath]
+      [appStoreApi, componentId, propPath],
     );
 
     const handleFocus = useCallback(
@@ -109,7 +109,7 @@ const InlineEditorWrapper = memo(
           },
         });
       },
-      [field, componentId]
+      [field, componentId],
     );
 
     if (!field.contentEditable)
@@ -140,7 +140,7 @@ const InlineEditorWrapper = memo(
         </Suspense>
       </div>
     );
-  }
+  },
 );
 
 InlineEditorWrapper.displayName = "InlineEditorWrapper";

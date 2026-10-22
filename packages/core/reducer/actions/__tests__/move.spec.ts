@@ -73,7 +73,7 @@ describe("Reducer", () => {
           newState,
           newState.data.zones?.[dzZoneCompound][0],
           [rootDroppableId, dzZoneCompound],
-          0
+          0,
         );
         expectIndexed(newState, newState.data.content[0], [rootDroppableId], 0);
       });
@@ -111,13 +111,13 @@ describe("Reducer", () => {
           newState,
           newState.data.root.props?.slot[0],
           ["root:slot"],
-          0
+          0,
         );
         expectIndexed(
           newState,
           newState.data.root.props?.slot[1],
           ["root:slot"],
-          1
+          1,
         );
       });
 
@@ -168,7 +168,7 @@ describe("Reducer", () => {
           newState,
           item3,
           [rootDroppableId, dzZoneCompound, "2:slot"],
-          0
+          0,
         );
       });
     });

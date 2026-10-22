@@ -62,7 +62,9 @@ export const VirtualizedLayerTreeItems = ({
   // Pin the dragged row so autoscroll can't unmount the drag source
   // mid-drag, which would kill the drag operation
   const pinnedIndex = useOutlineDndStore((s) =>
-    s.draggedRow?.zoneCompound === tree.zoneCompound ? s.draggedRow.index : null
+    s.draggedRow?.zoneCompound === tree.zoneCompound
+      ? s.draggedRow.index
+      : null,
   );
 
   const rangeExtractor = useCallback(
@@ -76,7 +78,7 @@ export const VirtualizedLayerTreeItems = ({
 
       return indexes;
     },
-    [pinnedIndex]
+    [pinnedIndex],
   );
 
   const virtualizer = useVirtualizer({
@@ -114,7 +116,7 @@ export const VirtualizedLayerTreeItems = ({
           key={`gap:${tree.zoneCompound}:${previousIndex}:${virtualItem.index}`}
           aria-hidden="true"
           style={{ height: `${gapSize}px` }}
-        />
+        />,
       );
     }
 
@@ -127,7 +129,7 @@ export const VirtualizedLayerTreeItems = ({
         node={node}
         ref={virtualizer.measureElement}
         selectedId={selectedId}
-      />
+      />,
     );
 
     previousEnd = virtualItem.end;
@@ -142,7 +144,7 @@ export const VirtualizedLayerTreeItems = ({
         key={`gap:${tree.zoneCompound}:${previousIndex}:end`}
         aria-hidden="true"
         style={{ height: `${trailingGap}px` }}
-      />
+      />,
     );
   }
 

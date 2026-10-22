@@ -114,7 +114,7 @@ describe("Reducer", () => {
           state,
           item,
           ["root:slot", `${state.data.root.props?.slot[0].props?.id}:slot`],
-          0
+          0,
         );
       });
 

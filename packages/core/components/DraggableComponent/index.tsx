@@ -122,10 +122,10 @@ export const DraggableComponent = ({
   itemRef?: Ref<HTMLElement>;
 }) => {
   const zoom = useAppStore((s) =>
-    s.selectedItem?.props.id === id ? s.zoomConfig.zoom : 1
+    s.selectedItem?.props.id === id ? s.zoomConfig.zoom : 1,
   );
   const _experimentalFullScreenCanvas = useAppStore(
-    (s) => s._experimentalFullScreenCanvas
+    (s) => s._experimentalFullScreenCanvas,
   );
   const overrides = useAppStore((s) => s.overrides);
   const dispatch = useAppStore((s) => s.dispatch);
@@ -146,7 +146,7 @@ export const DraggableComponent = ({
         [zoneCompound]: active,
       }));
     },
-    [setLocalZones]
+    [setLocalZones],
   );
 
   const unregisterLocalZone = useCallback(
@@ -164,7 +164,7 @@ export const DraggableComponent = ({
         return newLocalZones;
       });
     },
-    [setLocalZones]
+    [setLocalZones],
   );
 
   const containsActiveZone =
@@ -176,7 +176,7 @@ export const DraggableComponent = ({
       const item = getItem({ index, zone: zoneCompound }, s.state);
 
       return s.permissions.getPermissions({ item });
-    })
+    }),
   );
 
   const zoneStore = useContext(ZoneStoreContext);
@@ -186,7 +186,7 @@ export const DraggableComponent = ({
 
   const dynamicCollisionDetector = useMemo(
     () => createDynamicCollisionDetector(dragAxis),
-    [dragAxis]
+    [dragAxis],
   );
 
   // The default drop animation targets the source placeholder. Line drags and
@@ -265,7 +265,7 @@ export const DraggableComponent = ({
         }
       }
     },
-    [itemRef, sortableRef]
+    [itemRef, sortableRef],
   );
 
   const [portalEl, setPortalEl] = useState<HTMLElement>();
@@ -274,8 +274,8 @@ export const DraggableComponent = ({
     setPortalEl(
       iframe.enabled
         ? ref.current?.ownerDocument.body
-        : ref.current?.closest<HTMLElement>("[data-puck-preview]") ??
-            document.body
+        : (ref.current?.closest<HTMLElement>("[data-puck-preview]") ??
+            document.body),
     );
   }, [iframe.enabled]);
 
@@ -412,12 +412,12 @@ export const DraggableComponent = ({
 
   const CustomActionBar = useMemo(
     () => overrides.actionBar || DefaultActionBar,
-    [overrides.actionBar]
+    [overrides.actionBar],
   );
 
   const CustomOverlay = useMemo(
     () => overrides.componentOverlay || DefaultOverlay,
-    [overrides.componentOverlay]
+    [overrides.componentOverlay],
   );
 
   const onClick = useCallback(
@@ -451,7 +451,7 @@ export const DraggableComponent = ({
         });
       }
     },
-    [index, zoneCompound, id, isSelected, _experimentalFullScreenCanvas]
+    [index, zoneCompound, id, isSelected, _experimentalFullScreenCanvas],
   );
 
   const onSelectParent = useCallback(() => {
@@ -467,7 +467,7 @@ export const DraggableComponent = ({
     const parentZoneCompound = `${parentNode.parentId}:${parentNode.zone}`;
 
     const parentIndex = zones[parentZoneCompound].contentIds.indexOf(
-      node.parentId
+      node.parentId,
     );
 
     dispatch({
@@ -501,7 +501,7 @@ export const DraggableComponent = ({
 
   const indicativeHover = useContextStore(
     ZoneStoreContext,
-    (s) => s.hoveringComponent === id
+    (s) => s.hoveringComponent === id,
   );
 
   useEffect(() => {
@@ -682,7 +682,7 @@ export const DraggableComponent = ({
         }
       }
     },
-    [zoom]
+    [zoom],
   );
 
   const actionBarRef = useRef<HTMLDivElement>(null);
@@ -725,7 +725,7 @@ export const DraggableComponent = ({
           <CornerLeftUp size={16} />
         </ActionBar.Action>
       ),
-    [ctx?.areaId, selectParentLabel]
+    [ctx?.areaId, selectParentLabel],
   );
 
   const nextContextValue = useMemo<DropZoneContext>(
@@ -746,11 +746,11 @@ export const DraggableComponent = ({
       depth,
       registerLocalZone,
       unregisterLocalZone,
-    ]
+    ],
   );
 
   const richText = useAppStore((s) =>
-    s.currentRichText?.inlineComponentId === id ? s.currentRichText : null
+    s.currentRichText?.inlineComponentId === id ? s.currentRichText : null,
   );
 
   const hasNormalActions = permissions.duplicate || permissions.delete;
@@ -838,7 +838,7 @@ export const DraggableComponent = ({
               </CustomOverlay>
             </div>
           </div>,
-          portalEl || document.body
+          portalEl || document.body,
         )}
       {children(refSetter)}
     </DropZoneProvider>

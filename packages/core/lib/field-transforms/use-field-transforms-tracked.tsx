@@ -8,13 +8,13 @@ import { buildMappers } from "./build-mappers";
 
 export function useFieldTransformsTracked<
   T extends ComponentData,
-  UserConfig extends Config
+  UserConfig extends Config,
 >(
   config: UserConfig,
   item: T,
   transforms: FieldTransforms,
   readOnly?: T["readOnly"],
-  forceReadOnly?: boolean
+  forceReadOnly?: boolean,
 ): T["props"] {
   const prevMappers = useRef<Mappers>(null);
   const prevProps = useRef<Record<string, any>>(null);
@@ -22,7 +22,7 @@ export function useFieldTransformsTracked<
 
   const mappers = useMemo<Mappers>(
     () => buildMappers(transforms, readOnly, forceReadOnly),
-    [transforms, readOnly, forceReadOnly]
+    [transforms, readOnly, forceReadOnly],
   );
 
   const transformedProps = useMemo(() => {
@@ -69,7 +69,7 @@ export function useFieldTransformsTracked<
       config,
       false,
       changeIncludesSlot,
-      changedFields
+      changedFields,
     ).props;
 
     prevProps.current = item.props;
@@ -83,7 +83,7 @@ export function useFieldTransformsTracked<
 
   const mergedProps = useMemo(
     () => ({ ...item.props, ...transformedProps }),
-    [item.props, transformedProps]
+    [item.props, transformedProps],
   );
 
   return mergedProps;

@@ -48,7 +48,7 @@ export function meta({ data: loaderData }: Route.MetaArgs) {
     {
       title: loaderData.isEditorRoute
         ? `Edit: ${loaderData.path}`
-        : loaderData.data.root.props?.title ?? "",
+        : (loaderData.data.root.props?.title ?? ""),
     },
   ];
 }
@@ -80,7 +80,7 @@ function Editor() {
 
   const configWithDesignedComponents = useMemo(
     () => withDynamicConfig(config, loaderData.data),
-    [config, loaderData.data]
+    [config, loaderData.data],
   );
 
   return (
@@ -98,7 +98,7 @@ function Editor() {
               action: "",
               method: "post",
               encType: "application/json",
-            }
+            },
           );
         }}
       />

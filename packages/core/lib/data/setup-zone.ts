@@ -6,7 +6,7 @@ type WithZones<T extends Data> = T & { zones: NonNullable<T["zones"]> };
 
 export const setupZone = <UserData extends Data>(
   data: UserData,
-  zoneKey: string
+  zoneKey: string,
 ): Required<WithZones<UserData>> => {
   if (zoneKey === rootDroppableId) {
     return data as Required<WithZones<UserData>>;

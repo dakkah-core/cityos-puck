@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   const existingData = JSON.parse(
     fs.existsSync("database.json")
       ? fs.readFileSync("database.json", "utf-8")
-      : "{}"
+      : "{}",
   );
 
   const updatedData = {

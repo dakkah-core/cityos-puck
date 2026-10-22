@@ -42,7 +42,7 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
       onResize(width);
       e.preventDefault();
     },
-    [onResize, position]
+    [onResize, position],
   );
 
   const handleMouseUp = useCallback(() => {
@@ -89,7 +89,7 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
 
       e.preventDefault();
     },
-    [position, handleMouseMove, handleMouseUp]
+    [position, handleMouseMove, handleMouseUp],
   );
 
   return (

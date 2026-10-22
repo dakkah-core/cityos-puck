@@ -13,7 +13,7 @@ export type OutlinePluginProps = {
 };
 
 export const outlinePlugin: (props?: OutlinePluginProps) => Plugin = (
-  props = {}
+  props = {},
 ) => ({
   name: "outline",
   label: props.label ?? "Outline",

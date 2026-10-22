@@ -17,7 +17,7 @@ export function createFieldContentful<T extends Entry = Entry>(
     titleField?: string;
     filterFields?: ExternalField["filterFields"];
     initialFilters?: ExternalField["initialFilters"];
-  } = {}
+  } = {},
 ) {
   const {
     space,
@@ -30,7 +30,7 @@ export function createFieldContentful<T extends Entry = Entry>(
   if (!options.client) {
     if (!space || !accessToken) {
       throw new Error(
-        'field-contentful: Must either specify "client", or "space" and "accessToken"'
+        'field-contentful: Must either specify "client", or "space" and "accessToken"',
       );
     }
   }

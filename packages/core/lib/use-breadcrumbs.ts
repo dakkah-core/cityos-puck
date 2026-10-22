@@ -37,7 +37,7 @@ export const useBreadcrumbs = (renderCount?: number) => {
         const index = contentIds.indexOf(componentId);
 
         const label = node
-          ? config.components[node.data.type]?.label ?? node.data.type
+          ? (config.components[node.data.type]?.label ?? node.data.type)
           : componentLabel;
 
         return {

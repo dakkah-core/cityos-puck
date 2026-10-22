@@ -13,7 +13,7 @@ const rect = (top: number, height: number): DOMRect =>
     x: 0,
     y: top,
     toJSON: () => {},
-  } as DOMRect);
+  }) as DOMRect;
 
 const makeZone = (items: ItemSpec[]) => {
   const zone = document.createElement("div");
@@ -113,7 +113,7 @@ const hRect = (left: number, width: number): DOMRect =>
     x: left,
     y: 0,
     toJSON: () => {},
-  } as DOMRect);
+  }) as DOMRect;
 
 type GridItemSpec = {
   id: string;
@@ -134,7 +134,7 @@ const gridRect = ({ left, top, width, height }: GridItemSpec): DOMRect =>
     x: left,
     y: top,
     toJSON: () => {},
-  } as DOMRect);
+  }) as DOMRect;
 
 const makeGridZone = (items: GridItemSpec[]) => {
   const zone = document.createElement("div");
@@ -252,7 +252,7 @@ describe("getNearestGapIndex in horizontal flows", () => {
         { id: "b", left: 100, width: 100 },
         { id: "c", left: 0, width: 100 },
       ],
-      { rtl: true }
+      { rtl: true },
     );
 
     // Before the first item sits at its right edge (x = 300).

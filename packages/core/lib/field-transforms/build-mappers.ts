@@ -20,11 +20,11 @@ import {
 export function buildMappers<
   T extends ComponentData,
   UserConfig extends Config,
-  G extends UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig>,
 >(
   transforms: FieldTransforms,
   readOnly?: T["readOnly"],
-  forceReadOnly?: boolean
+  forceReadOnly?: boolean,
 ) {
   const newMappers: Mappers = {};
 

@@ -39,7 +39,7 @@ export const DrawerItemInner = ({
       (({ children }: { children: ReactNode; name: string }) => (
         <div className={getClassNameItem("default")}>{children}</div>
       )),
-    [children]
+    [children],
   );
 
   return (
@@ -134,7 +134,7 @@ const DrawerItem = ({
 
   if (typeof index !== "undefined") {
     console.error(
-      "Warning: The `index` prop on Drawer.Item is deprecated and no longer required."
+      "Warning: The `index` prop on Drawer.Item is deprecated and no longer required.",
     );
   }
 
@@ -143,7 +143,7 @@ const DrawerItem = ({
     () => {
       setDynamicId(generateId(resolvedId));
     },
-    [resolvedId]
+    [resolvedId],
   );
 
   return (
@@ -171,13 +171,13 @@ export const Drawer = ({
 }) => {
   if (droppableId) {
     console.error(
-      "Warning: The `droppableId` prop on Drawer is deprecated and no longer required."
+      "Warning: The `droppableId` prop on Drawer is deprecated and no longer required.",
     );
   }
 
   if (direction) {
     console.error(
-      "Warning: The `direction` prop on Drawer is deprecated and no longer required to achieve multi-directional dragging."
+      "Warning: The `direction` prop on Drawer is deprecated and no longer required to achieve multi-directional dragging.",
     );
   }
 

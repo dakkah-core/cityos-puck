@@ -73,7 +73,7 @@ export function Example3() {
 
 export function Example4() {
   return (
-<PuckPreview config={{}} data={{ root: { props: {} }, content: [] }}>
+<PuckPreview config={{ components: {} }} data={{ root: { props: {} }, content: [] }}>
   <Drawer>
     <Drawer.Item name="Heading Block" />
   </Drawer>
@@ -120,7 +120,7 @@ export function Example6() {
     resolveFields: (data) => {
       const fields = {
         drink: {
-          type: "radio",
+          type: "radio" as const,
           options: [
             { label: "Water", value: "water" },
             { label: "Orange juice", value: "orange-juice" },

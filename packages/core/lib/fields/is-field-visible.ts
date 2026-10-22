@@ -11,7 +11,7 @@ import { isFieldTypeHidden } from "../overrides/field-types";
  */
 export const isFieldVisible = (
   fieldTypeOverrides?: Overrides["fieldTypes"],
-  field?: Field
+  field?: Field,
 ): field is Field => {
   if (!field) return false;
 

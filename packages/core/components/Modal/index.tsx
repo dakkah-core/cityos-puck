@@ -33,6 +33,6 @@ export const Modal = ({
         {children}
       </div>
     </div>,
-    rootEl
+    rootEl,
   );
 };

@@ -21,7 +21,7 @@ export function Example1() {
     },
     render: ({ data }) => {
       if (!data) {
-        return "No data selected";
+        return <>No data selected</>;
       }
 
       return (

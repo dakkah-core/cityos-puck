@@ -15,19 +15,20 @@ type WalkTreeOptions = {
 export function walkTree<
   T extends ComponentData | RootData | G["UserData"],
   UserConfig extends Config = Config,
-  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
 >(
   data: T,
   config: UserConfig,
-  callbackFn: (data: Content, options: WalkTreeOptions) => Content | null | void
+  callbackFn: (
+    data: Content,
+    options: WalkTreeOptions,
+  ) => Content | null | void,
 ): T {
   const walkItem = <
     ItemType extends
-      | G["UserComponentData"]
-      | G["UserData"]["root"]
-      | G["UserData"]
+      G["UserComponentData"] | G["UserData"]["root"] | G["UserData"],
   >(
-    item: ItemType
+    item: ItemType,
   ): ItemType => {
     return mapFields(
       item as ComponentData,
@@ -39,7 +40,7 @@ export function walkTree<
         },
       },
       config,
-      true
+      true,
     ) as ItemType;
   };
 
@@ -64,7 +65,7 @@ export function walkTree<
         ...acc,
         [zoneCompound]: zones[zoneCompound].map(walkItem),
       }),
-      {}
+      {},
     ),
   } as T;
 }

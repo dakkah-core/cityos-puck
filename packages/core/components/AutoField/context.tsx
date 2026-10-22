@@ -44,7 +44,7 @@ export const NestedFieldProvider = ({
               .replace(/\[/g, "\\[")
               .replace(/\]/g, "\\]")
               .replace(/\./g, "\\.")
-              .replace(/\*/g, "\\*")
+              .replace(/\*/g, "\\*"),
           );
 
           const localName = readOnlyKey.replace(subPathPattern, "");
@@ -57,7 +57,7 @@ export const NestedFieldProvider = ({
 
         return acc;
       }, {}),
-    [name, subName, wildcardName, readOnlyFields]
+    [name, subName, wildcardName, readOnlyFields],
   );
 
   return (

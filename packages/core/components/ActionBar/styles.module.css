@@ -67,7 +67,8 @@
   align-items: center;
   justify-content: center;
   opacity: var(--puck-actionbar-opacity-text, var(--puck-opacity-text-inverse));
-  transition: color var(--puck-duration-fast) var(--puck-ease-exit),
+  transition:
+    color var(--puck-duration-fast) var(--puck-ease-exit),
     opacity var(--puck-duration-fast) var(--puck-ease-exit);
 }
 

@@ -25,7 +25,7 @@ const getClassName = getClassNameFactory("CollapseAll", styles);
  */
 function CollapseAll({ className }: CollapseAllProps) {
   const hasExpandedItems = useAppStore(
-    (s) => Object.keys(s.state.ui.itemExpanded ?? {}).length > 0
+    (s) => Object.keys(s.state.ui.itemExpanded ?? {}).length > 0,
   );
   const dispatch = useAppStore((s) => s.dispatch);
 
@@ -39,7 +39,7 @@ function CollapseAll({ className }: CollapseAllProps) {
     <div
       className={mergeClassNames(
         getClassName({ visible: hasExpandedItems }),
-        className
+        className,
       )}
     >
       <IconButton title={collapseAllMsg} onClick={collapseAll}>

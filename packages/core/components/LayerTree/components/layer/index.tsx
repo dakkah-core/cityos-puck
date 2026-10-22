@@ -39,20 +39,20 @@ export const Layer = forwardRef(function Layer(
     node: LayerNode;
     selectedId: string | null;
   },
-  ref: ForwardedRef<HTMLLIElement>
+  ref: ForwardedRef<HTMLLIElement>,
 ) {
   const dispatch = useAppStore((s) => s.dispatch);
   const isExpanded = useAppStore(
-    (s) => s.state.ui.itemExpanded?.[node.itemId] ?? false
+    (s) => s.state.ui.itemExpanded?.[node.itemId] ?? false,
   );
   const isHovering = useContextStore(
     ZoneStoreContext,
-    (s) => s.hoveringComponent === node.itemId
+    (s) => s.hoveringComponent === node.itemId,
   );
   const isDraggable = useAppStore((s) => {
     const item = getItem(
       { index: node.index, zone: node.zoneCompound },
-      s.state
+      s.state,
     );
 
     return s.permissions.getPermissions({ item })?.drag;
@@ -82,7 +82,7 @@ export const Layer = forwardRef(function Layer(
     (itemSelector: ItemSelector | null) => {
       dispatch({ type: "setUi", ui: { itemSelector } });
     },
-    [dispatch]
+    [dispatch],
   );
 
   const shouldBeExpanded = isExpanded || isTempExpanded;

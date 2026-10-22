@@ -9,7 +9,7 @@ let distanceChange: "increasing" | "decreasing" = "increasing";
  */
 export const directionalCollision = (
   input: { dragOperation: DragOperation; droppable: Droppable },
-  previous: Point
+  previous: Point,
 ) => {
   const { dragOperation, droppable } = input;
   const { shape: dropShape } = droppable;
@@ -22,26 +22,26 @@ export const directionalCollision = (
 
   const distanceToPrevious = Math.sqrt(
     Math.pow(dropCenter.x - previous.x, 2) +
-      Math.pow(dropCenter.y - previous.y, 2)
+      Math.pow(dropCenter.y - previous.y, 2),
   );
 
   const distanceToCurrent = Math.sqrt(
     Math.pow(dropCenter.x - position.current.x, 2) +
-      Math.pow(dropCenter.y - position.current.y, 2)
+      Math.pow(dropCenter.y - position.current.y, 2),
   );
 
   distanceChange =
     distanceToCurrent === distanceToPrevious
       ? distanceChange
       : distanceToCurrent < distanceToPrevious
-      ? "decreasing"
-      : "increasing";
+        ? "decreasing"
+        : "increasing";
 
   collisionDebug(
     dragShape.center,
     dropCenter,
     droppable.id.toString(),
-    "rebeccapurple"
+    "rebeccapurple",
   );
 
   if (distanceChange === "decreasing") {

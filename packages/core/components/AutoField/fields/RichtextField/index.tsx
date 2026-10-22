@@ -8,7 +8,7 @@ import { useDeepField } from "../../lib/use-deep-field";
 const Editor = lazy(() =>
   import("../../../RichTextEditor/components/Editor").then((m) => ({
     default: m.Editor,
-  }))
+  })),
 );
 
 export const RichtextField = ({

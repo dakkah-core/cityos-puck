@@ -7,7 +7,7 @@ import { walkAppState } from "../../lib/data/walk-app-state";
 export const setAction = <UserData extends Data>(
   state: PrivateAppState<UserData>,
   action: SetAction<UserData>,
-  appStore: AppStore
+  appStore: AppStore,
 ): PrivateAppState<UserData> => {
   if (typeof action.state === "object") {
     const newState = {
@@ -20,7 +20,7 @@ export const setAction = <UserData extends Data>(
     }
 
     console.warn(
-      "`set` is expensive and may cause unnecessary re-renders. Consider using a more atomic action instead."
+      "`set` is expensive and may cause unnecessary re-renders. Consider using a more atomic action instead.",
     );
 
     return walkAppState(newState, appStore.config);

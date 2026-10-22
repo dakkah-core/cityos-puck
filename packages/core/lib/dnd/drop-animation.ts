@@ -50,7 +50,7 @@ const getRectInDocument = (element: HTMLElement, doc: Document) => {
 
   const transform = getFrameTransform(
     element,
-    doc.defaultView?.frameElement ?? null
+    doc.defaultView?.frameElement ?? null,
   );
 
   return {
@@ -100,7 +100,7 @@ export const runFallbackDropAnimation: DropAnimationFunction = ({
           `${finalTranslate.x}px ${finalTranslate.y}px 0`,
         ],
       },
-      COMMIT_ANIMATION
+      COMMIT_ANIMATION,
     )
     .finished.catch(() => undefined)
     .then(() => {
@@ -195,7 +195,7 @@ export const runTargetDropAnimation = ({
       if (!itemId && committedId) {
         hideStyle.textContent += `
           ${getComponentSelector(
-            committedId
+            committedId,
           )} { visibility: hidden !important; }
         `;
       }
@@ -215,11 +215,11 @@ export const runTargetDropAnimation = ({
             width: [`${rect.width}px`, `${final.width}px`],
             height: [`${rect.height}px`, `${final.height}px`],
           },
-          { ...COMMIT_ANIMATION, fill: "forwards" }
+          { ...COMMIT_ANIMATION, fill: "forwards" },
         )
         .finished.catch(() => undefined)
         .then(cleanup);
-    }
+    },
   );
 };
 
@@ -229,7 +229,7 @@ export const runTargetDropAnimation = ({
  */
 export const runDropAnimation = (
   context: DropAnimationContext,
-  target?: TargetDrop
+  target?: TargetDrop,
 ) => {
   const operation = context.source.manager?.dragOperation;
   const aborted =

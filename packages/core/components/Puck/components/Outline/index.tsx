@@ -30,7 +30,7 @@ export const Outline = () => {
   const componentFallbackLabel = useMessage("label-component");
 
   const rootZones = useAppStore(
-    useShallow((s) => findZonesForArea(s.state, "root"))
+    useShallow((s) => findZonesForArea(s.state, "root")),
   );
 
   const trees = useMemo(
@@ -43,14 +43,14 @@ export const Outline = () => {
           zoneCompound,
           zones,
           componentFallbackLabel,
-        })
+        }),
       ),
-    [config, nodes, rootZones, zones, componentFallbackLabel]
+    [config, nodes, rootZones, zones, componentFallbackLabel],
   );
 
   const Wrapper = useMemo(
     () => outlineOverride || DefaultWrapper,
-    [outlineOverride]
+    [outlineOverride],
   );
 
   return (

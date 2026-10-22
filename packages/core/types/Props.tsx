@@ -8,7 +8,7 @@ export type PuckContext = {
    * @deprecated Use {@link https://puckeditor.com/docs/api-reference/fields/slot Slots} instead.
    */
   renderDropZone: <ComponentType extends ElementType = "div">(
-    props: DropZoneProps<ComponentType>
+    props: DropZoneProps<ComponentType>,
   ) => React.ReactNode;
   metadata: Metadata;
   isEditing: boolean;
@@ -28,7 +28,7 @@ export type WithDefaultRootFieldProps<RootProps> = RootProps &
   Omit<DefaultRootFieldProps, keyof RootProps>;
 
 export type DefaultRootRenderProps<
-  Props extends DefaultComponentProps = DefaultRootFieldProps
+  Props extends DefaultComponentProps = DefaultRootFieldProps,
 > = WithPuckProps<WithChildren<Props>>;
 
 export type DefaultRootProps = DefaultRootRenderProps; // Deprecated

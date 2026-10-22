@@ -22,7 +22,7 @@ const rect = (top: number): DOMRect =>
     x: 0,
     y: top,
     toJSON: () => {},
-  } as DOMRect);
+  }) as DOMRect;
 
 const makeItem = (id: string, top: number) => {
   const element = document.createElement("div");
@@ -75,7 +75,7 @@ describe("runTargetDropAnimation", () => {
     animationFrames.forEach((callback) => callback(0));
 
     const copy = document.body.querySelector<HTMLElement>(
-      '[inert][style*="2147483647"]'
+      '[inert][style*="2147483647"]',
     );
 
     expect(copy).not.toBeNull();
@@ -86,7 +86,7 @@ describe("runTargetDropAnimation", () => {
         width: ["100px", "100px"],
         height: ["100px", "100px"],
       },
-      { duration: 250, easing: "ease", fill: "forwards" }
+      { duration: 250, easing: "ease", fill: "forwards" },
     );
   });
 });

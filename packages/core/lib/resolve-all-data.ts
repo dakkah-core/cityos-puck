@@ -18,13 +18,13 @@ import { toComponent } from "./data/to-component";
 
 export async function resolveAllData<
   Components extends DefaultComponents = DefaultComponents,
-  RootProps extends Record<string, any> = DefaultRootFieldProps
+  RootProps extends Record<string, any> = DefaultRootFieldProps,
 >(
   data: Partial<Data>,
   config: Config,
   metadata: Metadata = {},
   onResolveStart?: (item: ComponentData) => void,
-  onResolveEnd?: (item: ComponentData) => void
+  onResolveEnd?: (item: ComponentData) => void,
 ) {
   const defaultedData = defaultData(data);
 
@@ -41,7 +41,7 @@ export async function resolveAllData<
   const resolveNode = async <T extends ComponentData | RootData>(
     _node: T,
     parent: ComponentData | null,
-    root: RootData
+    root: RootData,
   ) => {
     const node = toComponent(_node);
 
@@ -60,7 +60,7 @@ export async function resolveAllData<
         cacheStore,
         // Slot children resolve through resolveNode, not a second walk of
         // the resolved tree, so each resolveData runs once.
-        (child, resolvedParent) => resolveNode(child, resolvedParent, root)
+        (child, resolvedParent) => resolveNode(child, resolvedParent, root),
       )
     ).node as T;
 
@@ -75,9 +75,9 @@ export async function resolveAllData<
           resolvedZones[zoneCompound] = await processContent(
             content,
             resolvedAsComponent,
-            root
+            root,
           );
-        }
+        },
       );
     }
 
@@ -91,7 +91,7 @@ export async function resolveAllData<
   const processContent = async (
     content: Content,
     parent: ComponentData | null,
-    root: RootData
+    root: RootData,
   ) => {
     return Promise.all(content.map((item) => resolveNode(item, parent, root)));
   };
@@ -102,7 +102,7 @@ export async function resolveAllData<
   result.content = await processContent(
     defaultedData.content,
     toComponent(result.root),
-    result.root
+    result.root,
   );
   result.zones = resolvedZones;
 

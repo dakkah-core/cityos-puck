@@ -40,7 +40,7 @@ const InlineTextFieldInternal = ({
 
     if (!componentConfig) {
       throw new Error(
-        `InlineTextField Error: No config defined for ${data.type}`
+        `InlineTextField Error: No config defined for ${data.type}`,
       );
     }
 
@@ -74,7 +74,7 @@ const InlineTextFieldInternal = ({
           { ...node.data, props: newProps },
           appStoreApi.getState,
           "replace",
-          true
+          true,
         );
       };
 
@@ -110,7 +110,7 @@ const InlineTextFieldInternal = ({
 
         const itemSelector = getSelectorForId(
           appStoreApi.getState().state,
-          componentId
+          componentId,
         );
 
         appStoreApi.getState().setUi({ itemSelector });

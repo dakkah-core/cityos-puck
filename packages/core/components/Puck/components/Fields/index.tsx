@@ -51,12 +51,12 @@ const createOnChange =
     if (selectedItem && itemSelector) {
       const resolved = await resolveComponentData(
         { ...selectedItem, props: newProps },
-        "replace"
+        "replace",
       );
 
       const latestSelector = getSelectorForId(
         appStore.getState().state,
-        selectedItem.props.id
+        selectedItem.props.id,
       );
       if (!latestSelector) return;
 
@@ -77,7 +77,7 @@ const createOnChange =
         root: (
           await resolveComponentData(
             { ...data.root, props: newProps },
-            "replace"
+            "replace",
           )
         ).node,
         ui: { ...ui, ...updatedUi },
@@ -103,7 +103,7 @@ const FieldsChildInner = ({ fieldName }: { fieldName: string }) => {
     (s) =>
       ((s.selectedItem
         ? s.selectedItem.readOnly
-        : s.state.data.root.readOnly) || {})[fieldName]
+        : s.state.data.root.readOnly) || {})[fieldName],
   );
 
   const id = useAppStore((s) => {
@@ -121,7 +121,7 @@ const FieldsChildInner = ({ fieldName }: { fieldName: string }) => {
       return selectedItem
         ? permissions.getPermissions({ item: selectedItem })
         : permissions.getPermissions({ root: true });
-    })
+    }),
   );
 
   const appStore = useAppStoreApi();
@@ -141,7 +141,7 @@ const FieldsChildInner = ({ fieldName }: { fieldName: string }) => {
       },
       (value) => {
         fieldStore.setState({ [fieldName]: value });
-      }
+      },
     );
   }, [appStore, fieldStore]);
 
@@ -200,7 +200,7 @@ const FieldsInternal = ({ wrapFields = true }: { wrapFields?: boolean }) => {
       }
 
       return [];
-    })
+    }),
   );
 
   const isLoading = fieldsLoading || componentResolving;

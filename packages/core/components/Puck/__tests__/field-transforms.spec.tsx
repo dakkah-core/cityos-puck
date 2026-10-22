@@ -98,7 +98,7 @@ describe("Puck fieldTransforms - edit canvas", () => {
         fieldTransforms={{
           text: ({ value }: any) => <mark>{value}</mark>,
         }}
-      />
+      />,
     );
     await flush();
 

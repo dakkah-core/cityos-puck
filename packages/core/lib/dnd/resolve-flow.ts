@@ -46,7 +46,7 @@ const countTracks = (template: string) => {
 export const resolveZoneFlow = (
   zoneEl: Element,
   win: Window,
-  style: CSSStyleDeclaration = win.getComputedStyle(zoneEl)
+  style: CSSStyleDeclaration = win.getComputedStyle(zoneEl),
 ): ZoneFlow => {
   const display = style.display;
   const rtl = getDeepDir(zoneEl) === "rtl";
@@ -136,16 +136,16 @@ export const getItemEdgeAccessors = ({
         ? rect.right
         : rect.left
       : reversed
-      ? rect.bottom
-      : rect.top;
+        ? rect.bottom
+        : rect.top;
   const trailing = (rect: DOMRect) =>
     horizontal
       ? reversed
         ? rect.left
         : rect.right
       : reversed
-      ? rect.top
-      : rect.bottom;
+        ? rect.top
+        : rect.bottom;
   // Whether `a` sits before `b` along the flow direction.
   const isBefore = (a: number, b: number) => (forward > 0 ? a <= b : a >= b);
 

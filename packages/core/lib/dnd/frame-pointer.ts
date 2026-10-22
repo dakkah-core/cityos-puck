@@ -13,7 +13,7 @@ type Point = { x: number; y: number };
  */
 export const getFramePointer = (targetEl: Element, position: Point): Point => {
   const frameEl = document.querySelector(
-    "iframe#preview-frame"
+    "iframe#preview-frame",
   ) as HTMLIFrameElement | null;
 
   // If there's no frame or the target element is not inside the frame, return the original position

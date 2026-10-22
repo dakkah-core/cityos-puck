@@ -9,9 +9,9 @@ import { ZoneIndex } from "../../types/Internal";
  */
 export function componentDataHasSlots(
   componentId: string,
-  indexes: ZoneIndex
+  indexes: ZoneIndex,
 ): boolean {
   return Object.keys(indexes).some((zoneCompound) =>
-    zoneCompound.startsWith(`${componentId}:`)
+    zoneCompound.startsWith(`${componentId}:`),
   );
 }

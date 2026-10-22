@@ -8,8 +8,8 @@ describe("migrate method", () => {
     expect(
       migrate(
         { content: [], root: { title: "Hello, world" } },
-        { components: {} }
-      )
+        { components: {} },
+      ),
     ).toEqual({
       content: [],
       root: { props: { title: "Hello, world" } },
@@ -225,7 +225,7 @@ describe("migrate method", () => {
             };
           },
         },
-      })
+      }),
     ).toEqual(output);
   });
 
@@ -250,7 +250,7 @@ describe("migrate method", () => {
     };
 
     expect(() => migrate(input, config)).toThrowErrorMatchingInlineSnapshot(
-      `"Could not migrate DropZone "Grid-123:grid" to slot field. No slot exists with the name "grid"."`
+      `"Could not migrate DropZone "Grid-123:grid" to slot field. No slot exists with the name "grid"."`,
     );
   });
 

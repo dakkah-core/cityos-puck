@@ -29,7 +29,7 @@ function resetStores() {
       ...appStore.getInitialState(),
       state: walkAppState(baseState, appStore.getInitialState().config),
     },
-    true
+    true,
   );
 }
 
@@ -48,7 +48,7 @@ const selectFirst = (config: Config) => {
           },
         },
       },
-      config
+      config,
     ),
   });
 };
@@ -116,7 +116,7 @@ describe("fields slice", () => {
         lastData: {},
         lastFields: { title: { type: "text" } },
         parent: null,
-      }
+      },
     );
 
     await waitFor(() => {
@@ -162,7 +162,7 @@ describe("fields slice", () => {
         lastData: null,
         lastFields: { title: { type: "text" } },
         parent: { props: { id: "root" }, type: "root" },
-      }
+      },
     );
 
     // We set a short timeout in the store (50 ms) before loading = true,
@@ -238,7 +238,7 @@ describe("fields slice", () => {
         },
         lastFields: { title: { type: "textarea" } },
         parent: { props: { id: "root" }, type: "root" },
-      }
+      },
     );
   });
 
@@ -266,7 +266,7 @@ describe("fields slice", () => {
 
     const { rerender } = renderHook(
       ({ id }: { id: string }) => useRegisterFieldsSlice(appStore, id),
-      { initialProps: { id: "heading-1" } }
+      { initialProps: { id: "heading-1" } },
     );
 
     // We set a short timeout in the store (50 ms) before loading = true,
@@ -294,7 +294,7 @@ describe("fields slice", () => {
               content: [...appStore.getState().state.data.content, newItem],
             },
           },
-          config
+          config,
         ),
         selectedItem: newItem,
       });
@@ -321,7 +321,7 @@ describe("fields slice", () => {
         lastData: null,
         lastFields: { title: { type: "number" } },
         parent: { props: { id: "root" }, type: "root" },
-      }
+      },
     );
   });
 

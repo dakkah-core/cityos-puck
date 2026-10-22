@@ -9,7 +9,7 @@ export function Example1() {
   config={{
     components: {
       HeadingBlock: { render: () => <div>Hello world</div> },
-      ParagraphBlock: {},
+      ParagraphBlock: { render: () => null },
     },
   }}
   data={{

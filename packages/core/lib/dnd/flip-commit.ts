@@ -31,8 +31,8 @@ export const prepareCommitFlip = ({
     .map(
       (zone) =>
         `${getZoneSelector(
-          zone
-        )} > [data-puck-component]:not([data-dnd-dragging]):not([data-dnd-placeholder])`
+          zone,
+        )} > [data-puck-component]:not([data-dnd-dragging]):not([data-dnd-placeholder])`,
     )
     .join(", ");
 
@@ -76,10 +76,10 @@ export const prepareCommitFlip = ({
 
           el.animate(
             { translate: [`${dx}px ${dy}px 0`, "0px 0px 0"] },
-            COMMIT_ANIMATION
+            COMMIT_ANIMATION,
           );
         });
-      }
+      },
     );
   };
 };

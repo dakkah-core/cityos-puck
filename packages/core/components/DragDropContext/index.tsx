@@ -65,7 +65,7 @@ type EventKeys = keyof Events & string;
 export function useDragListener(
   type: EventKeys,
   fn: Events[EventKeys],
-  deps: any[] = []
+  deps: any[] = [],
 ) {
   const { setDragListeners } = useContext(dragListenerContext);
 
@@ -199,7 +199,7 @@ const DragDropContextClient = ({
 
       return { zoneChanged, areaChanged };
     },
-    [zoneStore]
+    [zoneStore],
   );
 
   const setDeepestAndCollide = useCallback(
@@ -224,12 +224,12 @@ const DragDropContextClient = ({
 
       debouncedParamsRef.current = null;
     },
-    [zoneStore]
+    [zoneStore],
   );
 
   const setDeepestDb = useDebouncedCallback(
     setDeepestAndCollide,
-    AREA_CHANGE_DEBOUNCE_MS
+    AREA_CHANGE_DEBOUNCE_MS,
   );
 
   const cancelDb = () => {
@@ -243,8 +243,8 @@ const DragDropContextClient = ({
         console.log(
           s.previewIndex,
           Object.entries(s.zoneDepthIndex || {})[0]?.[0],
-          Object.entries(s.areaDepthIndex || {})[0]?.[0]
-        )
+          Object.entries(s.areaDepthIndex || {})[0]?.[0],
+        ),
       );
     }
   }, []);
@@ -311,7 +311,7 @@ const DragDropContextClient = ({
           cancelDb();
         },
       },
-      instanceId
+      instanceId,
     ),
   ]);
 
@@ -337,7 +337,7 @@ const DragDropContextClient = ({
       areaId: "root",
       depth: 0,
     }),
-    []
+    [],
   );
 
   return (
@@ -375,7 +375,7 @@ const DragDropContextClient = ({
           // item visually and never describe the drop position.
           const thisPreview: Preview | null =
             Object.values(previewIndex).find(
-              (preview) => preview?.props.id === source.id && !preview.ghost
+              (preview) => preview?.props.id === source.id && !preview.ghost,
             ) ?? null;
 
           // Capture sibling positions now, before dnd-kit tears the drag
@@ -397,7 +397,7 @@ const DragDropContextClient = ({
                   getExpectedOrder: () =>
                     getZoneContentIds(
                       appStore.getState().state,
-                      thisPreview.zone
+                      thisPreview.zone,
                     ),
                 })
               : null;
@@ -436,7 +436,7 @@ const DragDropContextClient = ({
               thisPreview.zone === initialSelector.current.zone &&
               thisPreview.index > initialSelector.current.index
                 ? thisPreview.index - 1
-                : thisPreview?.index ?? index;
+                : (thisPreview?.index ?? index);
 
             // Finalise the drag
             if (thisPreview) {
@@ -447,14 +447,14 @@ const DragDropContextClient = ({
                   thisPreview.componentType,
                   thisPreview.zone,
                   thisPreview.index,
-                  appStore
+                  appStore,
                 );
               } else if (initialSelector.current) {
                 moveComponent(
                   thisPreview.props.id,
                   initialSelector.current,
                   { ...thisPreview, index: commitIndex },
-                  appStore
+                  appStore,
                 );
               }
 
@@ -537,7 +537,7 @@ const DragDropContextClient = ({
 
             const position = getCollisionPosition(
               collisionData?.direction,
-              getDeepDir(target.element)
+              getDeepDir(target.element),
             );
 
             targetIndex = getInsertIndex({
@@ -602,7 +602,7 @@ const DragDropContextClient = ({
 
             const item = getItem(
               initialSelector.current,
-              appStore.getState().state
+              appStore.getState().state,
             );
 
             if (item) {

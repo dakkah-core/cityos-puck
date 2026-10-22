@@ -66,22 +66,22 @@ const defaultFields = {
 
 function AutoFieldInternal<
   ValueType = any,
-  FieldType extends FieldNoLabel<ValueType> = FieldNoLabel<ValueType>
+  FieldType extends FieldNoLabel<ValueType> = FieldNoLabel<ValueType>,
 >(
   props: FieldPropsInternalOptional<ValueType, FieldType> & {
     Label?: React.FC<FieldLabelPropsInternal>;
-  }
+  },
 ) {
   const dispatch = useAppStore((s) => s.dispatch);
   const overrides = useAppStore((s) => s.overrides);
   const readOnly = useAppStore(useShallow((s) => s.selectedItem?.readOnly));
   const canEdit = useAppStore(
-    (s) => s.permissions.getPermissions({ item: s.selectedItem }).edit
+    (s) => s.permissions.getPermissions({ item: s.selectedItem }).edit,
   );
   const dictionary = useAppStore((s) => s.dictionary);
   const editorContext = useMemo(
     () => Object.freeze({ canEdit: canEdit === true, dictionary }),
-    [canEdit, dictionary]
+    [canEdit, dictionary],
   );
   const nestedFieldContext = useContext(NestedFieldContext);
 
@@ -109,7 +109,7 @@ function AutoFieldInternal<
       number: overrides.fieldTypes?.number || defaultFields.number,
       richtext: overrides.fieldTypes?.richtext || defaultFields.richtext,
     }),
-    [overrides]
+    [overrides],
   );
 
   // Custom fields and overridden field types are handed their value directly,
@@ -146,7 +146,7 @@ function AutoFieldInternal<
   const [fieldValue, onChange] = useLocalValue(
     fieldPath,
     onChangeWithStoreSync,
-    { tracked: readsValueFromStore }
+    { tracked: readsValueFromStore },
   );
 
   const mergedProps = useMemo(
@@ -173,7 +173,7 @@ function AutoFieldInternal<
       fieldValue,
       onChange,
       editorContext,
-    ]
+    ],
   );
 
   const onFocus = useCallback(
@@ -192,7 +192,7 @@ function AutoFieldInternal<
         });
       }
     },
-    [mergedProps.name]
+    [mergedProps.name],
   );
 
   const onBlur = useCallback((e: React.FocusEvent) => {
@@ -267,19 +267,19 @@ type FieldNoLabel<Props extends any = any> = Omit<Field<Props>, "label">;
 
 export function AutoFieldPrivate<
   ValueType = any,
-  FieldType extends FieldNoLabel<ValueType> = FieldNoLabel<ValueType>
+  FieldType extends FieldNoLabel<ValueType> = FieldNoLabel<ValueType>,
 >(
   props: Omit<FieldPropsInternalOptional<ValueType, FieldType>, "value"> & {
     Label?: React.FC<FieldLabelPropsInternal>;
     value?: any;
-  }
+  },
 ) {
   return <AutoFieldInternal<ValueType, FieldType> {...props} />;
 }
 
 function AutoFieldPublicInternal<
   ValueType = any,
-  FieldType extends FieldNoLabel<ValueType> = FieldNoLabel<ValueType>
+  FieldType extends FieldNoLabel<ValueType> = FieldNoLabel<ValueType>,
 >({ value, ...props }: FieldProps<FieldType, ValueType> & { value: any }) {
   const DefaultLabel = useMemo(() => {
     const DefaultLabel = (labelProps: any) => (
@@ -302,7 +302,7 @@ function AutoFieldPublicInternal<
 
       props.onChange(value);
     },
-    [fieldStore, props.onChange, props.id]
+    [fieldStore, props.onChange, props.id],
   );
 
   useEffect(() => {
@@ -322,7 +322,7 @@ function AutoFieldPublicInternal<
 
 export function AutoField<
   ValueType = any,
-  FieldType extends FieldNoLabel<ValueType> = FieldNoLabel<ValueType>
+  FieldType extends FieldNoLabel<ValueType> = FieldNoLabel<ValueType>,
 >(props: FieldProps<FieldType, ValueType> & { value: any }) {
   const id = useSafeId();
 

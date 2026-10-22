@@ -80,7 +80,7 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
         {children}
       </div>
     );
-  }
+  },
 );
 
 Layout.displayName = "Layout";
@@ -88,7 +88,7 @@ Layout.displayName = "Layout";
 export { Layout };
 
 export function withLayout<
-  ThisComponentConfig extends ComponentConfig<any> = ComponentConfig
+  ThisComponentConfig extends ComponentConfig<any> = ComponentConfig,
 >(componentConfig: ThisComponentConfig): ThisComponentConfig {
   return {
     ...componentConfig,

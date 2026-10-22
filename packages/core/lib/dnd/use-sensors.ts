@@ -29,7 +29,7 @@ export const useSensors = (
   } = {
     touch: touchDefault,
     other: otherDefault,
-  }
+  },
 ) => {
   const [sensors] = useState(() => [
     PointerSensor.configure({

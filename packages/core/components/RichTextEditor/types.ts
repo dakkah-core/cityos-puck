@@ -5,7 +5,7 @@ import { RichtextField, UiState } from "../../types";
 
 export type RichTextSelector = (
   ctx: EditorStateSnapshot,
-  readOnly: boolean
+  readOnly: boolean,
 ) => Partial<Record<string, boolean>>;
 
 export type DefaultEditorState = ReturnType<typeof defaultEditorState>;

@@ -86,13 +86,14 @@
     /* Font families
   ======================================================================== */
 
-    --puck-fallback-font-stack: -apple-system, BlinkMacSystemFont, Segoe UI,
-      Helvetica Neue, sans-serif, Apple Color Emoji, Segoe UI Emoji,
-      Segoe UI Symbol;
+    --puck-fallback-font-stack:
+      -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica Neue, sans-serif,
+      Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
 
     --puck-font-family: Inter, var(--puck-fallback-font-stack);
-    --puck-font-family-monospaced: ui-monospace, "Cascadia Code",
-      "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+    --puck-font-family-monospaced:
+      ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas,
+      "DejaVu Sans Mono", monospace;
   }
 
   @supports (font-variation-settings: normal) {

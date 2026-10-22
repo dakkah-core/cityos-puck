@@ -77,7 +77,7 @@ export const LoadedRichTextMenuInner = ({
 
   const InlineMenu = useMemo(
     () => renderInlineMenu || DefaultMenu,
-    [renderInlineMenu]
+    [renderInlineMenu],
   );
 
   const Menu = useMemo(() => renderMenu || DefaultMenu, [renderMenu]);

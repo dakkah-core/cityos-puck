@@ -33,7 +33,7 @@ describe("is-component-allowed", () => {
   describe("with both allow and disallow", () => {
     it("accepts types in both lists", () => {
       expect(
-        isComponentAllowed("Card", { allow: ["Card"], disallow: ["Card"] })
+        isComponentAllowed("Card", { allow: ["Card"], disallow: ["Card"] }),
       ).toBe(true);
     });
 
@@ -42,13 +42,13 @@ describe("is-component-allowed", () => {
         isComponentAllowed("Heading", {
           allow: ["Card"],
           disallow: ["Heading"],
-        })
+        }),
       ).toBe(false);
     });
 
     it("accepts types in neither list", () => {
       expect(
-        isComponentAllowed("Text", { allow: ["Card"], disallow: ["Heading"] })
+        isComponentAllowed("Text", { allow: ["Card"], disallow: ["Heading"] }),
       ).toBe(true);
     });
   });

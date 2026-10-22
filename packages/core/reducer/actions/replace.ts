@@ -10,7 +10,7 @@ import { generateId } from "../../lib/generate-id";
 export const replaceAction = <UserData extends Data>(
   state: PrivateAppState<UserData>,
   action: ReplaceAction<UserData>,
-  appStore: AppStore
+  appStore: AppStore,
 ): PrivateAppState<UserData> => {
   const [parentId] = action.destinationZone.split(":");
   const idsInPath = getIdsForParent(action.destinationZone, state);
@@ -24,7 +24,7 @@ export const replaceAction = <UserData extends Data>(
 
   if (idChanged) {
     throw new Error(
-      'Can\'t change the id during a replace action. Please us "remove" and "insert" to define a new node.'
+      'Can\'t change the id during a replace action. Please us "remove" and "insert" to define a new node.',
     );
   }
 
@@ -88,6 +88,6 @@ export const replaceAction = <UserData extends Data>(
       }
 
       return null;
-    }
+    },
   );
 };

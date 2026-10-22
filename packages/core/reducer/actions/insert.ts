@@ -11,7 +11,7 @@ import { populateIds } from "../../lib/data/populate-ids";
 export function insertAction<UserData extends Data>(
   state: PrivateAppState<UserData>,
   action: InsertAction,
-  appStore: AppStore
+  appStore: AppStore,
 ): PrivateAppState<UserData> {
   const id = action.id || generateId(action.componentType);
   const emptyComponentData = populateIds(
@@ -23,7 +23,7 @@ export function insertAction<UserData extends Data>(
         id,
       },
     },
-    appStore.config
+    appStore.config,
   );
 
   const [parentId] = action.destinationZone.split(":");
@@ -37,7 +37,7 @@ export function insertAction<UserData extends Data>(
         return insert(
           content || [],
           action.destinationIndex,
-          emptyComponentData
+          emptyComponentData,
         );
       }
 
@@ -53,6 +53,6 @@ export function insertAction<UserData extends Data>(
       }
 
       return null;
-    }
+    },
   );
 }

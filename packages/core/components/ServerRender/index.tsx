@@ -75,7 +75,7 @@ function DropZoneRenderItem({
         fieldTransforms={fieldTransforms}
       />
     ),
-    fieldTransforms
+    fieldTransforms,
   );
 
   if (!Component) {
@@ -125,7 +125,7 @@ export function DropZoneRender({
 
 export function Render<
   UserConfig extends Config = Config,
-  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
 >({
   config,
   data,
@@ -178,7 +178,7 @@ export function Render<
         fieldTransforms={fieldTransforms}
       />
     ),
-    fieldTransforms
+    fieldTransforms,
   );
 
   if (config.root?.render) {

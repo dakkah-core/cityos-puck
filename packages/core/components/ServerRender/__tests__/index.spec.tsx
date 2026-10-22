@@ -202,10 +202,10 @@ describe("ServerRender", () => {
     // Without the runtime strip this throws: React refuses to render an
     // element with both children and dangerouslySetInnerHTML
     const htmlWithDangerousSetHTML = renderToString(
-      <Render config={configWithDangerousSetHTML} data={data} />
+      <Render config={configWithDangerousSetHTML} data={data} />,
     );
     const htmlWithChildren = renderToString(
-      <Render config={configWithChildren} data={data} />
+      <Render config={configWithChildren} data={data} />,
     );
 
     expect(htmlWithDangerousSetHTML).toContain("<h2>Hello</h2>");

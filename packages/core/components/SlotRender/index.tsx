@@ -22,7 +22,7 @@ export const ContextSlotRender = ({
         indexes.zones[`${componentId}:${zone}`]?.contentIds ?? [];
 
       return contentIds.map((contentId) => indexes.nodes[contentId].flatData);
-    })
+    }),
   );
 
   return (

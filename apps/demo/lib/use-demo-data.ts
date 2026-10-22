@@ -38,7 +38,7 @@ export const useDemoData = ({
   useEffect(() => {
     if (data && !isEdit) {
       resolveAllData<Components, RootProps>(data, config, metadata).then(
-        setResolvedData
+        setResolvedData,
       );
     }
   }, [data, isEdit]);

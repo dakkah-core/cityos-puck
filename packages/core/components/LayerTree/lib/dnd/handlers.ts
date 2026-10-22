@@ -47,7 +47,7 @@ const SCROLL_SETTLE_MAX_FRAMES = 60;
  */
 const scrollToComponentWhenSettled = (
   id: string,
-  scrollToComponent: OutlineDragContext["scrollToComponent"]
+  scrollToComponent: OutlineDragContext["scrollToComponent"],
 ) => {
   let lastTop: number | null | undefined;
   let stableFrames = 0;
@@ -104,7 +104,7 @@ const setPreviewFence = (enabled: boolean) => {
  */
 export const onOutlineBeforeDragStart = (
   event: BeforeDragStartEvent,
-  ctx: OutlineDragContext
+  ctx: OutlineDragContext,
 ): void => {
   const source = event.operation.source;
   const data = source?.data as OutlineRowDndData | undefined;
@@ -114,7 +114,7 @@ export const onOutlineBeforeDragStart = (
   const appState = ctx.appStore.getState();
   const item = getItem(
     { zone: data.zoneCompound, index: data.index },
-    appState.state
+    appState.state,
   );
 
   // The permission check comes before any side effect, so a denied drag
@@ -159,7 +159,7 @@ export const onOutlineBeforeDragStart = (
 export const onOutlineDragMove = (
   event: DragOverEvent | DragMoveEvent,
   manager: DragDropManager,
-  ctx: OutlineDragContext
+  ctx: OutlineDragContext,
 ) => {
   const outlineStore = ctx.outlineDndStore.getState();
   const dragged = outlineStore.draggedRow;
@@ -183,7 +183,7 @@ export const onOutlineDragMove = (
     outlineStore.cancelPendingExpand();
     outlineStore.setTarget(
       { targetId: target.id.toString(), position: "inside" },
-      { zone: targetData.zoneCompound, index: 0 }
+      { zone: targetData.zoneCompound, index: 0 },
     );
 
     return;
@@ -201,7 +201,7 @@ export const onOutlineDragMove = (
       targetData.zoneCompound,
       dragged.componentType,
       config,
-      indexes
+      indexes,
     )
   ) {
     const collisionData = manager.collisionObserver.collisions[0]?.data;
@@ -217,7 +217,7 @@ export const onOutlineDragMove = (
           targetIndex: targetData.index,
           isSameZone: targetData.zoneCompound === dragged.zoneCompound,
         }),
-      }
+      },
     );
   } else {
     // The row is only a target via its child zones: no line, no drop
@@ -250,7 +250,7 @@ export const onOutlineDragMove = (
  */
 export const onOutlineDragEnd = (
   event: DragEndEvent,
-  ctx: OutlineDragContext
+  ctx: OutlineDragContext,
 ) => {
   const { source } = event.operation;
   const outlineDnDState = ctx.outlineDndStore.getState();
@@ -267,7 +267,7 @@ export const onOutlineDragEnd = (
       dragged.itemId,
       { zone: dragged.zoneCompound, index: dragged.index },
       { zone: drop.zone, index: drop.index },
-      ctx.appStore
+      ctx.appStore,
     );
 
     const moved =

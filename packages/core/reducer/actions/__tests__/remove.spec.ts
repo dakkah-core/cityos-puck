@@ -84,7 +84,7 @@ describe("Reducer", () => {
               },
             },
           },
-          config
+          config,
         );
 
         const action: RemoveAction = {
@@ -200,7 +200,7 @@ describe("Reducer", () => {
               },
             },
           },
-          config
+          config,
         );
 
         const action: RemoveAction = {
@@ -290,7 +290,7 @@ describe("Reducer", () => {
               },
             },
           },
-          config
+          config,
         );
 
         const action: RemoveAction = {
@@ -429,7 +429,7 @@ describe("Reducer", () => {
               ],
             },
           },
-          config
+          config,
         );
 
         const action: RemoveAction = {

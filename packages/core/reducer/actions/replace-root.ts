@@ -7,7 +7,7 @@ import { walkAppState } from "../../lib/data/walk-app-state";
 export const replaceRootAction = <UserData extends Data>(
   state: PrivateAppState<UserData>,
   action: ReplaceRootAction<UserData>,
-  appStore: AppStore
+  appStore: AppStore,
 ): PrivateAppState<UserData> => {
   return walkAppState<UserData>(
     state,
@@ -24,6 +24,6 @@ export const replaceRootAction = <UserData extends Data>(
 
       // Everything in inside root, so everything needs re-indexing
       return childItem;
-    }
+    },
   );
 };

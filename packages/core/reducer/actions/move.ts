@@ -18,7 +18,7 @@ export const addToZoneCache = (key: string, data: Content) => {
 export const moveAction = <UserData extends Data>(
   state: PrivateAppState<UserData>,
   action: MoveAction,
-  appStore: AppStore
+  appStore: AppStore,
 ): PrivateAppState<UserData> => {
   if (
     action.sourceZone === action.destinationZone &&
@@ -29,7 +29,7 @@ export const moveAction = <UserData extends Data>(
 
   const item = getItem(
     { zone: action.sourceZone, index: action.sourceIndex },
-    state
+    state,
   );
 
   if (!item) return state;
@@ -48,7 +48,7 @@ export const moveAction = <UserData extends Data>(
         return insert(
           remove(content, action.sourceIndex),
           action.destinationIndex,
-          item
+          item,
         );
       } else if (zoneCompound === action.sourceZone) {
         return remove(content, action.sourceIndex);
@@ -76,6 +76,6 @@ export const moveAction = <UserData extends Data>(
       }
 
       return null;
-    }
+    },
   );
 };

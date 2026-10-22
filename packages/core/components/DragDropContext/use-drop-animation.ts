@@ -15,7 +15,7 @@ import type { ZoneStore } from "../DropZone/context";
  */
 export const useDropAnimation = (
   zoneStore: StoreApi<ZoneStore>,
-  id?: string
+  id?: string,
 ): DropAnimationFunction => {
   const appStore = useAppStoreApi();
 
@@ -39,9 +39,9 @@ export const useDropAnimation = (
               getExpectedOrder: () =>
                 getZoneContentIds(appStore.getState().state, preview.zone),
             }
-          : undefined
+          : undefined,
       );
     },
-    [appStore, zoneStore, id]
+    [appStore, zoneStore, id],
   );
 };

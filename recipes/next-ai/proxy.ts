@@ -10,7 +10,7 @@ export async function proxy(req: NextRequest) {
     if (req.nextUrl.pathname.endsWith("/edit")) {
       const pathWithoutEdit = req.nextUrl.pathname.slice(
         0,
-        req.nextUrl.pathname.length - 5
+        req.nextUrl.pathname.length - 5,
       );
       const pathWithEditPrefix = `/puck${pathWithoutEdit}`;
 

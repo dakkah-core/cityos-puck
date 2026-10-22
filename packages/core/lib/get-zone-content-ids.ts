@@ -10,5 +10,5 @@ import type { PrivateAppState } from "../types/Internal";
  */
 export const getZoneContentIds = (
   state: PrivateAppState,
-  zoneCompound: string
+  zoneCompound: string,
 ): string[] => state.indexes.zones[zoneCompound]?.contentIds ?? [];

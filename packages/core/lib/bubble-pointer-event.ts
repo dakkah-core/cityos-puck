@@ -10,7 +10,7 @@ export class BubbledPointerEvent extends BaseEvent {
 
   constructor(
     type: string,
-    data: PointerEvent & { originalTarget: EventTarget | null }
+    data: PointerEvent & { originalTarget: EventTarget | null },
   ) {
     super(type, data);
     this.originalTarget = data.originalTarget;

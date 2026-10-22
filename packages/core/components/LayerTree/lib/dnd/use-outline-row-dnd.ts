@@ -58,14 +58,14 @@ export const useOutlineRowDnd = ({
     () =>
       createOutlineAccept(
         { appStore, outlineStore },
-        { kind: "row", itemId, zoneCompound }
+        { kind: "row", itemId, zoneCompound },
       ),
-    [appStore, outlineStore, itemId, zoneCompound]
+    [appStore, outlineStore, itemId, zoneCompound],
   );
 
   const collisionDetector = useMemo(
     () => createDynamicCollisionDetector("y"),
-    []
+    [],
   );
 
   const { handleRef, ref, isDragSource } = useSortable<OutlineRowDndData>({
@@ -109,7 +109,7 @@ export const useOutlineRowDnd = ({
       ref(element);
       handleRef(element);
     },
-    [ref, handleRef]
+    [ref, handleRef],
   );
 
   return {

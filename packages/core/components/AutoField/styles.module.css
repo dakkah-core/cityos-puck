@@ -211,7 +211,8 @@ select.Input-input {
       calc(var(--puck-space-4) - var(--_puck-field-radio-border-width))
     );
   text-align: center;
-  transition: background-color var(--puck-duration-fast) var(--puck-ease-exit),
+  transition:
+    background-color var(--puck-duration-fast) var(--puck-ease-exit),
     color var(--puck-duration-fast) var(--puck-ease-exit);
 }
 
@@ -328,7 +329,8 @@ select.Input-input {
   height: 16px;
   margin: 0;
   place-content: center;
-  transition: background-color var(--puck-duration-fast) var(--puck-ease-exit),
+  transition:
+    background-color var(--puck-duration-fast) var(--puck-ease-exit),
     border-color var(--puck-duration-fast) var(--puck-ease-exit);
   width: 16px;
 }

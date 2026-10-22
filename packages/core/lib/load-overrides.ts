@@ -12,7 +12,7 @@ import { isFieldTypeHidden } from "./overrides/field-types";
  */
 const curryPluginOverrides = (
   override?: FunctionComponent<any> | null,
-  previousPluginOverride?: FunctionComponent<any> | null
+  previousPluginOverride?: FunctionComponent<any> | null,
 ) => {
   const Comp = (props: any) => {
     // Render the previous plugin if it exists
@@ -78,7 +78,7 @@ export const loadOverrides = ({
 
           const Comp = curryPluginOverrides(
             currPluginFieldType,
-            prevNonNullPluginFieldType
+            prevNonNullPluginFieldType,
           );
 
           collected.fieldTypes[fieldType] = Comp;
@@ -92,7 +92,7 @@ export const loadOverrides = ({
 
       const Comp = curryPluginOverrides(
         plugin.overrides[overridesType],
-        childNode
+        childNode,
       );
 
       collected[overridesType] = Comp;

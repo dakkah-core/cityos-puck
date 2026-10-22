@@ -21,13 +21,13 @@ export type WithChildren<Props> = Props & {
 
 export type UserGenerics<
   UserConfig extends Config = Config,
-  UserParams extends ExtractConfigParams<UserConfig> = ExtractConfigParams<UserConfig>,
-  UserData extends
-    | Data<UserParams["props"], UserParams["rootProps"]>
-    | Data = Data<UserParams["props"], UserParams["rootProps"]>,
+  UserParams extends ExtractConfigParams<UserConfig> =
+    ExtractConfigParams<UserConfig>,
+  UserData extends Data<UserParams["props"], UserParams["rootProps"]> | Data =
+    Data<UserParams["props"], UserParams["rootProps"]>,
   UserAppState extends PrivateAppState<UserData> = PrivateAppState<UserData>,
   UserPublicAppState extends AppState<UserData> = AppState<UserData>,
-  UserComponentData extends ComponentData = UserData["content"][0]
+  UserComponentData extends ComponentData = UserData["content"][0],
 > = {
   UserConfig: UserConfig;
   UserParams: UserParams;
@@ -42,5 +42,5 @@ export type UserGenerics<
 
 export type ExtractField<
   UserField extends { type: PropertyKey },
-  T extends UserField["type"]
+  T extends UserField["type"],
 > = Extract<UserField, { type: T }>;

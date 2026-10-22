@@ -4,10 +4,10 @@ import { walkAppState } from "./walk-app-state";
 
 export const flattenData = <
   UserConfig extends Config = Config,
-  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>
+  G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
 >(
   state: PrivateAppState,
-  config: UserConfig
+  config: UserConfig,
 ) => {
   const data: ComponentData[] = [];
 
@@ -18,7 +18,7 @@ export const flattenData = <
     (item) => {
       data.push(item);
       return item;
-    }
+    },
   );
 
   return data;

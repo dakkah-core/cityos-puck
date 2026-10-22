@@ -28,7 +28,7 @@ export const OutlineDndProvider = ({ children }: PropsWithChildren) => {
   const [outlineDndStore] = useState(() => createOutlineDndStore());
 
   const disableOutlineDrag = useAppStore(
-    (s) => s.dnd?.disableOutlineDrag ?? false
+    (s) => s.dnd?.disableOutlineDrag ?? false,
   );
 
   // Rows act as their own drag handles, so mouse presses need a movement
@@ -44,7 +44,7 @@ export const OutlineDndProvider = ({ children }: PropsWithChildren) => {
       scrollToComponent: (id: string) =>
         zoneStore.getState().scrollToComponent(id),
     }),
-    [outlineDndStore, appStore, zoneStore]
+    [outlineDndStore, appStore, zoneStore],
   );
 
   return (

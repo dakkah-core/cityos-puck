@@ -5,7 +5,7 @@ export function forRelatedZones<UserData extends Data>(
   item: UserData["content"][0],
   data: UserData,
   cb: (path: string[], zoneCompound: string, content: Content) => void,
-  path: string[] = []
+  path: string[] = [],
 ) {
   Object.entries(data.zones || {}).forEach(([zoneCompound, content]) => {
     const [parentId] = getZoneId(zoneCompound);

@@ -12,8 +12,8 @@ describe("transformProps method", () => {
           root: (props) => ({
             updatedTitle: props.title,
           }),
-        }
-      )
+        },
+      ),
     ).toEqual({
       content: [],
       root: { props: { updatedTitle: "Hello, world" } },
@@ -30,8 +30,8 @@ describe("transformProps method", () => {
           root: (props) => ({
             updatedTitle: props.title,
           }),
-        }
-      )
+        },
+      ),
     ).toEqual({
       content: [],
       root: { updatedTitle: "Hello, world" },
@@ -64,8 +64,8 @@ describe("transformProps method", () => {
           HeadingBlock: (props) => ({
             heading: props.title,
           }),
-        }
-      )
+        },
+      ),
     ).toMatchInlineSnapshot(`
       {
         "content": [
@@ -147,8 +147,8 @@ describe("transformProps method", () => {
               render: () => <div />,
             },
           },
-        }
-      )
+        },
+      ),
     ).toMatchInlineSnapshot(`
       {
         "content": [

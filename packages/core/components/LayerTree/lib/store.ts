@@ -180,7 +180,7 @@ export const createOutlineDndStore = () => {
 
 /** Outline drag-and-drop store context */
 export const OutlineDndStoreContext = createContext<StoreApi<OutlineDndStore>>(
-  createOutlineDndStore()
+  createOutlineDndStore(),
 );
 
 /** Accesses the outline drag-and-drop store value without subscribing */
@@ -190,7 +190,7 @@ export const useOutlineDndStoreApi = () => {
 
 /** Subscribes to the outline drag-and-drop store value selected by the selector */
 export const useOutlineDndStore = <T>(
-  selector: (store: OutlineDndStore) => T
+  selector: (store: OutlineDndStore) => T,
 ) => {
   return useContextStore(OutlineDndStoreContext, selector);
 };

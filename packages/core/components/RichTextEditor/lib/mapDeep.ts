@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 export const mapDeep = (
   source: any,
   path: string[],
-  render: (v: any) => ReactNode
+  render: (v: any) => ReactNode,
 ): any => {
   if (!source) {
     return null;

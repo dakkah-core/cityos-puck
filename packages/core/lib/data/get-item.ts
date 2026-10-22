@@ -9,7 +9,7 @@ export type ItemSelector = {
 
 export function getItem<UserData extends Data>(
   selector: ItemSelector,
-  state: PrivateAppState
+  state: PrivateAppState,
 ): UserData["content"][0] | undefined {
   const zone = state.indexes.zones?.[selector.zone || rootDroppableId];
 

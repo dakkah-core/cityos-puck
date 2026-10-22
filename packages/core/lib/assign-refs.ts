@@ -5,7 +5,7 @@ export type Ref<ElementType = HTMLElement> =
 
 export function assignRef<ElementType = HTMLElement>(
   ref: Ref<ElementType>,
-  node: ElementType | null
+  node: ElementType | null,
 ) {
   if (typeof ref === "function") {
     ref(node);
@@ -16,7 +16,7 @@ export function assignRef<ElementType = HTMLElement>(
 
 export function assignRefs<ElementType = HTMLElement>(
   refs: Ref<ElementType>[],
-  node: ElementType | null
+  node: ElementType | null,
 ) {
   refs.forEach((ref) => {
     assignRef<ElementType>(ref, node);

@@ -11,7 +11,7 @@ export type FieldTransformFn<T> = (params: FieldTransformFnParams<T>) => any;
 export type FieldTransforms<
   UserConfig extends Config = Config<{ fields: {} }>, // Setting fields: {} helps TS choose default field types
   G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
-  UserField extends { type: string } = Field | G["UserField"]
+  UserField extends { type: string } = Field | G["UserField"],
 > = Partial<{
   [Type in UserField["type"]]: FieldTransformFn<ExtractField<UserField, Type>>;
 }>;

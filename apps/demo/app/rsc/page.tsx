@@ -25,7 +25,7 @@ export default async function Page() {
   const resolvedData = await resolveAllData<Components, RootProps>(
     data,
     conf,
-    metadata
+    metadata,
   );
 
   return <Render config={conf} data={resolvedData} metadata={metadata} />;

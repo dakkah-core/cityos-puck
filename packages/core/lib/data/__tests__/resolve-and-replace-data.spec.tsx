@@ -91,10 +91,10 @@ function resetStores() {
             ],
           },
         },
-        config
+        config,
       ),
     },
-    true
+    true,
   );
 }
 
@@ -150,7 +150,7 @@ describe("resolveAndReplaceData", () => {
 
     // When: ---------------
     await act(() =>
-      resolveAndReplaceData(nonExistentComponent, appStore.getState)
+      resolveAndReplaceData(nonExistentComponent, appStore.getState),
     );
 
     // Then: ---------------
@@ -174,8 +174,8 @@ describe("resolveAndReplaceData", () => {
           editedStaticChild, // Resolver returns same data, so didChange === false, keeping `old` in store.
           appStore.getState,
           "replace",
-          true
-        )
+          true,
+        ),
       );
 
       // Then: the edit is written through to the store
@@ -189,8 +189,8 @@ describe("resolveAndReplaceData", () => {
           editedStaticChild,
           appStore.getState,
           "replace",
-          false
-        )
+          false,
+        ),
       );
 
       // Then: the no-op resolve is skipped and the store keeps the original data.
@@ -202,13 +202,13 @@ describe("resolveAndReplaceData", () => {
       // Given: Child's resolver always rewrites props (didChange === true)
       // When: writeThrough is false
       await act(() =>
-        resolveAndReplaceData(child1, appStore.getState, "replace", false)
+        resolveAndReplaceData(child1, appStore.getState, "replace", false),
       );
 
       // Then: the resolved data is committed
       expect(
         appStore.getState().state.indexes.nodes["Child-1"].data.props
-          .resolvedProp
+          .resolvedProp,
       ).toBe("replace");
     });
   });

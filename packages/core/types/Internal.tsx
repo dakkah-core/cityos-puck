@@ -32,13 +32,7 @@ export type PrivateAppState<UserData extends Data = Data> =
   };
 
 type BuiltinTypes =
-  | Date
-  | RegExp
-  | Error
-  | Function
-  | symbol
-  | null
-  | undefined;
+  Date | RegExp | Error | Function | symbol | null | undefined;
 
 /**
  * Recursively walk T and replace Slots with SlotComponents
@@ -48,23 +42,23 @@ export type WithDeepSlots<T, SlotType = T> =
   T extends Slot
     ? SlotType
     : // ────────────────────────── recurse into arrays & tuples ─────────────────
-    T extends (infer U)[]
-    ? Array<WithDeepSlots<U, SlotType>>
-    : T extends (infer U)[]
-    ? WithDeepSlots<U, SlotType>[]
-    : // ────────────────────────── preserve objects like Date ───────────────────
-    T extends BuiltinTypes
-    ? T
-    : // ───────────── recurse into objects while preserving optionality ─────────
-    T extends object
-    ? { [K in keyof T]: WithDeepSlots<T[K], SlotType> }
-    : T;
+      T extends (infer U)[]
+      ? Array<WithDeepSlots<U, SlotType>>
+      : T extends (infer U)[]
+        ? WithDeepSlots<U, SlotType>[]
+        : // ────────────────────────── preserve objects like Date ───────────────────
+          T extends BuiltinTypes
+          ? T
+          : // ───────────── recurse into objects while preserving optionality ─────────
+            T extends object
+            ? { [K in keyof T]: WithDeepSlots<T[K], SlotType> }
+            : T;
 
 export type ConfigParams<
   Components extends DefaultComponents = DefaultComponents,
   RootProps extends DefaultComponentProps = any,
   CategoryNames extends string[] = string[],
-  UserFields extends FieldsExtension = FieldsExtension
+  UserFields extends FieldsExtension = FieldsExtension,
 > = {
   components?: Components;
   root?: RootProps;
@@ -76,7 +70,7 @@ export type FieldsExtension = { [Type in string]: { type: Type } };
 
 export type ComponentConfigParams<
   Props extends DefaultComponentProps = DefaultComponentProps,
-  UserFields extends FieldsExtension = never
+  UserFields extends FieldsExtension = never,
 > = {
   props: Props;
   fields?: AssertHasValue<UserFields>;
@@ -92,14 +86,14 @@ export type LeftOrExactRight<Union, Left, Right> =
   | (Right & Exact<Union, Right>);
 
 export type AssertHasValue<T, True = T, False = never> = [keyof T] extends [
-  never
+  never,
 ]
   ? False
   : True;
 
 // Plugins can use `usePuck` instead of relying on props
 export type RenderFunc<
-  Props extends { [key: string]: any } = { children: ReactNode }
+  Props extends { [key: string]: any } = { children: ReactNode },
 > = (props: Props) => ReactElement;
 
 export type PluginInternal = Plugin & {

@@ -4,10 +4,10 @@ import { resolve } from "node:path";
 
 const repositoryRoot = resolve(__dirname, "../../..");
 const manifest = JSON.parse(
-  readFileSync(resolve(repositoryRoot, "packages/core/package.json"), "utf8")
+  readFileSync(resolve(repositoryRoot, "packages/core/package.json"), "utf8"),
 );
 const configuration = JSON.parse(
-  readFileSync(resolve(repositoryRoot, "turbo.json"), "utf8")
+  readFileSync(resolve(repositoryRoot, "turbo.json"), "utf8"),
 );
 const coreBuild = `${manifest.name}#build`;
 
@@ -41,18 +41,29 @@ describe("CityOS core build ordering", () => {
       const task = configuration.tasks[`${name}#build`];
       expect(task.dependsOn).toEqual(["^build"]);
       expect(task.outputs).toEqual([]);
-    }
+    },
   );
 
   it("evaluates the actual Turbo graph", () => {
     // Constant command only. Dry-run evaluates the installed tool's full task
     // graph without running a build, generating files, or publishing packages.
-    const output = execFileSync(process.execPath, [resolve(repositoryRoot, "scripts/toolchains/run-pinned-pnpm.mjs"), "exec", "turbo", "run", "build", "--dry=json"], {
-      cwd: repositoryRoot,
-      encoding: "utf8",
-      timeout: 20_000,
-      stdio: ["ignore", "pipe", "pipe"],
-    });
+    const output = execFileSync(
+      process.execPath,
+      [
+        resolve(repositoryRoot, "scripts/toolchains/run-pinned-pnpm.mjs"),
+        "exec",
+        "turbo",
+        "run",
+        "build",
+        "--dry=json",
+      ],
+      {
+        cwd: repositoryRoot,
+        encoding: "utf8",
+        timeout: 20_000,
+        stdio: ["ignore", "pipe", "pipe"],
+      },
+    );
     const graph = JSON.parse(output);
     const recipe = graph.tasks.find((task: { taskId: string }) => {
       return task.taskId === "react-router-ai-recipe#build";

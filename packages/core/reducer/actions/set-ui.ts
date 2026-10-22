@@ -14,7 +14,7 @@ import { rootAreaId } from "../../lib/root-droppable-id";
  */
 const revealSelectedItem = <UserData extends Data>(
   state: PrivateAppState<UserData>,
-  partialUi: Partial<UiState>
+  partialUi: Partial<UiState>,
 ): Partial<UiState> => {
   const itemSelector = partialUi.itemSelector;
 
@@ -36,7 +36,7 @@ const revealSelectedItem = <UserData extends Data>(
         ancestorId &&
         ancestorId !== rootAreaId &&
         !state.ui.itemExpanded?.[ancestorId] &&
-        !partialUi.itemExpanded?.[ancestorId]
+        !partialUi.itemExpanded?.[ancestorId],
     );
 
   if (collapsedAncestorIds.length === 0) {
@@ -57,7 +57,7 @@ const revealSelectedItem = <UserData extends Data>(
 
 export const setUiAction = <UserData extends Data>(
   state: PrivateAppState<UserData>,
-  action: SetUiAction
+  action: SetUiAction,
 ): PrivateAppState<UserData> => {
   const partialUi =
     typeof action.ui === "object" ? action.ui : action.ui(state.ui);

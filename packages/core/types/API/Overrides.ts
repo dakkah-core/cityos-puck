@@ -65,7 +65,7 @@ export type Overrides<UserConfig extends Config = Config> = OverridesGeneric<{
 export type FieldRenderFunctions<
   UserConfig extends Config = Config,
   G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,
-  UserField extends { type: string } = Field | G["UserField"]
+  UserField extends { type: string } = Field | G["UserField"],
 > = {
   /**
    * The React component used to render this field type.

@@ -30,7 +30,7 @@ describe("get-insert-index", () => {
           sourceIndex: 0,
           targetIndex: 3,
           isSameZone: false,
-        })
+        }),
       ).toBe(3);
 
       expect(
@@ -39,7 +39,7 @@ describe("get-insert-index", () => {
           sourceIndex: 0,
           targetIndex: 3,
           isSameZone: false,
-        })
+        }),
       ).toBe(4);
     });
 
@@ -50,7 +50,7 @@ describe("get-insert-index", () => {
           sourceIndex: 1,
           targetIndex: 3,
           isSameZone: true,
-        })
+        }),
       ).toBe(2);
 
       expect(
@@ -59,7 +59,7 @@ describe("get-insert-index", () => {
           sourceIndex: 1,
           targetIndex: 3,
           isSameZone: true,
-        })
+        }),
       ).toBe(3);
     });
 
@@ -70,7 +70,7 @@ describe("get-insert-index", () => {
           sourceIndex: 3,
           targetIndex: 1,
           isSameZone: true,
-        })
+        }),
       ).toBe(1);
 
       expect(
@@ -79,7 +79,7 @@ describe("get-insert-index", () => {
           sourceIndex: 3,
           targetIndex: 1,
           isSameZone: true,
-        })
+        }),
       ).toBe(2);
     });
 
@@ -92,7 +92,7 @@ describe("get-insert-index", () => {
           sourceIndex: 2,
           targetIndex: 3,
           isSameZone: true,
-        })
+        }),
       ).toBe(2);
 
       expect(
@@ -101,7 +101,7 @@ describe("get-insert-index", () => {
           sourceIndex: 2,
           targetIndex: 1,
           isSameZone: true,
-        })
+        }),
       ).toBe(2);
     });
   });

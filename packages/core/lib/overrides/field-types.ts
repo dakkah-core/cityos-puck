@@ -9,7 +9,7 @@ import { Overrides } from "../../types";
  */
 export const isFieldTypeHidden = (
   overrides?: Overrides["fieldTypes"],
-  fieldType?: string
+  fieldType?: string,
 ) => {
   return fieldType ? overrides?.[fieldType] === null : false;
 };

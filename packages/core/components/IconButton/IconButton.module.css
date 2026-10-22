@@ -8,7 +8,8 @@
   font-family: var(--puck-font-family);
   justify-content: center;
   padding: var(--puck-iconbutton-space, var(--puck-space-1));
-  transition: background-color var(--puck-duration-fast) var(--puck-ease-exit),
+  transition:
+    background-color var(--puck-duration-fast) var(--puck-ease-exit),
     color var(--puck-duration-fast) var(--puck-ease-exit);
 }
 

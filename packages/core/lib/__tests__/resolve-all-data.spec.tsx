@@ -166,7 +166,7 @@ describe("resolve-data", () => {
     await resolveAllData(data, config);
 
     expect(
-      resolveData.mock.calls.every((call) => call[1].trigger === "force")
+      resolveData.mock.calls.every((call) => call[1].trigger === "force"),
     ).toBe(true);
   });
 
@@ -221,13 +221,13 @@ describe("resolve-data", () => {
 
     // Then: --------------------
     expect(
-      resolveData.mock.calls.every((call) => call[1].parent !== null)
+      resolveData.mock.calls.every((call) => call[1].parent !== null),
     ).toBe(true);
     expect(receivedParentById[item1.props.id]?.props.id).toBe("root");
     expect(receivedParentById[item1_1.props.id]?.props.id).toBe(item1.props.id);
     expect(receivedParentById[item1_2.props.id]?.props.id).toBe(item1.props.id);
     expect(receivedParentById[item1_2_1.props.id]?.props.id).toBe(
-      item1_2.props.id
+      item1_2.props.id,
     );
   });
 
@@ -288,16 +288,16 @@ describe("resolve-data", () => {
 
     // Content, deep slot children and zones all receive the resolved root
     expect(receivedRootById[item1.props.id]?.props?.title).toBe(
-      "Resolved title"
+      "Resolved title",
     );
     expect(receivedRootById[item1_1.props.id]?.props?.title).toBe(
-      "Resolved title"
+      "Resolved title",
     );
     expect(receivedRootById[item1_2.props.id]?.props?.title).toBe(
-      "Resolved title"
+      "Resolved title",
     );
     expect(receivedRootById[item1_2_1.props.id]?.props?.title).toBe(
-      "Resolved title"
+      "Resolved title",
     );
   });
 
@@ -361,7 +361,7 @@ describe("resolve-data", () => {
     expect(receivedParentById[item1_2.props.id]?.props.id).toBe(item1.props.id);
     expect(receivedParentById[item1_2.props.id]?.props.prop).toBe("Resolved");
     expect(receivedParentById[item1_2_1.props.id]?.props.id).toBe(
-      item1_2.props.id
+      item1_2.props.id,
     );
     expect(receivedParentById[item1_2_1.props.id]?.props.prop).toBe("Resolved");
   });
@@ -387,7 +387,7 @@ describe("resolve-data", () => {
         "MyComponent-3",
         "MyComponent-4",
         "MyComponent-7",
-      ].sort()
+      ].sort(),
     );
   });
 });

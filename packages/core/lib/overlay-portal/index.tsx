@@ -5,7 +5,7 @@ export const registerOverlayPortal = (
   opts: {
     disableDrag?: boolean;
     disableDragOnFocus?: boolean;
-  } = {}
+  } = {},
 ) => {
   if (!el) return;
 

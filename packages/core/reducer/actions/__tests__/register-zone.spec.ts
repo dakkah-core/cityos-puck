@@ -27,7 +27,7 @@ describe("Reducer", () => {
 
       const newState = reducer(
         reducer(state, unregisterAction),
-        registerAction
+        registerAction,
       );
       expect(newState.data.zones?.zone1[0].props.id).toEqual("1");
     });

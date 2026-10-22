@@ -12,7 +12,7 @@ export const resolveDndMode = (
   {
     isDraggingBetweenSlots = false,
     isNewComponent = false,
-  }: ResolveDndModeOptions = {}
+  }: ResolveDndModeOptions = {},
 ): DndMode => {
   if (behavior === "auto") {
     return isDraggingBetweenSlots || isNewComponent ? "static" : "fluid";

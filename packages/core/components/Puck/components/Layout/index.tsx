@@ -45,9 +45,9 @@ const FieldSideBar = () => {
   const pageLabel = useMessage("label-page");
   const title = useAppStore((s) =>
     s.selectedItem
-      ? s.config.components[s.selectedItem.type]?.["label"] ??
-        s.selectedItem.type.toString()
-      : s.config.root?.label
+      ? (s.config.components[s.selectedItem.type]?.["label"] ??
+        s.selectedItem.type.toString())
+      : s.config.root?.label,
   );
 
   return (
@@ -85,7 +85,7 @@ export const Layout = ({ children }: { children?: ReactNode }) => {
 
   const iframe: IframeConfig = useMemo(
     () => normalizeIframeConfig(_iframe),
-    [_iframe]
+    [_iframe],
   );
 
   useInjectUiCss();
@@ -93,7 +93,7 @@ export const Layout = ({ children }: { children?: ReactNode }) => {
   const dispatch = useAppStore((s) => s.dispatch);
   const leftSideBarVisible = useAppStore((s) => s.state.ui.leftSideBarVisible);
   const rightSideBarVisible = useAppStore(
-    (s) => s.state.ui.rightSideBarVisible
+    (s) => s.state.ui.rightSideBarVisible,
   );
 
   const instanceId = useAppStore((s) => s.instanceId);
@@ -146,7 +146,7 @@ export const Layout = ({ children }: { children?: ReactNode }) => {
 
   const CustomPuck = useMemo(
     () => overrides.puck || DefaultOverride,
-    [overrides]
+    [overrides],
   );
 
   const [mounted, setMounted] = useState(false);
@@ -188,7 +188,7 @@ export const Layout = ({ children }: { children?: ReactNode }) => {
 
   const hasLegacySideBarPlugin = useMemo(
     () => !!plugins?.find((p) => p.name === "legacy-side-bar"),
-    [plugins]
+    [plugins],
   );
 
   // Localized labels for the built-in plugin tabs, passed into their factories.
@@ -286,7 +286,7 @@ export const Layout = ({ children }: { children?: ReactNode }) => {
     pluginItems["fields"] && pluginItems["fields"].mobileOnly === false;
 
   const mobilePanelExpanded = useAppStore(
-    (s) => s.state.ui.mobilePanelExpanded ?? false
+    (s) => s.state.ui.mobilePanelExpanded ?? false,
   );
 
   // Title follows the icon/action: collapse when expanded, expand otherwise.
@@ -376,7 +376,7 @@ export const Layout = ({ children }: { children?: ReactNode }) => {
                         >
                           <Render />
                         </PluginTab>
-                      )
+                      ),
                     )}
                   </Sidebar>
                   <Canvas />

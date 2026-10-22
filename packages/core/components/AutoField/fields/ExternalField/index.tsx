@@ -30,7 +30,7 @@ export const ExternalField = ({
   useEffect(() => {
     if (deprecatedField.adaptor) {
       console.error(
-        "Warning: The `adaptor` API is deprecated. Please use updated APIs on the `external` field instead. This will be a breaking change in a future release."
+        "Warning: The `adaptor` API is deprecated. Please use updated APIs on the `external` field instead. This will be a breaking change in a future release.",
       );
     }
   }, []);
@@ -59,7 +59,7 @@ export const ExternalField = ({
           fetchList: deprecatedField.adaptor?.fetchList
             ? async () =>
                 await deprecatedField.adaptor.fetchList(
-                  deprecatedField.adaptorParams
+                  deprecatedField.adaptorParams,
                 )
             : validField.fetchList,
         }}

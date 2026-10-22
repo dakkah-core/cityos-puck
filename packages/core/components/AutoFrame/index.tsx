@@ -57,7 +57,7 @@ const getStyles = (styleSheet?: CSSStyleSheet) => {
     } catch (e) {
       console.warn(
         "Access to stylesheet %s is denied. Ignoring…",
-        styleSheet.href
+        styleSheet.href,
       );
     }
   }
@@ -108,7 +108,7 @@ const CopyHostStyles = ({
       elements = [];
 
       Array.from(
-        doc.head.querySelectorAll(`[${mirroredStyleAttribute}="true"]`)
+        doc.head.querySelectorAll(`[${mirroredStyleAttribute}="true"]`),
       ).forEach((mirror) => {
         mirror.remove();
       });
@@ -147,7 +147,7 @@ const CopyHostStyles = ({
         if (!styles) {
           if (debug) {
             console.warn(
-              `Tried to load styles for link element, but couldn't find them. Skipping...`
+              `Tried to load styles for link element, but couldn't find them. Skipping...`,
             );
           }
 
@@ -171,7 +171,7 @@ const CopyHostStyles = ({
       if (index > -1) {
         if (debug)
           console.log(
-            `Tried to add an element that was already mirrored. Updating instead...`
+            `Tried to add an element that was already mirrored. Updating instead...`,
           );
 
         elements[index].mirror.innerText = el.innerText;
@@ -190,7 +190,7 @@ const CopyHostStyles = ({
       if (hashes[elHash]) {
         if (debug)
           console.log(
-            `iframe already contains element that is being mirrored. Skipping...`
+            `iframe already contains element that is being mirrored. Skipping...`,
           );
 
         return;
@@ -209,7 +209,7 @@ const CopyHostStyles = ({
       if (index === -1) {
         if (debug)
           console.log(
-            `Tried to remove an element that did not exist. Skipping...`
+            `Tried to remove an element that did not exist. Skipping...`,
           );
 
         return;
@@ -304,10 +304,10 @@ const CopyHostStyles = ({
         elements.push({ original: styleNode, mirror });
 
         return mirror;
-      })
+      }),
     ).then((mirrorStyles) => {
       const filtered = mirrorStyles.filter(
-        (el) => typeof el !== "undefined"
+        (el) => typeof el !== "undefined",
       ) as HTMLStyleElement[];
 
       filtered.forEach((mirror) => {
@@ -324,7 +324,7 @@ const CopyHostStyles = ({
           console.warn(
             `AutoFrame couldn't load a stylesheet${href ? `: ${href}` : ""}. ` +
               `This can happen if the parent document's stylesheet is blocked by the iframe's CSP, ` +
-              `returns a non-2xx status, or fails to reach the network.`
+              `returns a non-2xx status, or fails to reach the network.`,
           );
           stylesLoaded = stylesLoaded + 1;
 
@@ -426,7 +426,7 @@ function AutoFrame({
       });
 
       setMountTarget(
-        frameRef.current.contentDocument?.getElementById("frame-root")
+        frameRef.current.contentDocument?.getElementById("frame-root"),
       );
 
       if (doc && win && stylesLoaded) {

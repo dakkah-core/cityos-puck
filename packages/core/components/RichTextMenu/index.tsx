@@ -6,7 +6,7 @@ import { LoadedRichTextMenuInner } from "./inner";
 const LoadedRichTextMenuFull = lazy(() =>
   import("./full").then((m) => ({
     default: m.LoadedRichTextMenuFull,
-  }))
+  })),
 );
 
 export type LoadedRichTextMenuProps = {

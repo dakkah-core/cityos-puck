@@ -10,7 +10,7 @@ export const fieldContextStore = createContextStore<FieldStore>({});
 export const useFieldStoreApi = () => useContext(fieldContextStore.ctx);
 
 export function useFieldStore<U>(
-  selector: (s: ExtractState<StoreApi<FieldStore>>) => U
+  selector: (s: ExtractState<StoreApi<FieldStore>>) => U,
 ): U {
   const store = useContext(fieldContextStore.ctx);
 

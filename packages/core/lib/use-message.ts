@@ -12,5 +12,5 @@ import { DictionaryKey, getMessage } from "./dictionary";
  */
 export const useMessage = (
   key: DictionaryKey,
-  params?: Record<string, string | number>
+  params?: Record<string, string | number>,
 ) => useAppStore((s) => getMessage(s.dictionary, key, params));

@@ -9,7 +9,7 @@ import { walkAppState } from "../../lib/data/walk-app-state";
 export const removeAction = <UserData extends Data>(
   state: PrivateAppState<UserData>,
   action: RemoveAction,
-  appStore: AppStore
+  appStore: AppStore,
 ) => {
   const item = getItem({ index: action.index, zone: action.zone }, state)!;
 
@@ -32,7 +32,7 @@ export const removeAction = <UserData extends Data>(
       }
 
       return content;
-    }
+    },
   );
 
   Object.keys(newState.data.zones || {}).forEach((zoneCompound) => {

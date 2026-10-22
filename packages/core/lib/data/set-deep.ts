@@ -13,7 +13,7 @@ const copyContainer = (value: any) =>
 export function setDeep<T extends Record<string, any>>(
   node: T,
   path: string,
-  newVal: any
+  newVal: any,
 ): T {
   const parts = path.split(".");
   const newNode = { ...node };

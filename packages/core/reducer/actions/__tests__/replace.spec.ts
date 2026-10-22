@@ -64,7 +64,7 @@ describe("Reducer", () => {
 
         expect(newState.data.zones?.[dzZoneCompound].length).toBe(1);
         expect(newState.data.zones?.[dzZoneCompound][0].props.prop).toBe(
-          "Changed"
+          "Changed",
         );
         expectIndexed(newState, newState.data.content[0], [rootDroppableId], 0);
       });
@@ -135,13 +135,13 @@ describe("Reducer", () => {
           newState,
           slottedItem1,
           ["root:slot", "1:slotArray[0].slot"],
-          0
+          0,
         );
         expectIndexed(
           newState,
           slottedItem2,
           ["root:slot", "1:slotArray[1].slot"],
-          0
+          0,
         );
 
         const removedState = executeSequence(newState, [
@@ -164,11 +164,11 @@ describe("Reducer", () => {
           removedState,
           slottedItem1,
           ["root:slot", "1:slotArray[0].slot"],
-          0
+          0,
         );
 
         expect(
-          removedState.indexes.zones["1:slotArray[1].slot"]
+          removedState.indexes.zones["1:slotArray[1].slot"],
         ).toBeUndefined();
       });
     });

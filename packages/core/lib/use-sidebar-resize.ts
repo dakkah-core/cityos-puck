@@ -10,7 +10,7 @@ import { PuckAction } from "../reducer";
  */
 export function useSidebarResize(
   position: "left" | "right",
-  dispatch: (action: PuckAction) => void
+  dispatch: (action: PuckAction) => void,
 ) {
   const [width, setWidth] = useState<number | null>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -18,7 +18,7 @@ export function useSidebarResize(
   const storeWidth = useAppStore((s) =>
     position === "left"
       ? s.state.ui.leftSideBarWidth
-      : s.state.ui.rightSideBarWidth
+      : s.state.ui.rightSideBarWidth,
   );
 
   // Load saved widths from localStorage on mount
@@ -44,7 +44,7 @@ export function useSidebarResize(
       } catch (error) {
         console.error(
           `Failed to load ${position} sidebar width from localStorage`,
-          error
+          error,
         );
       }
     }
@@ -75,7 +75,7 @@ export function useSidebarResize(
       } catch (error) {
         console.error(
           `Failed to save ${position} sidebar width to localStorage`,
-          error
+          error,
         );
       } finally {
         localStorage.setItem(
@@ -83,7 +83,7 @@ export function useSidebarResize(
           JSON.stringify({
             ...widths,
             [position]: width,
-          })
+          }),
         );
       }
 
@@ -92,10 +92,10 @@ export function useSidebarResize(
         new CustomEvent("viewportchange", {
           bubbles: true,
           cancelable: false,
-        })
+        }),
       );
     },
-    [dispatch, position]
+    [dispatch, position],
   );
 
   return {

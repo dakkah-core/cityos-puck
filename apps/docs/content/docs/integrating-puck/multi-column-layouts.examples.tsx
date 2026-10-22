@@ -152,8 +152,8 @@ export function Example3() {
           type: "slot",
         },
       },
-      render: ({ content: Content }) => (
-        <Content
+      render: (props) => (
+        <props.content
           style={{
             display: "grid",
             gridTemplateColumns: "2fr 1fr",
@@ -215,8 +215,8 @@ export function Example4() {
           type: "slot",
         },
       },
-      render: ({ Content }) => (
-        <Content
+      render: (props) => (
+        <props.Content
           zone="default-zone"
           style={{
             display: "grid",
@@ -306,8 +306,8 @@ export function Example5() {
           },
         ],
       },
-      render: ({ content }) =>
-        content({
+      render: (props) =>
+        props.content({
           style: {
             display: "grid",
             gridTemplateColumns: "2fr 1fr",

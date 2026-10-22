@@ -64,7 +64,7 @@ export const useMinEmptyHeight = ({
         }, 100);
       }
     },
-    [appStore, prevHeight, zoneCompound]
+    [appStore, prevHeight, zoneCompound],
   );
 
   useEffect(() => {

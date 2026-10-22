@@ -110,7 +110,7 @@ export const ViewportControls = ({
   const uiViewports = useAppStore((s) => s.state.ui.viewports);
 
   const defaultsContainAutoZoom = defaultZoomOptions.find(
-    (option) => option.value === autoZoom
+    (option) => option.value === autoZoom,
   );
 
   const autoZoomLabel = useMessage("viewport-zoom-auto", {
@@ -132,11 +132,11 @@ export const ViewportControls = ({
       ]
         .filter((a) => a.value <= autoZoom)
         .sort((a, b) => (a.value > b.value ? 1 : -1)),
-    [autoZoom, autoZoomLabel]
+    [autoZoom, autoZoomLabel],
   );
 
   const [activeViewport, setActiveViewport] = useState(
-    uiViewports.current.width
+    uiViewports.current.width,
   );
 
   useEffect(() => {
@@ -178,9 +178,9 @@ export const ViewportControls = ({
                   Math.max(
                     zoomOptions.findIndex((option) => option.value === zoom) -
                       1,
-                    0
+                    0,
                   )
-                ].value
+                ].value,
               );
             }}
           >
@@ -197,9 +197,9 @@ export const ViewportControls = ({
                   Math.min(
                     zoomOptions.findIndex((option) => option.value === zoom) +
                       1,
-                    zoomOptions.length - 1
+                    zoomOptions.length - 1,
                   )
-                ].value
+                ].value,
               );
             }}
           >

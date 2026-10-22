@@ -502,7 +502,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/drawer-item.examples.tsx",
-      "sha256": "5039ab037fe7cef75b84bd63d44e20eb14affedf5cb53c5a7498ab5d8d13704f"
+      "sha256": "aa3c35ada09c064b2897699d4d37223419718e2d1aba05983cce1a69bee705b6"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/drawer.examples.tsx",
@@ -514,19 +514,19 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/inline-text-field.examples.tsx",
-      "sha256": "39368027bd267b3127ef31115b92f230e693fb8e3800bccc054073cdfbd4d89f"
+      "sha256": "2ba514fa2e6271e4a6052ac04dfa78c7822e07998ff5c82d03a37e9f2db0d73f"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/puck-components.examples.tsx",
-      "sha256": "d2c51c28a1533d2c959b6f749cce4ba314e5477c53f896353481415443c3d73b"
+      "sha256": "cd2d5582783dd24020da38654b7cd11ec11e219ac84ad53deaca3fc565ce8f56"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/puck-fields.examples.tsx",
-      "sha256": "cc88ac5c4b145cd495da8f59af5088a872c42521e8a8cd99ad3b45c7937a91f0"
+      "sha256": "2e02cf1a6bd6c67e58940c3ec2e8efc2e123e6aa08e0982f87ba41c84ca2e6d0"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/puck-outline.examples.tsx",
-      "sha256": "12f3ef27ddd40bae808442c7a01d3ff7f3bc5f34ab01f461ff6be5c06c81657e"
+      "sha256": "aed9ff3d95ca3f34ce0f5e5a0a8907a4bad586e5d0441f7f7ca5cc89ba24ac1e"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/puck-preview.examples.tsx",
@@ -534,11 +534,11 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/rich-text-menu.examples.tsx",
-      "sha256": "299d7a86fd1f3488020bd5c679f6d074b2060b08706a71fc6167d3bb9e51fa64"
+      "sha256": "160e589719cc0a28f1546aa8b69fdff4b2d2d2aa8413da375675f460026d591c"
     },
     {
       "path": "apps/docs/content/docs/api-reference/configuration/component-config.examples.tsx",
-      "sha256": "84434c2b37d4dba72f0f4549453c6dbb62c7b42d21533c4e7628b21b1207929c"
+      "sha256": "5ddb0143f739d750b3e47eb3246926638e646f385ce25428e8f36c7a5337263d"
     },
     {
       "path": "apps/docs/content/docs/api-reference/fields/array.examples.tsx",
@@ -570,7 +570,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/fields/richtext.examples.tsx",
-      "sha256": "aebf897641af6d4d43f81dca3d9d2e009a1f24a590f51f5561f92f4122525a5c"
+      "sha256": "8a4362e87bc45f0d54bad1b9d327155499fc790ffd612d49f332035701acde21"
     },
     {
       "path": "apps/docs/content/docs/api-reference/fields/select.examples.tsx",
@@ -630,7 +630,7 @@
     },
     {
       "path": "apps/docs/content/docs/integrating-puck/dynamic-fields.examples.tsx",
-      "sha256": "0bcf6fbfa27fcb54f2280eb90b93127cd0f1dc33151da72ee759682b8c0bbcc9"
+      "sha256": "32263e1e6a1bf94d434f2d02c2aa4e7e3af37ba833d73cfe9abf8cef7555f06d"
     },
     {
       "path": "apps/docs/content/docs/integrating-puck/dynamic-props.examples.tsx",
@@ -638,11 +638,11 @@
     },
     {
       "path": "apps/docs/content/docs/integrating-puck/external-data-sources.examples.tsx",
-      "sha256": "eb7fdf20fa1efc6b75cec3c227090d337417fb4f7d27926263f8747af6545bf2"
+      "sha256": "81af99ab9c66c63bcf283b17be37a01c13fe98779bb3b422b01d1e970e93766e"
     },
     {
       "path": "apps/docs/content/docs/integrating-puck/multi-column-layouts.examples.tsx",
-      "sha256": "fdd8b8e5913e62bc96aa1208bf6edaa02d4ab587f7b9b556a6831b0de07cf36b"
+      "sha256": "eddb5fe4d12f3ce05d9801d4c0fe1e78e17cbd7aa5cbca120fad514a35222c82"
     },
     {
       "path": "apps/docs/content/docs/integrating-puck/overlay-portals.examples.tsx",
@@ -684,7 +684,7 @@
     },
     {
       "path": "apps/docs/mdx-components.tsx",
-      "sha256": "d0a25677326b164cf683a7127b28ebfee778c9abaeaaa289a7ea21dbfd2e21b4"
+      "sha256": "dd4d6606e51594fcb910123b18e9dae548d1d612661d91ebe5df2b134ade3547"
     },
     {
       "path": "apps/docs/app/layout.tsx",

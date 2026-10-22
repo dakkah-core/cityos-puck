@@ -63,7 +63,7 @@ export const FieldLabelInternal = ({
 
   const Wrapper = useMemo(
     () => overrides.fieldLabel || FieldLabel,
-    [overrides]
+    [overrides],
   );
 
   if (!label) {
