@@ -71,6 +71,15 @@ export function assertHostResult(host, artifactHash) {
   assert.equal(host.artifact.sha256, artifactHash);
 }
 
+export const qualifiedPackArguments = (packageRoot, archive) => [
+  "--dir",
+  packageRoot,
+  "pack",
+  "--ignore-scripts",
+  "--out",
+  archive,
+];
+
 export async function qualify(cmsRoot, cmsCommit, root = repositoryRoot) {
   assertNodeVersion();
   const json = (path) => JSON.parse(readFileSync(join(root, path), "utf8"));
@@ -177,12 +186,10 @@ export async function qualify(cmsRoot, cmsCommit, root = repositoryRoot) {
   record("registration", registration, nodeTestCount(registration));
   execute("build", [runner, "--filter", packageManifest.name, "build"]);
   // Pack the existing build once; publication later uses these identical bytes.
-  execute(
-    "pack",
-    [runner, "--filter", packageManifest.name, "pack", "--out", archive],
-    root,
-    { ...process.env, npm_config_ignore_scripts: "true" },
-  );
+  execute("pack", [
+    runner,
+    ...qualifiedPackArguments(join(root, "packages/core"), archive),
+  ]);
   const artifactHash = sha256(readFileSync(archive));
   const typecheck = execute(
     "typecheck",

@@ -42,7 +42,7 @@ const source = {
   schemaVersion: "cityos.puck.registration.v3",
   dataProfile: "cityos.puck-slots.v0.23.native-screen.v2",
   source: {
-    ownerId: "cityos.puck.qualification",
+    ownerId: "core.puck-qualification",
     registryRevision: "standalone-host-v1",
     definitionDigest: "sha256:" + "1".repeat(64),
   },
@@ -127,7 +127,7 @@ try {
   assert.equal(container.querySelectorAll("textarea").length, 2);
   assert.ok(
     [...container.querySelectorAll("textarea")].every(
-      (field) => field.disabled,
+      (field) => field.readOnly,
     ),
   );
   console.log(
