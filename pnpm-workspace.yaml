@@ -240,6 +240,7 @@ packageExtensions:
 
 # Exact upstream integration patch; core identity and source version remain unchanged.
 patchedDependencies:
+  "nextra-theme-docs@4.6.1": "patches/nextra-theme-docs@4.6.1.layout-children.patch"
   "eslint-plugin-react@7.37.5": "patches/eslint-plugin-react@7.37.5.resolve-stable.patch"
   "twoslash@0.3.9": "patches/twoslash@0.3.9.patch"
   "@puckeditor/plugin-ai@0.8.3": "patches/@puckeditor__plugin-ai@0.8.3.patch"

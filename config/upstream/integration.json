@@ -1082,11 +1082,15 @@
         "scripts/cityos/docs-route-revisions.test.mjs",
         "scripts/cityos/fixtures/docs-route-revisions.json",
         "scripts/toolchains/capture-docs-preservation.mjs",
-        "scripts/cityos/docs-menu.test.mjs"
+        "scripts/cityos/docs-menu.test.mjs",
+        "patches/nextra-theme-docs@4.6.1.layout-children.patch",
+        "scripts/cityos/docs-theme-layout.test.mjs",
+        "scripts/toolchains/nextra-theme-layout.mjs"
       ],
       "tests": [
         "scripts/cityos/docs-route-revisions.test.mjs",
-        "scripts/cityos/docs-menu.test.mjs"
+        "scripts/cityos/docs-menu.test.mjs",
+        "scripts/cityos/docs-theme-layout.test.mjs"
       ]
     }
   ],
