@@ -48,7 +48,7 @@ test("the fork pins pnpm 12 as its package manager", () => {
 test("toolchain migration preserves the CityOS fork and public integration entry", () => {
   const core = JSON.parse(readFileSync(new URL("packages/core/package.json", root), "utf8"));
   assert.equal(core.name, "@cityos-core/puck");
-  assert.equal(core.version, "0.23.0-cityos.3");
+  assert.equal(core.version, "0.23.0-cityos.4");
   assert.ok(core.exports["./cityos"]);
   assert.equal(core.engines.node, manifest.engines.node);
 });
