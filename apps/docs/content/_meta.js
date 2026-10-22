@@ -15,7 +15,6 @@ const menu = {
     type: "page",
     href: "/#support",
     title: "Support",
-    newWindow: false,
   },
 };
 

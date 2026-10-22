@@ -1081,10 +1081,12 @@
         "scripts/cityos/docs-route-revisions.mjs",
         "scripts/cityos/docs-route-revisions.test.mjs",
         "scripts/cityos/fixtures/docs-route-revisions.json",
-        "scripts/toolchains/capture-docs-preservation.mjs"
+        "scripts/toolchains/capture-docs-preservation.mjs",
+        "scripts/cityos/docs-menu.test.mjs"
       ],
       "tests": [
-        "scripts/cityos/docs-route-revisions.test.mjs"
+        "scripts/cityos/docs-route-revisions.test.mjs",
+        "scripts/cityos/docs-menu.test.mjs"
       ]
     }
   ],
