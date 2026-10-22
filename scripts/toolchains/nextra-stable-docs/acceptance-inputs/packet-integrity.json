@@ -29,7 +29,7 @@
     },
     {
       "path": "acceptance-inputs/preservation.json",
-      "sha256": "5c3d422268770bd0de27871f912459b132c85e8cdc3d2022adeadc52a0c0c5a8"
+      "sha256": "99b97af99f48b4f49e7d602ad93ccbfb38211aa61b77004e63d4da20f9a142f2"
     },
     {
       "path": "acceptance-inputs/provider-input.mjs",

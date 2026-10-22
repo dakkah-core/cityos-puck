@@ -21,6 +21,13 @@ _The visual editor for React_
 
 </div>
 
+## CityOS fork
+
+This repository is the CityOS fork of [puckeditor/puck](https://github.com/puckeditor/puck).
+The CityOS package is `@cityos-core/puck`, distributed under the `cityos` npm tag.
+Upstream fixes and features are merged into this fork while retaining CityOS extensions,
+integration checks, and the pinned toolchain. See [upstream maintenance](docs/upstream.md).
+
 ## What is Puck?
 
 Puck is a modular, open-source visual editor for React.js. You can use Puck to build custom drag-and-drop experiences with your own application and React components.

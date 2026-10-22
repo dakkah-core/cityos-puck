@@ -35,6 +35,9 @@ scripts/toolchains/**/source-overlays/
 /apps/docs/content/docs/api-reference/components/drawer.examples.tsx
 /apps/docs/content/docs/api-reference/components/drawer.mdx
 /apps/docs/content/docs/api-reference/components/drop-zone.mdx
+/apps/docs/content/docs/api-reference/components/field-group-item.mdx
+/apps/docs/content/docs/api-reference/components/field-group.examples.tsx
+/apps/docs/content/docs/api-reference/components/field-group.mdx
 /apps/docs/content/docs/api-reference/components/field-label.examples.tsx
 /apps/docs/content/docs/api-reference/components/field-label.mdx
 /apps/docs/content/docs/api-reference/components/inline-text-field.examples.tsx

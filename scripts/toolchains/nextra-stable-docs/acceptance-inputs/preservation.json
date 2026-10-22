@@ -3,8 +3,8 @@
   "status": "captured-source-input-not-test-evidence",
   "normalization": "UTF-8 without BOM; CRLF replaced with LF",
   "routeFixture": "scripts/cityos/fixtures/docs-route-migration.json",
-  "expectedRoutes": 117,
-  "expectedExamples": 44,
+  "expectedRoutes": 119,
+  "expectedExamples": 45,
   "routes": [
     {
       "path": "apps/docs/content/docs/api-reference/actions.mdx",
@@ -12,7 +12,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/components.mdx",
-      "sha256": "cc3bc5d3ae25571da8788778b4a4f82d4d4bc2d1340d1415efe70f0e399588ef"
+      "sha256": "00aa077f60a7db4ed36a19019ff2834b538e17233193e0909f589230ec74ad8a"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/action-bar-action.mdx",
@@ -51,8 +51,16 @@
       "sha256": "85b46676d69ae89a745ce1ca78d501e70d3196c3ea5e55138a8a4242cbfa580c"
     },
     {
+      "path": "apps/docs/content/docs/api-reference/components/field-group-item.mdx",
+      "sha256": "4d8ab41953feea32a545deebd94adf5f9408487f6a2da440cc3aabe9ac3095bb"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/field-group.mdx",
+      "sha256": "ae540f518528898d282e3ea60cd3fb1b72e195a0f8b29241f7930c2310ac330a"
+    },
+    {
       "path": "apps/docs/content/docs/api-reference/components/field-label.mdx",
-      "sha256": "cd9b343adfc3fbc84a3fed9d3a71e638eddb873ac252a7fdfb0983276c6222d3"
+      "sha256": "c8e311153f5e8cf3e42097fbf6caad05da7b0d2615417a034bd893c04286488b"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/inline-text-field.mdx",
@@ -104,7 +112,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/configuration/component-config.mdx",
-      "sha256": "ab0e6705027eb5408b433b7bc194b6ec844b9b8abbb2d8775bb91cf4f4c3b04f"
+      "sha256": "4f56c8a87ed65b26ecbaf171a360148dfaabfd2040ff52dca2421ffa7abcef07"
     },
     {
       "path": "apps/docs/content/docs/api-reference/configuration/config.mdx",
@@ -116,7 +124,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/data-model/app-state.mdx",
-      "sha256": "dcbb022e1affa9f49a519b229f16ebbc203518c0a8cab9a4d0bd4fba98535ab5"
+      "sha256": "15e785e6bd39c22dd1d12075d0bef520446fcec3173690af2eea57efdd0d9fba"
     },
     {
       "path": "apps/docs/content/docs/api-reference/data-model/component-data.mdx",
@@ -172,7 +180,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/fields/object.mdx",
-      "sha256": "0c8fec365be51b352b69579a7af0436fae14fdc88b00614aa1c0120ed8d08702"
+      "sha256": "abb717ac47cd8a64541b3474bc3285446066b4222d7017ee902661e454a79705"
     },
     {
       "path": "apps/docs/content/docs/api-reference/fields/radio.mdx",
@@ -264,7 +272,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/overrides/fields.mdx",
-      "sha256": "cc5bffe595d33ff889be52efba1e0fe3c4953e51ef24f806382a26126feae6bb"
+      "sha256": "21873e0a82000c55ada9060c295dcd15a0980e683174ba3bb05352a2352b44b0"
     },
     {
       "path": "apps/docs/content/docs/api-reference/overrides/header-actions.mdx",
@@ -509,6 +517,10 @@
       "sha256": "c57fd8790ccacbcd1920445268832135d8a08f24c562dabdc5289c8801b51b8c"
     },
     {
+      "path": "apps/docs/content/docs/api-reference/components/field-group.examples.tsx",
+      "sha256": "6dffea415402bdfe6a80f9b9c8c5b35f285ba25cf4232a2ddbe3f08bee9e72a9"
+    },
+    {
       "path": "apps/docs/content/docs/api-reference/components/field-label.examples.tsx",
       "sha256": "a33a09b395fbd8a315d4fd05c99707b45307604b963362cd9eeb5ac1ae070bc6"
     },
@@ -660,7 +672,7 @@
     },
     {
       "path": "packages/core/bundle/core.ts",
-      "sha256": "9a9c4994b84ff8dc716370be51deb0d96728d695bd6dce506244c2ddc7372e69"
+      "sha256": "e5caf45739ffda6a4c5e4ae5c2caec9b400062b33bbd3786b7cad459428a580b"
     },
     {
       "path": "packages/core/bundle/rsc.tsx",
@@ -755,5 +767,9 @@
       }
     }
   },
-  "note": "These are source preservation observations. Matching hashes do not establish build, runtime, acceptance or production readiness."
+  "note": "These are source preservation observations. Matching hashes do not establish build, runtime, acceptance or production readiness.",
+  "addedRoutes": [
+    "apps/docs/content/docs/api-reference/components/field-group-item.mdx",
+    "apps/docs/content/docs/api-reference/components/field-group.mdx"
+  ]
 }

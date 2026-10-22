@@ -1,4 +1,12 @@
-import { act, cleanup, render, screen } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from "@testing-library/react";
+import { FieldGroup } from "../../FieldGroup";
+import { createCityOSStringListField } from "../../../../../extensions/cityos/cityos-string-list-field";
 import { Config, Plugin } from "../../../types";
 import "@testing-library/jest-dom";
 import {
@@ -379,5 +387,82 @@ describe("Puck", () => {
 
     expect(root?.getAttribute("translate")).toBe("no");
     expect(root?.classList.contains("notranslate")).toBe(true);
+  });
+  it("retains CityOS custom field context and permission changes inside upstream expandable layouts", async () => {
+    const createConfig = (label: string): Config<{}, { items: string[] }> => ({
+      components: {},
+      root: {
+        fields: {
+          items: createCityOSStringListField({
+            type: "string-list",
+            label,
+            maxItems: 5,
+            maxItemLength: 80,
+          }),
+        },
+        renderFields: ({ fields }) => (
+          <FieldGroup id="cityos-items" label="CityOS group" expandable>
+            {fields.items}
+          </FieldGroup>
+        ),
+      },
+    });
+    const data = { root: { props: { items: ["first"] } }, content: [] };
+    const onChange = jest.fn();
+    const editor = (config: Config, edit: boolean) => (
+      <Puck
+        config={config}
+        data={data}
+        permissions={{ edit }}
+        dictionary={{ "field-arrayitem-add": "CityOS add" }}
+        onChange={onChange}
+        iframe={{ enabled: false }}
+      >
+        <Puck.Fields />
+      </Puck>
+    );
+    const view = render(editor(createConfig("CityOS items"), true));
+    await flush();
+    // The stylesheet makes Puck visible in browsers; this fixture stubs CSS.
+    (view.container.querySelector(".Puck") as HTMLElement).style.visibility =
+      "visible";
+    expect(
+      screen.getByRole("button", { name: "CityOS group" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByDisplayValue("first")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "CityOS group" }));
+    await flush();
+    expect(
+      screen.getByRole("button", { name: "CityOS add" }),
+    ).toBeInTheDocument();
+    fireEvent.change(screen.getByDisplayValue("first"), {
+      target: { value: "edited" },
+    });
+    await flush();
+    expect(onChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        root: expect.objectContaining({
+          props: expect.objectContaining({ items: ["edited"] }),
+        }),
+      }),
+    );
+    view.rerender(editor(createConfig("Localized items"), false));
+    await flush();
+    expect(
+      screen.getByRole("button", { name: "CityOS group" }),
+    ).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByText("Localized items", { selector: "legend" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("textbox")).toHaveProperty("readOnly", true);
+    expect(
+      screen.queryByRole("button", { name: "CityOS add" }),
+    ).not.toBeInTheDocument();
+    onChange.mockClear();
+    fireEvent.change(screen.getByRole("textbox"), {
+      target: { value: "forbidden" },
+    });
+    await flush();
+    expect(onChange).not.toHaveBeenCalled();
   });
 });

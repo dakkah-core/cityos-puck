@@ -309,9 +309,8 @@ test("owned Nextra preservation packet guards every route, example and public so
   const fixture = json(input.routeFixture);
   const actualRoutes = [...files("apps/docs/content")].filter((path) => path.endsWith(".mdx")).sort();
   const actualExamples = [...files("apps/docs/content")].filter((path) => path.endsWith(".examples.tsx")).sort();
-  assert.equal(input.expectedRoutes, 117);
-  assert.equal(input.expectedExamples, 44);
-  assert.deepEqual(actualRoutes, fixture.routes.map(({ path }) => `apps/docs/content/${path}`).sort());
+  assert.equal(fixture.routes.length, 117, "Original migration observations remain immutable");
+  assert.deepEqual(actualRoutes, [...fixture.routes.map(({ path }) => `apps/docs/content/${path}`), ...(input.addedRoutes ?? [])].sort());
   assert.deepEqual(actualRoutes, input.routes.map(({ path }) => path).sort());
   assert.deepEqual(actualExamples, input.examples.map(({ path }) => path).sort());
   assert.equal(actualRoutes.length, input.expectedRoutes);

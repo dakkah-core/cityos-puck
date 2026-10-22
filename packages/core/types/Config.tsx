@@ -12,6 +12,7 @@ import {
   AssertHasValue,
   FieldsExtension,
   LeftOrExactRight,
+  RenderFunc,
   WithDeepSlots,
 } from "./Internal";
 
@@ -49,6 +50,9 @@ type ComponentConfigInternal<
   label?: string;
   defaultProps?: FieldProps;
   fields?: Fields<FieldProps, UserField>;
+  renderFields?: RenderFunc<{
+    fields: Partial<Record<keyof FieldProps, ReactNode>>;
+  }>;
   permissions?: Partial<Permissions>;
   inline?: boolean;
   resolveFields?: (

@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  globSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { assertNodeVersion, repositoryRoot } from "./toolchain.mjs";
@@ -26,6 +32,13 @@ export async function captureDocsPreservation(baselineRevision, changedInputs) {
     ...preservation.examples,
     ...preservation.publicBoundarySources,
   ];
+  const known = new Set(inputs.map(({ path }) => path));
+  const added = globSync("apps/docs/content/**/*", { cwd: repositoryRoot })
+    .map((path) => path.replaceAll("\\", "/"))
+    .filter(
+      (path) => /\.(?:mdx|examples\.tsx)$/u.test(path) && !known.has(path),
+    )
+    .sort();
   const actual = inputs
     .filter(
       (entry) =>
@@ -33,6 +46,7 @@ export async function captureDocsPreservation(baselineRevision, changedInputs) {
         entry.sha256,
     )
     .map((entry) => entry.path)
+    .concat(added)
     .sort();
   assert.deepEqual(
     actual,
@@ -40,7 +54,26 @@ export async function captureDocsPreservation(baselineRevision, changedInputs) {
     "Name every changed preservation input explicitly",
   );
   assert.equal(new Set(changedInputs).size, changedInputs.length);
+  for (const path of added) {
+    const entry = {
+      path,
+      sha256: sha256(Buffer.from(read(path).replaceAll("\r\n", "\n"))),
+    };
+    (path.endsWith(".mdx") ? preservation.routes : preservation.examples).push(
+      entry,
+    );
+  }
+  preservation.routes.sort((a, b) => a.path.localeCompare(b.path, "en"));
+  preservation.examples.sort((a, b) => a.path.localeCompare(b.path, "en"));
+  preservation.expectedRoutes = preservation.routes.length;
+  preservation.expectedExamples = preservation.examples.length;
   const fixture = json("scripts/cityos/fixtures/docs-route-migration.json");
+  const originalRoutes = new Set(
+    fixture.routes.map(({ path }) => `apps/docs/content/${path}`),
+  );
+  preservation.addedRoutes = preservation.routes
+    .map(({ path }) => path)
+    .filter((path) => !originalRoutes.has(path));
   const revisionsPath = "scripts/cityos/fixtures/docs-route-revisions.json";
   const previous = existsSync(resolve(repositoryRoot, revisionsPath))
     ? json(revisionsPath)
@@ -75,7 +108,7 @@ export async function captureDocsPreservation(baselineRevision, changedInputs) {
         sha256: current,
         baselineRevision,
         reason:
-          "Align the executable documentation example with the current Puck API; verified by the owning docs TypeScript check.",
+          "Maintain the current upstream documentation and executable examples, retaining the original migration digest as historical evidence; source revision only.",
       });
   }
   expectedRouteDigests(fixture, revisions);

@@ -3,7 +3,7 @@
   "upstream": {
     "repository": "https://github.com/puckeditor/puck",
     "branch": "main",
-    "commit": "1839d14a11d9e0014108fcdb8ac9954118bf0926"
+    "commit": "7e5dc3e8744430723cf6e8af8c3d6e297044927b"
   },
   "baselineForkCommit": "bed73210688571bd4a1b4f6bd423fe7c8fc5f7f6",
   "ownedDirectories": [
@@ -1091,6 +1091,28 @@
         "scripts/cityos/docs-route-revisions.test.mjs",
         "scripts/cityos/docs-menu.test.mjs",
         "scripts/cityos/docs-theme-layout.test.mjs"
+      ]
+    },
+    {
+      "id": "upstream-main-20261022",
+      "purpose": "Integrate upstream expandable field groups, field layouts and zoom fixes while preserving CityOS custom controls, current docs routing and canonical toolchain.",
+      "invariant": "Real upstream merge ancestry is retained; CityOS editor context, localization, live config refresh and permission revocation work inside upstream field layouts.",
+      "paths": [
+        "README.md",
+        "apps/docs/content/docs/api-reference/components/field-group-item.mdx",
+        "apps/docs/content/docs/api-reference/components/field-group.examples.tsx",
+        "apps/docs/content/docs/api-reference/components/field-group.mdx",
+        "docs/upstream.md",
+        "packages/core/components/FieldGroup/FieldGroup.tsx",
+        "packages/core/components/FieldGroup/lib/use-field-group-expanded.ts",
+        "packages/core/lib/__tests__/get-zoom-config.spec.ts",
+        "packages/core/lib/fields/__tests__/renders-expandable-group.spec.ts",
+        "packages/core/lib/fields/renders-expandable-group.ts"
+      ],
+      "tests": [
+        "packages/core/components/Puck/__tests__/index.tsx",
+        "scripts/cityos/dependency-migration.test.mjs",
+        "scripts/upstream/extension-boundary.test.mjs"
       ]
     }
   ],
