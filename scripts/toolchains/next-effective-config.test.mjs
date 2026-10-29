@@ -96,7 +96,8 @@ module.exports = {
     const preload = join(root, 'change-during-tsc.cjs');
     writeFileSync(preload, `
 const fs = require('node:fs');
-if (process.argv.includes('--noEmit') && !process.argv.includes('--listFilesOnly')) {
+const listOnly = process.argv.indexOf('--listFilesOnly');
+if (process.argv.includes('--noEmit') && (listOnly < 0 || process.argv[listOnly + 1] === 'false')) {
   fs.writeFileSync(process.env.PUCK_TEST_STATE, process.env.PUCK_TEST_NEXT_STATE);
   fs.writeFileSync(process.env.PUCK_TEST_MARKER, 'diagnostic compiler child');
 }

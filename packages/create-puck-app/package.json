@@ -30,7 +30,7 @@
   ],
   "scripts": {
     "generate": "node scripts/generate.js",
-    "prepack": "node -e \"const fs=require('node:fs'); for (const path of ['../../recipes','templates']) if (!fs.statSync(path,{throwIfNoEntry:false})?.isDirectory()) throw new Error('Missing required create-puck-app input directory: '+path+'. Restore the checkout inputs before packing.')\" && node ../../scripts/toolchains/run-pinned-pnpm.mjs generate",
+    "prepack": "node -e \"const fs=require('node:fs'); for (const path of ['../../recipes','templates']) if (!fs.statSync(path,{throwIfNoEntry:false})?.isDirectory()) throw new Error('Missing required create-puck-app input directory: '+path+'. Restore the checkout inputs before packing.')\" && node scripts/generate.js",
     "removeGitignore": "mv templates/.gitignore templates/gitignore",
     "restoreGitignore": "mv templates/gitignore templates/.gitignore"
   },

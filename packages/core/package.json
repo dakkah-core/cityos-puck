@@ -73,9 +73,9 @@
   },
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
-    "build": "node ../../scripts/toolchains/clean-package-dist.mjs && tsup bundle/index.ts bundle/rsc.tsx bundle/no-external.ts bundle/internal.ts cityos.ts",
+    "build": "node ../../scripts/toolchains/build-core.mjs",
     "test": "node ../../scripts/toolchains/typecheck.mjs --noEmit && jest",
-    "prepare": "node -e \"require('fs').copyFileSync('../../README.md','README.md')\" && node ../../scripts/toolchains/run-pinned-pnpm.mjs build",
+    "prepare": "node -e \"require('fs').copyFileSync('../../README.md','README.md')\" && node ../../scripts/toolchains/build-core.mjs",
     "postpublish": "node -e \"require('fs').rmSync('README.md',{force:true})\"",
     "typecheck": "node ../../scripts/toolchains/typecheck.mjs --noEmit"
   },

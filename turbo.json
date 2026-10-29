@@ -24,6 +24,22 @@
         "dist/**"
       ]
     },
+    "docs#build": {
+      "cache": false,
+      "dependsOn": ["^build", "@cityos-core/puck#build"]
+    },
+    "demo#build": {
+      "cache": false,
+      "dependsOn": ["^build", "@cityos-core/puck#build"]
+    },
+    "next-recipe#build": {
+      "cache": false,
+      "dependsOn": ["^build", "@cityos-core/puck#build"]
+    },
+    "next-ai-recipe#build": {
+      "cache": false,
+      "dependsOn": ["^build", "@cityos-core/puck#build"]
+    },
     "@cityos-core/puck#build": {
       "dependsOn": [
         "^build"
