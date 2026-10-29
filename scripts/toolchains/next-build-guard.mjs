@@ -48,7 +48,7 @@ export async function runGuardedBuildChild({ appDir, nextManifest, distDir, entr
   } finally { release(); }
 }
 
-export async function runNextBuild({ appDir, catalogPath, args = [] }) {
+export async function loadNextBuildContext({ appDir, catalogPath, args = [] }) {
   assertBuildArguments(args);
   const app = realpathSync(resolve(appDir));
   const catalog = JSON.parse(readFileSync(catalogPath, 'utf8'));
@@ -71,6 +71,11 @@ export async function runNextBuild({ appDir, catalogPath, args = [] }) {
     for (const [key, value] of Object.entries(previous)) if (value === undefined) delete process.env[key]; else process.env[key] = value;
   }
   if (config.experimental?.lockDistDir !== true || config.experimental?.useWasmBinary) throw new Error('Next native output locking must be enabled');
+  return { app, appRequire, nextManifest, config, env };
+}
+
+export async function runNextBuild({ appDir, catalogPath, args = [] }) {
+  const { app, appRequire, nextManifest, config, env } = await loadNextBuildContext({ appDir, catalogPath, args });
   const entry = appRequire.resolve('next/dist/bin/next');
   // The argument preflight rejects a second positional target.
   return runGuardedBuildChild({ appDir: app, nextManifest, distDir: config.distDir, entry, args: ['build', app, ...args], env });

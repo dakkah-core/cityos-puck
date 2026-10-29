@@ -15,6 +15,7 @@ const requiredTests = [
   "scripts/toolchains/next-generated-types.test.mjs",
   "scripts/toolchains/next-effective-config.test.mjs",
   "scripts/toolchains/next-build-guard.test.mjs",
+  "scripts/toolchains/docs-postbuild.test.mjs",
   "scripts/toolchains/next-source-fingerprint.test.mjs",
   "scripts/toolchains/next-output-lock.test.mjs",
   "scripts/toolchains/next-project-config.test.mjs",

@@ -4,10 +4,38 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, 
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { assertBuildArguments, runGuardedBuildChild } from './next-build-guard.mjs';
+import { assertBuildArguments, loadNextBuildContext, runGuardedBuildChild } from './next-build-guard.mjs';
 import { acquireNextOutputLocks } from './next-output-lock.mjs';
 import { copyNextToolchain } from '../../packages/create-puck-app/scripts/copy-next-toolchain.mjs';
+
+test('shared and copied build guards load the same effective production config', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'puck-build-config-'));
+  const app = join(root, 'next');
+  try {
+    copyNextToolchain({ repositoryRoot: resolve('.'), templatePath: root });
+    symlinkSync(resolve('node_modules'), join(app, 'node_modules'), process.platform === 'win32' ? 'junction' : 'dir');
+    writeFileSync(join(app, 'package.json'), '{"dependencies":{"next":"fixture"}}');
+    writeFileSync(join(app, 'next.config.js'), "module.exports = phase => ({ distDir: phase === 'phase-production-build' ? 'custom-output' : 'wrong-output', experimental: { useTypeScriptCli: true } });");
+    const catalogPath = resolve('config/toolchains/node-typescript.json');
+    const options = { appDir: app, catalogPath };
+    const shared = await loadNextBuildContext(options);
+    assert.equal(shared.config.distDir, 'custom-output');
+    assert.equal(shared.config.experimental.lockDistDir, true);
+    assert.equal(shared.env.NODE_ENV, 'production');
+    const canonical = readFileSync(resolve('scripts/toolchains/next-build-guard.mjs'));
+    for (const recipe of ['next', 'next-ai']) {
+      const copy = join(root, recipe, '.cityos/next-typecheck/next-build-guard.mjs');
+      assert.deepEqual(readFileSync(copy), canonical);
+      const projected = await import(pathToFileURL(copy).href);
+      const observed = await projected.loadNextBuildContext(options);
+      assert.equal(observed.config.distDir, shared.config.distDir);
+      assert.equal(observed.config.experimental.lockDistDir, shared.config.experimental.lockDistDir);
+    }
+    await assert.rejects(loadNextBuildContext({ ...options, args: ['unexpected-target'] }), /Unsupported build argument/);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
 
 test('guard holds dev lock while child owns production lock, forwards args and releases on success and failure', async () => {
   const app = mkdtempSync(join(tmpdir(), 'puck-build-guard-'));

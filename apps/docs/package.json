@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "node ../../scripts/toolchains/next-build-guard.mjs --workspace",
-    "postbuild": "next-sitemap && pagefind --site .next/server/app --output-path public/_pagefind",
+    "postbuild": "node ../../scripts/toolchains/docs-postbuild.mjs",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "node ../../scripts/toolchains/next-generated-types.mjs --workspace"
