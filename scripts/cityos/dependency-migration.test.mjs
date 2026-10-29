@@ -106,9 +106,10 @@ test("the actual catalog-only generator refreshes every snapshot and preserves r
       ["config/dependencies/plugin-ai.json", "plugin-ai-contract.json"],
     ];
     for (const [source] of snapshots) copy(source);
-    for (const source of ["package.json", "bootstrap-catalog.js", "toolchain.cjs", "scripts/generate.js"]) {
+    for (const source of ["package.json", "bootstrap-catalog.js", "toolchain.cjs", "scripts/generate.js", "scripts/copy-recipes.mjs", "scripts/copy-next-toolchain.mjs"]) {
       copy("packages/create-puck-app/" + source);
     }
+    for (const path of ["verify-generated-types-policy.mjs", "generated-types-policy/generated-types-policy.mjs", "generated-types-policy/generated-types-policy.d.mts", "generated-types-policy/generated-types-policy.test.mjs", "generated-types-policy/projection.json"]) copy("scripts/toolchains/" + path);
     const bootstrap = loadBootstrapCatalog();
     for (const path of Object.values(bootstrap.workspace.patchedDependencies ?? {})) copy(path);
     const packageRoot = join(fixture, "packages/create-puck-app");

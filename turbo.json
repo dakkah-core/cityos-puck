@@ -61,6 +61,30 @@
         "^build"
       ],
       "outputs": []
+    },
+    "docs#typecheck": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "demo#typecheck": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "next-recipe#typecheck": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "next-ai-recipe#typecheck": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "react-router-recipe#typecheck": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "react-router-ai-recipe#typecheck": {
+      "cache": false,
+      "dependsOn": ["^build"]
     }
   }
 }

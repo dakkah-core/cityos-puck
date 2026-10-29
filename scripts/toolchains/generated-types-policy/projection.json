@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "cityos.generated-types-policy-projection.v1",
+  "files": [
+    {
+      "path": "generated-types-policy.mjs",
+      "sourceSha256": "8cc40525f08ae31bb92c0445f58c711c1ce8d980066893a840d1c575660db1e3",
+      "outputSha256": "8cc40525f08ae31bb92c0445f58c711c1ce8d980066893a840d1c575660db1e3"
+    },
+    {
+      "path": "generated-types-policy.d.mts",
+      "sourceSha256": "62ef2cc22f86ba3608f92a5cf35fe4030f60f4db13671b141b65c5957a4065b7",
+      "outputSha256": "62ef2cc22f86ba3608f92a5cf35fe4030f60f4db13671b141b65c5957a4065b7"
+    },
+    {
+      "path": "generated-types-policy.test.mjs",
+      "sourceSha256": "6edece8faa921c3518cafe983a21f8fdd56720c8614aea7e3a59f32fb5a27a8c",
+      "outputSha256": "6edece8faa921c3518cafe983a21f8fdd56720c8614aea7e3a59f32fb5a27a8c"
+    }
+  ]
+}

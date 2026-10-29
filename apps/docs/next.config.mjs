@@ -1,13 +1,15 @@
 import packageJson from "./package.json" with { type: "json" };
 import nextra from "nextra";
+import { PHASE_DEVELOPMENT_SERVER } from "next/constants.js";
 
 const withNextra = nextra({ latex: false });
 
 const BRANCH_NAME = process.env.VERCEL_GIT_COMMIT_REF || "";
 const IS_RELEASE_BRANCH = BRANCH_NAME.startsWith("releases/");
 
-export default withNextra({
+export default (phase) => withNextra({
   experimental: { useTypeScriptCli: true },
+  typescript: { tsconfigPath: phase === PHASE_DEVELOPMENT_SERVER ? "tsconfig.json" : "tsconfig.build.json" },
   async redirects() {
     return [
       {

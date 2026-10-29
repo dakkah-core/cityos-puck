@@ -13,6 +13,7 @@ import { loadBootstrapCatalog } from "./bootstrap-catalog.js";
 import { materializeManifest } from "./manifest-catalog.js";
 import { prepareBootstrapIntegration, requireRecipePackageManager, verifyIntegrationPatch } from "./bootstrap-integration.js";
 import { resolvePinnedPnpm, runPinnedPnpm } from "./pinned-pnpm.mjs";
+import { readTemplateFile, templateTargetPath } from "./template-file.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -194,21 +195,9 @@ program
 
     for (const templateFile of templateFiles) {
       const filePath = path.join(templatePath, templateFile);
-      const targetPath = filePath
-        .replace(templatePath, appPath)
-        .replace(".hbs", "")
-        .replace("gitignore", ".gitignore"); // Rename gitignore back to .gitignore (.gitignore) gets ignored by npm during publish
+      const targetPath = templateTargetPath(appPath, templateFile);
 
-      let data;
-
-      if (path.extname(filePath) === ".hbs") {
-        const templateString = fs.readFileSync(filePath, "utf-8");
-
-        const template = Handlebars.compile(templateString);
-        data = template(templateContext);
-      } else {
-        data = fs.readFileSync(filePath, "utf-8");
-      }
+      let data = readTemplateFile(filePath, text => Handlebars.compile(text)(templateContext));
 
       if (path.basename(targetPath) === "package.json") {
         if (integration) {

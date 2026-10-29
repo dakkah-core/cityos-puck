@@ -2,12 +2,13 @@
 
 import fs from "fs";
 import path from "path";
-import { glob } from "glob";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { loadBootstrapCatalog } from "../bootstrap-catalog.js";
+import { copyRecipes } from "./copy-recipes.mjs";
+import { copyNextToolchain } from "./copy-next-toolchain.mjs";
+import { verifyGeneratedTypesPolicy } from "../../../scripts/toolchains/verify-generated-types-policy.mjs";
 
-const verbose = false;
 const arguments_ = process.argv.slice(2);
 if (arguments_.length > 1 || (arguments_.length === 1 && arguments_[0] !== "--catalog-only")) {
   throw new Error("Usage: generate.js [--catalog-only]");
@@ -15,6 +16,7 @@ if (arguments_.length > 1 || (arguments_.length === 1 && arguments_[0] !== "--ca
 const catalogOnly = arguments_[0] === "--catalog-only";
 
 const run = async () => {
+  verifyGeneratedTypesPolicy();
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
 
@@ -56,50 +58,12 @@ const run = async () => {
     return;
   }
 
-  // Copy recipe files
-  const recipeFiles = glob.sync(`**/*`, {
-    cwd: recipePath,
-    nodir: true,
-    dot: true,
-  });
-
   console.warn(
     `⚠️   The following files use handlebars templates. Please manually update them:`
   );
 
-  let counter = 0;
-
-  for (const recipeFile of recipeFiles) {
-    const filePath = path.join(recipePath, recipeFile);
-
-    const targetPath = filePath.replace(recipePath, templatePath);
-
-    // Don't copy file if it's templated by handlebars
-    if (fs.existsSync(`${targetPath}.hbs`)) {
-      console.warn(`- ${recipeFile}`);
-    } else {
-      if (verbose) {
-        console.log(`Copying ${filePath} -> ${targetPath}`);
-      }
-
-      const data = await fs.readFileSync(filePath, "utf-8");
-
-      const dir = path.dirname(targetPath);
-
-      await fs.mkdirSync(dir, { recursive: true });
-
-      await fs.writeFileSync(targetPath, data);
-
-      if (targetPath.indexOf(".gitignore") > -1) {
-        await fs.copyFileSync(
-          filePath,
-          targetPath.replace(".gitignore", "gitignore") // rename .gitignore to gitignore so NPM publish doesn't ignore it
-        );
-      }
-
-      counter += 1;
-    }
-  }
+  const counter = copyRecipes({ recipePath, templatePath, onTemplated: file => console.warn(`- ${file}`) });
+  copyNextToolchain({ repositoryRoot: path.resolve(__dirname, "../../.."), templatePath });
 
   console.log(`Copied ${counter} files into generator!`);
 };

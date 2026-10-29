@@ -6,3 +6,4 @@ gitignore
 
 # # Except for handlebars files
 !*.hbs
+!.npmignore

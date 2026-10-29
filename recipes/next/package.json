@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "next build",
+    "build": "node ../../scripts/toolchains/next-build-guard.mjs --workspace",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "node ../../scripts/toolchains/typecheck.mjs --noEmit"
+    "typecheck": "node ../../scripts/toolchains/next-generated-types.mjs --workspace"
   },
   "dependencies": {
     "@puckeditor/core": "workspace:@cityos-core/puck@*",
