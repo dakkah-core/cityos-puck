@@ -1,4 +1,49 @@
 // Pure policy: callers discover ownership and perform all filesystem operations.
+// Tag values before serialization so undefined, missing, and -0 do not collide.
+// Observations must not silently discard functions, symbols, cycles, or exotic
+// objects when adapters bind effective framework configuration to evidence.
+// Prefix each byte field with its unsigned 64-bit length so that arbitrary
+// file contents cannot be confused with a subsequent path or field.
+export function frameGeneratedTypeField(value) {
+  const bytes = typeof value === 'string' ? new TextEncoder().encode(value) : value;
+  if (!(bytes instanceof Uint8Array)) throw new Error('Expected text or bytes');
+  const framed = new Uint8Array(8 + bytes.byteLength);
+  new DataView(framed.buffer).setBigUint64(0, BigInt(bytes.byteLength), false);
+  framed.set(bytes, 8);
+  return framed;
+}
+
+export function canonicalGeneratedTypeValue(value) {
+  const ancestors = new Set();
+  function visit(item) {
+    if (item === undefined) return ['undefined'];
+    if (item === null) return ['null'];
+    if (typeof item === 'string' || typeof item === 'boolean') return [typeof item, item];
+    if (typeof item === 'number' && Number.isFinite(item)) return ['number', Object.is(item, -0) ? '-0' : item];
+    if (typeof item !== 'object' || ancestors.has(item)) throw new Error('Unsupported framework configuration value');
+    if (!Array.isArray(item) && Object.getPrototypeOf(item) !== Object.prototype && Object.getPrototypeOf(item) !== null) throw new Error('Unsupported framework configuration value');
+    ancestors.add(item);
+    try {
+      if (Array.isArray(item)) {
+        if (Reflect.ownKeys(item).some(key => key !== 'length' && (typeof key !== 'string' || !/^(?:0|[1-9]\d*)$/u.test(key) || Number(key) >= item.length))) throw new Error('Unsupported framework configuration value');
+        return ['array', Array.from({ length: item.length }, (_, index) => {
+          const property = Object.getOwnPropertyDescriptor(item, String(index));
+          if (!property || !Object.hasOwn(property, 'value')) throw new Error('Unsupported framework configuration value');
+          return visit(property.value);
+        })];
+      }
+      const keys = Reflect.ownKeys(item);
+      if (keys.some(key => typeof key !== 'string')) throw new Error('Unsupported framework configuration value');
+      return ['object', keys.sort().map(key => {
+        const property = Object.getOwnPropertyDescriptor(item, key);
+        if (!property.enumerable || !Object.hasOwn(property, 'value')) throw new Error('Unsupported framework configuration value');
+        return [key, visit(property.value)];
+      })];
+    } finally { ancestors.delete(item); }
+  }
+  return JSON.stringify(visit(value));
+}
+
 function portablePath(value) {
   if (typeof value !== 'string' || !value || value.startsWith('/') || value.includes('\\') || /^[A-Za-z]:/u.test(value)) throw new Error('Expected a portable relative path');
   const parts = value.split('/');
@@ -30,6 +75,14 @@ export function classifyGeneratedTypePath({ path, owners = [], trackedGenerated 
       ? local === 'expo-env.d.ts' || inside(local, '.expo')
       : inside(local, '.react-router');
   return output ? 'transient-framework-output' : 'authored-source';
+}
+
+// A copy traversal must reach registered descendants of a transient directory.
+// Classification still excludes all unregistered siblings encountered there.
+export function retainGeneratedTypePath(input) {
+  const classification = classifyGeneratedTypePath(input);
+  return classification !== 'transient-framework-output'
+    || [...(input.trackedGenerated ?? []), ...(input.preserved ?? [])].some(path => path.startsWith(`${input.path}/`));
 }
 
 export function requiredFrameworkOutputs(owner) {

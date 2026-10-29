@@ -7,6 +7,7 @@ import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { copyNextToolchain } from '../../packages/create-puck-app/scripts/copy-next-toolchain.mjs';
 import { acquireNextOutputLocks } from './next-output-lock.mjs';
+import { GENERATED_TYPES_POLICY_FILES } from './verify-generated-types-policy.mjs';
 
 test('generated standalone adapter performs real typegen, compiler checking and fail-closed preflights', async () => {
   const root = mkdtempSync(join(tmpdir(), 'puck-guarded-next-'));
@@ -41,6 +42,16 @@ test('generated standalone adapter performs real typegen, compiler checking and 
     const generationMutation = run();
     assert.notEqual(generationMutation.status, 0);
     assert.match(generationMutation.stderr, /inputs changed during generation/i);
+    // These authored directories have output-like names but are TypeScript
+    // inputs. A typegen-time mutation must invalidate the check for each one.
+    for (const directory of ['out', 'dist']) {
+      write(`src/${directory}/value.ts`, 'export const value: number = 1;');
+      write('app/page.tsx', `import { value } from "../src/${directory}/value"; export default function Page() { return value; }`);
+      write('next.config.js', `if (process.argv.includes("typegen")) require("node:fs").writeFileSync(require("node:path").join(__dirname, "src/${directory}/value.ts"), "export const value: number = 2;"); module.exports = { experimental: { useTypeScriptCli: true }, typescript: { tsconfigPath: "tsconfig.build.json" } };`);
+      const authoredMutation = run();
+      assert.notEqual(authoredMutation.status, 0, directory);
+      assert.match(authoredMutation.stderr, /inputs changed during generation/i, directory);
+    }
     write('next.config.js', 'module.exports = { experimental: { useTypeScriptCli: true }, typescript: { tsconfigPath: "tsconfig.build.json" } };');
     write('app/page.tsx', 'export default 123;');
     const bad = run();
@@ -173,7 +184,7 @@ test('both template toolchains copy the unchanged policy and leave React Router 
   const root = mkdtempSync(join(tmpdir(), 'puck-guarded-copy-'));
   try {
     copyNextToolchain({ repositoryRoot: resolve('.'), templatePath: root });
-    for (const recipe of ['next', 'next-ai']) for (const file of ['generated-types-policy.mjs', 'generated-types-policy.d.mts', 'generated-types-policy.test.mjs', 'projection.json']) {
+    for (const recipe of ['next', 'next-ai']) for (const file of [...GENERATED_TYPES_POLICY_FILES, 'projection.json']) {
       assert.deepEqual(readFileSync(join(root, recipe, '.cityos/next-typecheck/generated-types-policy', file)), readFileSync(resolve('scripts/toolchains/generated-types-policy', file)));
     }
     assert(!existsSync(join(root, 'react-router')));
@@ -209,7 +220,7 @@ test('the pinned manager includes both adapters in the publish-layout package fi
     copyNextToolchain({ repositoryRoot: resolve('.'), templatePath: templates });
     const packed = spawnSync(process.execPath, [resolve('scripts/toolchains/run-pinned-pnpm.mjs'), 'pack', '--dir', root, '--dry-run', '--json'], { cwd: resolve('.'), env: process.env, encoding: 'utf8', windowsHide: true, timeout: 30000 });
     assert.equal(packed.status, 0, packed.stdout + packed.stderr);
-    for (const recipe of ['next', 'next-ai']) for (const file of ['next-generated-types.mjs', 'next-build-guard.mjs', 'next-output-lock.mjs', 'generated-types-policy/projection.json', 'generated-types-policy/generated-types-policy.mjs']) {
+    for (const recipe of ['next', 'next-ai']) for (const file of ['next-generated-types.mjs', 'next-build-guard.mjs', 'next-output-lock.mjs', 'generated-types-policy/projection.json', ...GENERATED_TYPES_POLICY_FILES.map(name => `generated-types-policy/${name}`)]) {
       assert(packed.stdout.includes(`templates/${recipe}/.cityos/next-typecheck/${file}`), packed.stdout);
     }
   } finally { rmSync(root, { recursive: true, force: true }); }

@@ -14,6 +14,7 @@ import { loadBootstrapCatalog } from "../../packages/create-puck-app/bootstrap-c
 import { prepareAmbientTypes } from "../toolchains/nextra-stable-docs/prepare-types.mjs";
 import { planPacketInputCapture } from "../toolchains/nextra-stable-docs/source-inputs.mjs";
 import { assembledRouteDigest, expectedRouteDigests } from "./docs-route-revisions.mjs";
+import { GENERATED_TYPES_POLICY_FILES } from "../toolchains/verify-generated-types-policy.mjs";
 
 const root = new URL("../../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
@@ -109,7 +110,7 @@ test("the actual catalog-only generator refreshes every snapshot and preserves r
     for (const source of ["package.json", "bootstrap-catalog.js", "toolchain.cjs", "scripts/generate.js", "scripts/copy-recipes.mjs", "scripts/copy-next-toolchain.mjs"]) {
       copy("packages/create-puck-app/" + source);
     }
-    for (const path of ["verify-generated-types-policy.mjs", "generated-types-policy/generated-types-policy.mjs", "generated-types-policy/generated-types-policy.d.mts", "generated-types-policy/generated-types-policy.test.mjs", "generated-types-policy/projection.json"]) copy("scripts/toolchains/" + path);
+    for (const path of ["verify-generated-types-policy.mjs", ...GENERATED_TYPES_POLICY_FILES.map(name => "generated-types-policy/" + name), "generated-types-policy/projection.json"]) copy("scripts/toolchains/" + path);
     const bootstrap = loadBootstrapCatalog();
     for (const path of Object.values(bootstrap.workspace.patchedDependencies ?? {})) copy(path);
     const packageRoot = join(fixture, "packages/create-puck-app");

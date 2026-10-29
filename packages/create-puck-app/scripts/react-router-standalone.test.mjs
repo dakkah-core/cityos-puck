@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { copyFileSync, cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { copyRecipes } from './copy-recipes.mjs';
@@ -27,8 +27,13 @@ test('React Router recipes survive template generation, packing and fresh typege
     const packedSource = join(workspace, 'packages/create-puck-app');
     mkdirSync(source, { recursive: true });
     mkdirSync(dirname(packedSource), { recursive: true });
-    cpSync(packageRoot, packedSource, { recursive: true, filter: path => !path.split(/[\\/]/u).includes('node_modules') });
+    cpSync(packageRoot, packedSource, { recursive: true, filter: path => !path.split(/[\\/]/u).includes('node_modules') && relative(packageRoot, path).split(sep)[0] !== 'templates' });
+    const templatePath = join(packedSource, 'templates');
+    mkdirSync(templatePath, { recursive: true });
+    for (const file of ['.gitignore', '.npmignore']) copyFileSync(join(packageRoot, 'templates', file), join(templatePath, file));
     for (const recipe of recipes) {
+      // Start with authored templates only, independent of generated files in the checkout.
+      cpSync(join(packageRoot, 'templates', recipe), join(templatePath, recipe), { recursive: true, filter: path => lstatSync(path).isDirectory() || path.endsWith('.hbs') });
       cpSync(join(repository, 'recipes', recipe), join(source, recipe), {
         recursive: true,
         filter: path => !path.split(/[\\/]/u).some(part => ['node_modules', '.react-router', 'build', '.turbo'].includes(part)),
@@ -36,7 +41,9 @@ test('React Router recipes survive template generation, packing and fresh typege
       mkdirSync(join(source, recipe, '.react-router/types'), { recursive: true });
       writeFileSync(join(source, recipe, '.react-router/types/stale.ts'), 'stale generated output');
     }
-    copyRecipes({ recipePath: source, templatePath: join(packedSource, 'templates') });
+    assert.equal(existsSync(join(templatePath, 'next')), false);
+    assert.equal(existsSync(join(templatePath, 'react-router/vite.config.ts')), false);
+    copyRecipes({ recipePath: source, templatePath });
     writeFileSync(join(workspace, 'package.json'), '{"private":true}\n');
     cpSync(join(repository, 'pnpm-workspace.yaml'), join(workspace, 'pnpm-workspace.yaml'));
     const destination = join(temp, 'archives');
@@ -54,6 +61,7 @@ test('React Router recipes survive template generation, packing and fresh typege
     const { prepareBootstrapIntegration, verifyIntegrationPatch } = await import(pathToFileURL(join(packed, 'bootstrap-integration.js')).href);
     const catalog = loadBootstrapCatalog();
     const context = { appName: 'fixture', puckVersion: `npm:${catalog.core.name}@${catalog.core.version}`, puckSourceVersion: catalog.core.version, packageManager: catalog.toolchain.packageManager, nodeEngine: catalog.toolchain.nodeEngine, nodeVersion: catalog.nodeVersion };
+    const diagnosticFailures = [];
     for (const recipe of recipes) {
       const template = join(packed, 'templates', recipe);
       assert.equal(existsSync(join(template, '.react-router')), false, recipe);
@@ -89,7 +97,14 @@ test('React Router recipes survive template generation, packing and fresh typege
       const compiler = JSON.parse(readFileSync(compilerManifest, 'utf8'));
       const files = run(process.execPath, [join(dirname(compilerManifest), compiler.bin.tsc), '--listFilesOnly', '--noEmit'], app);
       assert.match(files.replaceAll('\\', '/'), /\.react-router\/types\/.*puck-splat/u, `${recipe} compiler includes generated route types`);
+      const diagnostics = spawnSync(process.execPath, [join(dirname(compilerManifest), compiler.bin.tsc), '--noEmit'], {
+        cwd: app, encoding: 'utf8', windowsHide: true, timeout: 120000,
+      });
+      if (diagnostics.error || diagnostics.status !== 0) {
+        diagnosticFailures.push(`${recipe}: exit ${diagnostics.status}\n${diagnostics.stdout}\n${diagnostics.stderr}\n${diagnostics.error ?? ''}`);
+      }
     }
+    assert.deepEqual(diagnosticFailures, [], `Generated React Router app typechecks failed:\n${diagnosticFailures.join('\n')}`);
   } finally {
     rmSync(temp, { recursive: true, force: true });
   }

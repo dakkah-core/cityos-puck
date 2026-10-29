@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { copyFileSync, cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { copyRecipes } from './copy-recipes.mjs';
@@ -26,13 +26,20 @@ test('packed Next recipes contain a working standalone typecheck toolchain', { t
     const packedSource = join(workspace, 'packages/create-puck-app');
     mkdirSync(source, { recursive: true });
     mkdirSync(dirname(packedSource), { recursive: true });
-    cpSync(packageRoot, packedSource, { recursive: true, filter: path => !path.split(/[\\/]/u).includes('node_modules') });
+    cpSync(packageRoot, packedSource, { recursive: true, filter: path => !path.split(/[\\/]/u).includes('node_modules') && relative(packageRoot, path).split(sep)[0] !== 'templates' });
+    const templatePath = join(packedSource, 'templates');
+    mkdirSync(templatePath, { recursive: true });
+    for (const file of ['.gitignore', '.npmignore']) copyFileSync(join(packageRoot, 'templates', file), join(templatePath, file));
     for (const recipe of ['next', 'next-ai']) {
+      // Start with authored templates only, independent of generated files in the checkout.
+      cpSync(join(packageRoot, 'templates', recipe), join(templatePath, recipe), { recursive: true, filter: path => lstatSync(path).isDirectory() || path.endsWith('.hbs') });
       cpSync(join(repository, 'recipes', recipe), join(source, recipe), { recursive: true, filter: path => !path.split(/[\\/]/u).some(part => ['node_modules', '.next', '.turbo', 'next-env.d.ts'].includes(part)) });
       mkdirSync(join(source, recipe, '.next/types'), { recursive: true });
       writeFileSync(join(source, recipe, '.next/types/stale.ts'), 'stale');
     }
-    copyRecipes({ recipePath: source, templatePath: join(packedSource, 'templates') });
+    assert.equal(existsSync(join(templatePath, 'react-router-ai')), false);
+    assert.equal(existsSync(join(templatePath, 'next/next.config.js')), false);
+    copyRecipes({ recipePath: source, templatePath });
     copyNextToolchain({ repositoryRoot: repository, templatePath: join(packedSource, 'templates') });
     writeFileSync(join(workspace, 'package.json'), '{"private":true}\n');
     cpSync(join(repository, 'pnpm-workspace.yaml'), join(workspace, 'pnpm-workspace.yaml'));
@@ -55,6 +62,7 @@ test('packed Next recipes contain a working standalone typecheck toolchain', { t
       assert.equal(existsSync(join(template, '.next')), false);
       assert.equal(existsSync(join(template, 'next-env.d.ts')), false);
       assert.ok(existsSync(join(template, 'gitignore')), recipe);
+      assert.deepEqual(readFileSync(join(template, '.gitattributes')), readFileSync(join(repository, 'recipes', recipe, '.gitattributes')));
       const icon = recipe === 'next' ? 'app/favicon.ico' : 'public/favicon.ico';
       assert.deepEqual(readFileSync(join(template, icon)), readFileSync(join(repository, 'recipes', recipe, icon)));
       const app = join(temp, `app-${recipe}`);

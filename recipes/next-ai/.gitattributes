@@ -1,0 +1,2 @@
+# Projection verification depends on exact compiler-owned bytes.
+.cityos/next-typecheck/generated-types-policy/* -text
