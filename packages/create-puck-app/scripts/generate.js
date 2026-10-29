@@ -62,7 +62,7 @@ const run = async () => {
     `⚠️   The following files use handlebars templates. Please manually update them:`
   );
 
-  const counter = copyRecipes({ recipePath, templatePath, onTemplated: file => console.warn(`- ${file}`) });
+  const counter = copyRecipes({ recipePath, templatePath, requireNextAttributes: true, onTemplated: file => console.warn(`- ${file}`) });
   copyNextToolchain({ repositoryRoot: path.resolve(__dirname, "../../.."), templatePath });
 
   console.log(`Copied ${counter} files into generator!`);

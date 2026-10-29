@@ -56,6 +56,10 @@ export function pinnedPnpmEnvironment(nodeExecutable, managerExecutable, environ
   env[pathKey] = [nodeDirectory, managerDirectory, environment[pathKey]].filter(Boolean).join(separator);
   env.PUCK_PNPM_EXECUTABLE = managerExecutable;
   env.npm_execpath = managerExecutable;
+  // pnpm 12 otherwise installs automatically before run/exec when it considers
+  // the dependency tree stale. Also replace pnpm's inherited nested-run value.
+  for (const key of Object.keys(env)) if (key.toLowerCase() === 'pnpm_config_verify_deps_before_run') delete env[key];
+  env.pnpm_config_verify_deps_before_run = 'error';
   // Lerna otherwise routes its internal call through an ambient Corepack.
   delete env.COREPACK_ROOT;
   return env;

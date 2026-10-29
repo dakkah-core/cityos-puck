@@ -33,7 +33,7 @@ const authoredTemplates = new Map([
   ['react-router-ai', new Set(['package.json.hbs', 'tsconfig.json.hbs', '.nvmrc.hbs'])],
 ]);
 
-export function copyRecipes({ recipePath, templatePath, onTemplated = () => {} }) {
+export function copyRecipes({ recipePath, templatePath, onTemplated = () => {}, requireNextAttributes = false }) {
   // A previous generation may have copied local environment files into the
   // package tree. Skipping them in the source does not remove those copies.
   if (existsSync(templatePath)) {
@@ -59,6 +59,12 @@ export function copyRecipes({ recipePath, templatePath, onTemplated = () => {} }
     if (!existsSync(manifestPath)) continue;
     activeOwners.add(entry.name);
     const kind = framework(JSON.parse(readFileSync(manifestPath, 'utf8')));
+    if (kind === 'next' && requireNextAttributes) {
+      const attributes = join(source, '.gitattributes');
+      const expected = '# Projection verification depends on exact compiler-owned bytes.\n.cityos/next-typecheck/generated-types-policy/* -text\n';
+      if (!existsSync(attributes) || !lstatSync(attributes).isFile() || lstatSync(attributes).isSymbolicLink()
+        || readFileSync(attributes, 'utf8').replaceAll('\r\n', '\n') !== expected) throw new Error(`Invalid or missing Next recipe checkout attributes: ${entry.name}`);
+    }
     if (kind === 'next') nextOwners.add(entry.name);
     const owner = kind ? [{ path: entry.name, framework: kind }] : [];
     const oldOutputs = ['node_modules', '.git', '.turbo', '.build', ...(kind === 'next' ? ['.next', 'next-env.d.ts', 'out'] : kind === 'expo' ? ['.expo', 'expo-env.d.ts'] : kind === 'react-router' ? ['.react-router', 'build'] : [])];

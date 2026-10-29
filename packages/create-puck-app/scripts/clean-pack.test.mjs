@@ -34,6 +34,12 @@ function checkoutIndexedFiles(source, workspace, files) {
   assert.equal(result.status, 0, `git checkout-index failed\n${result.stderr}\n${result.error ?? ''}`);
 }
 
+function requireTrackedInputs(source, required) {
+  const tracked = new Set(run('git', ['ls-files', '-z', '--', ...required], source).split('\0').filter(Boolean));
+  const missing = required.filter(file => !tracked.has(file));
+  assert.deepEqual(missing, [], `Required package sources are absent from the index: ${missing.join(', ')}`);
+}
+
 test('index checkout uses staged bytes instead of later working-tree edits', () => {
   const source = mkdtempSync(join(tmpdir(), 'puck-pack-index-source-'));
   const workspace = mkdtempSync(join(tmpdir(), 'puck-pack-index-target-'));
@@ -41,6 +47,8 @@ test('index checkout uses staged bytes instead of later working-tree edits', () 
     run('git', ['init', '--quiet'], source);
     writeFileSync(join(source, 'value.txt'), 'staged bytes\n');
     run('git', ['add', '--', 'value.txt'], source);
+    assert.throws(() => requireTrackedInputs(source, ['value.txt', 'missing.txt']), /absent from the index/i);
+    assert.doesNotThrow(() => requireTrackedInputs(source, ['value.txt']));
     writeFileSync(join(source, 'value.txt'), 'unstaged bytes\n');
     checkoutIndexedFiles(source, workspace, ['value.txt']);
     assert.equal(readFileSync(join(workspace, 'value.txt'), 'utf8').replaceAll('\r\n', '\n'), 'staged bytes\n');
@@ -99,11 +107,9 @@ function verifyCompletePack(includePending) {
 
 test('ordinary pack prepares a complete payload from working-tree inputs', { timeout: 180000 }, () => verifyCompletePack(true));
 
-test('ordinary pack prepares a complete payload from tracked checkout inputs', { timeout: 180000 }, t => {
+test('ordinary pack prepares a complete payload from tracked checkout inputs', { timeout: 180000 }, () => {
   const pending = [...pendingProjectionFiles, ...pendingRecipeAttributes];
-  const tracked = new Set(run('git', ['ls-files', '-z', '--', ...pending], repository).split('\0').filter(Boolean));
-  const missing = pending.filter(file => !tracked.has(file));
-  if (missing.length) return t.skip(`Required package sources are not tracked yet: ${missing.join(', ')}`);
+  requireTrackedInputs(repository, pending);
   const attributes = spawnSync('git', ['diff', '--quiet', '--', '.gitattributes'], { cwd: repository, windowsHide: true });
   assert.equal(attributes.status, 0, 'Working-tree checkout attributes differ from the selected index');
   verifyCompletePack(false);
@@ -111,8 +117,9 @@ test('ordinary pack prepares a complete payload from tracked checkout inputs', {
 
 test('ordinary pack fails when required recipe or template inputs are absent', { timeout: 180000 }, () => {
   for (const [omitted, expected] of [
-    ['recipes', '../../recipes'],
-    ['packages/create-puck-app/templates', 'templates'],
+    ['recipes', /Error: Missing required create-puck-app input directory: \.\.\/\.\.\/recipes/],
+    ['packages/create-puck-app/templates', /Error: Missing required create-puck-app input directory: templates/],
+    ['recipes/next/.gitattributes', /Error: Invalid or missing Next recipe checkout attributes: next/],
   ]) {
     const temp = mkdtempSync(join(tmpdir(), 'puck-missing-pack-input-'));
     try {
@@ -125,8 +132,7 @@ test('ordinary pack fails when required recipe or template inputs are absent', {
       });
       assert.equal(result.error, undefined, String(result.error));
       assert.notEqual(result.status, 0, `pack accepted missing ${omitted}`);
-      assert.match(`${result.stdout}\n${result.stderr}`, /Missing required create-puck-app input directory/);
-      assert.ok(`${result.stdout}\n${result.stderr}`.includes(expected));
+      assert.match(`${result.stdout}\n${result.stderr}`, expected);
       assert.equal(readdirSync(archives).filter(name => name.endsWith('.tgz')).length, 0);
     } finally { rmSync(temp, { recursive: true, force: true }); }
   }

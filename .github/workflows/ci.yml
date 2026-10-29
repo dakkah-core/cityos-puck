@@ -117,6 +117,8 @@ jobs:
         run: bash .github/scripts/run-recorded-check.sh install
       - name: Verify installed compiler and lint compatibility
         run: bash .github/scripts/run-recorded-check.sh compatibility
+      - name: Verify generated-type protections
+        run: bash .github/scripts/run-recorded-check.sh generated-types
       - name: Run tests
         run: bash .github/scripts/run-recorded-check.sh test
       - name: Check linting and formatting

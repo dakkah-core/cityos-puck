@@ -5,6 +5,21 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { copyRecipes } from './copy-recipes.mjs';
 
+test('production Next recipe copying rejects missing or altered projection checkout attributes', () => {
+  const root = mkdtempSync(join(tmpdir(), 'puck-recipe-attributes-'));
+  try {
+    const recipes = join(root, 'recipes'), templates = join(root, 'templates');
+    mkdirSync(join(recipes, 'next'), { recursive: true });
+    writeFileSync(join(recipes, 'next/package.json'), JSON.stringify({ dependencies: { next: '1' } }));
+    const copy = () => copyRecipes({ recipePath: recipes, templatePath: templates, requireNextAttributes: true });
+    assert.throws(copy, /checkout attributes/i);
+    writeFileSync(join(recipes, 'next/.gitattributes'), '* text\n');
+    assert.throws(copy, /checkout attributes/i);
+    writeFileSync(join(recipes, 'next/.gitattributes'), '# Projection verification depends on exact compiler-owned bytes.\n.cityos/next-typecheck/generated-types-policy/* -text\n');
+    assert.doesNotThrow(copy);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
 test('copies authored recipe files as bytes while excluding transient and local files', () => {
   const root = mkdtempSync(join(tmpdir(), 'puck-copy-recipes-test-'));
   try {
