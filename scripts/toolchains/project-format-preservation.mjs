@@ -35,6 +35,7 @@ export function preservedFormattingPlan(root = repositoryRoot) {
     ".build/",
     "dist/",
     ".next/",
+    ".react-router/",
     "build/",
     "",
     "# Retained upstream source and fixed acceptance/regression inputs.",

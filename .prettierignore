@@ -5,6 +5,7 @@ CHANGELOG.md
 .build/
 dist/
 .next/
+.react-router/
 build/
 
 # Retained upstream source and fixed acceptance/regression inputs.
@@ -20,6 +21,8 @@ scripts/toolchains/**/source-overlays/
 /apps/docs/content/docs/api-reference/components.mdx
 /apps/docs/content/docs/api-reference/components/action-bar-action.examples.tsx
 /apps/docs/content/docs/api-reference/components/action-bar-action.mdx
+/apps/docs/content/docs/api-reference/components/action-bar-drag-handle.examples.tsx
+/apps/docs/content/docs/api-reference/components/action-bar-drag-handle.mdx
 /apps/docs/content/docs/api-reference/components/action-bar-group.examples.tsx
 /apps/docs/content/docs/api-reference/components/action-bar-group.mdx
 /apps/docs/content/docs/api-reference/components/action-bar-label.examples.tsx
@@ -40,6 +43,8 @@ scripts/toolchains/**/source-overlays/
 /apps/docs/content/docs/api-reference/components/field-group.mdx
 /apps/docs/content/docs/api-reference/components/field-label.examples.tsx
 /apps/docs/content/docs/api-reference/components/field-label.mdx
+/apps/docs/content/docs/api-reference/components/field-tab.examples.tsx
+/apps/docs/content/docs/api-reference/components/field-tab.mdx
 /apps/docs/content/docs/api-reference/components/inline-text-field.examples.tsx
 /apps/docs/content/docs/api-reference/components/inline-text-field.mdx
 /apps/docs/content/docs/api-reference/components/puck-components.examples.tsx
@@ -133,6 +138,8 @@ scripts/toolchains/**/source-overlays/
 /apps/docs/content/docs/api-reference/theming/computed-values.mdx
 /apps/docs/content/docs/api-reference/theming/drawer.examples.tsx
 /apps/docs/content/docs/api-reference/theming/drawer.mdx
+/apps/docs/content/docs/api-reference/theming/field-tabs.examples.tsx
+/apps/docs/content/docs/api-reference/theming/field-tabs.mdx
 /apps/docs/content/docs/api-reference/theming/fields.examples.tsx
 /apps/docs/content/docs/api-reference/theming/fields.mdx
 /apps/docs/content/docs/api-reference/theming/global.mdx
@@ -168,6 +175,8 @@ scripts/toolchains/**/source-overlays/
 /apps/docs/content/docs/integrating-puck/external-data-sources.examples.tsx
 /apps/docs/content/docs/integrating-puck/external-data-sources.mdx
 /apps/docs/content/docs/integrating-puck/feature-toggling.mdx
+/apps/docs/content/docs/integrating-puck/field-grouping.examples.tsx
+/apps/docs/content/docs/integrating-puck/field-grouping.mdx
 /apps/docs/content/docs/integrating-puck/localization.mdx
 /apps/docs/content/docs/integrating-puck/multi-column-layouts.examples.tsx
 /apps/docs/content/docs/integrating-puck/multi-column-layouts.mdx

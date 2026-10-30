@@ -13,6 +13,14 @@ const nextManifest = require.resolve('next/package.json');
 const native = createRequire(nextManifest)(process.platform === 'win32' ? '@next/swc-win32-x64-msvc' : '@next/swc-linux-x64-gnu');
 const pause = () => new Promise(done => setTimeout(done, 25));
 
+test('docs sitemap environment is accepted by the real Turbo dependency rule', async () => {
+  const { ESLint } = await import('eslint');
+  const linter = new ESLint({ cwd: resolve('apps/docs'), cache: false });
+  const results = await linter.lintFiles([resolve('apps/docs/next-sitemap.config.js')]);
+  const errors = results.flatMap(result => result.messages.filter(message => message.severity === 2));
+  assert.deepEqual(errors.map(({ ruleId, message }) => ({ ruleId, message })), []);
+});
+
 test('a child error does not release the caller before the child closes', async () => {
   const child = new EventEmitter();
   child.exitCode = null; child.signalCode = null;

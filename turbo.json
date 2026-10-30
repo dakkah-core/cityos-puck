@@ -27,6 +27,7 @@
     },
     "docs#build": {
       "cache": false,
+      "env": ["PUCK_DOCS_NEXT_DIST_DIR"],
       "dependsOn": ["^build", "@cityos-core/puck#build"]
     },
     "demo#build": {

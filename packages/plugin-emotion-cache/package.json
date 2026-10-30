@@ -33,7 +33,8 @@
     "tsconfig": "workspace:*",
     "tsup": "catalog:",
     "tsup-config": "workspace:*",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@types/node": "catalog:"
   },
   "peerDependencies": {
     "@emotion/react": "catalog:peers",

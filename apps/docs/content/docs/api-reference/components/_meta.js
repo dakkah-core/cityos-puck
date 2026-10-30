@@ -1,6 +1,7 @@
 const menu = {
   "action-bar": {},
   "action-bar-action": {},
+  "action-bar-drag-handle": {},
   "action-bar-group": {},
   "action-bar-label": {},
   "action-bar-separator": {},
@@ -11,6 +12,7 @@ const menu = {
   "field-group": {},
   "field-group-item": {},
   "field-label": {},
+  "field-tab": {},
   "inline-text-field": {},
   puck: {},
   "puck-components": {},

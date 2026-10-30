@@ -1,7 +1,7 @@
 "use client";
 
 import { PuckPreview } from "@/docs/components/Preview";
-import { FieldGroup, AutoField, FieldLabel, FieldGroupItem } from "@/puck";
+import { FieldGroup, AutoField, FieldLabel } from "@/puck";
 
 export function Example1() {
   return (
@@ -10,7 +10,7 @@ export function Example1() {
       data={{ root: { props: {} }, content: [] }}
     >
       <FieldGroup label="Appearance">
-        <FieldGroupItem>
+        <FieldGroup.Item>
           <FieldLabel label="Color">
             <AutoField
               value="#000000"
@@ -18,8 +18,8 @@ export function Example1() {
               field={{ type: "text" }}
             />
           </FieldLabel>
-        </FieldGroupItem>
-        <FieldGroupItem>
+        </FieldGroup.Item>
+        <FieldGroup.Item>
           <FieldLabel label="Size">
             <AutoField
               value="12"
@@ -27,7 +27,7 @@ export function Example1() {
               field={{ type: "number" }}
             />
           </FieldLabel>
-        </FieldGroupItem>
+        </FieldGroup.Item>
       </FieldGroup>
     </PuckPreview>
   );
@@ -36,11 +36,11 @@ export function Example1() {
 export function Example2() {
   return (
     <PuckPreview
-      config={{ components: { Orange: { render: () => <div>Orange</div> } } }}
+      config={{ components: {} }}
       data={{ root: { props: {} }, content: [] }}
     >
-      <FieldGroup label="Appearance" expandable>
-        <FieldGroupItem>
+      <FieldGroup label="Appearance" collapsible={false}>
+        <FieldGroup.Item>
           <FieldLabel label="Color">
             <AutoField
               value="#000000"
@@ -48,16 +48,28 @@ export function Example2() {
               field={{ type: "text" }}
             />
           </FieldLabel>
-        </FieldGroupItem>
-        <FieldGroupItem>
-          <FieldLabel label="Size">
+        </FieldGroup.Item>
+      </FieldGroup>
+    </PuckPreview>
+  );
+}
+
+export function Example3() {
+  return (
+    <PuckPreview
+      config={{ components: {} }}
+      data={{ root: { props: {} }, content: [] }}
+    >
+      <FieldGroup label="Appearance" defaultExpanded>
+        <FieldGroup.Item>
+          <FieldLabel label="Color">
             <AutoField
-              value="12"
+              value="#000000"
               onChange={() => {}}
-              field={{ type: "number" }}
+              field={{ type: "text" }}
             />
           </FieldLabel>
-        </FieldGroupItem>
+        </FieldGroup.Item>
       </FieldGroup>
     </PuckPreview>
   );

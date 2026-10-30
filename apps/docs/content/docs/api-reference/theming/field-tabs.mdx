@@ -1,0 +1,36 @@
+---
+title: Field tabs
+---
+
+import { Example1 } from "./field-tabs.examples";
+
+# Field tabs
+
+Use the following CSS properties for theming the [field tabs](/docs/api-reference/components/field-tab).
+
+```css showLineNumbers
+.Container {
+  --puck-fieldtabs-color-bg-selected: #0158ad;
+  --puck-fieldtabs-color-text-selected: #ffffff;
+  --puck-fieldtabs-radius: 999px;
+}
+```
+
+<Example1 />
+
+## CSS properties
+
+Defaults shown as `var(--puck-...)` reference [global tokens](/docs/api-reference/theming/global). See [computed values](/docs/api-reference/theming/computed-values#field-tabs) for the values they resolve to.
+
+| Token                                  | Default                              | Description             |
+| -------------------------------------- | ------------------------------------ | ----------------------- |
+| `--puck-fieldtabs-color-bg`            | `none`                               | Tab background          |
+| `--puck-fieldtabs-color-text`          | `var(--puck-color-text-secondary)`   | Tab text color          |
+| `--puck-fieldtabs-color-bg-hover`      | `var(--puck-color-interactive-soft)` | Tab background on hover |
+| `--puck-fieldtabs-color-text-hover`    | `var(--puck-color-text-secondary)`   | Tab text color on hover |
+| `--puck-fieldtabs-color-bg-selected`   | `var(--puck-color-interactive-soft)` | Selected tab background |
+| `--puck-fieldtabs-color-text-selected` | `var(--puck-color-interactive)`      | Selected tab text color |
+| `--puck-fieldtabs-radius`              | `var(--puck-radius-m)`               | Tab border radius       |
+| `--puck-fieldtabs-font-size`           | `var(--puck-font-size-xxxs)`         | Tab font size           |
+| `--puck-fieldtabs-font-weight`         | `var(--puck-font-weight-medium)`     | Tab font weight         |
+| `--puck-fieldtabs-space`               | `var(--puck-space-2)`                | Tab padding             |

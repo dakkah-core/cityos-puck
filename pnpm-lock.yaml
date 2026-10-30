@@ -937,6 +937,9 @@ importers:
       '@puckeditor/core':
         specifier: workspace:@cityos-core/puck@*
         version: link:../core
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.5
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0
@@ -980,6 +983,9 @@ importers:
       '@puckeditor/core':
         specifier: workspace:@cityos-core/puck@*
         version: link:../core
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.5
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0
@@ -1014,6 +1020,9 @@ importers:
       '@puckeditor/core':
         specifier: workspace:@cityos-core/puck@*
         version: link:../core
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.5
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0

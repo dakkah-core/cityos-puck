@@ -35,7 +35,8 @@
     "tsup": "catalog:",
     "tsup-config": "workspace:*",
     "typescript": "catalog:",
-    "lucide-react": "catalog:"
+    "lucide-react": "catalog:",
+    "@types/node": "catalog:"
   },
   "dependencies": {},
   "peerDependencies": {

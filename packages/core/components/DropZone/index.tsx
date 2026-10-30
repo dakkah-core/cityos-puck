@@ -36,6 +36,7 @@ import {
 
 import { useDroppable, UseDroppableInput } from "@dnd-kit/react";
 import { isComponentAllowed } from "../../lib/data/is-component-allowed";
+import { getZoneConstraints } from "../../lib/data/resolve-zone-constraints";
 import { DrawerItemInner } from "../Drawer";
 import { pointerIntersection } from "@dnd-kit/collision";
 import { UniqueIdentifier } from "@dnd-kit/abstract";
@@ -353,10 +354,21 @@ export const DropZoneEdit = forwardRef<HTMLDivElement, DropZoneProps>(
 
     const ref = useRef<HTMLDivElement | null>(null);
 
+    // The reserved root canvas renders as a legacy DropZone, but its configured
+    // slot constraints must also govern pointer dragging.
+    const rootConstraints = useAppStore(
+      useShallow((s) =>
+        zoneCompound === rootDroppableId
+          ? getZoneConstraints(zoneCompound, s.config, s.state.indexes)
+          : {},
+      ),
+    );
+
     const acceptsTarget = useCallback(
       (componentType: string | null | undefined) =>
-        isComponentAllowed(componentType, { allow, disallow }),
-      [allow, disallow],
+        isComponentAllowed(componentType, { allow, disallow }) &&
+        isComponentAllowed(componentType, rootConstraints),
+      [allow, disallow, rootConstraints],
     );
 
     const targetAccepted = useContextStore(ZoneStoreContext, (s) => {

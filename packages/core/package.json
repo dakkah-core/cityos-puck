@@ -75,12 +75,13 @@
     "lint": "eslint \"**/*.ts*\"",
     "build": "node ../../scripts/toolchains/build-core.mjs",
     "test": "node ../../scripts/toolchains/typecheck.mjs --noEmit && jest",
-    "prepare": "node -e \"require('fs').copyFileSync('../../README.md','README.md')\" && node ../../scripts/toolchains/build-core.mjs",
-    "postpublish": "node -e \"require('fs').rmSync('README.md',{force:true})\"",
+    "prepare": "node ../../scripts/toolchains/build-core.mjs",
+    "postpublish": "node -e \"const {rmSync}=require('fs'); for (const file of ['README.md','CHANGELOG.md']) rmSync(file,{force:true})\"",
     "typecheck": "node ../../scripts/toolchains/typecheck.mjs --noEmit"
   },
   "files": [
-    "dist"
+    "dist",
+    "CHANGELOG.md"
   ],
   "devDependencies": {
     "@juggle/resize-observer": "catalog:",

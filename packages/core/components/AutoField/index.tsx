@@ -27,7 +27,7 @@ import { NestedFieldContext } from "./context";
 import { useShallow } from "zustand/react/shallow";
 import { setDeep } from "../../lib/data/set-deep";
 import { isFieldVisible } from "../../lib/fields/is-field-visible";
-import { rendersExpandableGroup } from "../../lib/fields/renders-expandable-group";
+import { rendersCollapsibleGroup } from "../../lib/fields/renders-collapsible-group";
 import type {
   FieldLabelPropsInternal,
   FieldPropsInternalOptional,
@@ -253,8 +253,8 @@ function AutoFieldInternal<
     >
       <div
         className={getClassNameWrapper()}
-        data-puck-field-group-expandable={
-          rendersExpandableGroup(field, overrides.fieldTypes) || undefined
+        data-puck-field-group-collapsible={
+          rendersCollapsibleGroup(field, overrides.fieldTypes) || undefined
         }
         onFocus={onFocus}
         onBlur={onBlur}
@@ -289,17 +289,24 @@ export function AutoFieldPrivate<
     (s) => `${s.selectedItem?.type || "root"}.${props.name}`,
   );
 
+  const field = props.field as Field<ValueType>;
+
   const { expanded, toggleExpanded } = useExpandedFieldGroup({
     fieldGroupKey,
+    defaultExpanded:
+      field.type === "object" ? field.defaultExpanded : undefined,
   });
 
-  return (
-    <AutoFieldInternal<ValueType, FieldType>
-      {...props}
-      expanded={expanded}
-      onToggle={toggleExpanded}
-    />
-  );
+  const internalProps: AutoFieldInternalProps<ValueType, FieldType> = {
+    ...props,
+  };
+
+  if (field.type === "object") {
+    internalProps.expanded = expanded;
+    internalProps.onToggle = toggleExpanded;
+  }
+
+  return <AutoFieldInternal<ValueType, FieldType> {...internalProps} />;
 }
 
 function AutoFieldPublicInternal<
@@ -322,8 +329,12 @@ function AutoFieldPublicInternal<
 
   const fieldStore = useFieldStoreApi();
 
+  const field = props.field as Field<ValueType>;
+
   const { expanded, toggleExpanded, unsetExpanded } = useExpandedFieldGroup({
     fieldGroupKey: props.id,
+    defaultExpanded:
+      field.type === "object" ? field.defaultExpanded : undefined,
   });
 
   // Unset the expanded state when the component is unmounted and no id is provided since `useSafeId` changes between mounts.

@@ -9,6 +9,8 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve, dirname } from "node:path";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import {
   sha256,
   validateManifest,
@@ -37,6 +39,25 @@ const manifest = () => ({
       tests: ["tests/root.test.ts"],
     },
   ],
+});
+
+test("the maintained fork inventory accounts for every customized source path", () => {
+  const root = fileURLToPath(new URL("../../", import.meta.url));
+  const canonical = JSON.parse(
+    readFileSync(join(root, "config/upstream/integration.json"), "utf8"),
+  );
+  const git = (...args) =>
+    execFileSync("git", ["-C", root, ...args], {
+      encoding: "utf8",
+      windowsHide: true,
+    })
+      .split("\0")
+      .filter(Boolean);
+  const customized = new Set([
+    ...git("diff", "--name-only", "-z", canonical.upstream.commit),
+    ...git("ls-files", "--others", "--exclude-standard", "-z"),
+  ]);
+  assert.deepEqual(verifyDeclaredChanges(canonical, [...customized]), []);
 });
 test("declared bridges and owned extensions do not admit undeclared core edits", () => {
   assert.deepEqual(

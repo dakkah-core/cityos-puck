@@ -6,6 +6,12 @@ import {
   screen,
 } from "@testing-library/react";
 import { FieldGroup } from "../../FieldGroup";
+import { Tab as FieldTab } from "../../Tabs";
+import { useContext, type ReactNode } from "react";
+import { useDroppable } from "@dnd-kit/react";
+import { StoreApi } from "zustand";
+import { ZoneStore, ZoneStoreContext } from "../../DropZone/context";
+import { rootDroppableId } from "../../../lib/root-droppable-id";
 import { createCityOSStringListField } from "../../../../../extensions/cityos/cityos-string-list-field";
 import { Config, Plugin } from "../../../types";
 import "@testing-library/jest-dom";
@@ -58,11 +64,11 @@ jest.mock("@dnd-kit/react", () => {
     ),
 
     // Hooks return dummy objects so destructuring works
-    useDroppable: () => ({
+    useDroppable: jest.fn(() => ({
       ref: () => undefined,
       setNodeRef: () => undefined,
       isOver: false,
-    }),
+    })),
     useDraggable: () => ({
       attributes: {},
       listeners: {},
@@ -388,81 +394,194 @@ describe("Puck", () => {
     expect(root?.getAttribute("translate")).toBe("no");
     expect(root?.classList.contains("notranslate")).toBe(true);
   });
-  it("retains CityOS custom field context and permission changes inside upstream expandable layouts", async () => {
-    const createConfig = (label: string): Config<{}, { items: string[] }> => ({
-      components: {},
-      root: {
-        fields: {
-          items: createCityOSStringListField({
-            type: "string-list",
-            label,
-            maxItems: 5,
-            maxItemLength: 80,
-          }),
+  it.each([false, true])(
+    "retains CityOS controls across tabs, collapse state and permission changes (defaultExpanded=%s)",
+    async (defaultExpanded) => {
+      const createConfig = (
+        label: string,
+      ): Config<{}, { items: string[] }> => ({
+        components: {},
+        root: {
+          fields: {
+            items: createCityOSStringListField({
+              type: "string-list",
+              label,
+              maxItems: 5,
+              maxItemLength: 80,
+            }),
+          },
+          renderFields: ({ fields }) => (
+            <>
+              <FieldTab label="Content">
+                <FieldGroup
+                  id="cityos-items"
+                  label="CityOS group"
+                  collapsible
+                  defaultExpanded={defaultExpanded}
+                >
+                  {fields.items}
+                </FieldGroup>
+              </FieldTab>
+              <FieldTab label="Other">
+                <span>Other settings</span>
+              </FieldTab>
+            </>
+          ),
         },
-        renderFields: ({ fields }) => (
-          <FieldGroup id="cityos-items" label="CityOS group" expandable>
-            {fields.items}
-          </FieldGroup>
-        ),
-      },
-    });
-    const data = { root: { props: { items: ["first"] } }, content: [] };
-    const onChange = jest.fn();
-    const editor = (config: Config, edit: boolean) => (
-      <Puck
-        config={config}
-        data={data}
-        permissions={{ edit }}
-        dictionary={{ "field-arrayitem-add": "CityOS add" }}
-        onChange={onChange}
-        iframe={{ enabled: false }}
-      >
-        <Puck.Fields />
-      </Puck>
-    );
-    const view = render(editor(createConfig("CityOS items"), true));
-    await flush();
-    // The stylesheet makes Puck visible in browsers; this fixture stubs CSS.
-    (view.container.querySelector(".Puck") as HTMLElement).style.visibility =
-      "visible";
-    expect(
-      screen.getByRole("button", { name: "CityOS group" }),
-    ).toHaveAttribute("aria-expanded", "false");
-    expect(screen.queryByDisplayValue("first")).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "CityOS group" }));
-    await flush();
-    expect(
-      screen.getByRole("button", { name: "CityOS add" }),
-    ).toBeInTheDocument();
-    fireEvent.change(screen.getByDisplayValue("first"), {
-      target: { value: "edited" },
-    });
-    await flush();
-    expect(onChange).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        root: expect.objectContaining({
-          props: expect.objectContaining({ items: ["edited"] }),
+      });
+      const data = { root: { props: { items: ["first"] } }, content: [] };
+      const onChange = jest.fn();
+      const editor = (config: Config, edit: boolean) => (
+        <Puck
+          config={config}
+          data={data}
+          permissions={{ edit }}
+          dictionary={{ "field-arrayitem-add": "CityOS add" }}
+          onChange={onChange}
+          iframe={{ enabled: false }}
+        >
+          <Puck.Fields />
+        </Puck>
+      );
+      const view = render(editor(createConfig("CityOS items"), true));
+      await flush();
+      // The stylesheet makes Puck visible in browsers; this fixture stubs CSS.
+      (view.container.querySelector(".Puck") as HTMLElement).style.visibility =
+        "visible";
+      expect(
+        screen.getByRole("button", { name: "CityOS group" }),
+      ).toHaveAttribute("aria-expanded", String(defaultExpanded));
+      if (defaultExpanded) {
+        fireEvent.click(screen.getByRole("button", { name: "CityOS group" }));
+        await flush();
+      }
+      fireEvent.keyDown(screen.getByRole("tab", { name: "Content" }), {
+        key: "ArrowRight",
+      });
+      await flush();
+      expect(screen.getByRole("tab", { name: "Other" })).toHaveAttribute(
+        "aria-selected",
+        "true",
+      );
+      expect(screen.getByText("Other settings")).toBeInTheDocument();
+      fireEvent.keyDown(screen.getByRole("tab", { name: "Other" }), {
+        key: "ArrowLeft",
+      });
+      await flush();
+      expect(screen.getByRole("tab", { name: "Content" })).toHaveAttribute(
+        "aria-selected",
+        "true",
+      );
+      expect(
+        screen.getByRole("button", { name: "CityOS group" }),
+      ).toHaveAttribute("aria-expanded", "false");
+      expect(screen.queryByDisplayValue("first")).not.toBeInTheDocument();
+      fireEvent.click(screen.getByRole("button", { name: "CityOS group" }));
+      await flush();
+      expect(
+        screen.getByRole("button", { name: "CityOS add" }),
+      ).toBeInTheDocument();
+      fireEvent.change(screen.getByDisplayValue("first"), {
+        target: { value: "edited" },
+      });
+      await flush();
+      expect(onChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          root: expect.objectContaining({
+            props: expect.objectContaining({ items: ["edited"] }),
+          }),
         }),
-      }),
-    );
-    view.rerender(editor(createConfig("Localized items"), false));
-    await flush();
-    expect(
-      screen.getByRole("button", { name: "CityOS group" }),
-    ).toHaveAttribute("aria-expanded", "true");
-    expect(
-      screen.getByText("Localized items", { selector: "legend" }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("textbox")).toHaveProperty("readOnly", true);
-    expect(
-      screen.queryByRole("button", { name: "CityOS add" }),
-    ).not.toBeInTheDocument();
-    onChange.mockClear();
-    fireEvent.change(screen.getByRole("textbox"), {
-      target: { value: "forbidden" },
-    });
-    await flush();
-    expect(onChange).not.toHaveBeenCalled();
-  });
+      );
+      view.rerender(editor(createConfig("Localized items"), false));
+      await flush();
+      expect(
+        screen.getByRole("button", { name: "CityOS group" }),
+      ).toHaveAttribute("aria-expanded", "true");
+      expect(
+        screen.getByText("Localized items", { selector: "legend" }),
+      ).toBeInTheDocument();
+      expect(screen.getByRole("textbox")).toHaveProperty("readOnly", true);
+      expect(
+        screen.queryByRole("button", { name: "CityOS add" }),
+      ).not.toBeInTheDocument();
+      onChange.mockClear();
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "forbidden" },
+      });
+      await flush();
+      expect(onChange).not.toHaveBeenCalled();
+    },
+  );
+  it.each([{ allow: ["Allowed"] }, { disallow: ["Forbidden"] }])(
+    "enforces reserved root canvas constraints during live dragging: %j",
+    async (constraints) => {
+      let zoneStore: StoreApi<ZoneStore>;
+      function CaptureDragStore() {
+        zoneStore = useContext(ZoneStoreContext);
+        return null;
+      }
+      const makeConfig = (restricted: boolean): Config => ({
+        components: {
+          Allowed: { render: () => <div>Allowed</div> },
+          Forbidden: { render: () => <div>Forbidden</div> },
+        },
+        root: {
+          fields: {
+            "default-zone": {
+              type: "slot",
+              ...(restricted ? constraints : {}),
+            },
+          },
+          render: ({ children }: { children?: ReactNode }) => (
+            <>
+              <CaptureDragStore />
+              {children}
+            </>
+          ),
+        },
+      });
+      const view = render(
+        <Puck
+          config={makeConfig(true)}
+          data={{}}
+          iframe={{ enabled: false }}
+        />,
+      );
+      await flush();
+      const rootTarget = () =>
+        jest
+          .mocked(useDroppable)
+          .mock.calls.map(([input]) => input)
+          .filter((input) => input.id === rootDroppableId)
+          .at(-1)!;
+      await act(async () => {
+        zoneStore!.setState({
+          draggedItem: { data: { componentType: "Forbidden" } } as any,
+          zoneDepthIndex: { [rootDroppableId]: true },
+        });
+      });
+      expect(rootTarget().data?.isDroppableTarget).toBe(false);
+      expect(rootTarget().disabled).toBe(true);
+      await act(async () => {
+        zoneStore!.setState({
+          draggedItem: { data: { componentType: "Allowed" } } as any,
+        });
+      });
+      expect(rootTarget().data?.isDroppableTarget).toBe(true);
+      view.rerender(
+        <Puck
+          config={makeConfig(false)}
+          data={{}}
+          iframe={{ enabled: false }}
+        />,
+      );
+      await flush();
+      await act(async () => {
+        zoneStore!.setState({
+          draggedItem: { data: { componentType: "Forbidden" } } as any,
+        });
+      });
+      expect(rootTarget().data?.isDroppableTarget).toBe(true);
+    },
+  );
 });

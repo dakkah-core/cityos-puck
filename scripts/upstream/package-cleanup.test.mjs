@@ -27,11 +27,18 @@ test("workspace package builds use portable guarded output cleanup", () => {
         new URL(`../../packages/${name}/package.json`, import.meta.url),
       ),
     );
-    assert.match(
-      manifest.scripts.build,
-      /^node \.\.\/\.\.\/scripts\/toolchains\/clean-package-dist\.mjs && tsup /u,
-      name,
-    );
+    if (name === "core") {
+      assert.equal(
+        manifest.scripts.build,
+        "node ../../scripts/toolchains/build-core.mjs",
+      );
+    } else {
+      assert.match(
+        manifest.scripts.build,
+        /^node \.\.\/\.\.\/scripts\/toolchains\/build-package\.mjs index\.tsx?$/u,
+        name,
+      );
+    }
   }
 });
 

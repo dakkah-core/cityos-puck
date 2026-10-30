@@ -3,7 +3,7 @@
   "upstream": {
     "repository": "https://github.com/puckeditor/puck",
     "branch": "main",
-    "commit": "7e5dc3e8744430723cf6e8af8c3d6e297044927b"
+    "commit": "d14401c3a47947543e9de733ef1a20fb85140d52"
   },
   "baselineForkCommit": "bed73210688571bd4a1b4f6bd423fe7c8fc5f7f6",
   "ownedDirectories": [
@@ -844,7 +844,6 @@
         "packages/core/components/DropZone/LinePlaceholder.tsx",
         "packages/core/components/DropZone/VirtualizedDropZone.tsx",
         "packages/core/components/DropZone/context.tsx",
-        "packages/core/components/DropZone/index.tsx",
         "packages/core/components/DropZone/lib/use-content-with-preview.ts",
         "packages/core/components/DropZone/lib/use-drag-axis.ts",
         "packages/core/components/DropZone/lib/use-min-empty-height.ts",
@@ -1106,13 +1105,157 @@
         "packages/core/components/FieldGroup/FieldGroup.tsx",
         "packages/core/components/FieldGroup/lib/use-field-group-expanded.ts",
         "packages/core/lib/__tests__/get-zoom-config.spec.ts",
-        "packages/core/lib/fields/__tests__/renders-expandable-group.spec.ts",
-        "packages/core/lib/fields/renders-expandable-group.ts"
+        "packages/core/lib/fields/__tests__/renders-collapsible-group.spec.ts",
+        "packages/core/lib/fields/renders-collapsible-group.ts"
       ],
       "tests": [
         "packages/core/components/Puck/__tests__/index.tsx",
         "scripts/cityos/dependency-migration.test.mjs",
         "scripts/upstream/extension-boundary.test.mjs"
+      ]
+    },
+    {
+      "id": "build-guards",
+      "purpose": "Retain guarded package, Next.js and docs builds with isolated generated-type checking.",
+      "invariant": "Builds reject stale source/output identities, serialize shared output, and preserve effective Next configuration and postbuild failures.",
+      "tests": [
+        "scripts/toolchains/core-build.test.mjs",
+        "scripts/toolchains/build-package.test.mjs",
+        "scripts/toolchains/next-build-guard.test.mjs",
+        "scripts/toolchains/next-generated-types.test.mjs",
+        "scripts/toolchains/next-source-fingerprint.test.mjs",
+        "scripts/toolchains/next-output-lock.test.mjs",
+        "scripts/toolchains/next-typecheck-overlay.test.mjs",
+        "scripts/toolchains/docs-postbuild.test.mjs"
+      ],
+      "paths": [
+        "apps/demo/tsconfig.build.json",
+        "apps/docs/next-sitemap.config.js",
+        "apps/docs/tsconfig.build.json",
+        "scripts/toolchains/build-core.mjs",
+        "scripts/toolchains/build-package.mjs",
+        "scripts/toolchains/build-package.test.mjs",
+        "scripts/toolchains/core-build.test.mjs",
+        "scripts/toolchains/docs-postbuild.mjs",
+        "scripts/toolchains/docs-postbuild.test.mjs",
+        "scripts/toolchains/next-build-guard.mjs",
+        "scripts/toolchains/next-build-guard.test.mjs",
+        "scripts/toolchains/next-effective-config.test.mjs",
+        "scripts/toolchains/next-generated-types.mjs",
+        "scripts/toolchains/next-generated-types.test.mjs",
+        "scripts/toolchains/next-output-lock.mjs",
+        "scripts/toolchains/next-output-lock.test.mjs",
+        "scripts/toolchains/next-project-config.test.mjs",
+        "scripts/toolchains/next-source-fingerprint.test.mjs",
+        "scripts/toolchains/next-typecheck-cache.test.mjs",
+        "scripts/toolchains/next-typecheck-overlay.mjs",
+        "scripts/toolchains/next-typecheck-overlay.test.mjs",
+        "scripts/toolchains/next-typegen-fixture.test.mjs",
+        "scripts/toolchains/react-router-typecheck-cache.test.mjs"
+      ]
+    },
+    {
+      "id": "generated-type-policy",
+      "purpose": "Retain the CMS-authored generated-type policy projection and its CI enforcement.",
+      "invariant": "Projected policy bytes retain their canonical source hashes; invalid generated namespaces and missing check evidence fail closed.",
+      "tests": [
+        "scripts/toolchains/generated-types-policy/generated-types-policy.test.mjs",
+        "scripts/toolchains/generated-types-policy/generated-type-check-evidence.test.mjs",
+        "scripts/toolchains/generated-types-policy/resolution-namespace-v2.test.mjs",
+        "scripts/toolchains/verify-generated-types-policy.test.mjs",
+        "scripts/cityos/generated-types-ci.test.mjs"
+      ],
+      "paths": [
+        "scripts/cityos/generated-types-ci.test.mjs",
+        "scripts/toolchains/generated-types-policy/generated-type-check-evidence.d.mts",
+        "scripts/toolchains/generated-types-policy/generated-type-check-evidence.mjs",
+        "scripts/toolchains/generated-types-policy/generated-type-check-evidence.test.mjs",
+        "scripts/toolchains/generated-types-policy/generated-types-policy.d.mts",
+        "scripts/toolchains/generated-types-policy/generated-types-policy.mjs",
+        "scripts/toolchains/generated-types-policy/generated-types-policy.test.mjs",
+        "scripts/toolchains/generated-types-policy/projection.json",
+        "scripts/toolchains/generated-types-policy/resolution-namespace-v2.d.mts",
+        "scripts/toolchains/generated-types-policy/resolution-namespace-v2.mjs",
+        "scripts/toolchains/generated-types-policy/resolution-namespace-v2.test.mjs",
+        "scripts/toolchains/verify-generated-types-policy.mjs",
+        "scripts/toolchains/verify-generated-types-policy.test.mjs"
+      ]
+    },
+    {
+      "id": "standalone-templates",
+      "purpose": "Keep generated application templates and recipes aligned with canonical toolchains and their source inputs.",
+      "invariant": "Templates preserve owned source files, reject stale inputs, and use the pinned native manager and generated-type policy when built standalone.",
+      "tests": [
+        "packages/create-puck-app/pinned-pnpm.test.mjs",
+        "packages/create-puck-app/template-file.test.mjs",
+        "packages/create-puck-app/scripts/copy-recipes.test.mjs",
+        "packages/create-puck-app/scripts/clean-pack.test.mjs",
+        "packages/create-puck-app/scripts/next-standalone.test.mjs",
+        "packages/create-puck-app/scripts/react-router-standalone.test.mjs"
+      ],
+      "paths": [
+        "packages/create-puck-app/pinned-pnpm.test.mjs",
+        "packages/create-puck-app/scripts/clean-pack.test.mjs",
+        "packages/create-puck-app/scripts/copy-next-toolchain.mjs",
+        "packages/create-puck-app/scripts/copy-recipes.mjs",
+        "packages/create-puck-app/scripts/copy-recipes.test.mjs",
+        "packages/create-puck-app/scripts/next-standalone.test.mjs",
+        "packages/create-puck-app/scripts/react-router-standalone.test.mjs",
+        "packages/create-puck-app/template-file.mjs",
+        "packages/create-puck-app/template-file.test.mjs",
+        "packages/create-puck-app/templates/.gitignore",
+        "packages/create-puck-app/templates/.npmignore",
+        "recipes/next-ai/.gitattributes",
+        "recipes/next-ai/tsconfig.build.json",
+        "recipes/next/.gitattributes",
+        "recipes/next/tsconfig.build.json",
+        "recipes/react-router-ai/app/routes/_index.tsx",
+        "recipes/react-router/app/routes/_index.tsx"
+      ]
+    },
+    {
+      "id": "e2e-drag-geometry",
+      "purpose": "Preserve observable browser geometry before exercising drag interactions.",
+      "invariant": "Drag smoke checks wait for visible nonzero element bounds and do not fabricate geometry from stationary fixtures.",
+      "tests": [
+        "scripts/toolchains/e2e-smoke.test.mjs"
+      ],
+      "paths": [
+        "scripts/e2e/utils/drag-and-drop.mjs",
+        "scripts/e2e/utils/get-box.mjs"
+      ]
+    },
+    {
+      "id": "upstream-main-20261029",
+      "purpose": "Integrate Puck 0.24.0 field tabs, collapsible field groups and optional drag handles with current CityOS docs and compiler boundaries.",
+      "invariant": "CityOS registration, localization, permission revocation and root constraints survive upstream layouts; executable docs and packaged release notes follow their canonical source inputs.",
+      "paths": [
+        "apps/docs/content/docs/api-reference/components/action-bar-drag-handle.examples.tsx",
+        "apps/docs/content/docs/api-reference/components/action-bar-drag-handle.mdx",
+        "apps/docs/content/docs/api-reference/components/field-tab.examples.tsx",
+        "apps/docs/content/docs/api-reference/components/field-tab.mdx",
+        "apps/docs/content/docs/api-reference/theming/field-tabs.examples.tsx",
+        "apps/docs/content/docs/api-reference/theming/field-tabs.mdx",
+        "apps/docs/content/docs/integrating-puck/field-grouping.examples.tsx",
+        "apps/docs/content/docs/integrating-puck/field-grouping.mdx",
+        "apps/docs/pages/docs/integrating-puck/field-grouping.mdx",
+        "lerna.json",
+        "packages/core/components/ActionBar/__tests__/index.spec.tsx",
+        "packages/core/components/DropZone/index.tsx",
+        "packages/core/components/Tabs/__tests__/index.spec.tsx",
+        "packages/core/components/Tabs/index.tsx",
+        "packages/core/lib/dnd/is-dragging-from-handle.ts",
+        "packages/core/lib/dom/sort-elements-by-position.ts"
+      ],
+      "tests": [
+        "packages/core/components/Puck/__tests__/index.tsx",
+        "packages/core/components/Tabs/__tests__/index.spec.tsx",
+        "packages/core/lib/dnd/__tests__/resolve-dnd-mode.spec.ts",
+        "packages/core/lib/fields/__tests__/renders-collapsible-group.spec.ts",
+        "scripts/toolchains/core-build.test.mjs",
+        "scripts/cityos/docs-route-revisions.test.mjs",
+        "scripts/upstream/integration.test.mjs",
+        "packages/core/__tests__/cityos-built-consumers.spec.ts"
       ]
     }
   ],

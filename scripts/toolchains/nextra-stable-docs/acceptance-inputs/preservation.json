@@ -3,8 +3,8 @@
   "status": "captured-source-input-not-test-evidence",
   "normalization": "UTF-8 without BOM; CRLF replaced with LF",
   "routeFixture": "scripts/cityos/fixtures/docs-route-migration.json",
-  "expectedRoutes": 119,
-  "expectedExamples": 45,
+  "expectedRoutes": 123,
+  "expectedExamples": 49,
   "routes": [
     {
       "path": "apps/docs/content/docs/api-reference/actions.mdx",
@@ -12,11 +12,15 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/components.mdx",
-      "sha256": "00aa077f60a7db4ed36a19019ff2834b538e17233193e0909f589230ec74ad8a"
+      "sha256": "c34546efb1b8ddc15ff0573adcd94d6a9d790b9109c3471c155a2d22584e3f8d"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/action-bar-action.mdx",
       "sha256": "8ac25facac6e9683da9f5401cfd74664113475378ddd7f802792853837dca4f6"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/action-bar-drag-handle.mdx",
+      "sha256": "bdae43608ea1d7fecb4273368bc9d6f9c2007518c294aebcd8acad5905ee8602"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/action-bar-group.mdx",
@@ -52,15 +56,19 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/field-group-item.mdx",
-      "sha256": "4d8ab41953feea32a545deebd94adf5f9408487f6a2da440cc3aabe9ac3095bb"
+      "sha256": "3c5645af306844673d1ea83398b0a36ef3e1268df14d2a3a7ba2b480999c7f44"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/field-group.mdx",
-      "sha256": "ae540f518528898d282e3ea60cd3fb1b72e195a0f8b29241f7930c2310ac330a"
+      "sha256": "f3069086ffcc7fa72869a8932cd3536c1fb397b38648de5a7aa29a79b0324236"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/field-label.mdx",
       "sha256": "c8e311153f5e8cf3e42097fbf6caad05da7b0d2615417a034bd893c04286488b"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/field-tab.mdx",
+      "sha256": "10e468561b4c2ff5a36a437786c57d81be4b040a22de31f446e960a0a6652416"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/inline-text-field.mdx",
@@ -88,7 +96,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/puck.mdx",
-      "sha256": "15d1fde1bd0d6ab7a0a8e72313038d49d9cf6ce934cc24509a87a72cea7658d0"
+      "sha256": "0175a6f413f5e76da4493aeca8c0bd70fc805e07bd27cf44161ae80a7203bb61"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/render.mdx",
@@ -124,7 +132,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/data-model/app-state.mdx",
-      "sha256": "15e785e6bd39c22dd1d12075d0bef520446fcec3173690af2eea57efdd0d9fba"
+      "sha256": "aec7121fa284b9fef1f41d1fe16e91078b31ca8375b45fd081677c68a8445ee4"
     },
     {
       "path": "apps/docs/content/docs/api-reference/data-model/component-data.mdx",
@@ -144,7 +152,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/dictionary.mdx",
-      "sha256": "b93f933e44f448a24c3c4297ceebe5c380a3310c4c82a0abc149d55285994303"
+      "sha256": "e125dce81d21c0be7e2b3cd3bd2b551b021b7bb051030e3660738e273f02e684"
     },
     {
       "path": "apps/docs/content/docs/api-reference/field-transforms.mdx",
@@ -180,7 +188,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/fields/object.mdx",
-      "sha256": "abb717ac47cd8a64541b3474bc3285446066b4222d7017ee902661e454a79705"
+      "sha256": "34fe1f9bdbede4d16a7bb939fd192bba21cafbd748cd1fee1f8ce8b5e80b2740"
     },
     {
       "path": "apps/docs/content/docs/api-reference/fields/radio.mdx",
@@ -248,7 +256,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/overrides/action-bar.mdx",
-      "sha256": "47abcf37beb3c63b9a12bca09b80e321635fa9dc6a7f1640aff828efd78ceef2"
+      "sha256": "1f659f566c6db2388c32391df6761aaaf63c0eec605fae237bed78f5cd0a7f5e"
     },
     {
       "path": "apps/docs/content/docs/api-reference/overrides/component-overlay.mdx",
@@ -324,7 +332,7 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/puck-api.mdx",
-      "sha256": "cc6e0f1c0eb14063a7fc9835cc6f3e60e9a856710156b2e84cc10fdbe8934d03"
+      "sha256": "85636e55260f5ea721f2bee034bbba4bd62b39206d984f184396e921c170ba19"
     },
     {
       "path": "apps/docs/content/docs/api-reference/theming/action-bar.mdx",
@@ -340,11 +348,15 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/theming/computed-values.mdx",
-      "sha256": "239316d89557c1b2f4aff68977835a8a6c1442acab79408d044d327292b4909a"
+      "sha256": "644f90bfcdb22193bb0c5facf5d41d05335c9740ea5b845e5bb74852388b6c20"
     },
     {
       "path": "apps/docs/content/docs/api-reference/theming/drawer.mdx",
       "sha256": "728535e554523c6ca2922592412721a77817e6ac73948de9079a69f33da454a6"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/theming/field-tabs.mdx",
+      "sha256": "0299779dd0540521ace96906119240b8e39afa467571bc83d290e175495e9226"
     },
     {
       "path": "apps/docs/content/docs/api-reference/theming/fields.mdx",
@@ -392,7 +404,7 @@
     },
     {
       "path": "apps/docs/content/docs/extending-puck/internal-puck-api.mdx",
-      "sha256": "512c250fb2ed8a67b0655f7e230cc72051980bf482737a2ec3cfd6d76bcb8b02"
+      "sha256": "d3621af293db5d127f5291a3dd5ef74b4efd544884f3fa8774073d4a6bfdd046"
     },
     {
       "path": "apps/docs/content/docs/extending-puck/plugins.mdx",
@@ -400,7 +412,7 @@
     },
     {
       "path": "apps/docs/content/docs/extending-puck/theming.mdx",
-      "sha256": "185461cba77496e08162ab7b2d8c719f35a31c28cce8a4284cd84bbf57f8bee4"
+      "sha256": "88060e91b3ab0e75ae516efef982bf16e4aa10f4c5b053a18064c21e2fba388b"
     },
     {
       "path": "apps/docs/content/docs/extending-puck/ui-overrides.mdx",
@@ -447,6 +459,10 @@
       "sha256": "b89fd9d26a098c09899e1d2c36196d3a2b49f09df65c8d9a2a374aded9dd65bb"
     },
     {
+      "path": "apps/docs/content/docs/integrating-puck/field-grouping.mdx",
+      "sha256": "544479a185b6b29226a7496e616bc532ec4c5d8bc68b83939e9f01dd58cfd1c8"
+    },
+    {
       "path": "apps/docs/content/docs/integrating-puck/localization.mdx",
       "sha256": "384ed90e26482fb365f6c0d221dbef0c46f49b7723265a3efb72ddf77b684812"
     },
@@ -489,6 +505,10 @@
       "sha256": "4bd35f4351e2554b7b8ee8f3b100369377421ab21989b5e53954ba04c680ac39"
     },
     {
+      "path": "apps/docs/content/docs/api-reference/components/action-bar-drag-handle.examples.tsx",
+      "sha256": "45be64dbc0663a5d82e0155ba8cefceb079a863e3b7eae84adf2a63080603b28"
+    },
+    {
       "path": "apps/docs/content/docs/api-reference/components/action-bar-group.examples.tsx",
       "sha256": "25ee68b1c88fb03fae933dccc45c9b1073db1dfd92523a869134eab9c00a1d05"
     },
@@ -518,11 +538,15 @@
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/field-group.examples.tsx",
-      "sha256": "6dffea415402bdfe6a80f9b9c8c5b35f285ba25cf4232a2ddbe3f08bee9e72a9"
+      "sha256": "6a2705b63d0f8016f9cc4cd859882cafa6241724c9cffcb73eb81d3b8cc8101e"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/field-label.examples.tsx",
       "sha256": "a33a09b395fbd8a315d4fd05c99707b45307604b963362cd9eeb5ac1ae070bc6"
+    },
+    {
+      "path": "apps/docs/content/docs/api-reference/components/field-tab.examples.tsx",
+      "sha256": "d9a7ce6dcf851fe9a9f18e4aec48b27de84c7761158960459e857464f400b570"
     },
     {
       "path": "apps/docs/content/docs/api-reference/components/inline-text-field.examples.tsx",
@@ -613,6 +637,10 @@
       "sha256": "7d05e2db54f30a9f4fd45153668d47f706fb9600bc1093abcb25d29281a3b4e4"
     },
     {
+      "path": "apps/docs/content/docs/api-reference/theming/field-tabs.examples.tsx",
+      "sha256": "e976b242cbf2c01a1541e2e741fdbd1a943622a2a4a216f9fcae488ea3c57181"
+    },
+    {
       "path": "apps/docs/content/docs/api-reference/theming/fields.examples.tsx",
       "sha256": "55e862afe21912d841ea8b5556ff9c2ca256db91836af0d4b5b64bb873553ce9"
     },
@@ -653,6 +681,10 @@
       "sha256": "81af99ab9c66c63bcf283b17be37a01c13fe98779bb3b422b01d1e970e93766e"
     },
     {
+      "path": "apps/docs/content/docs/integrating-puck/field-grouping.examples.tsx",
+      "sha256": "6af6292c5da4d4c6d2509a86efda6065f3e21d7fe190491dd7d5a8ee538db645"
+    },
+    {
       "path": "apps/docs/content/docs/integrating-puck/multi-column-layouts.examples.tsx",
       "sha256": "eddb5fe4d12f3ce05d9801d4c0fe1e78e17cbd7aa5cbca120fad514a35222c82"
     },
@@ -672,7 +704,7 @@
     },
     {
       "path": "packages/core/bundle/core.ts",
-      "sha256": "e5caf45739ffda6a4c5e4ae5c2caec9b400062b33bbd3786b7cad459428a580b"
+      "sha256": "09842f48f930015286dc6af7eb63efcc68819bb076fdf778f06467721ae2e437"
     },
     {
       "path": "packages/core/bundle/rsc.tsx",
@@ -769,7 +801,11 @@
   },
   "note": "These are source preservation observations. Matching hashes do not establish build, runtime, acceptance or production readiness.",
   "addedRoutes": [
+    "apps/docs/content/docs/api-reference/components/action-bar-drag-handle.mdx",
     "apps/docs/content/docs/api-reference/components/field-group-item.mdx",
-    "apps/docs/content/docs/api-reference/components/field-group.mdx"
+    "apps/docs/content/docs/api-reference/components/field-group.mdx",
+    "apps/docs/content/docs/api-reference/components/field-tab.mdx",
+    "apps/docs/content/docs/api-reference/theming/field-tabs.mdx",
+    "apps/docs/content/docs/integrating-puck/field-grouping.mdx"
   ]
 }
