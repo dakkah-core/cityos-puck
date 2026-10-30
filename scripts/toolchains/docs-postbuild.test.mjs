@@ -25,6 +25,53 @@ test('a child error does not release the caller before the child closes', async 
   child.emit('close', null, 'SIGTERM');
   await assert.rejects(pending, /signal failed/u);
 });
+
+test('an interrupt remains a failure when a child exits successfully', async () => {
+  for (const [signal, expected] of [['SIGINT', 130], ['SIGTERM', 143]]) {
+    const child = new EventEmitter();
+    child.exitCode = null; child.signalCode = null;
+    let forwarded;
+    child.kill = value => { forwarded = value; return true; };
+    let settled = false;
+    const pending = runPostbuildChild('fixture', [], { app: '.', env: {}, spawnChild: () => child })
+      .finally(() => { settled = true; });
+    process.emit(signal);
+    assert.equal(forwarded, signal);
+    await Promise.resolve();
+    assert.equal(settled, false);
+    child.emit('close', 0, null);
+    assert.equal(await pending, expected);
+  }
+});
+
+test('interrupted sitemap holds locks until close and never starts pagefind', async () => {
+  const app = mkdtempSync(join(tmpdir(), 'puck-docs-postbuild-interrupt-'));
+  const context = { app, nextManifest, config: { distDir: '.next', experimental: { lockDistDir: true } }, env: process.env };
+  const child = new EventEmitter();
+  child.exitCode = null; child.signalCode = null;
+  child.kill = () => true;
+  const started = [];
+  let onStart;
+  const ready = new Promise(resolvePromise => { onStart = resolvePromise; });
+  const spawnChild = (_node, args) => { started.push(args[0]); onStart(); return child; };
+  let pending;
+  try {
+    pending = runDocsPostbuild({ context, sitemap: 'sitemap', pagefind: 'pagefind', spawnChild });
+    await ready;
+    process.emit('SIGTERM');
+    await assert.rejects(acquireNextOutputLocks({ appDir: app, nextManifest, distDir: '.next', lockingEnabled: true, production: false }), /busy/i);
+    assert.equal(native.lockfileTryAcquireSync(join(app, '.next', 'lock')), null);
+    child.emit('close', 0, null);
+    assert.equal(await pending, 143);
+    assert.deepEqual(started, ['sitemap']);
+    const release = await acquireNextOutputLocks({ appDir: app, nextManifest, distDir: '.next', lockingEnabled: true });
+    release();
+  } finally {
+    child.emit('close', 0, null);
+    if (pending) await pending.catch(() => {});
+    rmSync(app, { recursive: true, force: true });
+  }
+});
 async function waitFor(path) {
   const deadline = Date.now() + 15000;
   while (!existsSync(path) && Date.now() < deadline) await pause();

@@ -111,7 +111,7 @@ jobs:
           git rev-parse HEAD > .build/cityos-ci/source-sha.txt
           sha256sum pnpm-lock.yaml packages/core/package.json packages/core/cityos.ts packages/core/cityos-registration.ts packages/core/tsup.config.ts apps/demo/tsconfig.json .github/workflows/ci.yml .github/scripts/run-recorded-check.sh > .build/cityos-ci/input-sha256.txt
           sha256sum package.json pnpm-workspace.yaml .pnpmfile.cjs config/dependencies/tooling-api.json config/toolchains/node-typescript.json scripts/toolchains/read-default-catalog.cjs scripts/toolchains/tooling-api.cjs scripts/toolchains/installed-compatibility.test.mjs packages/eslint-config-custom/package.json packages/eslint-config-custom/index.mjs >> .build/cityos-ci/input-sha256.txt
-          sha256sum scripts/toolchains/build-core.mjs scripts/toolchains/core-build.test.mjs >> .build/cityos-ci/input-sha256.txt
+          sha256sum scripts/toolchains/build-core.mjs scripts/toolchains/core-build.test.mjs scripts/toolchains/build-package.mjs scripts/toolchains/build-package.test.mjs packages/field-contentful/package.json packages/plugin-emotion-cache/package.json packages/plugin-heading-analyzer/package.json >> .build/cityos-ci/input-sha256.txt
           node --version > .build/cityos-ci/node-version.txt
           node scripts/toolchains/run-pinned-pnpm.mjs --version > .build/cityos-ci/pnpm-version.txt
       - name: Install dependencies

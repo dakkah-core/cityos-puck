@@ -23,8 +23,9 @@ export function resolveDocsPostbuildEntries(app) {
 export function runPostbuildChild(entry, args, { app, env, spawnChild = spawn }) {
   return new Promise((resolvePromise, reject) => {
     const child = spawnChild(process.execPath, [entry, ...args], { cwd: app, env, stdio: 'inherit', windowsHide: true });
-    let failure;
+    let failure, interrupted;
     const forward = signal => {
+      interrupted ??= signal;
       try { if (child.exitCode === null && child.signalCode === null) child.kill(signal); }
       catch (error) { failure ??= error; }
     };
@@ -37,18 +38,18 @@ export function runPostbuildChild(entry, args, { app, env, spawnChild = spawn })
     child.once('close', (code, signal) => {
       cleanup();
       if (failure) reject(failure);
-      else resolvePromise(code ?? (signal === 'SIGINT' ? 130 : 143));
+      else resolvePromise(interrupted ? (interrupted === 'SIGINT' ? 130 : 143) : code ?? (signal === 'SIGINT' ? 130 : 143));
     });
   });
 }
 
 // Do not call a package script here: that would recurse through postbuild.
 // Hold both Next locks until both readers and public-output writers finish.
-export async function runDocsPostbuild({ context, sitemap, pagefind }) {
+export async function runDocsPostbuild({ context, sitemap, pagefind, spawnChild }) {
   const { app, nextManifest, config, env } = context;
   const release = await acquireNextOutputLocks({ appDir: app, nextManifest, distDir: config.distDir, lockingEnabled: config.experimental?.lockDistDir === true });
   try {
-    const childContext = { app, env: { ...env, PUCK_DOCS_NEXT_DIST_DIR: config.distDir } };
+    const childContext = { app, env: { ...env, PUCK_DOCS_NEXT_DIST_DIR: config.distDir }, spawnChild };
     const status = await runPostbuildChild(sitemap, [], childContext);
     if (status !== 0) return status;
     return await runPostbuildChild(pagefind, ['--site', join(config.distDir, 'server', 'app'), '--output-path', 'public/_pagefind'], childContext);
