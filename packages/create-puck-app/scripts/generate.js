@@ -3,19 +3,36 @@
 import fs from "fs";
 import path from "path";
 import { dirname } from "path";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 import { loadBootstrapCatalog } from "../bootstrap-catalog.js";
 import { copyRecipes } from "./copy-recipes.mjs";
 import { copyNextToolchain } from "./copy-next-toolchain.mjs";
 import { verifyGeneratedTypesPolicy } from "../../../scripts/toolchains/verify-generated-types-policy.mjs";
 
-const arguments_ = process.argv.slice(2);
-if (arguments_.length > 1 || (arguments_.length === 1 && arguments_[0] !== "--catalog-only")) {
-  throw new Error("Usage: generate.js [--catalog-only]");
+export function copyBootstrapCatalog({ repositoryRoot, packageRoot }) {
+  verifyGeneratedTypesPolicy(path.join(repositoryRoot, "scripts/toolchains/generated-types-policy"));
+  const sourceDirectory = path.join(repositoryRoot, "packages/create-puck-app/scripts");
+  // Ship one coherent copy of the canonical inputs, including their patches.
+  for (const [source, target] of [
+    ["../../../pnpm-workspace.yaml", "dependency-catalog.yaml"],
+    ["../../../package.json", "workspace-package.json"],
+    ["../../../config/toolchains/node-typescript.json", "node-typescript.json"],
+    ["../../core/package.json", "core-package.json"],
+    ["../../../config/dependencies/plugin-ai.json", "plugin-ai-contract.json"],
+  ]) {
+    fs.copyFileSync(path.resolve(sourceDirectory, source), path.join(packageRoot, target));
+  }
+  const base = new URL("../", pathToFileURL(path.join(sourceDirectory, "generate.js")));
+  const bootstrap = loadBootstrapCatalog(base);
+  for (const [selector, patch] of Object.entries(bootstrap.patches)) {
+    const relative = bootstrap.workspace.patchedDependencies[selector];
+    const target = path.join(packageRoot, relative);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.copyFileSync(patch, target);
+  }
 }
-const catalogOnly = arguments_[0] === "--catalog-only";
 
-const run = async () => {
+const run = async (catalogOnly) => {
   verifyGeneratedTypesPolicy();
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
@@ -34,24 +51,8 @@ const run = async () => {
     return;
   }
 
-  // Ship canonical inputs with the standalone CLI. No independently pinned versions.
   const packagePath = path.join(__dirname, "..");
-  for (const [source, target] of [
-    ["../../../pnpm-workspace.yaml", "dependency-catalog.yaml"],
-    ["../../../package.json", "workspace-package.json"],
-    ["../../../config/toolchains/node-typescript.json", "node-typescript.json"],
-    ["../../core/package.json", "core-package.json"],
-    ["../../../config/dependencies/plugin-ai.json", "plugin-ai-contract.json"],
-  ]) {
-    fs.copyFileSync(path.resolve(__dirname, source), path.join(packagePath, target));
-  }
-  const bootstrap = loadBootstrapCatalog();
-  for (const [selector, patch] of Object.entries(bootstrap.patches)) {
-    const relative = bootstrap.workspace.patchedDependencies[selector];
-    const target = path.join(packagePath, relative);
-    fs.mkdirSync(path.dirname(target), { recursive: true });
-    fs.copyFileSync(patch, target);
-  }
+  copyBootstrapCatalog({ repositoryRoot: path.resolve(__dirname, "../../.."), packageRoot: packagePath });
 
   if (catalogOnly) {
     console.log("Copied canonical bootstrap catalog inputs only.");
@@ -68,4 +69,10 @@ const run = async () => {
   console.log(`Copied ${counter} files into generator!`);
 };
 
-await run();
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const arguments_ = process.argv.slice(2);
+  if (arguments_.length > 1 || (arguments_.length === 1 && arguments_[0] !== "--catalog-only")) {
+    throw new Error("Usage: generate.js [--catalog-only]");
+  }
+  await run(arguments_[0] === "--catalog-only");
+}

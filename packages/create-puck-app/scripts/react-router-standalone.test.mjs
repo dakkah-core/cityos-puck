@@ -7,9 +7,11 @@ import { dirname, join, relative, resolve, sep } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { copyRecipes } from './copy-recipes.mjs';
+import { copyBootstrapCatalog } from './generate.js';
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 const packageRoot = join(repository, 'packages/create-puck-app');
+const generatedCatalogInputs = new Set(['dependency-catalog.yaml', 'core-package.json', 'workspace-package.json', 'node-typescript.json', 'plugin-ai-contract.json', 'patches']);
 const require = createRequire(join(packageRoot, 'package.json'));
 const handlebars = require('handlebars');
 const recipes = ['react-router', 'react-router-ai'];
@@ -27,7 +29,8 @@ test('React Router recipes survive template generation, packing and fresh typege
     const packedSource = join(workspace, 'packages/create-puck-app');
     mkdirSync(source, { recursive: true });
     mkdirSync(dirname(packedSource), { recursive: true });
-    cpSync(packageRoot, packedSource, { recursive: true, filter: path => !path.split(/[\\/]/u).includes('node_modules') && relative(packageRoot, path).split(sep)[0] !== 'templates' });
+    cpSync(packageRoot, packedSource, { recursive: true, filter: path => !path.split(/[\\/]/u).includes('node_modules') && relative(packageRoot, path).split(sep)[0] !== 'templates' && !generatedCatalogInputs.has(relative(packageRoot, path).split(sep)[0]) });
+    assert.equal(existsSync(join(packedSource, 'dependency-catalog.yaml')), false);
     const templatePath = join(packedSource, 'templates');
     mkdirSync(templatePath, { recursive: true });
     for (const file of ['.gitignore', '.npmignore']) copyFileSync(join(packageRoot, 'templates', file), join(templatePath, file));
@@ -46,6 +49,7 @@ test('React Router recipes survive template generation, packing and fresh typege
     copyRecipes({ recipePath: source, templatePath });
     writeFileSync(join(workspace, 'package.json'), '{"private":true}\n');
     cpSync(join(repository, 'pnpm-workspace.yaml'), join(workspace, 'pnpm-workspace.yaml'));
+    copyBootstrapCatalog({ repositoryRoot: repository, packageRoot: packedSource });
     const destination = join(temp, 'archives');
     mkdirSync(destination);
     run(process.execPath, [join(repository, 'scripts/toolchains/run-pinned-pnpm.mjs'), 'pack', '--ignore-scripts', '--pack-destination', destination], packedSource);
