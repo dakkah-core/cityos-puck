@@ -23,7 +23,7 @@ function existingExecutableInput(t, value) {
   });
 }
 
-function browserIO(t, { memory = () => 100 * MB, navigationError } = {}) {
+function browserIO(t, { memory = () => 100 * MB, navigationError, geometryError } = {}) {
   const launches = [];
   const browsers = [];
   const pages = [];
@@ -34,6 +34,8 @@ function browserIO(t, { memory = () => 100 * MB, navigationError } = {}) {
       selectors: [],
       mouseCalls: [],
       navigations: [],
+      geometryWaits: [],
+      disposedGeometryHandles: 0,
       mouse: Object.fromEntries(
         ["move", "down", "up"].map((method) => [
           method,
@@ -43,6 +45,16 @@ function browserIO(t, { memory = () => 100 * MB, navigationError } = {}) {
       async goto(...args) {
         page.navigations.push(args);
         if (navigationError) throw navigationError;
+      },
+      async waitForFunction(callback, selector, options) {
+        assert.deepEqual(options, { timeout: 30_000 });
+        page.geometryWaits.push(selector);
+        if (geometryError) throw geometryError;
+        const box = await page.evaluate(callback, selector);
+        return {
+          async jsonValue() { return box; },
+          async dispose() { page.disposedGeometryHandles += 1; },
+        };
       },
       async evaluate(callback, selector) {
         assert.equal(typeof callback, "function");
@@ -188,6 +200,8 @@ test("the CLI input drives the complete unchanged scenario matrix and metrics", 
     assert.equal(page.navigations[0][0], tests[index].url);
     assert.equal(tests[index].url.endsWith(`disableIframe=${index >= 2}`), true);
     assert.equal(page.selectors.length, depth * 2);
+    assert.equal(page.geometryWaits.length, depth * 2);
+    assert.equal(page.disposedGeometryHandles, depth * 2);
     assert.equal(page.selectors.at(-2), '[data-testid="drawer-item:Heading"]');
     assert.equal(page.selectors.at(-1), root + " [data-puck-dropzone]".repeat(depth - 1));
     assert.equal(page.mouseCalls.filter(([method]) => method === "down").length, depth);
@@ -270,6 +284,15 @@ test("missing/nonfinite memory samples cannot become successful results", async 
   }
   assert.equal(io.browsers.length, 4);
   assert.ok(io.browsers.every((browser) => browser.closed === 1));
+});
+
+test("geometry readiness timeout propagates and closes the browser without dragging", async (t) => {
+  terminalAndClockIO(t);
+  const failure = new Error("visible dropzone readiness timed out");
+  const io = browserIO(t, { geometryError: failure });
+  await assert.rejects(main(["--executable-path", executablePath]), (error) => error === failure);
+  assert.equal(io.pages[0].mouseCalls.length, 0);
+  assert.equal(io.browsers[0].closed, 1);
 });
 
 test("the real CLI exits nonzero with actionable missing-path guidance", () => {

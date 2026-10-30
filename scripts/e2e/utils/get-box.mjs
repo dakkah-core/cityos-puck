@@ -5,8 +5,7 @@
  * @param {*} selector
  * @returns
  */
-export const getBox = async (page, targetSelector) =>
-  await page.evaluate((selector) => {
+const boxInDocument = (selector) => {
     function getFrameElement(el) {
       const refWindow = el?.ownerDocument.defaultView;
 
@@ -64,6 +63,7 @@ export const getBox = async (page, targetSelector) =>
 
     if (el) {
       const rect = el.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return null;
 
       return {
         x: rect.left,
@@ -77,6 +77,7 @@ export const getBox = async (page, targetSelector) =>
       if (!el) return null;
 
       const rect = el.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return null;
       const frameRect = frameEl.getBoundingClientRect();
       const transform = getFrameTransform(frameEl);
 
@@ -89,4 +90,20 @@ export const getBox = async (page, targetSelector) =>
     }
 
     return null;
-  }, targetSelector);
+};
+
+export const getBox = async (page, targetSelector) =>
+  await page.evaluate(boxInDocument, targetSelector);
+
+// A loaded demo document can precede its iframe portal and nested dropzones.
+// Wait for the actual visible geometry rather than sleeping or using a fallback.
+export const waitForBox = async (page, targetSelector) => {
+  const handle = await page.waitForFunction(boxInDocument, targetSelector, {
+    timeout: 30_000,
+  });
+  try {
+    return await handle.jsonValue();
+  } finally {
+    await handle.dispose();
+  }
+};

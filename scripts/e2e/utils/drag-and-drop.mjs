@@ -1,4 +1,4 @@
-import { getBox } from "./get-box.mjs";
+import { waitForBox } from "./get-box.mjs";
 import { pause } from "./pause.mjs";
 
 const TIME_PREFIX = 0;
@@ -9,8 +9,8 @@ export async function dragAndDrop(
   targetSelector,
   position
 ) {
-  const sourceBox = await getBox(page, sourceSelector);
-  const targetBox = await getBox(page, targetSelector);
+  const sourceBox = await waitForBox(page, sourceSelector);
+  const targetBox = await waitForBox(page, targetSelector);
 
   // Simulate drag and drop
   await page.mouse.move(

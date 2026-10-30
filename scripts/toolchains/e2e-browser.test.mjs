@@ -24,7 +24,9 @@ const executableSha256 = createHash("sha256").update(readFileSync(executablePath
 const dropzones = `<div data-testid="dropzone:root:default-zone" data-puck-dropzone>${
   "<div data-puck-dropzone>".repeat(5)
 }<span>Local browser contract fixture</span>${"</div>".repeat(5)}</div>`;
-const style = `<style>body{margin:0} [data-puck-dropzone]{box-sizing:border-box;padding:12px;min-width:200px;min-height:160px}
+// The editor's drag handles do not select text. Match that boundary in this
+// static fixture so repeated drags cannot become Chromium's native text drag.
+const style = `<style>body{margin:0;user-select:none} [data-puck-dropzone]{box-sizing:border-box;padding:12px;min-width:200px;min-height:160px}
 [data-testid="dropzone:root:default-zone"]{position:absolute;left:40px;top:40px;width:500px;height:600px}
 [data-testid^="drawer-item:"]{position:absolute;left:16px;width:140px;height:40px;background:#ddd}
 [data-testid="drawer-item:Heading"]{top:40px}[data-testid="drawer-item:Grid"]{top:100px}</style>`;
@@ -34,13 +36,14 @@ const server = createServer((request, response) => {
   const url = new URL(request.url, "http://127.0.0.1");
   response.setHeader("Content-Type", "text/html; charset=utf-8");
   if (url.pathname === "/frame") {
-    response.end(`<!doctype html>${style}${dropzones}${events}`);
+    const delayed = url.searchParams.has("delayed");
+    response.end(`<!doctype html>${style}${delayed ? '<div id="delayed-root"></div><script>window.mountDelayedSmokeRoot=()=>{document.querySelector("#delayed-root").innerHTML=' + JSON.stringify(dropzones) + ';};</script>' : dropzones}${events}`);
     return;
   }
   const framed = url.searchParams.get("disableIframe") !== "true";
   response.end(`<!doctype html>${style}<script>window.__smokeEvents=[];</script>
 <div data-testid="drawer-item:Heading">Heading</div><div data-testid="drawer-item:Grid">Grid</div>
-${framed ? '<iframe id="preview-frame" src="/frame" style="position:absolute;left:300px;top:120px;width:800px;height:800px;border:0;transform:scale(.5);transform-origin:0 0"></iframe>' : '<section style="position:absolute;left:260px;top:80px">' + dropzones + "</section>"}${events}`);
+${framed ? '<iframe id="preview-frame" src="/frame' + (url.searchParams.has("delayed") ? '?delayed=true' : '') + '" style="position:absolute;left:300px;top:120px;width:800px;height:800px;border:0;transform:scale(.5);transform-origin:0 0"></iframe>' : '<section style="position:absolute;left:260px;top:80px">' + dropzones + "</section>"}${events}`);
 });
 
 test("selected Chrome executes the four real-helper browser contracts", { timeout: 90_000 }, async (t) => {
@@ -83,6 +86,21 @@ test("selected Chrome executes the four real-helper browser contracts", { timeou
         }
       });
     }
+    await t.test("iframe drag waits for the real delayed root dropzone", async () => {
+      const { browser, page } = await setup(origin + "/test/edit?disableIframe=false&delayed=true", { executablePath });
+      try {
+        assert.equal(await getBox(page, '[data-testid="dropzone:root:default-zone"]'), null);
+        await page.evaluate(() => {
+          setTimeout(() => document.querySelector("#preview-frame").contentWindow.mountDelayedSmokeRoot(), 250);
+        });
+        await scenarios[0].run(page);
+        const evidence = await page.evaluate(() => window.__smokeEvents);
+        assert.equal(evidence.filter(({ type }) => type === "mousedown").length, 2);
+        assert.equal(evidence.filter(({ type }) => type === "mouseup").length, 2);
+      } finally {
+        await browser.close();
+      }
+    });
   } finally {
     server.closeAllConnections();
     await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
