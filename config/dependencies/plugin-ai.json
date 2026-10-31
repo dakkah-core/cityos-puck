@@ -4,9 +4,9 @@
   "registryTarball": "https://registry.npmjs.org/@puckeditor/plugin-ai/-/plugin-ai-0.8.3.tgz",
   "registryIntegrity": "sha512-t4ptEhF9dEj3ohjrfIBmIECVqBQ6ba2wDEtc3Ztzwv+a/zkS3JcHLCng8sykGfpxcOgzhybs+NA0QrHmBjhAiA==",
   "corePackage": "@cityos-core/puck",
-  "coreSourceVersion": "0.23.0-cityos.4",
+  "coreSourceVersion": "0.24.0-cityos.1",
   "patchPath": "patches/@puckeditor__plugin-ai@0.8.3.patch",
-  "patchSha256": "66bf3084a98242af25522f1c061a4868c04fd405e88174199b0c676b6ce1b811",
+  "patchSha256": "2e2359b3255659242b5baf512a50616d9d16400af71165a5ef891b500ba3b855",
   "runtimeCoreExports": [
     "AutoField",
     "FieldLabel",
@@ -25,7 +25,7 @@
   "files": {
     "package.json": {
       "originalSha256": "1c6d466d5e36833d12426bb9a1a49f43cae68d14e7e28813127a3d6a5afff418",
-      "adaptedSha256": "872807af3d0f5d25d0e513937f9c552c7a2021f089073d96a6e1a627d7ffd81c"
+      "adaptedSha256": "c23153904d31d8a7160c2b0b61a727c17e99021d95b49fc4723bb566e4f12702"
     },
     "dist/index.js": {
       "originalSha256": "a08391223bc45c230290a09b90e46a83514d0c54a8687731f488b53e0dd20feb",

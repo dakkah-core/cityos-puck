@@ -525,7 +525,7 @@ packageExtensionsChecksum: sha256-mtr2G7f8QM7+T4w8CLWJ50avBiiTcBGvFW39Uhuky38=
 pnpmfileChecksum: sha256-A3570EjhbBQ0sUWDX3rd2xY3TmwzYoAJLpSWP7hItOc=
 
 patchedDependencies:
-  '@puckeditor/plugin-ai@0.8.3': 66bf3084a98242af25522f1c061a4868c04fd405e88174199b0c676b6ce1b811
+  '@puckeditor/plugin-ai@0.8.3': 2e2359b3255659242b5baf512a50616d9d16400af71165a5ef891b500ba3b855
   eslint-plugin-react@7.37.5: ef624639893d93e168d7981e361d90ab3b773084908840e9d8cc44e56a287323
   nextra-theme-docs@4.6.1: 09cd7f30b34f4c1d358ad563b21cce03f417ae8e9eed42c6ba83833dea51ea7f
   twoslash@0.3.9: 883b8126b9474608f51c11c35a50390d46a1eaf5f9e0b8251d909e7cba41559e
@@ -1125,7 +1125,7 @@ importers:
         version: link:../../packages/core
       '@puckeditor/plugin-ai':
         specifier: 'catalog:'
-        version: 0.8.3(patch_hash=66bf3084a98242af25522f1c061a4868c04fd405e88174199b0c676b6ce1b811)(@cityos-core/puck@packages+core)(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)(zod@4.6.7)
+        version: 0.8.3(patch_hash=2e2359b3255659242b5baf512a50616d9d16400af71165a5ef891b500ba3b855)(@cityos-core/puck@packages+core)(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)(zod@4.6.7)
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
@@ -1214,7 +1214,7 @@ importers:
         version: link:../../packages/core
       '@puckeditor/plugin-ai':
         specifier: 'catalog:'
-        version: 0.8.3(patch_hash=66bf3084a98242af25522f1c061a4868c04fd405e88174199b0c676b6ce1b811)(@cityos-core/puck@packages+core)(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)(zod@4.6.7)
+        version: 0.8.3(patch_hash=2e2359b3255659242b5baf512a50616d9d16400af71165a5ef891b500ba3b855)(@cityos-core/puck@packages+core)(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)(zod@4.6.7)
       '@react-router/node':
         specifier: 'catalog:'
         version: 8.5.0(react-router@8.5.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)
@@ -2938,7 +2938,7 @@ packages:
   '@puckeditor/plugin-ai@0.8.3':
     resolution: {integrity: sha512-t4ptEhF9dEj3ohjrfIBmIECVqBQ6ba2wDEtc3Ztzwv+a/zkS3JcHLCng8sykGfpxcOgzhybs+NA0QrHmBjhAiA==}
     peerDependencies:
-      '@cityos-core/puck': 0.23.0-cityos.4
+      '@cityos-core/puck': 0.24.0-cityos.1
       react: ^18.0.0 || ^19.0.0
 
   '@radix-ui/primitive@1.2.0':
@@ -11082,7 +11082,7 @@ snapshots:
 
   '@puckeditor/cloud-client@0.8.3': {}
 
-  '@puckeditor/plugin-ai@0.8.3(patch_hash=66bf3084a98242af25522f1c061a4868c04fd405e88174199b0c676b6ce1b811)(@cityos-core/puck@packages+core)(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)(zod@4.6.7)':
+  '@puckeditor/plugin-ai@0.8.3(patch_hash=2e2359b3255659242b5baf512a50616d9d16400af71165a5ef891b500ba3b855)(@cityos-core/puck@packages+core)(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)(zod@4.6.7)':
     dependencies:
       '@cityos-core/puck': link:packages/core
       ai: 6.0.309(zod@4.6.7)
