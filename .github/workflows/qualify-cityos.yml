@@ -47,6 +47,12 @@ jobs:
           git -c credential.helper= -C .build/cms-host fetch --no-tags --depth=1 origin "$CMS_COMMIT"
           git -C .build/cms-host checkout --detach FETCH_HEAD
           [[ "$(git -C .build/cms-host rev-parse HEAD)" == "$CMS_COMMIT" ]]
+      - name: Check generated-type policy against the pinned CMS source
+        shell: bash
+        run: |
+          cd .build/cms-host
+          source scripts/toolchains/select-workspace-node.sh
+          node scripts/toolchains/project-generated-types-policy.mjs "$GITHUB_WORKSPACE" --check
       - name: Install native pnpm
         id: pnpm
         uses: pnpm/setup@v3

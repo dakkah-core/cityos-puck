@@ -9,7 +9,7 @@ import {
   readdirSync,
   writeFileSync,
 } from "node:fs";
-import { join, resolve } from "node:path";
+import { delimiter, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { assertNodeVersion, repositoryRoot } from "../toolchains/toolchain.mjs";
 import { readDefaultCatalog } from "../toolchains/catalog-version.mjs";
@@ -80,6 +80,69 @@ export const qualifiedPackArguments = (packageRoot, archive) => [
   archive,
 ];
 
+// Resolve the pinned CMS runtime through its own selector implementation. This
+// starts no shell and uses the current Node only as the selector's bootstrap.
+export function assertCmsPolicyParity(cmsRoot, puckRoot) {
+  const cms = resolve(cmsRoot),
+    puck = resolve(puckRoot);
+  const catalog = JSON.parse(
+    readFileSync(join(cms, "config/toolchains/node-typescript.json"), "utf8"),
+  );
+  assert.match(catalog.node, /^\d+\.\d+\.\d+$/u, "Invalid CMS runtime catalog");
+  const options = {
+    cwd: cms,
+    encoding: "utf8",
+    windowsHide: true,
+    shell: false,
+    timeout: 30_000,
+  };
+  const selection = spawnSync(
+    process.execPath,
+    [join(cms, "scripts/toolchains/resolve-workspace-node.mjs")],
+    options,
+  );
+  assert.ok(
+    !selection.error && !selection.signal && selection.status === 0,
+    "CMS runtime selection failed",
+  );
+  const directory = String(selection.stdout ?? "").trim();
+  assert.ok(
+    isAbsolute(directory) && !/[\r\n]/u.test(directory),
+    "Invalid CMS runtime selection",
+  );
+  const node = join(
+    directory,
+    process.platform === "win32" ? "node.exe" : "node",
+  );
+  const version = spawnSync(node, ["--version"], options);
+  assert.ok(
+    !version.error &&
+      !version.signal &&
+      version.status === 0 &&
+      String(version.stdout ?? "").trim() === `v${catalog.node}`,
+    "CMS runtime mismatch",
+  );
+  const checked = spawnSync(
+    node,
+    [
+      join(cms, "scripts/toolchains/project-generated-types-policy.mjs"),
+      puck,
+      "--check",
+    ],
+    {
+      ...options,
+      env: {
+        ...process.env,
+        PATH: `${directory}${delimiter}${process.env.PATH ?? ""}`,
+      },
+    },
+  );
+  assert.ok(
+    !checked.error && !checked.signal && checked.status === 0,
+    "CMS generated-type policy parity check failed",
+  );
+}
+
 export async function qualify(cmsRoot, cmsCommit, root = repositoryRoot) {
   assertNodeVersion();
   const json = (path) => JSON.parse(readFileSync(join(root, path), "utf8"));
@@ -102,6 +165,7 @@ export async function qualify(cmsRoot, cmsCommit, root = repositoryRoot) {
     "",
     "CMS qualification requires a clean pinned checkout",
   );
+  assertCmsPolicyParity(cmsRoot, root);
   const hostIdentity = {
     repository: "dakkah-core/dakkah-cityos-cms",
     repositoryUrl: manifest.consumerRepository,
