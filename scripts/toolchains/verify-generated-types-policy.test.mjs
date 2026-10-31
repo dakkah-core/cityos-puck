@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -15,6 +15,7 @@ const expected = [
   'generated-types-policy.mjs', 'generated-types-policy.d.mts', 'generated-types-policy.test.mjs',
   'generated-type-check-evidence.mjs', 'generated-type-check-evidence.d.mts', 'generated-type-check-evidence.test.mjs',
   'resolution-namespace-v2.mjs', 'resolution-namespace-v2.d.mts', 'resolution-namespace-v2.test.mjs',
+  'compiler-input-evidence.cjs',
 ];
 
 test('a Windows-style checkout preserves byte-hashed projection inputs', () => {
@@ -57,6 +58,15 @@ test('verifies the projection independently and rejects a modified output', () =
     cpSync(join(dirname(fileURLToPath(import.meta.url)), 'generated-types-policy'), root, { recursive: true });
     writeFileSync(join(root, 'generated-types-policy.mjs'), 'modified');
     assert.throws(() => verifyGeneratedTypesPolicy(root), /stale/);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('rejects a redirected projection directory even when bytes match', () => {
+  const root = mkdtempSync(join(tmpdir(), 'puck-projection-redirect-'));
+  try {
+    const link = join(root, 'policy');
+    symlinkSync(projection, link, process.platform === 'win32' ? 'junction' : 'dir');
+    assert.throws(() => verifyGeneratedTypesPolicy(link), /redirected|invalid/i);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 

@@ -10,6 +10,10 @@ import { verifyGeneratedTypesPolicy } from './verify-generated-types-policy.mjs'
 import { acquireNextOutputLocks, preflightNextNativeBinding } from './next-output-lock.mjs';
 import { assertNextProductionMembership, createNextTypecheckOverlay } from './next-typecheck-overlay.mjs';
 
+// Bind the verified observer before application configuration can run and
+// replace a CommonJS cache entry. Reverify its bytes at the check boundary.
+verifyGeneratedTypesPolicy();
+const { collectCompilerResolutionMetadata, captureCompilerInputs } = createRequire(import.meta.url)('./generated-types-policy/compiler-input-evidence.cjs');
 const here = dirname(fileURLToPath(import.meta.url));
 const sha = value => createHash('sha256').update(value).digest('hex');
 export function digestNextConfigInputs(fields) {
@@ -204,9 +208,20 @@ function parseCompilerMembership(stdout) {
 }
 // This checks a stability fence; it does not establish all resolution reads.
 export function checkNextDiagnosticMembership({ list, check, validate }) {
+  // Verify the projected adapter before executing it; standalone templates
+  // carry the same bytes and need no sibling CMS checkout.
+  verifyGeneratedTypesPolicy();
+  const observeMetadata = files => {
+    const metadata = collectCompilerResolutionMetadata(process.cwd(), files);
+    return metadata.length ? captureCompilerInputs(process.cwd(), metadata).sha256 : sha('[]');
+  };
   const before = parseCompilerMembership(requireSuccess(list(), 'TypeScript membership'));
   validate(before);
   const digests = before.map(file => sha(readFileSync(file)));
+  const physical = before.map(file => membershipKey(realpathSync(file)));
+  const resolution = observeMetadata(before);
+  const unchanged = files => files.every((file, index) => sha(readFileSync(file)) === digests[index]
+    && membershipKey(realpathSync(file)) === physical[index]);
   const checked = check();
   const diagnostic = parseCompilerMembership(requireSuccess(checked, 'TypeScript check'));
   const same = files => before.length === files.length && before.every((file, index) => membershipKey(file) === membershipKey(files[index]));
@@ -214,7 +229,10 @@ export function checkNextDiagnosticMembership({ list, check, validate }) {
   const after = parseCompilerMembership(requireSuccess(list(), 'TypeScript membership'));
   if (!same(after)) throw new Error('Next compiler membership changed during check');
   if (after.some((file, index) => sha(readFileSync(file)) !== digests[index])) throw new Error('TypeScript inputs changed during check');
-  return checked;
+  if (after.some((file, index) => membershipKey(realpathSync(file)) !== physical[index]) || observeMetadata(after) !== resolution) throw new Error('Next resolution metadata changed or compiler input retargeted during check');
+  return { ...checked, verifyResolutionCurrentness() {
+    if (!unchanged(before) || observeMetadata(before) !== resolution) throw new Error('Next resolution metadata changed or compiler input retargeted after check');
+  } };
 }
 function assertSafeOutputTree(app, distDir) {
   const carrier = join(app, 'next-env.d.ts');
@@ -340,7 +358,7 @@ export async function runNextTypecheck({ appDir = process.cwd(), catalogPath, lo
     overlayDirectory = mkdtempSync(join(app, distDir, 'puck-typecheck-'));
     const overlayPath = join(overlayDirectory, 'tsconfig.json');
     writeFileSync(overlayPath, JSON.stringify(overlay));
-    checkNextDiagnosticMembership({
+    const checked = checkNextDiagnosticMembership({
       list: () => command(compiler, ['-p', overlayPath, '--listFilesOnly', '--pretty', 'false'], app, env),
       check: () => command(compiler, ['-p', overlayPath, '--noEmit', '--listFiles', '--listFilesOnly', 'false', '--pretty', 'false'], app, env),
       validate(memberFiles) {
@@ -361,6 +379,7 @@ export async function runNextTypecheck({ appDir = process.cwd(), catalogPath, lo
     try { finalObservation = JSON.parse(readFileSync(finalAttestation, 'utf8')); }
     catch { throw new Error('Final effective Next configuration observation is invalid'); }
     if (JSON.stringify(finalObservation) !== JSON.stringify({ effectiveConfig, customRoutes })) throw new Error('Final effective Next configuration observation differs');
+    checked.verifyResolutionCurrentness();
     for (const [ref, digest] of Object.entries(outputs)) {
       const file = resolve(app, ref);
       if (!regular(file) || sha(readFileSync(file)) !== digest) throw new Error(`Generated output changed during checking: ${ref}`);

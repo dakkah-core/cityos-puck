@@ -30,3 +30,14 @@ test('standalone React Router templates retain their own typegen and compiler', 
     assert.equal(template.scripts.typecheck, 'react-router typegen && tsc --noEmit', recipe);
   }
 });
+
+test('React Router build cache includes the server consumed by start', () => {
+  const turbo = readJson('turbo.json');
+  for (const recipe of ['react-router', 'react-router-ai']) {
+    const manifest = readJson('recipes', recipe, 'package.json');
+    const build = turbo.tasks[`${manifest.name}#build`];
+    assert.match(manifest.scripts.start, /build\/server\/index\.js/u);
+    assert.ok(build.outputs.includes('build/**'), recipe);
+    assert.deepEqual(build.dependsOn, turbo.tasks.build.dependsOn, recipe);
+  }
+});

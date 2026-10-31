@@ -42,6 +42,14 @@
       "cache": false,
       "dependsOn": ["^build", "@cityos-core/puck#build"]
     },
+    "react-router-recipe#build": {
+      "dependsOn": ["^build", "@cityos-core/puck#build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"]
+    },
+    "react-router-ai-recipe#build": {
+      "dependsOn": ["^build", "@cityos-core/puck#build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"]
+    },
     "@cityos-core/puck#build": {
       "dependsOn": [
         "^build"

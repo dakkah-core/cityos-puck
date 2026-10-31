@@ -17,6 +17,7 @@ const pendingProjectionFiles = [
   'scripts/toolchains/generated-types-policy/resolution-namespace-v2.mjs',
   'scripts/toolchains/generated-types-policy/resolution-namespace-v2.d.mts',
   'scripts/toolchains/generated-types-policy/resolution-namespace-v2.test.mjs',
+  'scripts/toolchains/generated-types-policy/compiler-input-evidence.cjs',
 ];
 const pendingRecipeAttributes = ['recipes/next/.gitattributes', 'recipes/next-ai/.gitattributes'];
 const run = (command, args, cwd) => {

@@ -66,6 +66,8 @@ test('packed Next recipes contain a working standalone typecheck toolchain', { t
       assert.equal(existsSync(join(template, '.next')), false);
       assert.equal(existsSync(join(template, 'next-env.d.ts')), false);
       assert.ok(existsSync(join(template, 'gitignore')), recipe);
+      assert.deepEqual(readFileSync(join(template, '.cityos/next-typecheck/generated-types-policy/compiler-input-evidence.cjs')),
+        readFileSync(join(repository, 'scripts/toolchains/generated-types-policy/compiler-input-evidence.cjs')));
       assert.deepEqual(readFileSync(join(template, '.gitattributes')), readFileSync(join(repository, 'recipes', recipe, '.gitattributes')));
       const icon = recipe === 'next' ? 'app/favicon.ico' : 'public/favicon.ico';
       assert.deepEqual(readFileSync(join(template, icon)), readFileSync(join(repository, 'recipes', recipe, icon)));

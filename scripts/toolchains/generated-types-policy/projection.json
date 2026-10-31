@@ -45,6 +45,11 @@
       "path": "resolution-namespace-v2.test.mjs",
       "sourceSha256": "ab1d479cfc3c01933c1b9c3689b8ee83f16e0e95672b4ee949f6b590312adcd3",
       "outputSha256": "ab1d479cfc3c01933c1b9c3689b8ee83f16e0e95672b4ee949f6b590312adcd3"
+    },
+    {
+      "path": "compiler-input-evidence.cjs",
+      "sourceSha256": "6bea561ad7fd9032c464e3a4f1cd6dcccea95346207ef4699c1d856ba190101d",
+      "outputSha256": "6bea561ad7fd9032c464e3a4f1cd6dcccea95346207ef4699c1d856ba190101d"
     }
   ]
 }

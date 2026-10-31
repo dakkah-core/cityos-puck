@@ -23,6 +23,7 @@ const requiredTests = [
   "scripts/toolchains/next-typecheck-overlay.test.mjs",
   "scripts/toolchains/next-typegen-fixture.test.mjs",
   "scripts/toolchains/react-router-typecheck-cache.test.mjs",
+  "scripts/toolchains/turbo-generated-types-execution.test.mjs",
   "packages/create-puck-app/scripts/copy-recipes.test.mjs",
   "packages/create-puck-app/scripts/clean-pack.test.mjs",
   "packages/create-puck-app/scripts/next-standalone.test.mjs",
