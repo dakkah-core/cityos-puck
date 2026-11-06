@@ -60,3 +60,6 @@ packages/create-puck-app/patches/
 # Incremental TypeScript build metadata is local to each app.
 /apps/docs/*.tsbuildinfo
 /apps/demo/*.tsbuildinfo
+
+# Local CityOS tooling state
+/.cityos/
