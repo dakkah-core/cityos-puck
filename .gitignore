@@ -56,3 +56,7 @@ packages/create-puck-app/core-package.json
 packages/create-puck-app/node-typescript.json
 packages/create-puck-app/plugin-ai-contract.json
 packages/create-puck-app/patches/
+
+# Incremental TypeScript build metadata is local to each app.
+/apps/docs/*.tsbuildinfo
+/apps/demo/*.tsbuildinfo
