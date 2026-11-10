@@ -1226,6 +1226,35 @@
       ]
     },
     {
+      "id": "cityos-permission-resolution-order",
+      "purpose": "Keep asynchronous editor permission decisions ordered across refreshes and await root resolution during component-data processing.",
+      "invariant": "An older in-flight result cannot overwrite a newer permission decision; controls with a dynamic resolver remain disabled until a decision for their current inputs exists, and each loading operation settles independently.",
+      "paths": [
+        "packages/core/components/AutoField/__tests__/root-permissions.spec.tsx",
+        "packages/core/store/slices/__tests__/permissions-races.spec.tsx"
+      ],
+      "tests": [
+        "packages/core/components/AutoField/__tests__/root-permissions.spec.tsx",
+        "packages/core/store/slices/__tests__/permissions.spec.tsx",
+        "packages/core/store/slices/__tests__/permissions-races.spec.tsx"
+      ]
+    },
+    {
+      "id": "cityos-fields-edit-order",
+      "purpose": "Keep asynchronous field edits ordered for each item and root.",
+      "invariant": "Concurrent field edits resolve in input order against the preceding committed data, and obsolete item or root edits do not commit after an observed replacement.",
+      "paths": [
+        "packages/core/components/AutoField/fields/ArrayField/index.tsx",
+        "packages/core/components/AutoField/fields/ObjectField/index.tsx",
+        "packages/core/components/Puck/components/Fields/edit-alerts.ts",
+        "packages/core/components/Puck/components/Fields/on-change.ts",
+        "packages/core/components/Puck/components/Fields/__tests__/on-change.spec.tsx"
+      ],
+      "tests": [
+        "packages/core/components/Puck/components/Fields/__tests__/on-change.spec.tsx"
+      ]
+    },
+    {
       "id": "upstream-main-20261029",
       "purpose": "Integrate Puck 0.24.0 field tabs, collapsible field groups and optional drag handles with current CityOS docs and compiler boundaries.",
       "invariant": "CityOS registration, localization, permission revocation and root constraints survive upstream layouts; executable docs and packaged release notes follow their canonical source inputs.",

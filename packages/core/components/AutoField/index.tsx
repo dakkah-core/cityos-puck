@@ -83,7 +83,11 @@ function AutoFieldInternal<
   const overrides = useAppStore((s) => s.overrides);
   const readOnly = useAppStore(useShallow((s) => s.selectedItem?.readOnly));
   const canEdit = useAppStore(
-    (s) => s.permissions.getPermissions({ item: s.selectedItem }).edit,
+    (s) =>
+      s.permissions.getPermissions({
+        item: s.selectedItem,
+        root: !s.selectedItem,
+      }).edit,
   );
   const dictionary = useAppStore((s) => s.dictionary);
   const editorContext = useMemo(

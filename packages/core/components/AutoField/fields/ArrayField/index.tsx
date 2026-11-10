@@ -32,6 +32,12 @@ import { isFieldVisible } from "../../../../lib/fields/is-field-visible";
 import { SubField } from "../../subfield";
 import { setDeep } from "../../../../lib/data/set-deep";
 import { useMessage } from "../../../../lib/use-message";
+import { deepEqual } from "fast-equals";
+import {
+  getPendingFieldValue,
+  withArrayFieldChange,
+  withArrayItemChange,
+} from "../../../Puck/components/Fields/on-change";
 
 const getClassName = getClassNameFactory("ArrayField", styles);
 const getClassNameItem = getClassNameFactory("ArrayFieldItem", styles);
@@ -104,7 +110,11 @@ const ArrayFieldItemInternal = ({
   });
 
   const canEdit = useAppStore(
-    (s) => s.permissions.getPermissions({ item: s.selectedItem }).edit,
+    (s) =>
+      s.permissions.getPermissions({
+        item: s.selectedItem,
+        root: !s.selectedItem,
+      }).edit,
   );
 
   const hasVisibleFields = useMemo(() => {
@@ -205,6 +215,17 @@ export const ArrayField = ({
 
   const getValue = () => getDeep(fieldStore.getState(), name) ?? [];
 
+  // A previous commit may have synchronized an older value while another
+  // array edit is still queued. Read the pending value for user actions.
+  const getLatestValue = () => {
+    const topLevelName = name.split(/[.[]/, 1)[0];
+    const pending = getPendingFieldValue(appStoreApi, topLevelName);
+    if (pending) {
+      fieldStore.setState({ [topLevelName]: pending.value });
+    }
+    return getValue();
+  };
+
   const getArrayState = useCallback(() => {
     const { state } = appStoreApi.getState();
 
@@ -291,6 +312,8 @@ export const ArrayField = ({
   const isDraggingAny = !!draggedItem;
 
   const valueRef = useRef<object[]>([]);
+  const dragStartValueRef = useRef<object[]>([]);
+  const movesRef = useRef<Array<{ source: number; target: number }>>([]);
 
   useEffect(() => {
     valueRef.current = getValue();
@@ -342,13 +365,23 @@ export const ArrayField = ({
   }, []);
 
   const updateValue = useCallback(
-    (newValue: object[]) => {
+    (
+      newValue: object[],
+      update: (value: object[]) => object[],
+      expected: object[],
+    ) => {
       const newArrayState = regenerateArrayState(newValue);
 
       setUi(mapArrayStateToUi(newArrayState), false);
-      onChange(newValue);
+      withArrayFieldChange(
+        appStoreApi,
+        name,
+        update,
+        () => onChange(newValue),
+        expected,
+      );
     },
-    [regenerateArrayState, setUi, mapArrayStateToUi, onChange],
+    [regenerateArrayState, setUi, mapArrayStateToUi, onChange, appStoreApi, name],
   );
 
   // Reset array state if number of items changes
@@ -377,7 +410,9 @@ export const ArrayField = ({
     >
       <SortableProvider
         onDragStart={(id) => {
-          valueRef.current = getValue();
+          valueRef.current = getLatestValue();
+          dragStartValueRef.current = valueRef.current;
+          movesRef.current = [];
 
           setDraggedItem(id);
 
@@ -386,7 +421,18 @@ export const ArrayField = ({
         onDragEnd={() => {
           setDraggedItem("");
 
-          onChange(valueRef.current);
+          const moves = movesRef.current;
+          withArrayFieldChange(
+            appStoreApi,
+            name,
+            (value: object[] = []) =>
+              moves.reduce(
+                (items, move) => reorder(items, move.source, move.target),
+                value,
+              ),
+            () => onChange(valueRef.current),
+            dragStartValueRef.current,
+          );
 
           // Write directly to fieldStore to prevent flicker
           const currentFieldVal = fieldStore.getState();
@@ -404,6 +450,7 @@ export const ArrayField = ({
           }
 
           const newValue = reorder(valueRef.current, move.source, move.target);
+          movesRef.current.push({ source: move.source, target: move.target });
 
           const newArrayStateItems: ItemWithId[] = reorder(
             arrayState.items,
@@ -452,16 +499,24 @@ export const ArrayField = ({
                     name={name}
                     localName={localName}
                     onChange={(val, ui, subName) => {
-                      const value = getValue();
+                      const value = getLatestValue();
 
                       const data: any = Array.from(value || [])[index] || {};
 
-                      onChange(
-                        replace(value, index, {
-                          ...data,
-                          [subName]: val,
-                        }),
-                        ui,
+                      withArrayItemChange(
+                        appStoreApi,
+                        name,
+                        value,
+                        `${name}[${index}].${subName}`,
+                        val,
+                        () =>
+                          onChange(
+                            replace(value, index, {
+                              ...data,
+                              [subName]: val,
+                            }),
+                            ui,
+                          ),
                       );
                     }}
                     onToggleExpand={(id, isExpanded) => {
@@ -488,13 +543,27 @@ export const ArrayField = ({
                             onClick={(e) => {
                               e.stopPropagation();
 
-                              const value = getValue();
+                              const value = getLatestValue();
                               const existingValue = [...(value || [])];
                               const newItem = uniqifyItem(existingValue[index]);
+                              let source = existingValue[index];
+                              let duplicate = newItem;
 
                               existingValue.splice(index, 0, newItem);
 
-                              updateValue(existingValue);
+                              updateValue(
+                                existingValue,
+                                (items = []) => {
+                                  if (!deepEqual(source, items[index])) {
+                                    source = items[index];
+                                    duplicate = uniqifyItem(source);
+                                  }
+                                  const next = [...items];
+                                  next.splice(index, 0, duplicate);
+                                  return next;
+                                },
+                                value,
+                              );
                             }}
                             title={duplicateLabel}
                           >
@@ -511,12 +580,20 @@ export const ArrayField = ({
                             onClick={(e) => {
                               e.stopPropagation();
 
-                              const value = getValue();
+                              const value = getLatestValue();
                               const existingValue = [...(value || [])];
 
                               existingValue.splice(index, 1);
 
-                              updateValue(existingValue);
+                              updateValue(
+                                existingValue,
+                                (items = []) => {
+                                  const next = [...items];
+                                  next.splice(index, 1);
+                                  return next;
+                                },
+                                value,
+                              );
                             }}
                             title={deleteLabel}
                           >
@@ -540,7 +617,7 @@ export const ArrayField = ({
               onClick={() => {
                 if (isDraggingAny) return;
 
-                const value = getValue();
+                const value = getLatestValue();
 
                 const existingValue = value || [];
 
@@ -556,7 +633,11 @@ export const ArrayField = ({
                 );
                 const newValue = [...existingValue, newItem];
 
-                updateValue(newValue);
+                updateValue(
+                  newValue,
+                  (items = []) => [...items, newItem],
+                  value,
+                );
               }}
             >
               <Plus size={21} aria-hidden="true" />

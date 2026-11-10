@@ -1,9 +1,37 @@
 import { useEffect } from "react";
 import { flattenData } from "../../lib/data/flatten-data";
-import { ComponentData, Config, Permissions, UserGenerics } from "../../types";
+import {
+  AppState,
+  ComponentData,
+  Config,
+  Permissions,
+  RootData,
+  UserGenerics,
+} from "../../types";
 import { getChanged } from "../../lib/get-changed";
 import { AppStore, useAppStoreApi } from "../";
 import { makeStatePublic } from "../../lib/data/make-state-public";
+import { toComponent } from "../../lib/data/to-component";
+import { deepEqual } from "fast-equals";
+
+// AppState is updated immutably. Reference checks avoid traversing arbitrary
+// UI metadata and component data on every resolver invocation.
+const sameAppState = (left: AppState, right: AppState) =>
+  left.data === right.data && left.ui === right.ui;
+
+// A dynamic resolver is the source of the item decision. Until it has
+// returned for the current policy, do not expose optimistic control grants.
+const unresolvedPermissions = (permissions: Permissions): Permissions =>
+  Object.fromEntries(
+    Object.keys(permissions).map((permission) => [permission, false]),
+  ) as Permissions;
+
+// Match the root shape exposed by walkAppState, including legacy unwrapped props.
+const rootPermissionItem = (root: RootData): ComponentData => {
+  const item = toComponent({ props: { ...(root.props ?? root) } });
+  if (root.readOnly) item.readOnly = root.readOnly;
+  return item;
+};
 
 type PermissionsArgs<
   UserConfig extends Config = Config,
@@ -21,19 +49,19 @@ export type GetPermissions<UserConfig extends Config = Config> = (
 type ResolvePermissions<UserConfig extends Config = Config> = (
   params?: PermissionsArgs<UserConfig>,
   force?: boolean,
-) => void;
+) => Promise<void>;
 
 export type RefreshPermissions<UserConfig extends Config = Config> = (
   params?: PermissionsArgs<UserConfig>,
   force?: boolean,
-) => void;
+) => Promise<void>;
 
 type Cache = Record<
   string,
   {
     lastPermissions: Partial<Permissions>;
     lastData: ComponentData | null;
-    lastParentId: string | null;
+    lastParentId: string | null | undefined;
   }
 >;
 
@@ -49,26 +77,80 @@ export type PermissionsSlice = {
 export const createPermissionsSlice = (
   set: (newState: Partial<AppStore>) => void,
   get: () => AppStore,
+  registerInvalidation: (invalidate: () => void) => void = () => {},
 ): PermissionsSlice => {
+  const pending = new Map<
+    string,
+    {
+      item: ComponentData;
+      parentId: string | null | undefined;
+      config: Config;
+      globalPermissions: Permissions;
+      resolver: unknown;
+      appState: AppState;
+      parent: ComponentData | null;
+      cleanup: () => void;
+      completion?: Promise<void>;
+    }
+  >();
+  // An older grant must not reappear while a newer decision is pending or
+  // after that decision fails. A successful current resolution clears it.
+  const unresolved = new Set<string>();
+  const cancelPending = (id: string) => {
+    const request = pending.get(id);
+    if (!request) return;
+    pending.delete(id);
+    // Resolution may be triggered by a synchronous store subscriber.
+    queueMicrotask(request.cleanup);
+  };
+  let policyGeneration = 0;
+  registerInvalidation(() => {
+    const obsolete = [...pending.values()];
+    pending.clear();
+    policyGeneration++;
+    // Invalidation is called by a store subscriber; clean up after the
+    // current notification instead of issuing nested store notifications.
+    queueMicrotask(() => obsolete.forEach((request) => request.cleanup()));
+  });
+  const cacheInputs = new WeakMap<
+    Cache[string],
+    {
+      config: Config;
+      globalPermissions: Permissions;
+      resolver: unknown;
+      generation: number;
+      appState: AppState;
+      parent: ComponentData | null;
+    }
+  >();
+
   const resolvePermissions: ResolvePermissions = async (params = {}, force) => {
-    const { state, permissions, config } = get();
-    const { cache, globalPermissions } = permissions;
+    const { state, config } = get();
 
     const resolvePermissionsForItem = async (
       item: ComponentData,
       force: boolean = false,
     ) => {
-      const { config, state: appState, setComponentLoading } = get();
-      const itemCache: Cache[string] | undefined = cache[item.props.id];
+      const {
+        config,
+        state: appState,
+        setComponentLoading,
+        permissions,
+      } = get();
+      const { globalPermissions } = permissions;
+      const itemCache: Cache[string] | undefined =
+        permissions.cache[item.props.id];
       const nodes = appState.indexes.nodes;
       const parentId = nodes[item.props.id]?.parentId;
       const parentNode = parentId ? nodes[parentId] : null;
       const parentData = parentNode?.data ?? null;
+      const publicState = makeStatePublic(appState);
 
       const componentConfig =
         item.type === "root" ? config.root : config.components[item.type];
 
       if (!componentConfig) {
+        cancelPending(item.props.id);
         return;
       }
 
@@ -78,59 +160,176 @@ export const createPermissionsSlice = (
       };
 
       if (componentConfig.resolvePermissions) {
+        const resolveForItem = componentConfig.resolvePermissions;
         const changed = getChanged(item, itemCache?.lastData);
-        const propsChanged = Object.values(changed).some((el) => el === true);
+        const itemChanged = !deepEqual(item, itemCache?.lastData);
         const parentChanged = itemCache?.lastParentId !== parentId;
+        const inputs = itemCache && cacheInputs.get(itemCache);
+        const inputsChanged =
+          !inputs ||
+          unresolved.has(item.props.id) ||
+          inputs.config !== config ||
+          inputs.globalPermissions !== globalPermissions ||
+          inputs.generation !== policyGeneration ||
+          !sameAppState(inputs.appState, publicState) ||
+          !deepEqual(inputs.parent, parentData) ||
+          inputs.resolver !== componentConfig.resolvePermissions;
 
-        if (propsChanged || parentChanged || force) {
-          const clearTimeout = setComponentLoading(item.props.id, true, 50);
-
-          const resolvedPermissions = await componentConfig.resolvePermissions(
-            item,
-            {
-              changed,
-              lastPermissions: itemCache?.lastPermissions || null,
-              permissions: initialPermissions,
-              appState: makeStatePublic(appState),
-              lastData: itemCache?.lastData || null,
-              parent: parentData,
-            },
-          );
-
-          const latest = get().permissions;
-
-          set({
-            permissions: {
-              ...latest,
-              cache: {
-                ...latest.cache,
-                [item.props.id]: {
-                  lastParentId: parentId,
-                  lastData: item,
-                  lastPermissions: resolvedPermissions,
-                },
-              },
-              resolvedPermissions: {
-                ...latest.resolvedPermissions,
-                [item.props.id]: resolvedPermissions,
-              },
-            },
-          });
-
-          clearTimeout();
+        const existing = pending.get(item.props.id);
+        if (
+          !force &&
+          existing?.completion &&
+          deepEqual(existing.item, item) &&
+          existing.parentId === parentId &&
+          existing.config === config &&
+          existing.globalPermissions === globalPermissions &&
+          existing.resolver === componentConfig.resolvePermissions &&
+          sameAppState(existing.appState, publicState) &&
+          deepEqual(existing.parent, parentData)
+        ) {
+          await existing.completion;
+          return;
         }
+
+        if (
+          itemChanged ||
+          parentChanged ||
+          itemCache?.lastData?.type !== item.type ||
+          inputsChanged ||
+          force
+        ) {
+          cancelPending(item.props.id);
+          unresolved.add(item.props.id);
+          const clearTimeout = setComponentLoading(item.props.id, true, 50);
+          // Loading bookkeeping notifies subscribers synchronously; a host
+          // may replace the policy during that notification.
+          const afterLoading = get();
+          if (
+            afterLoading.config !== config ||
+            afterLoading.permissions.globalPermissions !== globalPermissions ||
+            !sameAppState(makeStatePublic(afterLoading.state), publicState) ||
+            (item.type === "root"
+              ? afterLoading.config.root?.resolvePermissions
+              : afterLoading.config.components[item.type]?.resolvePermissions) !==
+              resolveForItem
+          ) {
+            clearTimeout();
+            return;
+          }
+          const request = {
+            item,
+            parentId,
+            config,
+            globalPermissions,
+            resolver: componentConfig.resolvePermissions,
+            appState: publicState,
+            parent: parentData,
+            cleanup: clearTimeout,
+            completion: undefined as Promise<void> | undefined,
+          };
+          pending.set(item.props.id, request);
+
+          const completion = (async () => {
+            try {
+              const resolvedPermissions = await resolveForItem(
+                item,
+                {
+                  changed,
+                  lastPermissions: itemCache?.lastPermissions || null,
+                  permissions: initialPermissions,
+                  appState: publicState,
+                  lastData: itemCache?.lastData || null,
+                  parent: parentData,
+                },
+              );
+
+              const latestState = get();
+              const latestParentId =
+                latestState.state.indexes.nodes[item.props.id]?.parentId;
+              const latestParent = latestParentId
+                ? latestState.state.indexes.nodes[latestParentId]?.data ?? null
+                : null;
+              if (
+                pending.get(item.props.id) !== request ||
+                latestState.config !== config ||
+                latestState.permissions.globalPermissions !== globalPermissions ||
+                latestParentId !== parentId ||
+                !deepEqual(latestParent, parentData) ||
+                !sameAppState(makeStatePublic(latestState.state), publicState) ||
+                (item.type === "root"
+                  ? latestState.config.root?.resolvePermissions
+                  : latestState.config.components[item.type]?.resolvePermissions) !==
+                  request.resolver
+              ) {
+                return;
+              }
+
+              const latest = latestState.permissions;
+              const entry = {
+                lastParentId: parentId,
+                lastData: item,
+                lastPermissions: resolvedPermissions,
+              };
+              cacheInputs.set(entry, {
+                config,
+                globalPermissions,
+                resolver: componentConfig.resolvePermissions,
+                generation: policyGeneration,
+                appState: publicState,
+                parent: parentData,
+              });
+
+              unresolved.delete(item.props.id);
+              set({
+                permissions: {
+                  ...latest,
+                  cache: {
+                    ...latest.cache,
+                    [item.props.id]: entry,
+                  },
+                  resolvedPermissions: {
+                    ...latest.resolvedPermissions,
+                    [item.props.id]: resolvedPermissions,
+                  },
+                },
+              });
+            } finally {
+              if (pending.get(item.props.id) === request) {
+                pending.delete(item.props.id);
+              }
+              clearTimeout();
+            }
+          })();
+          request.completion = completion;
+          await completion;
+        } else {
+          // Returning to the accepted input must supersede a different
+          // pending input, even though no new resolver needs to run.
+          const request = pending.get(item.props.id);
+          if (
+            request &&
+            (!deepEqual(request.item, item) ||
+              request.parentId !== parentId ||
+              request.config !== config ||
+              request.globalPermissions !== globalPermissions ||
+              !sameAppState(request.appState, publicState) ||
+              !deepEqual(request.parent, parentData) ||
+              request.resolver !== componentConfig.resolvePermissions)
+          ) {
+            cancelPending(item.props.id);
+          }
+        }
+      } else {
+        cancelPending(item.props.id);
       }
     };
 
     const resolvePermissionsForRoot = (force = false) => {
       const { state: appState } = get();
 
-      resolvePermissionsForItem(
+      return resolvePermissionsForItem(
         // Shim the root data in by conforming to component data shape
-        {
-          type: "root",
-          props: { ...appState.data.root.props, id: "root" },
-        },
+        rootPermissionItem(appState.data.root),
         force,
       );
     };
@@ -142,18 +341,20 @@ export const createPermissionsSlice = (
       await resolvePermissionsForItem(item, force);
     } else if (type) {
       // Resolve specific type
-      flattenData(state, config)
-        .filter((item) => item.type === type)
-        .map(async (item) => {
-          await resolvePermissionsForItem(item, force);
-        });
+      await Promise.all(
+        flattenData(state, config)
+          .filter((item) => item.type === type)
+          .map((item) => resolvePermissionsForItem(item, force)),
+      );
     } else if (root) {
-      resolvePermissionsForRoot(force);
+      await resolvePermissionsForRoot(force);
     } else {
       // Resolve everything
-      flattenData(state, config).map(async (item) => {
-        await resolvePermissionsForItem(item, force);
-      });
+      await Promise.all(
+        flattenData(state, config).map((item) =>
+          resolvePermissionsForItem(item, force),
+        ),
+      );
     }
   };
 
@@ -171,10 +372,10 @@ export const createPermissionsSlice = (
     },
     resolvedPermissions: {},
     getPermissions: ({ item, type, root } = {}) => {
-      const { config, permissions } = get();
+      const { config, permissions, state } = get();
       const { globalPermissions, resolvedPermissions } = permissions;
 
-      if (item) {
+      if (item && item.type !== "root") {
         const componentConfig = config.components[item.type];
 
         const initialPermissions = {
@@ -182,12 +383,31 @@ export const createPermissionsSlice = (
           ...componentConfig?.permissions,
         };
 
-        const resolvedForItem = resolvedPermissions[item.props.id];
+        const entry = permissions.cache[item.props.id];
+        const inputs = entry && cacheInputs.get(entry);
+        const parentId = state.indexes.nodes[item.props.id]?.parentId;
+        const parent = parentId ? state.indexes.nodes[parentId]?.data ?? null : null;
+        const resolvedForItem =
+          componentConfig?.resolvePermissions &&
+          !unresolved.has(item.props.id) &&
+          entry?.lastData?.type === item.type &&
+          deepEqual(entry.lastData, item) &&
+          entry.lastParentId === parentId &&
+          inputs?.config === config &&
+          inputs.globalPermissions === globalPermissions &&
+          inputs.generation === policyGeneration &&
+          sameAppState(inputs.appState, makeStatePublic(state)) &&
+          deepEqual(inputs.parent, parent) &&
+          inputs.resolver === componentConfig.resolvePermissions
+            ? resolvedPermissions[item.props.id]
+            : undefined;
 
         return (
           resolvedForItem
-            ? { ...globalPermissions, ...resolvedForItem }
-            : initialPermissions
+            ? { ...initialPermissions, ...resolvedForItem }
+            : componentConfig?.resolvePermissions
+              ? unresolvedPermissions(initialPermissions as Permissions)
+              : initialPermissions
         ) as Permissions;
       } else if (type) {
         const componentConfig = config.components[type];
@@ -196,7 +416,7 @@ export const createPermissionsSlice = (
           ...globalPermissions,
           ...componentConfig?.permissions,
         } as Permissions;
-      } else if (root) {
+      } else if (root || item?.type === "root") {
         const rootConfig = config.root;
 
         const initialPermissions = {
@@ -204,12 +424,34 @@ export const createPermissionsSlice = (
           ...rootConfig?.permissions,
         } as Permissions;
 
-        const resolvedForItem = resolvedPermissions["root"];
+        const entry = permissions.cache["root"];
+        const inputs = entry && cacheInputs.get(entry);
+        // A root candidate can be resolved before it is committed. Callers
+        // must be able to inspect that exact decision while the committed root
+        // still has different props.
+        const rootItem = item?.type === "root"
+          ? item
+          : rootPermissionItem(state.data.root);
+        const resolvedForItem =
+          rootConfig?.resolvePermissions &&
+          !unresolved.has("root") &&
+          entry?.lastData?.type === "root" &&
+          deepEqual(entry.lastData.props, rootItem.props) &&
+          deepEqual(entry.lastData.readOnly, rootItem.readOnly) &&
+          inputs?.config === config &&
+          inputs.globalPermissions === globalPermissions &&
+          inputs.generation === policyGeneration &&
+          sameAppState(inputs.appState, makeStatePublic(state)) &&
+          inputs.resolver === rootConfig.resolvePermissions
+            ? resolvedPermissions["root"]
+            : undefined;
 
         return (
           resolvedForItem
-            ? { ...globalPermissions, ...resolvedForItem }
-            : initialPermissions
+            ? { ...initialPermissions, ...resolvedForItem }
+            : rootConfig?.resolvePermissions
+              ? unresolvedPermissions(initialPermissions)
+              : initialPermissions
         ) as Permissions;
       }
 
@@ -224,27 +466,43 @@ export const useRegisterPermissionsSlice = (
   appStore: ReturnType<typeof useAppStoreApi>,
   globalPermissions: Partial<Permissions>,
 ) => {
+  const refresh = () => {
+    void appStore.getState().permissions.resolvePermissions().catch(() => {
+      // Resolver errors may contain host data. Do not expose their contents.
+      console.error("Puck could not resolve editor permissions.");
+    });
+  };
+
   useEffect(() => {
     const { permissions } = appStore.getState();
     const { globalPermissions: existingGlobalPermissions } = permissions;
-    appStore.setState({
-      permissions: {
-        ...permissions,
-        globalPermissions: {
-          ...existingGlobalPermissions,
-          ...globalPermissions,
-        } as Permissions,
-      },
-    });
+    const nextGlobalPermissions = {
+      ...existingGlobalPermissions,
+      ...globalPermissions,
+    } as Permissions;
+    if (!deepEqual(existingGlobalPermissions, nextGlobalPermissions)) {
+      appStore.setState({
+        permissions: { ...permissions, globalPermissions: nextGlobalPermissions },
+      });
+    }
 
-    permissions.resolvePermissions();
+    refresh();
   }, [globalPermissions]);
 
   useEffect(() => {
     return appStore.subscribe(
       (s) => s.state.data,
       () => {
-        appStore.getState().permissions.resolvePermissions();
+        refresh();
+      },
+    );
+  }, []);
+
+  useEffect(() => {
+    return appStore.subscribe(
+      (s) => s.state.ui,
+      () => {
+        refresh();
       },
     );
   }, []);
@@ -253,7 +511,7 @@ export const useRegisterPermissionsSlice = (
     return appStore.subscribe(
       (s) => s.config,
       () => {
-        appStore.getState().permissions.resolvePermissions();
+        refresh();
       },
     );
   }, []);

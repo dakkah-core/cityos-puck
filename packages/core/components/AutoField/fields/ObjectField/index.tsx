@@ -1,8 +1,13 @@
 import { MoreVertical } from "lucide-react";
 import { FieldPropsInternal } from "../..";
 import { useNestedFieldContext } from "../../context";
-import { useAppStore } from "../../../../store";
+import { useAppStore, useAppStoreApi } from "../../../../store";
 import { getDeep } from "../../../../lib/data/get-deep";
+import { setDeep } from "../../../../lib/data/set-deep";
+import {
+  getPendingFieldValue,
+  withObjectFieldChange,
+} from "../../../Puck/components/Fields/on-change";
 import { SubField } from "../../subfield";
 import { useFieldStoreApi } from "../../store";
 import {
@@ -29,9 +34,14 @@ export const ObjectField = ({
   const { localName = name } = useNestedFieldContext();
 
   const fieldStore = useFieldStoreApi();
+  const appStore = useAppStoreApi();
 
   const canEdit = useAppStore(
-    (s) => s.permissions.getPermissions({ item: s.selectedItem }).edit,
+    (s) =>
+      s.permissions.getPermissions({
+        item: s.selectedItem,
+        root: !s.selectedItem,
+      }).edit,
   );
 
   const fieldTypeOverrides = useAppStore((s) => s.overrides.fieldTypes);
@@ -84,6 +94,14 @@ export const ObjectField = ({
               field={subField}
               forceReadOnly={!canEdit}
               onChange={(subValue, ui, subName) => {
+                const topLevelName = name.split(/[.[]/, 1)[0];
+                const pending = getPendingFieldValue(appStore, topLevelName);
+                // A prior commit can have synchronized an older object into the
+                // field store while a later edit is still queued. Restore only
+                // this field before parent object/array handlers read it.
+                if (pending) {
+                  fieldStore.setState({ [topLevelName]: pending.value });
+                }
                 const value = getValue();
 
                 // Skip onChange if value hasn't changed
@@ -91,7 +109,14 @@ export const ObjectField = ({
                   return;
                 }
 
-                onChange({ ...value, [subName]: subValue }, ui);
+                const nextValue = { ...value, [subName]: subValue };
+                withObjectFieldChange(
+                  appStore,
+                  `${name}.${subName}`,
+                  subValue,
+                  () => onChange(nextValue, ui),
+                );
+                fieldStore.setState(setDeep(fieldStore.getState(), name, nextValue));
               }}
             />
           </FieldGroupItemInternal>

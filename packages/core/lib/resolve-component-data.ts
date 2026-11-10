@@ -25,7 +25,7 @@ export const resolveComponentData = async <
   config: Config,
   metadata: Metadata = {},
   onResolveStart?: (item: T) => void,
-  onResolveEnd?: (item: T) => void,
+  onResolveEnd?: (item: T) => void | Promise<void>,
   trigger: ResolveDataTrigger = "replace",
   parent: ComponentData | null = null,
   root: RootData = { props: {} },
@@ -127,7 +127,7 @@ export const resolveComponentData = async <
   );
 
   if (shouldRunResolver && onResolveEnd) {
-    onResolveEnd(resolvedItem);
+    await onResolveEnd(resolvedItem);
   }
 
   cacheStore.lastChange[id] = {

@@ -1,0 +1,835 @@
+import { act, renderHook, waitFor } from "@testing-library/react";
+import { createAppStore } from "../../";
+import { ComponentData, Permissions } from "../../../types";
+import { useRegisterPermissionsSlice } from "../permissions";
+import { walkAppState } from "../../../lib/data/walk-app-state";
+
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  let reject!: (reason: Error) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
+
+const item = (id: string, value = "a") => ({
+  type: "Example",
+  props: { id, value },
+});
+
+function subject(
+  resolver: (
+    data: Omit<ComponentData, "type">,
+  ) => Partial<Permissions> | Promise<Partial<Permissions>>,
+) {
+  const store = createAppStore();
+  store.setState({
+    config: {
+      components: {
+        Example: { render: () => <div />, resolvePermissions: resolver },
+      },
+    },
+  });
+  return store;
+}
+
+const resolveItem = async (
+  store: ReturnType<typeof createAppStore>,
+  data: ComponentData,
+) => {
+  await store.getState().permissions.resolvePermissions({ item: data });
+};
+
+const refreshItem = async (
+  store: ReturnType<typeof createAppStore>,
+  data: ComponentData,
+) => {
+  await store.getState().permissions.refreshPermissions({ item: data });
+};
+
+const refreshRoot = async (store: ReturnType<typeof createAppStore>) => {
+  await store.getState().permissions.refreshPermissions({ root: true });
+};
+
+describe("permission resolution concurrency", () => {
+  it("waits for a forced current-item refresh before returning its decision", async () => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValueOnce({ edit: true }).mockReturnValueOnce(pending.promise);
+    const store = subject(resolver);
+    const current = item("one");
+    await resolveItem(store, current);
+    const refresh = refreshItem(store, current);
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    const authorization = resolveItem(store, current);
+    expect(resolver).toHaveBeenCalledTimes(2);
+    pending.resolve({ edit: false });
+    await Promise.all([refresh, authorization]);
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+  });
+
+  it("does not revive an old grant after a forced refresh fails", async () => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest.fn()
+      .mockReturnValueOnce({ edit: true })
+      .mockReturnValueOnce(pending.promise)
+      .mockReturnValueOnce({ edit: true });
+    const store = subject(resolver);
+    const current = item("one");
+    await resolveItem(store, current);
+    const refresh = refreshItem(store, current);
+    const rejection = expect(refresh).rejects.toThrow("refresh failed");
+    pending.reject(new Error("refresh failed"));
+    await rejection;
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    await resolveItem(store, current);
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(true);
+  });
+
+  it("keeps an old grant disabled when the refresh being awaited is superseded", async () => {
+    const old = deferred<Partial<Permissions>>();
+    const latest = deferred<Partial<Permissions>>();
+    const resolver = jest.fn()
+      .mockReturnValueOnce({ edit: true })
+      .mockReturnValueOnce(old.promise)
+      .mockReturnValueOnce(latest.promise);
+    const store = subject(resolver);
+    const current = item("one");
+    await resolveItem(store, current);
+    const oldRefresh = refreshItem(store, current);
+    const authorization = resolveItem(store, current);
+    const latestRefresh = refreshItem(store, current);
+    old.resolve({ edit: true });
+    await Promise.all([oldRefresh, authorization]);
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    latest.resolve({ edit: false });
+    await latestRefresh;
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+  });
+
+
+  it.each(["item", "root"])("re-resolves when only %s read-only metadata changes", async (kind) => {
+    const resolver = jest.fn().mockReturnValue({ edit: true });
+    const store = subject(resolver);
+    if (kind === "root") {
+      store.setState({ config: { components: {}, root: { resolvePermissions: resolver } } });
+    }
+    const first: ComponentData = {
+      type: kind === "root" ? "root" : "Example",
+      props: { id: kind === "root" ? "root" : "one", value: "a" },
+      readOnly: { value: false },
+    };
+    const second: ComponentData = { ...first, readOnly: { value: true } };
+    await resolveItem(store, first);
+    await resolveItem(store, second);
+    expect(resolver).toHaveBeenCalledTimes(2);
+    expect(store.getState().permissions.getPermissions({ item: second }).edit).toBe(true);
+  });
+
+  it("does not start a stale resolver if loading notification replaces its policy", async () => {
+    const resolver = jest.fn().mockReturnValue({ edit: true });
+    const store = subject(resolver);
+    const cleanup = jest.fn();
+    store.setState({
+      setComponentLoading: () => {
+        store.setState({ config: { components: {} } });
+        return cleanup;
+      },
+    });
+    await resolveItem(store, item("one"));
+    expect(resolver).not.toHaveBeenCalled();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+
+  it("shares an identical in-flight resolution between non-forced callers", async () => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValue(pending.promise);
+    const store = subject(resolver);
+    const current = item("one");
+    const first = resolveItem(store, current);
+    const second = resolveItem(store, current);
+    expect(resolver).toHaveBeenCalledTimes(1);
+    pending.resolve({ edit: true });
+    await Promise.all([first, second]);
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(true);
+  });
+
+  it("propagates a shared in-flight resolution failure to every caller", async () => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValue(pending.promise);
+    const store = subject(resolver);
+    const current = item("one");
+    const first = resolveItem(store, current);
+    const second = resolveItem(store, current);
+    const results = Promise.allSettled([first, second]);
+    pending.reject(new Error("shared failure"));
+    const settled = await results;
+    expect(resolver).toHaveBeenCalledTimes(1);
+    expect(settled.map((result) => result.status)).toEqual(["rejected", "rejected"]);
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+  });
+
+  it("exposes a proposed root decision only for its resolved inputs", async () => {
+    const store = createAppStore();
+    store.setState({
+      config: {
+        components: {},
+        root: { resolvePermissions: jest.fn().mockReturnValue({ edit: true }) },
+      },
+    });
+    const proposed = { type: "root", props: { id: "root", title: "candidate" } };
+    expect(store.getState().permissions.getPermissions({ item: proposed }).edit).toBe(false);
+    await resolveItem(store, proposed);
+    expect(store.getState().permissions.getPermissions({ item: proposed }).edit).toBe(true);
+    expect(store.getState().permissions.getPermissions({ root: true }).edit).toBe(false);
+    const { state } = store.getState();
+    store.setState({ state: { ...state, ui: { ...state.ui, previewMode: "interactive" } } });
+    expect(store.getState().permissions.getPermissions({ item: proposed }).edit).toBe(false);
+  });
+
+  it("uses the same root shape after indexed all-item resolution", async () => {
+    const store = createAppStore();
+    const config = {
+      components: {},
+      root: { resolvePermissions: jest.fn().mockReturnValue({ edit: true }) },
+    };
+    const { state } = store.getState();
+    store.setState({
+      config,
+      state: walkAppState(
+        { ...state, data: { ...state.data, root: { props: { title: "root" } } } },
+        config,
+      ),
+    });
+    await store.getState().permissions.resolvePermissions();
+    expect(store.getState().permissions.getPermissions({ root: true }).edit).toBe(true);
+  });
+
+  it("keeps item and root controls disabled until their first decisions resolve", async () => {
+    const itemPending = deferred<Partial<Permissions>>();
+    const rootPending = deferred<Partial<Permissions>>();
+    const store = subject(jest.fn().mockReturnValue(itemPending.promise));
+    store.setState({
+      config: {
+        ...store.getState().config,
+        root: { resolvePermissions: jest.fn().mockReturnValue(rootPending.promise) },
+      },
+    });
+    const current = item("pending");
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    expect(store.getState().permissions.getPermissions({ root: true }).edit).toBe(false);
+    const itemCall = resolveItem(store, current);
+    const rootCall = refreshRoot(store);
+    itemPending.resolve({ edit: true });
+    rootPending.resolve({ edit: true });
+    await Promise.all([itemCall, rootCall]);
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(true);
+    expect(store.getState().permissions.getPermissions({ root: true }).edit).toBe(true);
+  });
+
+  it("does not grant controls when the first dynamic decision rejects", async () => {
+    const pending = deferred<Partial<Permissions>>();
+    const store = subject(jest.fn().mockReturnValue(pending.promise));
+    const current = item("pending");
+    const call = resolveItem(store, current);
+    const rejection = expect(call).rejects.toThrow("decision failed");
+    pending.reject(new Error("decision failed"));
+    await rejection;
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+  });
+
+  it("handles hook-triggered resolver rejection without logging resolver data", async () => {
+    const report = jest.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const store = subject(jest.fn().mockRejectedValue(new Error("sensitive detail")));
+      const current = item("pending");
+      const { state, config } = store.getState();
+      store.setState({
+        state: walkAppState(
+          { ...state, data: { ...state.data, content: [current] } },
+          config,
+        ),
+      });
+      const hook = renderHook(() => useRegisterPermissionsSlice(store, {}));
+      await waitFor(() => expect(report).toHaveBeenCalledWith("Puck could not resolve editor permissions."));
+      expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+      hook.unmount();
+    } finally {
+      report.mockRestore();
+    }
+  });
+
+  it("re-resolves a child after its parent props change", async () => {
+    const resolver = jest.fn().mockReturnValue({ edit: false });
+    const store = subject(resolver);
+    const config = {
+      components: {
+        ...store.getState().config.components,
+        Container: { fields: { children: { type: "slot" as const } }, render: () => <div /> },
+      },
+    };
+    const child = item("child");
+    const parent = (label: string) => ({
+      type: "Container",
+      props: { id: "parent", label, children: [child] },
+    });
+    const setParent = (label: string) => {
+      const { state } = store.getState();
+      store.setState({
+        config,
+        state: walkAppState(
+          { ...state, data: { ...state.data, content: [parent(label)] } },
+          config,
+        ),
+      });
+    };
+    setParent("old");
+    await resolveItem(store, child);
+    setParent("new");
+    await resolveItem(store, child);
+    expect(resolver).toHaveBeenCalledTimes(2);
+    expect(resolver.mock.calls[1][1].parent.props.label).toBe("new");
+  });
+
+  it("discards a pending result after the resolver's editor state changes", async () => {
+    const old = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValueOnce(old.promise).mockReturnValueOnce({ edit: false });
+    const store = subject(resolver);
+    const current = item("one");
+    const oldCall = refreshItem(store, current);
+    const { state } = store.getState();
+    store.setState({ state: { ...state, ui: { ...state.ui, previewMode: "interactive" } } });
+    await resolveItem(store, current);
+    old.resolve({ edit: true });
+    await oldCall;
+    expect(resolver).toHaveBeenCalledTimes(2);
+    expect(resolver.mock.calls[1][1].appState.ui.previewMode).toBe("interactive");
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+  });
+
+  it("does not expose an old grant while changed editor state is unresolved", async () => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValueOnce({ edit: true }).mockReturnValueOnce(pending.promise);
+    const store = subject(resolver);
+    const current = item("one");
+    await resolveItem(store, current);
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(true);
+    const { state } = store.getState();
+    store.setState({ state: { ...state, ui: { ...state.ui, previewMode: "interactive" } } });
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    const refresh = refreshItem(store, current);
+    pending.resolve({ edit: false });
+    await refresh;
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+  });
+
+  it("refreshes permissions when mounted editor UI state changes", async () => {
+    const resolver = jest.fn().mockReturnValue({ edit: false });
+    const store = subject(resolver);
+    const { state, config } = store.getState();
+    store.setState({
+      state: walkAppState(
+        { ...state, data: { ...state.data, content: [item("one")] } },
+        config,
+      ),
+    });
+    const globals = {};
+    const hook = renderHook(() => useRegisterPermissionsSlice(store, globals));
+    await waitFor(() => expect(resolver).toHaveBeenCalled());
+    const previousCalls = resolver.mock.calls.length;
+    act(() => store.getState().setUi({ previewMode: "interactive" }));
+    await waitFor(() => expect(resolver.mock.calls.length).toBeGreaterThan(previousCalls));
+    expect(resolver.mock.calls[resolver.mock.calls.length - 1][1].appState.ui.previewMode).toBe("interactive");
+    hook.unmount();
+  });
+
+  it("preserves a resolved denial across equivalent global-permission props", async () => {
+    const resolver = jest.fn().mockReturnValue({ edit: false });
+    const store = subject(resolver);
+    const { state, config } = store.getState();
+    const current = item("one");
+    store.setState({
+      state: walkAppState(
+        { ...state, data: { ...state.data, content: [current] } },
+        config,
+      ),
+    });
+    const hook = renderHook(
+      ({ permissions }) => useRegisterPermissionsSlice(store, permissions),
+      { initialProps: { permissions: {} } },
+    );
+    await waitFor(() => expect(store.getState().permissions.resolvedPermissions.one).toEqual({ edit: false }));
+    const calls = resolver.mock.calls.length;
+    hook.rerender({ permissions: {} });
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    expect(resolver).toHaveBeenCalledTimes(calls);
+    hook.unmount();
+  });
+
+  it.each(["type", "all"])("waits for every item in a %s refresh", async (scope) => {
+    const first = deferred<Partial<Permissions>>();
+    const second = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValueOnce(first.promise).mockReturnValueOnce(second.promise);
+    const store = subject(resolver);
+    const { state, config } = store.getState();
+    store.setState({
+      state: walkAppState(
+        { ...state, data: { ...state.data, content: [item("one"), item("two")] } },
+        config,
+      ),
+    });
+
+    let completed = false;
+    const call = store.getState().permissions
+      .refreshPermissions(scope === "type" ? { type: "Example" } : {})
+      .then(() => { completed = true; });
+    first.resolve({ edit: false });
+    await Promise.resolve();
+    expect(completed).toBe(false);
+    second.resolve({ edit: false });
+    await call;
+    expect(completed).toBe(true);
+    expect(resolver).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not reuse a decision after the component resolver is removed", async () => {
+    const store = subject(jest.fn().mockResolvedValue({ edit: true }));
+    const current = item("one");
+    await resolveItem(store, current);
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(true);
+
+    store.setState({
+      config: {
+        components: { Example: { render: () => <div />, permissions: { edit: false } } },
+      },
+    });
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+  });
+
+  it("does not reuse a root decision after its resolver is replaced", async () => {
+    const store = createAppStore();
+    const resolvePermissions = jest.fn().mockResolvedValue({ edit: true });
+    store.setState({ config: { components: {}, root: { resolvePermissions } } });
+    await refreshRoot(store);
+    expect(store.getState().permissions.getPermissions({ root: true }).edit).toBe(true);
+
+    store.setState({
+      config: {
+        components: {},
+        root: {
+          permissions: { edit: false },
+          resolvePermissions: jest.fn().mockResolvedValue({ edit: false }),
+        },
+      },
+    });
+    expect(store.getState().permissions.getPermissions({ root: true }).edit).toBe(false);
+  });
+
+  it("does not let an old decision override changed static permissions", async () => {
+    const store = subject(jest.fn().mockResolvedValue({ edit: true }));
+    const current = item("one");
+    await resolveItem(store, current);
+    const previous = store.getState().config.components.Example;
+    store.setState({
+      config: {
+        components: { Example: { ...previous, permissions: { edit: false } } },
+      },
+    });
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+  });
+
+  it("does not revive a cached decision when a prior config reference returns", async () => {
+    const store = subject(jest.fn().mockResolvedValue({ edit: false }));
+    const current = item("one");
+    await resolveItem(store, current);
+    const original = store.getState().config;
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    store.setState({ config: { components: {} } });
+    store.setState({ config: original });
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+  });
+
+  it("discards a pending result when its resolver changes in place", async () => {
+    const pending = deferred<Partial<Permissions>>();
+    const store = subject(jest.fn().mockReturnValue(pending.promise));
+    const current = item("one");
+    const call = refreshItem(store, current);
+    const component = store.getState().config.components.Example;
+    component.permissions = { edit: false };
+    component.resolvePermissions = jest.fn().mockResolvedValue({ edit: false });
+
+    pending.resolve({ edit: true });
+    await call;
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    expect(store.getState().permissions.resolvedPermissions.one).toBeUndefined();
+  });
+
+  it("keeps the newer direct result and cache when an older grant finishes last", async () => {
+    const older = deferred<Partial<Permissions>>();
+    const newer = deferred<Partial<Permissions>>();
+    const resolver = jest
+      .fn()
+      .mockReturnValueOnce(older.promise)
+      .mockReturnValueOnce(newer.promise);
+    const store = subject(resolver);
+    const first = item("one", "old");
+    const second = item("one", "new");
+
+    const firstCall = resolveItem(store, first);
+    const secondCall = resolveItem(store, second);
+    newer.resolve({ edit: false });
+    await secondCall;
+    older.resolve({ edit: true });
+    await firstCall;
+
+    expect(store.getState().permissions.getPermissions({ item: second }).edit).toBe(
+      false,
+    );
+    expect(store.getState().permissions.cache.one).toMatchObject({
+      lastData: second,
+      lastPermissions: { edit: false },
+    });
+  });
+
+  it("retains an accepted denial through pending and rejected forced refreshes", async () => {
+    const older = deferred<Partial<Permissions>>();
+    const newer = deferred<Partial<Permissions>>();
+    const resolver = jest
+      .fn()
+      .mockReturnValueOnce({ edit: false })
+      .mockReturnValueOnce(older.promise)
+      .mockReturnValueOnce(newer.promise);
+    const store = subject(resolver);
+    const current = item("one");
+    await store.getState().permissions.resolvePermissions({ item: current });
+    const accepted = store.getState().permissions.cache.one;
+
+    const olderCall = refreshItem(store, current);
+    const newerCall = refreshItem(store, current);
+    const rejection = expect(newerCall).rejects.toThrow("denied refresh");
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    newer.reject(new Error("denied refresh"));
+    await rejection;
+    older.resolve({ edit: true });
+    await olderCall;
+
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    expect(store.getState().permissions.cache.one).toBe(accepted);
+    expect(resolver.mock.calls[2][1].lastPermissions).toEqual({ edit: false });
+  });
+
+  it("invalidates a different pending input when returning to the accepted input", async () => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest
+      .fn()
+      .mockReturnValueOnce({ edit: false })
+      .mockReturnValueOnce(pending.promise);
+    const store = subject(resolver);
+    const accepted = item("one", "a");
+    await store.getState().permissions.resolvePermissions({ item: accepted });
+    const pendingCall = resolveItem(store, item("one", "b"));
+    await store.getState().permissions.resolvePermissions({ item: accepted });
+    expect(resolver).toHaveBeenCalledTimes(2);
+    pending.resolve({ edit: true });
+    await pendingCall;
+    expect(store.getState().permissions.getPermissions({ item: accepted }).edit).toBe(false);
+    expect(store.getState().permissions.cache.one.lastData).toEqual(accepted);
+  });
+
+  it("does not cancel a forced refresh when the same cached input is observed", async () => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest
+      .fn()
+      .mockReturnValueOnce({ edit: true })
+      .mockReturnValueOnce(pending.promise);
+    const store = subject(resolver);
+    const current = item("one");
+    await store.getState().permissions.resolvePermissions({ item: current });
+    const refresh = refreshItem(store, current);
+    await store.getState().permissions.resolvePermissions({ item: current });
+    pending.resolve({ edit: false });
+    await refresh;
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    expect(resolver).toHaveBeenCalledTimes(2);
+  });
+
+  it("reruns when a property is removed while retaining the changed argument semantics", async () => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest
+      .fn()
+      .mockReturnValueOnce({ edit: true })
+      .mockReturnValueOnce(pending.promise);
+    const store = subject(resolver);
+    const withValue = item("one");
+    const withoutValue = { type: "Example", props: { id: "one" } };
+    await store.getState().permissions.resolvePermissions({ item: withValue });
+    const call = resolveItem(store, withoutValue);
+    expect(resolver).toHaveBeenCalledTimes(2);
+    expect(resolver.mock.calls[1][1].changed).toEqual({ id: false });
+    pending.resolve({ edit: false });
+    await call;
+    expect(store.getState().permissions.getPermissions({ item: withoutValue }).edit).toBe(false);
+  });
+
+  it("supersedes an in-flight result when hook global permissions change", async () => {
+    const older = deferred<Partial<Permissions>>();
+    const newer = deferred<Partial<Permissions>>();
+    const resolver = jest
+      .fn()
+      .mockReturnValueOnce(older.promise)
+      .mockReturnValueOnce(newer.promise);
+    const store = subject(resolver);
+    const current = item("one");
+    const state = store.getState().state;
+    store.setState({
+      state: { ...state, data: { ...state.data, content: [current] } },
+    });
+    const { rerender } = renderHook(
+      ({ edit }) => useRegisterPermissionsSlice(store, { edit }),
+      { initialProps: { edit: true } },
+    );
+    expect(resolver).toHaveBeenCalledTimes(1);
+    rerender({ edit: false });
+    expect(resolver).toHaveBeenCalledTimes(2);
+    await act(async () => {
+      newer.resolve({ edit: false });
+      await newer.promise;
+    });
+    await act(async () => {
+      older.resolve({ edit: true });
+      await older.promise;
+    });
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+  });
+
+  it("invalidates in-flight results on config and global replacement even if references are restored", async () => {
+    const configRequest = deferred<Partial<Permissions>>();
+    const globalRequest = deferred<Partial<Permissions>>();
+    const resolver = jest
+      .fn()
+      .mockReturnValueOnce(configRequest.promise)
+      .mockReturnValueOnce(globalRequest.promise);
+    const store = subject(resolver);
+    const config = store.getState().config;
+    const globals = store.getState().permissions.globalPermissions;
+    const first = item("config");
+    const second = item("global");
+    const firstCall = refreshItem(store, first);
+    store.setState({ config: { components: {} } });
+    store.setState({ config });
+    const secondCall = refreshItem(store, second);
+    store.setState({
+      permissions: {
+        ...store.getState().permissions,
+        globalPermissions: { ...globals, edit: false },
+      },
+    });
+    store.setState({
+      permissions: { ...store.getState().permissions, globalPermissions: globals },
+    });
+    configRequest.resolve({ edit: true });
+    globalRequest.resolve({ edit: true });
+    await Promise.all([firstCall, secondCall]);
+    expect(store.getState().permissions.resolvedPermissions.config).toBeUndefined();
+    expect(store.getState().permissions.resolvedPermissions.global).toBeUndefined();
+  });
+
+  it("reruns cached inputs after config or global replacement", async () => {
+    const oldResolver = jest.fn().mockReturnValue({ edit: false });
+    const newResolver = jest.fn().mockReturnValue({ delete: false });
+    const store = subject(oldResolver);
+    const current = item("one");
+    await store.getState().permissions.resolvePermissions({ item: current });
+    store.setState({
+      config: {
+        components: {
+          Example: { render: () => <div />, resolvePermissions: newResolver },
+        },
+      },
+    });
+    await store.getState().permissions.resolvePermissions({ item: current });
+    expect(newResolver).toHaveBeenCalledTimes(1);
+    const permissions = store.getState().permissions;
+    store.setState({
+      permissions: {
+        ...permissions,
+        globalPermissions: { ...permissions.globalPermissions, drag: false },
+      },
+    });
+    await store.getState().permissions.resolvePermissions({ item: current });
+    expect(newResolver).toHaveBeenCalledTimes(2);
+    expect(newResolver.mock.calls[1][1].permissions.drag).toBe(false);
+  });
+
+  it("keeps independent IDs independent and orders root refreshes", async () => {
+    const one = deferred<Partial<Permissions>>();
+    const two = deferred<Partial<Permissions>>();
+    const rootOld = deferred<Partial<Permissions>>();
+    const rootNew = deferred<Partial<Permissions>>();
+    const store = subject(
+      jest.fn().mockReturnValueOnce(one.promise).mockReturnValueOnce(two.promise),
+    );
+    store.setState({
+      config: {
+        ...store.getState().config,
+        root: {
+          resolvePermissions: jest
+            .fn()
+            .mockReturnValueOnce(rootOld.promise)
+            .mockReturnValueOnce(rootNew.promise),
+        },
+      },
+    });
+    const first = item("one");
+    const second = item("two");
+    const firstCall = refreshItem(store, first);
+    const secondCall = refreshItem(store, second);
+    const oldRootCall = refreshRoot(store);
+    const newRootCall = refreshRoot(store);
+    rootNew.resolve({ edit: false });
+    two.resolve({ edit: false });
+    await Promise.all([newRootCall, secondCall]);
+    rootOld.resolve({ edit: true });
+    one.resolve({ delete: false });
+    await Promise.all([oldRootCall, firstCall]);
+    expect(store.getState().permissions.getPermissions({ root: true }).edit).toBe(false);
+    expect(store.getState().permissions.getPermissions({ item: first }).delete).toBe(false);
+    expect(store.getState().permissions.getPermissions({ item: second }).edit).toBe(false);
+  });
+
+  it("waits for root permission refresh before resolveComponentData completes", async () => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValue(pending.promise);
+    const store = createAppStore();
+    store.setState({
+      config: {
+        components: {},
+        root: {
+          resolveData: (data) => ({ props: data.props }),
+          resolvePermissions: resolver,
+        },
+      },
+    });
+    let completed = false;
+    const call = store
+      .getState()
+      .resolveComponentData({ props: { title: "root" } }, "force")
+      .then(() => {
+        completed = true;
+      });
+    await waitFor(() => expect(resolver).toHaveBeenCalledTimes(1));
+    expect(resolver.mock.calls[0][0].props.title).toBe("root");
+    expect(completed).toBe(false);
+    pending.resolve({ edit: false });
+    await call;
+    expect(completed).toBe(true);
+    expect(store.getState().permissions.getPermissions({ root: true }).edit).toBe(false);
+  });
+
+  it("propagates a root refresh failure and cleans up component-data loading", async () => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValue(pending.promise);
+    const store = createAppStore();
+    store.setState({
+      config: {
+        components: {},
+        root: {
+          resolveData: (data) => ({ props: data.props }),
+          resolvePermissions: resolver,
+        },
+      },
+    });
+    const call = store.getState().resolveComponentData({ props: { title: "root" } }, "force");
+    const rejection = expect(call).rejects.toThrow("root failure");
+    await waitFor(() => expect(resolver).toHaveBeenCalledTimes(1));
+    pending.reject(new Error("root failure"));
+    await rejection;
+    expect(store.getState().pendingLoadTimeouts).toEqual({});
+    expect(store.getState().componentState.root?.loadingCount || 0).toBe(0);
+  });
+
+  it("cleans up parent loading when a child resolver rejects", async () => {
+    const store = createAppStore();
+    store.setState({
+      config: {
+        components: {
+          Container: {
+            fields: { children: { type: "slot" } },
+            render: () => <div />,
+            resolveData: (data) => ({ props: data.props }),
+          },
+          Child: {
+            render: () => <div />,
+            resolveData: () => Promise.reject(new Error("child failure")),
+          },
+        },
+      },
+    });
+    await expect(
+      store.getState().resolveComponentData(
+        {
+          type: "Container",
+          props: {
+            id: "parent",
+            children: [{ type: "Child", props: { id: "child" } }],
+          },
+        },
+        "force",
+      ),
+    ).rejects.toThrow("child failure");
+    expect(store.getState().pendingLoadTimeouts).toEqual({});
+    expect(store.getState().componentState.parent?.loadingCount || 0).toBe(0);
+    expect(store.getState().componentState.child?.loadingCount || 0).toBe(0);
+  });
+
+  it("releases superseded loading even when a newer refresh rejects", async () => {
+    jest.useFakeTimers();
+    try {
+      const slow = deferred<Partial<Permissions>>();
+      const fast = deferred<Partial<Permissions>>();
+      const store = subject(
+        jest.fn().mockReturnValueOnce(slow.promise).mockReturnValueOnce(fast.promise),
+      );
+      const current = item("one");
+      const slowCall = refreshItem(store, current);
+      jest.advanceTimersByTime(50);
+      expect(store.getState().componentState.one.loadingCount).toBe(1);
+      const fastCall = refreshItem(store, current);
+      const rejection = expect(fastCall).rejects.toThrow("failed");
+      fast.reject(new Error("failed"));
+      await rejection;
+      expect(store.getState().componentState.one.loadingCount).toBe(0);
+      slow.resolve({ edit: true });
+      await slowCall;
+      expect(store.getState().componentState.one.loadingCount).toBe(0);
+      expect(store.getState().pendingLoadTimeouts).toEqual({});
+      jest.advanceTimersByTime(50);
+      expect(store.getState().componentState.one.loadingCount).toBe(0);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it("does not let a superseded hanging request keep the panel loading", async () => {
+    jest.useFakeTimers();
+    try {
+      const old = deferred<Partial<Permissions>>();
+      const store = subject(
+        jest.fn().mockReturnValueOnce(old.promise).mockResolvedValueOnce({ edit: true }),
+      );
+      const current = item("one");
+      const oldCall = refreshItem(store, current);
+      jest.advanceTimersByTime(50);
+      expect(store.getState().componentState.one.loadingCount).toBe(1);
+      await refreshItem(store, current);
+      expect(store.getState().componentState.one.loadingCount).toBe(0);
+      expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(true);
+      old.resolve({ edit: false });
+      await oldCall;
+      expect(store.getState().componentState.one.loadingCount).toBe(0);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+});

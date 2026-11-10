@@ -185,11 +185,18 @@ export const Tabs = ({ value, onChange, children }: TabsProps) => {
   // Handle keyboard navigation for the tab list
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     const count = tabs.length;
+    const tabElements = Array.from(
+      e.currentTarget.querySelectorAll<HTMLElement>('[role="tab"]'),
+    );
+    const focusedIndex = tabElements.indexOf(
+      e.currentTarget.ownerDocument.activeElement as HTMLElement,
+    );
+    const currentIndex = focusedIndex === -1 ? selectedIndex : focusedIndex;
 
     // Get the new selected tab index
     const nextIndex = {
-      ArrowRight: (selectedIndex + 1) % count,
-      ArrowLeft: (selectedIndex - 1 + count) % count,
+      ArrowRight: (currentIndex + 1) % count,
+      ArrowLeft: (currentIndex - 1 + count) % count,
       Home: 0,
       End: count - 1,
     }[e.key];
@@ -202,9 +209,7 @@ export const Tabs = ({ value, onChange, children }: TabsProps) => {
     selectTab(tabs[nextIndex].value);
 
     // Update the focus to the new tab in DOM
-    e.currentTarget
-      .querySelectorAll<HTMLElement>('[role="tab"]')
-      [nextIndex]?.focus();
+    tabElements[nextIndex]?.focus();
   };
 
   const tabsContextValue: TabsContextValue = useMemo(

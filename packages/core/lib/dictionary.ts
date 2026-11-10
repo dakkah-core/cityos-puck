@@ -37,6 +37,11 @@ export const defaultDictionary = {
   "canvas-noconfig": "No configuration for {type}",
   // Fields
   "field-readonly": "Read-only",
+  "field-edit-canceled":
+    "The edit to {field} on {target} was not applied because the field or its permissions changed. Please review the field and retry.",
+  "field-edit-failed":
+    "The edit to {field} on {target} could not be applied. Please review the field and retry.",
+  "field-edit-dismiss": "Dismiss",
   "field-arrayitem-summary": "Item #{index}",
   "field-arrayitem-add": "Add item",
   "field-arrayitem-duplicate": "Duplicate",

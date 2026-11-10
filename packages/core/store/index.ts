@@ -34,6 +34,7 @@ import { createFieldsSlice, type FieldsSlice } from "./slices/fields";
 import { resolveComponentData } from "../lib/resolve-component-data";
 import { walkAppState } from "../lib/data/walk-app-state";
 import { toRoot } from "../lib/data/to-root";
+import { toComponent } from "../lib/data/to-component";
 import { generateId } from "../lib/generate-id";
 import { defaultAppState } from "./default-app-state";
 import { FieldTransforms } from "../types/API/FieldTransforms";
@@ -110,8 +111,9 @@ const defaultPageFields: Record<string, Field> = {
   title: { type: "text" },
 };
 
-export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
-  create<AppStore>()(
+export const createAppStore = (initialAppStore?: Partial<AppStore>) => {
+  let invalidatePermissionRequests = () => {};
+  const store = create<AppStore>()(
     subscribeWithSelector((set, get) => ({
       instanceId: generateId(),
       state: defaultAppState,
@@ -137,7 +139,9 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
       fields: createFieldsSlice(set, get),
       history: createHistorySlice(set, get),
       nodes: createNodesSlice(set, get),
-      permissions: createPermissionsSlice(set, get),
+      permissions: createPermissionsSlice(set, get, (invalidate) => {
+        invalidatePermissionRequests = invalidate;
+      }),
       getCurrentData: () => {
         const s = get();
 
@@ -187,12 +191,21 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
         loading: boolean = true,
         defer: number = 0,
       ) => {
-        const { setComponentState, pendingLoadTimeouts } = get();
+        const { setComponentState } = get();
 
         const loadId = generateId();
+        let started = false;
+        let finished = false;
+
+        const removeTimeout = () => {
+          const pendingLoadTimeouts = { ...get().pendingLoadTimeouts };
+          delete pendingLoadTimeouts[loadId];
+          set({ pendingLoadTimeouts });
+        };
 
         const setLoading = () => {
           const { componentState } = get();
+          started = true;
 
           setComponentState({
             ...componentState,
@@ -204,13 +217,14 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
         };
 
         const unsetLoading = () => {
+          if (finished) return;
+          finished = true;
           const { componentState } = get();
 
           clearTimeout(timeout);
+          removeTimeout();
 
-          delete pendingLoadTimeouts[loadId];
-
-          set({ pendingLoadTimeouts });
+          if (loading && !started) return;
 
           setComponentState({
             ...componentState,
@@ -227,19 +241,16 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
         const timeout = setTimeout(() => {
           if (loading) {
             setLoading();
+            removeTimeout();
           } else {
             unsetLoading();
           }
-
-          delete pendingLoadTimeouts[loadId];
-
-          set({ pendingLoadTimeouts });
         }, defer);
 
         set({
           pendingLoadTimeouts: {
-            ...pendingLoadTimeouts,
-            [id]: timeout,
+            ...get().pendingLoadTimeouts,
+            [loadId]: timeout,
           },
         });
 
@@ -280,30 +291,40 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
         const parentData = parentNode?.data ?? null;
 
         const timeouts: Record<string, () => void> = {};
+        const allTimeouts: Array<() => void> = [];
+        let finished = false;
 
-        return await resolveComponentData(
-          componentData,
-          config,
-          metadata,
-          (item) => {
-            const id = "id" in item.props ? item.props.id : "root";
-            timeouts[id] = setComponentLoading(id, true, 50);
-          },
-          async (item) => {
-            const id = "id" in item.props ? item.props.id : "root";
+        try {
+          return await resolveComponentData(
+            componentData,
+            config,
+            metadata,
+            (item) => {
+              const id = "id" in item.props ? item.props.id : "root";
+              const cleanup = setComponentLoading(id, true, 50);
+              timeouts[id] = cleanup;
+              allTimeouts.push(cleanup);
+              // Siblings may continue resolving after another child rejects.
+              if (finished) cleanup();
+            },
+            async (item) => {
+              const id = "id" in item.props ? item.props.id : "root";
 
-            if ("type" in item) {
-              await permissions.refreshPermissions({ item });
-            } else {
-              await permissions.refreshPermissions({ root: true });
-            }
-
-            timeouts[id]();
-          },
-          trigger,
-          parentData,
-          state.data.root,
-        );
+              try {
+                await permissions.refreshPermissions({ item: toComponent(item) });
+              } finally {
+                timeouts[id]();
+              }
+            },
+            trigger,
+            parentData,
+            state.data.root,
+          );
+        } finally {
+          // A resolver or a child may fail before the parent's end callback.
+          finished = true;
+          for (const cleanup of allTimeouts) cleanup();
+        }
       },
       resolveAndCommitData: async () => {
         const { config, state, dispatch, resolveComponentData } = get();
@@ -354,6 +375,20 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
       },
     })),
   );
+
+  // Observe replacements even when no React permission subscription is mounted.
+  store.subscribe((state, previous) => {
+    if (
+      state.config !== previous.config ||
+      state.permissions.globalPermissions !==
+        previous.permissions.globalPermissions
+    ) {
+      invalidatePermissionRequests();
+    }
+  });
+
+  return store;
+};
 
 // Derived from createAppStore so it keeps the zustand middleware augmentations
 // (e.g. subscribeWithSelector's two-argument subscribe overload).

@@ -1,10 +1,8 @@
 import { Loader } from "../../../Loader";
 import { isFieldVisible } from "../../../../lib/fields/is-field-visible";
 import { rendersCollapsibleGroup } from "../../../../lib/fields/renders-collapsible-group";
-import { rootDroppableId } from "../../../../lib/root-droppable-id";
 import { ItemSelector } from "../../../../lib/data/get-item";
-import { getSelectorForId } from "../../../../lib/get-selector-for-id";
-import { ComponentConfig, UiState } from "../../../../types";
+import { ComponentConfig } from "../../../../types";
 import { AutoFieldPrivate } from "../../../AutoField";
 import { FieldGroupItemInternal } from "../../../FieldGroup";
 import { Tabs, TabsChangeReason, TabValue } from "../../../Tabs";
@@ -12,6 +10,7 @@ import { fieldContextStore } from "../../../AutoField/store";
 import { AppStore, useAppStore, useAppStoreApi } from "../../../../store";
 import styles from "./styles.module.css";
 import { getClassNameFactory } from "../../../../lib";
+import { useMessage } from "../../../../lib/use-message";
 import {
   memo,
   ReactNode,
@@ -19,10 +18,18 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useSyncExternalStore,
 } from "react";
 import { useRegisterFieldsSlice } from "../../../../store/slices/fields";
 import { useShallow } from "zustand/react/shallow";
-import { StoreApi } from "zustand";
+import { createOnChange, getPendingFieldValue } from "./on-change";
+import {
+  dismissFieldEdit,
+  getFieldEditAlerts,
+  reportFieldEdit,
+  subscribeFieldEditAlerts,
+} from "./edit-alerts";
+import type { FieldEditAlert } from "./edit-alerts";
 
 const getClassName = getClassNameFactory("PuckFields", styles);
 
@@ -37,67 +44,6 @@ const getClassName = getClassNameFactory("PuckFields", styles);
  */
 const isFieldsReady = (s: AppStore) =>
   s.fields.id === (s.selectedItem?.props.id || "root");
-
-const createOnChange =
-  (fieldName: string, appStore: StoreApi<AppStore>) =>
-  async (value: any, updatedUi?: Partial<UiState>) => {
-    const { dispatch, state, selectedItem, resolveComponentData } =
-      appStore.getState();
-
-    const { data, ui } = state;
-    const { itemSelector } = ui;
-
-    // DEPRECATED: root without props object
-    const rootProps = data.root.props || data.root;
-    const currentProps = selectedItem ? selectedItem.props : rootProps;
-
-    const newProps = { ...currentProps, [fieldName]: value };
-
-    if (selectedItem && itemSelector) {
-      const resolved = await resolveComponentData(
-        { ...selectedItem, props: newProps },
-        "replace",
-      );
-
-      const latestSelector = getSelectorForId(
-        appStore.getState().state,
-        selectedItem.props.id,
-      );
-      if (!latestSelector) return;
-
-      dispatch({
-        type: "replace",
-        destinationIndex: latestSelector.index,
-        destinationZone: latestSelector.zone || rootDroppableId,
-        data: resolved.node,
-        ui: updatedUi,
-      });
-
-      return;
-    }
-
-    if (data.root.props) {
-      dispatch({
-        type: "replaceRoot",
-        root: (
-          await resolveComponentData(
-            { ...data.root, props: newProps },
-            "replace",
-          )
-        ).node,
-        ui: { ...ui, ...updatedUi },
-        recordHistory: true,
-      });
-
-      return;
-    }
-
-    // DEPRECATED: root without props object
-    dispatch({
-      type: "setData",
-      data: { root: newProps },
-    });
-  };
 
 const FieldsChildInner = ({ fieldName }: { fieldName: string }) => {
   const fieldTypeOverrides = useAppStore((s) => s.overrides.fieldTypes);
@@ -130,12 +76,56 @@ const FieldsChildInner = ({ fieldName }: { fieldName: string }) => {
   );
 
   const appStore = useAppStoreApi();
-
-  const onChange = useCallback(createOnChange(fieldName, appStore), [
-    fieldName,
-  ]);
-
   const fieldStore = useContext(fieldContextStore.ctx);
+
+  const onChange = useMemo(() => {
+    return (value: any, ui?: Parameters<ReturnType<typeof createOnChange>>[1]) => {
+      const { selectedItem: selected, state } = appStore.getState();
+      const target: FieldEditAlert["target"] =
+        selected && state.ui.itemSelector
+          ? { kind: "item", id: selected.props.id, type: selected.type }
+          : { kind: "root" };
+      const restoreField = () => {
+        // Nested handlers write optimistic values after invoking onChange.
+        // Reconcile after those writes, without clobbering a newer draft or a
+        // different selection that now owns this field store.
+        queueMicrotask(() => {
+          const current = appStore.getState();
+          const selected = current.selectedItem;
+          const sameTarget =
+            target.kind === "root"
+              ? !selected && !current.state.ui.itemSelector
+              : !!current.state.ui.itemSelector &&
+                selected?.props.id === target.id &&
+                selected.type === target.type;
+          if (!sameTarget || getPendingFieldValue(appStore, fieldName)) return;
+          const data = current.getCurrentData();
+          const props = (data.props ?? data) as Record<string, unknown>;
+          fieldStore.setState({ [fieldName]: props[fieldName] });
+        });
+      };
+      let canceled = false;
+      const change = createOnChange(fieldName, appStore, () => {
+        canceled = true;
+        restoreField();
+        reportFieldEdit(appStore, {
+          field: fieldName,
+          target,
+          reason: "canceled",
+        });
+      });
+      void change(value, ui).catch(() => {
+        if (!canceled) {
+          restoreField();
+          reportFieldEdit(appStore, {
+            field: fieldName,
+            target,
+            reason: "failed",
+          });
+        }
+      });
+    };
+  }, [fieldName, appStore, fieldStore]);
 
   useEffect(() => {
     return appStore.subscribe(
@@ -186,6 +176,45 @@ const FieldsChild = ({ fieldName }: { fieldName: string }) => {
 };
 
 const FieldsChildMemo = memo(FieldsChild);
+
+const FieldEditAlertMessage = ({ alert }: { alert: FieldEditAlert }) => {
+  const appStore = useAppStoreApi();
+  const pageLabel = useMessage("label-page");
+  const target =
+    alert.target.kind === "root"
+      ? pageLabel
+      : `${alert.target.type} (${alert.target.id})`;
+  const message = useMessage(
+    alert.reason === "canceled" ? "field-edit-canceled" : "field-edit-failed",
+    { field: alert.field, target },
+  );
+  const dismiss = useMessage("field-edit-dismiss");
+  return (
+    <div role="alert">
+      {message}{" "}
+      <button type="button" onClick={() => dismissFieldEdit(appStore, alert.id)}>
+        {dismiss}
+      </button>
+    </div>
+  );
+};
+
+const FieldEditAlerts = () => {
+  const appStore = useAppStoreApi();
+  const subscribe = useCallback(
+    (listener: () => void) => subscribeFieldEditAlerts(appStore, listener),
+    [appStore],
+  );
+  const getSnapshot = useCallback(() => getFieldEditAlerts(appStore), [appStore]);
+  const alerts = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  return (
+    <>
+      {alerts.map((alert) => (
+        <FieldEditAlertMessage key={alert.id} alert={alert} />
+      ))}
+    </>
+  );
+};
 
 /** Renders the default fields wrapper */
 const DefaultFields = ({
@@ -311,29 +340,32 @@ const FieldsInternal = ({ wrapFields = true }: { wrapFields?: boolean }) => {
   const Wrapper = useMemo(() => overrides.fields || DefaultFields, [overrides]);
 
   return (
-    <form
-      className={getClassName({ wrapFields })}
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-    >
-      <FieldTabs>
-        <Wrapper
-          isLoading={isLoading}
-          itemSelector={itemSelector}
-          fields={fields}
-        >
-          <ComponentFields fields={fields} />
-        </Wrapper>
-      </FieldTabs>
-      {isLoading && (
-        <div className={getClassName("loadingOverlay")}>
-          <div className={getClassName("loadingOverlayInner")}>
-            <Loader size={16} />
+    <>
+      <FieldEditAlerts />
+      <form
+        className={getClassName({ wrapFields })}
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <FieldTabs>
+          <Wrapper
+            isLoading={isLoading}
+            itemSelector={itemSelector}
+            fields={fields}
+          >
+            <ComponentFields fields={fields} />
+          </Wrapper>
+        </FieldTabs>
+        {isLoading && (
+          <div className={getClassName("loadingOverlay")}>
+            <div className={getClassName("loadingOverlayInner")}>
+              <Loader size={16} />
+            </div>
           </div>
-        </div>
-      )}
-    </form>
+        )}
+      </form>
+    </>
   );
 };
 

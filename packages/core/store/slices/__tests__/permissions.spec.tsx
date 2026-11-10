@@ -158,6 +158,47 @@ describe("permissions slice", () => {
   });
 
   describe("getPermissions()", () => {
+    it("retains component permissions omitted by a partial resolver result", async () => {
+      const item = { type: "MyComponent", props: { id: "component-1" } };
+      appStore.setState({
+        config: {
+          components: {
+            MyComponent: {
+              render: () => <div />,
+              permissions: { edit: false, delete: false },
+              resolvePermissions: () => ({ delete: true }),
+            },
+          },
+        },
+      });
+
+      await appStore.getState().permissions.resolvePermissions({ item });
+
+      expect(appStore.getState().permissions.getPermissions({ item })).toEqual(
+        expect.objectContaining({ edit: false, delete: true, drag: true }),
+      );
+    });
+
+    it("retains root permissions omitted by a partial resolver result", async () => {
+      appStore.setState({
+        config: {
+          root: {
+            permissions: { edit: false, delete: false },
+            resolvePermissions: () => ({ delete: true }),
+          },
+          components: {},
+        },
+      });
+
+      await appStore.getState().permissions.resolvePermissions({
+        item: { type: "root", props: { id: "root" } },
+      });
+
+      expect(
+        appStore.getState().permissions.getPermissions({ root: true }),
+      ).toEqual(expect.objectContaining({ edit: false, delete: true, drag: true }));
+    });
+
     it("returns global permissions by default", () => {
       renderHook(() =>
         useRegisterPermissionsSlice(appStore, { testGlobal: true }),

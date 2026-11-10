@@ -11,7 +11,13 @@ const renderTabs = (
     strict = false,
     value: initialValue,
     applyMissing = true,
-  }: { strict?: boolean; value?: TabValue; applyMissing?: boolean } = {},
+    applySelected = true,
+  }: {
+    strict?: boolean;
+    value?: TabValue;
+    applyMissing?: boolean;
+    applySelected?: boolean;
+  } = {},
 ) => {
   const changes: Change[] = [];
 
@@ -22,7 +28,7 @@ const renderTabs = (
       (next: TabValue, { reason }: { reason: TabsChangeReason }) => {
         changes.push({ value: next, reason });
 
-        if (reason === "selected" || applyMissing) setValue(next);
+        if (reason === "selected" ? applySelected : applyMissing) setValue(next);
       },
       [],
     );
@@ -236,6 +242,39 @@ describe("Tabs", () => {
 
     fireEvent.keyDown(tablist, { key: "Home" });
     expect(selectedTab()).toBe("A");
+  });
+
+  it("continues keyboard navigation from focus when the parent declines selection", () => {
+    const { changes } = renderTabs(<Layout />, {
+      value: "A",
+      applySelected: false,
+    });
+    const first = screen.getByRole("tab", { name: "A" });
+    first.focus();
+
+    fireEvent.keyDown(first, { key: "ArrowRight" });
+    const second = screen.getByRole("tab", { name: "B" });
+    expect(second).toHaveFocus();
+    expect(selectedTab()).toBe("A");
+
+    fireEvent.keyDown(second, { key: "ArrowRight" });
+    expect(screen.getByRole("tab", { name: "C" })).toHaveFocus();
+    expect(selectedTab()).toBe("A");
+    expect(changes).toEqual([
+      { value: "B", reason: "selected" },
+      { value: "C", reason: "selected" },
+    ]);
+  });
+
+  it("navigates from a focused tab even if another tab is selected", () => {
+    renderTabs(<Layout />, { value: "A" });
+    const third = screen.getByRole("tab", { name: "C" });
+    third.focus();
+
+    fireEvent.keyDown(third, { key: "ArrowRight" });
+
+    expect(screen.getByRole("tab", { name: "D" })).toHaveFocus();
+    expect(selectedTab()).toBe("D");
   });
 
   it("renders no tab row without tabs", () => {
