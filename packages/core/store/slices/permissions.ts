@@ -443,9 +443,18 @@ export const createPermissionsSlice = (
     const parent = parentId ? state.indexes.nodes[parentId]?.data ?? null : null;
     const componentConfig = item.type === "root" ? config.root : config.components[item.type];
     // Root configuration is optional, but a component type must be registered.
-    if (item.type !== "root" && !componentConfig) return undefined;
+    if (item.type !== "root" &&
+        (!Object.prototype.hasOwnProperty.call(config.components, item.type) || !componentConfig)) {
+      return undefined;
+    }
     const resolver = componentConfig?.resolvePermissions;
     const entry = permissions.cache[id];
+    // A candidate cannot outlive a committed decision that is already being
+    // refreshed or has failed. A request version alone only detects refreshes
+    // that start after the candidate.
+    if (committed && (pending.has(id) || (entry && invalidEntries.has(entry)))) {
+      return undefined;
+    }
     const decision = permissions.resolvedPermissions[id];
     const version = committed ? requestVersions.get(committed) ?? 0 : 0;
     const candidateVersion = committed ? candidateVersions.get(committed) ?? 0 : 0;
@@ -477,11 +486,13 @@ export const createPermissionsSlice = (
       return (
         latest.config === config &&
         latestComponentConfig === componentConfig &&
+        (item.type === "root" || Object.prototype.hasOwnProperty.call(latest.config.components, item.type)) &&
         latest.permissions.globalPermissions === permissions.globalPermissions &&
         policyGeneration === generation &&
         (!committed || (requestVersions.get(committed) ?? 0) === version) &&
         (!committed || (candidateVersions.get(committed) ?? 0) === candidateVersion) &&
         (committed || permissionRequestGeneration === requestGeneration) &&
+        (!committed || (!pending.has(id) && (!entry || !invalidEntries.has(entry)))) &&
         latest.permissions.cache[id] === entry &&
         latest.permissions.resolvedPermissions[id] === decision &&
         sameAppState(makeStatePublic(latest.state), publicState) &&
@@ -541,8 +552,14 @@ export const createPermissionsSlice = (
 
       if (item && item.type !== "root") {
         const componentConfig = config.components[item.type];
+        if (!Object.prototype.hasOwnProperty.call(config.components, item.type) || !componentConfig) {
+          return unresolvedPermissions(globalPermissions);
+        }
 
         const committed = state.indexes.nodes[item.props.id]?.data;
+        if (committed && committed.type !== item.type) {
+          return unresolvedPermissions(globalPermissions);
+        }
         const candidate = committed && candidateCache.get(committed);
         if (candidate && deepEqual(candidate.item, item) && candidate.isCurrent()) {
           return candidate.permissions;
@@ -582,6 +599,9 @@ export const createPermissionsSlice = (
         ) as Permissions;
       } else if (type) {
         const componentConfig = config.components[type];
+        if (!Object.prototype.hasOwnProperty.call(config.components, type) || !componentConfig) {
+          return unresolvedPermissions(globalPermissions);
+        }
 
         return {
           ...globalPermissions,
@@ -593,8 +613,7 @@ export const createPermissionsSlice = (
         const committed = state.indexes.nodes.root?.data;
         const candidate = committed && candidateCache.get(committed);
         if (item?.type === "root" && candidate &&
-            deepEqual(candidate.item.props, item.props) &&
-            deepEqual(candidate.item.readOnly, item.readOnly) && candidate.isCurrent()) {
+            deepEqual(candidate.item, item) && candidate.isCurrent()) {
           return candidate.permissions;
         }
 

@@ -65,6 +65,7 @@ describe("permission resolution concurrency", () => {
     store.setState({ config: { components: {} } });
     expect(await store.getState().permissions.resolveCandidatePermissions(indexed)).toBeUndefined();
     expect(await store.getState().permissions.resolveCandidatePermissions(item("new"))).toBeUndefined();
+    expect(await store.getState().permissions.resolveCandidatePermissions({ type: "toString", props: { id: "inherited" } })).toBeUndefined();
   });
 
   it("allows candidate checks for the optional default root configuration", async () => {
