@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { createAppStore } from "../../";
+import { createAppStore, defaultAppState } from "../../";
 import { ComponentData, Permissions } from "../../../types";
 import { PermissionResolutionSupersededError, useRegisterPermissionsSlice } from "../permissions";
 import { walkAppState } from "../../../lib/data/walk-app-state";
@@ -54,6 +54,52 @@ const refreshRoot = async (store: ReturnType<typeof createAppStore>) => {
 };
 
 describe("permission resolution concurrency", () => {
+  it("keeps candidate decisions separate and invalidates a decision after a current-item refresh", async () => {
+    const store = subject(async () => ({ edit: true }));
+    const config = store.getState().config;
+    const current = item("one");
+    store.setState({
+      state: walkAppState({
+        ...defaultAppState,
+        data: { ...defaultAppState.data, content: [current] },
+      }, config),
+    });
+    const committed = store.getState().state.indexes.nodes.one.data;
+    await resolveItem(store, committed);
+    const originalEntry = store.getState().permissions.cache.one;
+    const proposed = item("one", "draft");
+    const result = await store.getState().permissions.resolveCandidatePermissions(proposed);
+
+    expect(result?.permissions.edit).toBe(true);
+    expect(result?.isCurrent()).toBe(true);
+    expect(store.getState().permissions.cache.one).toBe(originalEntry);
+    expect(store.getState().permissions.getPermissions({ item: committed }).edit).toBe(true);
+    await refreshItem(store, committed);
+    expect(result?.isCurrent()).toBe(false);
+  });
+
+  it("rejects a candidate when a reentrant refresh supersedes its permission inputs", async () => {
+    let store: ReturnType<typeof createAppStore>;
+    let reentered = false;
+    store = subject(async (data) => {
+      if (data.props.value === "draft" && !reentered) {
+        reentered = true;
+        const committed = store.getState().state.indexes.nodes.one.data;
+        await store.getState().permissions.refreshPermissions({ item: committed });
+      }
+      return { edit: true };
+    });
+    const config = store.getState().config;
+    store.setState({
+      state: walkAppState({
+        ...defaultAppState,
+        data: { ...defaultAppState.data, content: [item("one")] },
+      }, config),
+    });
+    await resolveItem(store, store.getState().state.indexes.nodes.one.data);
+    expect(await store.getState().permissions.resolveCandidatePermissions(item("one", "draft"))).toBeUndefined();
+  });
+
   it("preserves a reentrant loading update when a superseded request cleans up", async () => {
     jest.useFakeTimers();
     const old = deferred<Partial<Permissions>>();

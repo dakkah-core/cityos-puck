@@ -7,6 +7,7 @@ import { toComponent } from "./to-component";
 import { toRoot } from "./to-root";
 import { setDeep } from "./set-deep";
 import { deepEqual } from "fast-equals";
+import { PermissionResolutionSupersededError } from "../../store/slices/permissions";
 
 type AppStoreApi = ReturnType<typeof useAppStoreApi>;
 type InlineEdit = {
@@ -66,6 +67,7 @@ export async function resolveAndReplaceInlineData(
   let item = initial.state.indexes.nodes[id]?.data;
   const wildcardPath = path.replace(/\[\d+\]/g, "[*]");
   let permissionEntry = initial.permissions.cache[id];
+  let permissionWasGranted = !!item && initial.permissions.getPermissions({ item }).edit === true;
   let commitEvents = 0;
   let commitPrevious: typeof initial | undefined;
   const valid = () => {
@@ -103,6 +105,16 @@ export async function resolveAndReplaceInlineData(
       }
     }
     const permissions = appStore.getState().permissions;
+    // A refresh invalidates the existing cache entry before replacing it.
+    // Observe that transition so a later grant cannot revive this edit.
+    if (!currentQueue.committing && item) {
+      const granted = permissions.getPermissions({ item }).edit === true;
+      if (permissionWasGranted && !granted) {
+        cancel();
+        return;
+      }
+      permissionWasGranted = granted;
+    }
     const entry = permissions.cache[id];
     if (entry !== permissionEntry) {
       permissionEntry = entry;
@@ -150,6 +162,7 @@ export async function resolveAndReplaceInlineData(
       initial = current;
       item = node.data;
       permissionEntry = current.permissions.cache[id];
+      permissionWasGranted = current.permissions.getPermissions({ item }).edit === true;
       commitEvents = 0;
       commitPrevious = undefined;
     },
@@ -197,11 +210,12 @@ export async function resolveAndReplaceInlineData(
       if (
         appStore.getState().permissions.getPermissions({ item: target }).edit !== true
       ) return false;
-      if (!(await authorize(resolved.node))) return false;
+      const candidatePermissions = await appStore.getState().permissions.resolveCandidatePermissions(resolved.node);
       if (
         !valid() ||
-        appStore.getState().permissions.getPermissions({ item: resolved.node })
-          .edit !== true
+        candidatePermissions?.permissions.edit !== true ||
+        appStore.getState().permissions.getPermissions({ item: target }).edit !== true ||
+        !candidatePermissions.isCurrent()
       ) return false;
       const latest = appStore.getState();
       // Dispatch synchronously changes the snapshot this guard observes.
@@ -227,7 +241,12 @@ export async function resolveAndReplaceInlineData(
       }
       return true;
     })();
-    return await Promise.race([work, interrupted]);
+    try {
+      return await Promise.race([work, interrupted]);
+    } catch (error) {
+      if (error instanceof PermissionResolutionSupersededError) return false;
+      throw error;
+    }
   };
   const result = run().finally(() => {
     unsubscribe();

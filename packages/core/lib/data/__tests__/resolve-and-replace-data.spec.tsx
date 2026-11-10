@@ -224,6 +224,50 @@ describe("resolveAndReplaceData", () => {
       return { promise, release };
     };
 
+    it.each(["unchanged", "revoked", "refreshed"])(
+      "isolates candidate permission checks when current access is %s",
+      async (change) => {
+        const blocked = defer();
+        const started = defer();
+        let allowCurrent = true;
+        const original = appStore.getState().config;
+        appStore.setState({
+          config: {
+            ...original,
+            components: {
+              ...original.components,
+              StaticChild: {
+                ...original.components.StaticChild,
+                resolvePermissions: async (data) => {
+                  if (data.props.label === "draft") {
+                    started.release();
+                    await blocked.promise;
+                    return { edit: true };
+                  }
+                  return { edit: allowCurrent };
+                },
+              },
+            },
+          },
+        });
+        const item = appStore.getState().state.indexes.nodes["Static-1"].data;
+        await appStore.getState().permissions.resolvePermissions({ item });
+        const cacheEntry = appStore.getState().permissions.cache["Static-1"];
+        const pending = edit("draft");
+        await started.promise;
+
+        expect(appStore.getState().permissions.cache["Static-1"]).toBe(cacheEntry);
+        expect(appStore.getState().permissions.getPermissions({ item }).edit).toBe(true);
+        if (change !== "unchanged") {
+          allowCurrent = change !== "revoked";
+          await appStore.getState().permissions.refreshPermissions({ item });
+        }
+        blocked.release();
+        expect(await pending).toBe(change === "unchanged");
+        expect(label()).toBe(change === "unchanged" ? "draft" : "old");
+      },
+    );
+
     it("keeps a different queued field after dynamic permissions deny a candidate", async () => {
       const blocked = defer();
       const started = defer();
@@ -385,6 +429,13 @@ describe("resolveAndReplaceData", () => {
             ...permissions.globalPermissions,
             edit: item?.props.label !== "denied",
           }),
+          resolveCandidatePermissions: async (item) => {
+            if (item.props.label === "denied") {
+              started.release();
+              await blocked.promise;
+            }
+            return { permissions: { ...permissions.globalPermissions, edit: item.props.label !== "denied" }, isCurrent: () => true };
+          },
         },
       });
       const first = edit("denied");
@@ -488,6 +539,10 @@ describe("resolveAndReplaceData", () => {
             ...permissions.globalPermissions,
             edit: item?.props.label !== "denied",
           }),
+          resolveCandidatePermissions: async (item) => ({
+            permissions: { ...permissions.globalPermissions, edit: item.props.label !== "denied" },
+            isCurrent: () => true,
+          }),
         },
       });
       expect(await edit("denied")).toBe(false);
@@ -505,6 +560,10 @@ describe("resolveAndReplaceData", () => {
           getPermissions: ({ item } = {}) => ({
             ...permissions.globalPermissions,
             edit: item?.props.title !== "denied",
+          }),
+          resolveCandidatePermissions: async (item) => ({
+            permissions: { ...permissions.globalPermissions, edit: item.props.title !== "denied" },
+            isCurrent: () => true,
           }),
         },
       });
@@ -542,6 +601,10 @@ describe("resolveAndReplaceData", () => {
             ...permissions.globalPermissions,
             edit: item?.props.body !== "denied",
           }),
+          resolveCandidatePermissions: async (item) => ({
+            permissions: { ...permissions.globalPermissions, edit: item.props.body !== "denied" },
+            isCurrent: () => true,
+          }),
         },
       });
       expect(await resolveAndReplaceInlineData(appStore, "Static-1", "body", "denied", () => true, { field: { focus: "body" } })).toBe(false);
@@ -563,6 +626,13 @@ describe("resolveAndReplaceData", () => {
               await waiting;
             }
           }),
+          resolveCandidatePermissions: async (item) => {
+            if (item.props.label === "draft") {
+              started();
+              await waiting;
+            }
+            return { permissions: permissions.globalPermissions, isCurrent: () => true };
+          },
         },
       });
       const previousField = appStore.getState().state.ui.field;

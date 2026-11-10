@@ -83,6 +83,9 @@ export type PermissionsSlice = {
   getPermissions: GetPermissions<Config>;
   resolvePermissions: ResolvePermissions<Config>;
   refreshPermissions: RefreshPermissions<Config>;
+  resolveCandidatePermissions: (item: ComponentData) => Promise<
+    { permissions: Permissions; isCurrent: () => boolean } | undefined
+  >;
 };
 
 export const createPermissionsSlice = (
@@ -111,6 +114,15 @@ export const createPermissionsSlice = (
   // after that decision fails. Entries are weakly held so discarded item
   // caches do not leave a separate permanent set of identifiers.
   const invalidEntries = new WeakSet<Cache[string]>();
+  // A new committed-item request invalidates in-flight candidate decisions,
+  // even when a refresh subsequently restores the same permissions.
+  const requestVersions = new WeakMap<ComponentData, number>();
+  const candidateVersions = new WeakMap<ComponentData, number>();
+  const candidateCache = new WeakMap<ComponentData, {
+    item: ComponentData;
+    permissions: Permissions;
+    isCurrent: () => boolean;
+  }>();
   const cancelPending = (id: string) => {
     const request = pending.get(id);
     if (!request) return;
@@ -150,6 +162,10 @@ export const createPermissionsSlice = (
       item: ComponentData,
       force: boolean = false,
     ): Promise<void> => {
+      const committed = get().state.indexes.nodes[item.props.id]?.data;
+      if (committed) {
+        requestVersions.set(committed, (requestVersions.get(committed) ?? 0) + 1);
+      }
       const {
         config,
         state: appState,
@@ -413,8 +429,88 @@ export const createPermissionsSlice = (
     }
   };
 
-  const refreshPermissions: RefreshPermissions = (params) =>
-    resolvePermissions(params, true);
+  const resolveCandidatePermissions: PermissionsSlice["resolveCandidatePermissions"] = async (item) => {
+    const before = get();
+    const { config, state, permissions } = before;
+    const id = item.props.id;
+    const node = state.indexes.nodes[id];
+    if (!node || node.data.type !== item.type) return undefined;
+    const parentId = node.parentId;
+    const parent = parentId ? state.indexes.nodes[parentId]?.data ?? null : null;
+    const componentConfig = item.type === "root" ? config.root : config.components[item.type];
+    const resolver = componentConfig?.resolvePermissions;
+    const entry = permissions.cache[id];
+    const decision = permissions.resolvedPermissions[id];
+    const version = requestVersions.get(node.data) ?? 0;
+    const candidateVersion = candidateVersions.get(node.data) ?? 0;
+    const generation = policyGeneration;
+    const publicState = makeStatePublic(state);
+    const initialPermissions = { ...permissions.globalPermissions, ...componentConfig?.permissions } as Permissions;
+
+    const resolved = resolver
+      ? await resolver(item, {
+          changed: getChanged(item, entry?.lastData),
+          lastPermissions: entry?.lastPermissions || null,
+          permissions: initialPermissions,
+          appState: publicState,
+          lastData: entry?.lastData || null,
+          parent,
+        })
+      : {};
+
+    const isCurrent = () => {
+      const latest = get();
+      const latestNode = latest.state.indexes.nodes[id];
+      const latestParent = latestNode?.parentId
+        ? latest.state.indexes.nodes[latestNode.parentId]?.data ?? null
+        : null;
+      return (
+        latest.config === config &&
+        latest.permissions.globalPermissions === permissions.globalPermissions &&
+        policyGeneration === generation &&
+        (requestVersions.get(node.data) ?? 0) === version &&
+        (candidateVersions.get(node.data) ?? 0) === candidateVersion &&
+        latest.permissions.cache[id] === entry &&
+        latest.permissions.resolvedPermissions[id] === decision &&
+        sameAppState(makeStatePublic(latest.state), publicState) &&
+        latestNode?.data === node.data && latestNode?.parentId === parentId &&
+        deepEqual(latestParent, parent) &&
+        deepEqual(initialPermissions, {
+          ...latest.permissions.globalPermissions,
+          ...(item.type === "root" ? latest.config.root?.permissions : latest.config.components[item.type]?.permissions),
+        }) &&
+        (item.type === "root" ? latest.config.root?.resolvePermissions : latest.config.components[item.type]?.resolvePermissions) === resolver
+      );
+    };
+    return isCurrent() ? { permissions: { ...initialPermissions, ...resolved }, isCurrent } : undefined;
+  };
+
+  const refreshPermissions: RefreshPermissions = async (params) => {
+    const item = params?.item;
+    const current = item && get().state.indexes.nodes[item.props.id]?.data;
+    if (item && current && item.type === current.type && !deepEqual(item, current)) {
+      // Data resolution refreshes proposed nodes before they are committed.
+      // Publish their decision separately while retaining the public ability
+      // to query it with getPermissions({ item }). A newer refresh invalidates
+      // the old candidate decision before invoking the host resolver.
+      const version = (candidateVersions.get(current) ?? 0) + 1;
+      candidateVersions.set(current, version);
+      if (candidateCache.delete(current)) {
+        set({ permissions: { ...get().permissions } });
+      }
+      const result = await resolveCandidatePermissions(item);
+      if (!result || !result.isCurrent() || candidateVersions.get(current) !== version) {
+        throw new PermissionResolutionSupersededError();
+      }
+      candidateCache.set(current, { item, ...result });
+      set({ permissions: { ...get().permissions } });
+      if (!result.isCurrent() || candidateVersions.get(current) !== version) {
+        throw new PermissionResolutionSupersededError();
+      }
+      return;
+    }
+    await resolvePermissions(params, true);
+  };
 
   return {
     cache: {},
@@ -426,12 +522,19 @@ export const createPermissionsSlice = (
       insert: true,
     },
     resolvedPermissions: {},
+    resolveCandidatePermissions,
     getPermissions: ({ item, type, root } = {}) => {
       const { config, permissions, state } = get();
       const { globalPermissions, resolvedPermissions } = permissions;
 
       if (item && item.type !== "root") {
         const componentConfig = config.components[item.type];
+
+        const committed = state.indexes.nodes[item.props.id]?.data;
+        const candidate = committed && candidateCache.get(committed);
+        if (candidate && deepEqual(candidate.item, item) && candidate.isCurrent()) {
+          return candidate.permissions;
+        }
 
         const initialPermissions = {
           ...globalPermissions,
@@ -474,6 +577,14 @@ export const createPermissionsSlice = (
         } as Permissions;
       } else if (root || item?.type === "root") {
         const rootConfig = config.root;
+
+        const committed = state.indexes.nodes.root?.data;
+        const candidate = committed && candidateCache.get(committed);
+        if (item?.type === "root" && candidate &&
+            deepEqual(candidate.item.props, item.props) &&
+            deepEqual(candidate.item.readOnly, item.readOnly) && candidate.isCurrent()) {
+          return candidate.permissions;
+        }
 
         const initialPermissions = {
           ...globalPermissions,
