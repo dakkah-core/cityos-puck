@@ -131,11 +131,16 @@ export function verifyIntegration(root, { requireIntegrated = true } = {}) {
       git(root, [
         "diff",
         "--name-only",
+        "--no-renames",
         "-z",
         `${manifest.upstream.commit}...HEAD`,
       ]),
     );
-    customized.push(...paths(git(root, ["diff", "--name-only", "-z", "HEAD"])));
+    // Renames must include their source as well as their destination: moving
+    // upstream content into an owned directory still modifies the upstream path.
+    customized.push(
+      ...paths(git(root, ["diff", "--name-only", "--no-renames", "-z", "HEAD"])),
+    );
     customized.push(
       ...paths(git(root, ["ls-files", "--others", "--exclude-standard", "-z"])),
     );

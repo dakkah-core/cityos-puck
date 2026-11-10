@@ -15,6 +15,7 @@ import {
   sha256,
   validateManifest,
   verifyDeclaredChanges,
+  verifyIntegration,
   verifyReceipt,
 } from "./integration.mjs";
 
@@ -77,6 +78,47 @@ test("declared bridges and owned extensions do not admit undeclared core edits",
       "Undeclared upstream modification: packages/core/other.ts",
     ],
   );
+});
+test("moving upstream content into an owned directory still declares its removal", () => {
+  const root = mkdtempSync(join(tmpdir(), "cityos-upstream-rename-"));
+  const git = (...args) =>
+    execFileSync("git", ["-C", root, ...args], {
+      encoding: "utf8",
+      windowsHide: true,
+    }).trim();
+  try {
+    git("init");
+    git("config", "user.name", "Boundary fixture");
+    git("config", "user.email", "fixture@example.invalid");
+    git("config", "commit.gpgsign", "false");
+    git("config", "diff.renames", "true");
+    mkdirSync(join(root, "packages/core"), { recursive: true });
+    mkdirSync(join(root, "tests"));
+    writeFileSync(join(root, "packages/core/upstream.ts"), "upstream content\n");
+    writeFileSync(join(root, "tests/root.test.ts"), "fixture\n");
+    git("add", "packages/core/upstream.ts", "tests/root.test.ts");
+    git("commit", "-m", "upstream");
+    const upstream = git("rev-parse", "HEAD");
+    mkdirSync(join(root, "config/upstream"), { recursive: true });
+    mkdirSync(join(root, "extensions/cityos"), { recursive: true });
+    const value = manifest();
+    value.upstream.commit = upstream;
+    writeFileSync(
+      join(root, "config/upstream/integration.json"),
+      JSON.stringify(value),
+    );
+    git("mv", "packages/core/upstream.ts", "extensions/cityos/upstream.ts");
+    const expected =
+      "Undeclared upstream modification: packages/core/upstream.ts";
+    assert.ok(verifyIntegration(root).errors.includes(expected));
+    git("add", "config/upstream/integration.json");
+    git("commit", "-m", "move upstream content");
+    assert.ok(verifyIntegration(root).errors.includes(expected));
+  } finally {
+    assert.equal(dirname(resolve(root)), resolve(tmpdir()));
+    assert.ok(root.startsWith(join(tmpdir(), "cityos-upstream-rename-")));
+    rmSync(root, { recursive: true, force: true, maxRetries: 3 });
+  }
 });
 test("invalid paths, ambiguous declarations and unpinned upstreams fail", () => {
   for (const path of [
