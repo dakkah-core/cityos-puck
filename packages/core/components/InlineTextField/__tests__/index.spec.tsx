@@ -2,6 +2,7 @@ import { fireEvent, render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { InlineTextField } from "../index";
 import { resolveAndReplaceInlineData } from "../../../lib/data/resolve-and-replace-data";
+import { reportFieldEdit } from "../../Puck/components/Fields/edit-alerts";
 
 // useAppStoreApi reads from a Zustand-style API; we only need a getState() that
 // returns the slice InlineTextField touches in its effect.
@@ -31,6 +32,7 @@ jest.mock("../../../lib/overlay-portal", () => ({
 jest.mock("../../../lib/data/resolve-and-replace-data", () => ({
   resolveAndReplaceInlineData: jest.fn(),
 }));
+jest.mock("../../Puck/components/Fields/edit-alerts", () => ({ reportFieldEdit: jest.fn() }));
 
 jest.mock("../styles.module.css");
 
@@ -63,6 +65,9 @@ describe("InlineTextField", () => {
     span.innerText = "draft";
     fireEvent.input(span);
     await waitFor(() => expect(span.textContent).toBe(""));
+    expect(reportFieldEdit).toHaveBeenCalledWith(expect.anything(), {
+      field: "subtitle", target: { kind: "item", id: "comp-1", type: "MyBlock" }, reason: "canceled",
+    });
   });
 
   it("renders empty when value is null instead of the literal string 'null'", () => {

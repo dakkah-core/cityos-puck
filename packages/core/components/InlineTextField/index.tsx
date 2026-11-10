@@ -9,6 +9,7 @@ import getClassNameFactory from "../../lib/get-class-name-factory";
 import { resolveAndReplaceInlineData } from "../../lib/data/resolve-and-replace-data";
 import { getSelectorForId } from "../../lib/get-selector-for-id";
 import { getDeep } from "../../lib/data/get-deep";
+import { reportFieldEdit } from "../Puck/components/Fields/edit-alerts";
 
 import styles from "./styles.module.css";
 
@@ -79,6 +80,14 @@ const InlineTextFieldInternal = ({
 
         const revision = editState.current.revision;
         const input = ++editState.current.input;
+        const target = componentId === "root"
+          ? { kind: "root" as const }
+          : { kind: "item" as const, id: componentId, type: data.type };
+        const report = (reason: "canceled" | "failed") => {
+          if (input === editState.current.input) {
+            reportFieldEdit(appStoreApi, { field: propPath, target, reason });
+          }
+        };
         const restore = () => {
           if (input !== editState.current.input || !ref.current) return;
           const node = appStoreApi.getState().state.indexes.nodes[componentId];
@@ -95,10 +104,14 @@ const InlineTextFieldInternal = ({
             editState.current.revision === revision,
         )
           .then((applied) => {
-            if (!applied) restore();
+            if (!applied) {
+              restore();
+              report("canceled");
+            }
           })
           .catch(() => {
             restore();
+            report("failed");
             console.error("Puck could not apply the inline text edit.");
           });
       };

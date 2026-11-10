@@ -10,7 +10,7 @@ import {
   lazy,
   Suspense,
 } from "react";
-import { resolveAndReplaceData } from "../../data/resolve-and-replace-data";
+import { resolveAndReplaceInlineData } from "../../data/resolve-and-replace-data";
 
 import { EditorFallback } from "../../../components/RichTextEditor/components/EditorFallback";
 import { RichTextRenderFallback } from "../../../components/RichTextEditor/components/RenderFallback";
@@ -19,10 +19,11 @@ import { useAppStore, useAppStoreApi } from "../../../store";
 
 import { RichtextField, UiState } from "../../../types";
 
-import { setDeep } from "../../data/set-deep";
+import { getDeep } from "../../data/get-deep";
 import { registerOverlayPortal } from "../../overlay-portal";
 
 import { getSelectorForId } from "../../get-selector-for-id";
+import { reportFieldEdit } from "../../../components/Puck/components/Fields/edit-alerts";
 
 const Editor = lazy(() =>
   import("../../../components/RichTextEditor/components/Editor").then((m) => ({
@@ -62,6 +63,16 @@ const InlineEditorWrapper = memo(
         store.permissions.getPermissions({ item }).edit === true
       );
     });
+    const editState = useRef({ canEdit, revision: 0, input: 0 });
+    const editorRef = useRef<TipTapEditor | null>(null);
+    if (editState.current.canEdit !== canEdit) {
+      editState.current.canEdit = canEdit;
+      editState.current.revision++;
+    }
+    useEffect(() => () => {
+      editState.current.revision++;
+      editorRef.current = null;
+    }, []);
 
     const onClickHandler = (e: MouseEvent) => {
       e.preventDefault();
@@ -103,15 +114,40 @@ const InlineEditorWrapper = memo(
           return;
         }
 
-        const newProps = setDeep(node.data.props, propPath, content);
-
-        void resolveAndReplaceData(
-          { ...node.data, props: newProps },
-          appStoreApi.getState,
-          "replace",
-          true,
+        const revision = editState.current.revision;
+        const input = ++editState.current.input;
+        const editor = editorRef.current;
+        const target = componentId === "root"
+          ? { kind: "root" as const }
+          : { kind: "item" as const, id: componentId, type: node.data.type };
+        const report = (reason: "canceled" | "failed") => {
+          // A newer edit in this same field supersedes the draft intentionally.
+          if (input === editState.current.input) {
+            reportFieldEdit(appStoreApi, { field: propPath, target, reason });
+          }
+        };
+        const restore = () => {
+          if (input !== editState.current.input) return;
+          const current = appStoreApi.getState();
+          const item = current.state.indexes.nodes[componentId]?.data;
+          if (!editor || editor.isDestroyed || !item || editorRef.current !== editor) return;
+          editor.commands.setContent(getDeep(item.props, propPath) ?? "", { emitUpdate: false });
+        };
+        void resolveAndReplaceInlineData(
+          appStoreApi,
+          componentId,
+          propPath,
+          content,
+          () => editState.current.canEdit && editState.current.revision === revision,
           ui,
-        ).catch(() => {
+        ).then((applied) => {
+          if (!applied) {
+            restore();
+            report("canceled");
+          }
+        }).catch(() => {
+          restore();
+          report("failed");
           console.error("Puck could not apply the inline rich text edit.");
         });
       },
@@ -120,6 +156,7 @@ const InlineEditorWrapper = memo(
 
     const handleFocus = useCallback(
       (editor: TipTapEditor) => {
+        editorRef.current = editor;
         appStoreApi.setState({
           currentRichText: {
             inlineComponentId: componentId,

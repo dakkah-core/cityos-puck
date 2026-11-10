@@ -218,6 +218,266 @@ describe("resolveAndReplaceData", () => {
       resolveAndReplaceInlineData(appStore, "Static-1", "label", value, canEdit);
     const label = () => appStore.getState().state.indexes.nodes["Static-1"].data.props.label;
 
+    const defer = () => {
+      let release!: () => void;
+      const promise = new Promise<void>((resolve) => { release = resolve; });
+      return { promise, release };
+    };
+
+    it("keeps a different queued field after dynamic permissions deny a candidate", async () => {
+      const blocked = defer();
+      const started = defer();
+      const original = appStore.getState().config;
+      appStore.setState({
+        config: {
+          ...original,
+          components: {
+            ...original.components,
+            StaticChild: {
+              ...original.components.StaticChild,
+              resolvePermissions: async (data) => {
+                if (data.props.label === "denied") {
+                  started.release();
+                  await blocked.promise;
+                  return { edit: false };
+                }
+                return { edit: true };
+              },
+            },
+          },
+        },
+      });
+      const item = appStore.getState().state.indexes.nodes["Static-1"].data;
+      await appStore.getState().permissions.resolvePermissions({ item });
+
+      const first = edit("denied");
+      await started.promise;
+      const second = resolveAndReplaceInlineData(appStore, "Static-1", "body", "allowed", () => true);
+      blocked.release();
+
+      expect(await first).toBe(false);
+      expect(await second).toBe(true);
+      expect(appStore.getState().state.indexes.nodes["Static-1"].data.props).toEqual(
+        expect.objectContaining({ label: "old", body: "allowed" }),
+      );
+    });
+
+    it("supersedes a same-field edit even if its resolver never settles", async () => {
+      const started = defer();
+      const original = appStore.getState().resolveComponentData;
+      appStore.setState({
+        resolveComponentData: (async (data, trigger) => {
+          if (data.props.label === "first") {
+            started.release();
+            await new Promise<void>(() => {});
+          }
+          return original(data, trigger);
+        }) as typeof original,
+      });
+      const first = edit("first");
+      await started.promise;
+      const second = edit("second");
+      expect(await first).toBe(false);
+      expect(await second).toBe(true);
+      expect(label()).toBe("second");
+    });
+
+    it("queues an edit submitted reentrantly by the replace action", async () => {
+      let submitted = false;
+      let second: Promise<boolean> | undefined;
+      appStore.setState({
+        onAction: (action) => {
+          if (action.type === "replace" && !submitted) {
+            submitted = true;
+            second = resolveAndReplaceInlineData(appStore, "Static-1", "body", "second", () => true);
+          }
+        },
+      });
+      expect(await edit("first")).toBe(true);
+      expect(second).toBeDefined();
+      expect(await second).toBe(true);
+      expect(appStore.getState().state.indexes.nodes["Static-1"].data.props).toEqual(
+        expect.objectContaining({ label: "first", body: "second" }),
+      );
+    });
+
+    it.each(["Static-1", "root"])(
+      "commits different fields in order for %s using the latest component",
+      async (id) => {
+        const blocked = defer();
+        const started = defer();
+        const original = appStore.getState().resolveComponentData;
+        const seen: unknown[] = [];
+        appStore.setState({
+          resolveComponentData: (async (data) => {
+            seen.push({ ...data.props });
+            if (data.props.label === "first" && !data.props.body) {
+              started.release();
+              await blocked.promise;
+            }
+            return { node: data, didChange: true };
+          }) as typeof original,
+        });
+        const first = resolveAndReplaceInlineData(appStore, id, "label", "first", () => true);
+        await started.promise;
+        const second = resolveAndReplaceInlineData(appStore, id, "body", "second", () => true);
+        const third = resolveAndReplaceInlineData(appStore, id, "label", "third", () => true);
+        blocked.release();
+        expect(await Promise.all([first, second, third])).toEqual([true, true, true]);
+        expect(seen).toHaveLength(3);
+        expect(seen[1]).toEqual(expect.objectContaining({ label: "first", body: "second" }));
+        expect(seen[2]).toEqual(expect.objectContaining({ label: "third", body: "second" }));
+        expect(appStore.getState().state.indexes.nodes[id].data.props).toEqual(
+          expect.objectContaining({ label: "third", body: "second" }),
+        );
+      },
+    );
+
+    it.each(["permissions", "replacement", "read-only"])(
+      "cancels queued edits when %s changes while they wait",
+      async (change) => {
+        const blocked = defer();
+        const started = defer();
+        const original = appStore.getState().resolveComponentData;
+        appStore.setState({
+          resolveComponentData: (async (data) => {
+            started.release();
+            await blocked.promise;
+            return { node: data, didChange: true };
+          }) as typeof original,
+        });
+        let editable = true;
+        const first = edit("first");
+        await started.promise;
+        const second = resolveAndReplaceInlineData(appStore, "Static-1", "body", "second", () => editable);
+        if (change === "permissions") {
+          const permissions = appStore.getState().permissions;
+          appStore.setState({ permissions: { ...permissions, globalPermissions: { ...permissions.globalPermissions, edit: false } } });
+          appStore.setState({ permissions });
+        } else if (change === "replacement") {
+          appStore.getState().dispatch({ type: "replace", destinationZone: "root:default-zone", destinationIndex: 2, data: { type: "StaticChild", props: { id: "Static-1", label: "external" } } });
+        } else {
+          editable = false;
+          appStore.setState({ currentRichText: null });
+          editable = true;
+        }
+        expect(await second).toBe(false);
+        blocked.release();
+        await first;
+        expect(appStore.getState().state.indexes.nodes["Static-1"].data.props.body).toBeUndefined();
+      },
+    );
+
+    it("continues with the next field when a preceding candidate is denied", async () => {
+      const blocked = defer();
+      const started = defer();
+      const permissions = appStore.getState().permissions;
+      appStore.setState({
+        permissions: {
+          ...permissions,
+          resolvePermissions: jest.fn(async ({ item } = {}) => {
+            if (item?.props.label === "denied") {
+              started.release();
+              await blocked.promise;
+            }
+          }),
+          getPermissions: ({ item } = {}) => ({
+            ...permissions.globalPermissions,
+            edit: item?.props.label !== "denied",
+          }),
+        },
+      });
+      const first = edit("denied");
+      await started.promise;
+      const second = resolveAndReplaceInlineData(appStore, "Static-1", "body", "allowed", () => true);
+      blocked.release();
+      expect(await first).toBe(false);
+      expect(await second).toBe(true);
+      expect(appStore.getState().state.indexes.nodes["Static-1"].data.props).toEqual(
+        expect.objectContaining({ label: "old", body: "allowed" }),
+      );
+    });
+
+    it("does not apply a queued field after the preceding edit makes it read-only", async () => {
+      const blocked = defer();
+      const started = defer();
+      const original = appStore.getState().resolveComponentData;
+      appStore.setState({
+        resolveComponentData: (async (data) => {
+          started.release();
+          await blocked.promise;
+          return { node: { ...data, readOnly: { body: true } }, didChange: true };
+        }) as typeof original,
+      });
+      const first = edit("first");
+      await started.promise;
+      const second = resolveAndReplaceInlineData(appStore, "Static-1", "body", "second", () => true);
+      blocked.release();
+      expect(await first).toBe(true);
+      expect(await second).toBe(false);
+      const node = appStore.getState().state.indexes.nodes["Static-1"].data;
+      expect(node.readOnly?.body).toBe(true);
+      expect(node.props.body).toBeUndefined();
+    });
+
+    it("does not bypass an active edit when a queued edit is canceled", async () => {
+      const blocked = defer();
+      const started = defer();
+      const original = appStore.getState().resolveComponentData;
+      const resolve = jest.fn(async (data) => {
+        if (data.props.label === "first" && !data.props.body) {
+          started.release();
+          await blocked.promise;
+        }
+        return { node: data, didChange: true };
+      });
+      appStore.setState({ resolveComponentData: resolve as typeof original });
+      const first = edit("first");
+      await started.promise;
+      let editable = true;
+      const canceled = resolveAndReplaceInlineData(appStore, "Static-1", "body", "canceled", () => editable);
+      editable = false;
+      appStore.setState({ currentRichText: null });
+      expect(await canceled).toBe(false);
+      const last = resolveAndReplaceInlineData(appStore, "Static-1", "body", "last", () => true);
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(resolve).toHaveBeenCalledTimes(1);
+      blocked.release();
+      expect(await Promise.all([first, last])).toEqual([true, true]);
+      expect(appStore.getState().state.indexes.nodes["Static-1"].data.props).toEqual(
+        expect.objectContaining({ label: "first", body: "last" }),
+      );
+    });
+
+    it("does not rebase a queued edit across a reentrant state change during dispatch", async () => {
+      const blocked = defer();
+      const started = defer();
+      const original = appStore.getState().resolveComponentData;
+      appStore.setState({
+        resolveComponentData: (async (data) => {
+          if (data.props.label === "first") {
+            started.release();
+            await blocked.promise;
+          }
+          return { node: data, didChange: true };
+        }) as typeof original,
+        onAction: (action) => {
+          if (action.type === "replace") {
+            const state = appStore.getState().state;
+            appStore.setState({ state: { ...state, ui: { ...state.ui } } });
+          }
+        },
+      });
+      const first = edit("first");
+      await started.promise;
+      const second = resolveAndReplaceInlineData(appStore, "Static-1", "body", "second", () => true);
+      blocked.release();
+      expect(await first).toBe(true);
+      expect(await second).toBe(false);
+      expect(appStore.getState().state.indexes.nodes["Static-1"].data.props.body).toBeUndefined();
+    });
+
     it("checks the resolved candidate's edit permission", async () => {
       const permissions = appStore.getState().permissions;
       appStore.setState({
