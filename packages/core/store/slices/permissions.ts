@@ -635,8 +635,7 @@ export const createPermissionsSlice = (
           entry &&
           !invalidEntries.has(entry) &&
           entry?.lastData?.type === "root" &&
-          deepEqual(entry.lastData.props, rootItem.props) &&
-          deepEqual(entry.lastData.readOnly, rootItem.readOnly) &&
+          deepEqual(entry.lastData, rootItem) &&
           inputs?.config === config &&
           inputs.globalPermissions === globalPermissions &&
           inputs.generation === policyGeneration &&
