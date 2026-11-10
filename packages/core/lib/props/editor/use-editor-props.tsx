@@ -35,7 +35,7 @@ const useEditorProps = ({
 
   const componentId = component.props.id;
   const componentIsLoading = useAppStore(
-    (s) => s.componentState[componentId]?.loadingCount > 0,
+    (s) => s.fields.policyPending || s.componentState[componentId]?.loadingCount > 0,
   );
   const componentReadOnly = useAppStore(
     useShallow((s) => s.state.indexes.nodes[componentId]?.data.readOnly),

@@ -14,7 +14,7 @@ export type FieldsSlice = {
   id: string | undefined; // The item the fields belong to ("root" for root). Undefined until registered.
   policyRevision: number;
   policyPending: boolean;
-  refreshPolicyFields?: () => Promise<void>;
+  refreshPolicyFields?: () => Promise<boolean>;
 };
 
 export const createFieldsSlice = (
@@ -39,7 +39,7 @@ export const useRegisterFieldsSlice = (
   const request = useRef(0);
 
   const resolveFields = useCallback(
-    async (reset?: boolean) => {
+    async (reset?: boolean, forPolicyRefresh = false): Promise<boolean> => {
       const version = ++request.current;
       const { fields, lastResolvedData } = appStore.getState().fields;
       const metadata = appStore.getState().metadata;
@@ -53,7 +53,7 @@ export const useRegisterFieldsSlice = (
 
       const componentConfig = getComponentConfig(componentData?.type);
 
-      if (!componentData || !componentConfig) return;
+      if (!componentData || !componentConfig) return false;
 
       const defaultFields = componentConfig.fields || {};
       const resolver = componentConfig.resolveFields;
@@ -101,10 +101,10 @@ export const useRegisterFieldsSlice = (
         // Abort if item has changed during resolution (happens with history)
         if (
           request.current !== version ||
-          appStore.getState().fields.policyPending ||
+          (appStore.getState().fields.policyPending && !forPolicyRefresh) ||
           appStore.getState().selectedItem?.props.id !== id
         ) {
-          return;
+          return false;
         }
 
         // Abort if the config has changed during resolution — the fields were
@@ -112,7 +112,7 @@ export const useRegisterFieldsSlice = (
         // change owns the result. Without this, a slow resolver started just
         // before a config swap can land last and override the new fields.
         if (appStore.getState().config !== config) {
-          return;
+          return false;
         }
 
         appStore.setState({
@@ -122,7 +122,7 @@ export const useRegisterFieldsSlice = (
             lastResolvedData: componentData,
             id: nodeId,
             policyRevision: appStore.getState().fields.policyRevision,
-            policyPending: false,
+            policyPending: appStore.getState().fields.policyPending,
             refreshPolicyFields: appStore.getState().fields.refreshPolicyFields,
           },
         });
@@ -131,12 +131,13 @@ export const useRegisterFieldsSlice = (
           fields: { ...s.fields, fields: defaultFields, id: nodeId },
         }));
       }
+      return true;
     },
     [id],
   );
 
   useEffect(() => {
-    const refreshPolicyFields = () => resolveFields(true);
+    const refreshPolicyFields = () => resolveFields(true, true);
     appStore.setState((s) => ({ fields: { ...s.fields, refreshPolicyFields } }));
     resolveFields(true);
 

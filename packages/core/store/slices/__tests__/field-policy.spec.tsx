@@ -4,6 +4,7 @@ import { useRegisterFieldsSlice } from "../fields";
 import { FieldPolicyRefreshSupersededError } from "../field-policy";
 import { walkAppState } from "../../../lib/data/walk-app-state";
 import type { Config } from "../../../types";
+import { createOnChange } from "../../../components/Puck/components/Fields/on-change";
 
 function deferred<T>() {
   let resolve!: (value: T) => void;
@@ -101,6 +102,85 @@ describe("host field policy refresh", () => {
     slow.resolve({ readOnly: { title: false } });
     await rejected;
     expect(store.getState().selectedItem?.readOnly?.title).toBe(true);
+  });
+
+  it("keeps editing and slot operations denied after rejection until a retry succeeds", async () => {
+    let fail = true;
+    const config: Config = { components: { Box: {
+      render: () => <div />,
+      fields: { title: { type: "text" }, children: { type: "slot" } },
+      resolveData: () => {
+        if (fail) throw new Error("policy unavailable");
+        return { readOnly: { children: true } };
+      },
+    } } };
+    const store = setup(config);
+    const history = store.getState().history;
+    const data = store.getState().state.data;
+    await expect(store.getState().refreshFieldPolicy()).rejects.toThrow("policy unavailable");
+    expect(store.getState().fields.policyPending).toBe(true);
+    expect(store.getState().permissions.getPermissions({ item: store.getState().selectedItem }).edit).toBe(false);
+    expect(store.getState().permissions.getPermissions({ root: true }).insert).toBe(false);
+    const canceled = jest.fn();
+    await createOnChange("title", store, canceled)("unauthorized");
+    expect(store.getState().state.data).toBe(data);
+    expect(store.getState().history).toBe(history);
+    fail = false;
+    await store.getState().refreshFieldPolicy();
+    expect(store.getState().fields.policyPending).toBe(false);
+    expect(store.getState().permissions.getPermissions({ item: store.getState().selectedItem }).edit).toBe(true);
+    expect(store.getState().selectedItem?.readOnly?.children).toBe(true);
+    expect(store.getState().selectedItem?.props.title).toBe("before");
+    expect(store.getState().history).toBe(history);
+  });
+
+  it("keeps the gate closed when an older refresh settles while a newer one is pending", async () => {
+    const first = deferred<any>();
+    const second = deferred<any>();
+    let call = 0;
+    const config: Config = { components: { Box: {
+      render: () => <div />,
+      fields: { title: { type: "text" }, children: { type: "slot" } },
+      resolveData: (data: any) => data.props.id === "box"
+        ? (++call === 1 ? first.promise : second.promise)
+        : { readOnly: {} },
+    } } };
+    const store = setup(config);
+    const old = store.getState().refreshFieldPolicy();
+    const rejected = expect(old).rejects.toBeInstanceOf(FieldPolicyRefreshSupersededError);
+    const current = store.getState().refreshFieldPolicy();
+    first.resolve({ readOnly: {} });
+    await rejected;
+    expect(store.getState().permissions.getPermissions({ root: true }).insert).toBe(false);
+    expect(store.getState().permissions.getPermissions({ item: store.getState().selectedItem }).edit).toBe(false);
+    second.resolve({ readOnly: { children: true } });
+    await current;
+    expect(store.getState().fields.policyPending).toBe(false);
+    expect(store.getState().selectedItem?.readOnly?.children).toBe(true);
+  });
+
+  it("keeps the gate closed when selected resolveFields rejects", async () => {
+    let fail = false;
+    const config: Config = { components: { Box: {
+      render: () => <div />,
+      fields: { title: { type: "text" }, children: { type: "slot" } },
+      resolveFields: (_data, { fields }) => {
+        if (fail) throw new Error("fields unavailable");
+        return fields;
+      },
+    } } };
+    const store = setup(config);
+    renderHook(() => useRegisterFieldsSlice(store, "box"));
+    await waitFor(() => expect(store.getState().fields.id).toBe("box"));
+    fail = true;
+    await act(async () => {
+      await expect(store.getState().refreshFieldPolicy()).rejects.toThrow("fields unavailable");
+    });
+    expect(store.getState().fields.policyPending).toBe(true);
+    expect(store.getState().permissions.getPermissions({ root: true }).insert).toBe(false);
+    fail = false;
+    await act(async () => { await store.getState().refreshFieldPolicy(); });
+    expect(store.getState().fields.policyPending).toBe(false);
   });
 
   it("re-evaluates a history navigation that occurs during refresh", async () => {

@@ -29,8 +29,7 @@ export const createFieldPolicyRefresh = (
       set({ fields: { ...fields, policyPending: pending, policyRevision: fields.policyRevision + 1 } });
     };
     signal(true);
-    let pending = true;
-    try {
+    {
       for (;;) {
         if (version !== generation) throw new FieldPolicyRefreshSupersededError();
         const { state, config, metadata } = get();
@@ -64,15 +63,15 @@ export const createFieldPolicyRefresh = (
           const selectedItem = nextState.ui.itemSelector ? getItem(nextState.ui.itemSelector, nextState) : null;
           set({ state: nextState, selectedItem });
         }
-        signal(false);
-        pending = false;
+        const refreshFields = get().fields.refreshPolicyFields;
+        if (refreshFields && !(await refreshFields())) {
+          throw new FieldPolicyRefreshSupersededError();
+        }
         if (version !== generation) throw new FieldPolicyRefreshSupersededError();
-        await get().fields.refreshPolicyFields?.();
+        signal(false);
         if (version !== generation) throw new FieldPolicyRefreshSupersededError();
         return;
       }
-    } finally {
-      if (pending && version === generation) signal(false);
     }
   };
 };

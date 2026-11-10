@@ -439,6 +439,8 @@ export const createPermissionsSlice = (
 
   const resolveCandidatePermissions: PermissionsSlice["resolveCandidatePermissions"] = async (item) => {
     const before = get();
+    if (before.fields.policyPending) return undefined;
+    const fieldPolicyRevision = before.fields.policyRevision;
     const { config, state, permissions } = before;
     const id = item.props.id;
     const node = state.indexes.nodes[id];
@@ -489,6 +491,8 @@ export const createPermissionsSlice = (
         ? latest.config.root
         : latest.config.components[item.type];
       return (
+        !latest.fields.policyPending &&
+        latest.fields.policyRevision === fieldPolicyRevision &&
         latest.config === config &&
         latestComponentConfig === componentConfig &&
         (item.type === "root" || Object.prototype.hasOwnProperty.call(latest.config.components, item.type)) &&
@@ -554,6 +558,10 @@ export const createPermissionsSlice = (
     getPermissions: ({ item, type, root } = {}) => {
       const { config, permissions, state } = get();
       const { globalPermissions, resolvedPermissions } = permissions;
+
+      // A failed or in-flight field-policy refresh must not expose stale
+      // field or slot grants. A successful refresh releases this gate.
+      if (get().fields.policyPending) return unresolvedPermissions(globalPermissions);
 
       if (item && item.type !== "root") {
         const componentConfig = config.components[item.type];
