@@ -10,6 +10,7 @@ import { StoreApi } from "zustand";
 
 import { useAppStoreApi } from "../../../../store";
 import { getItem } from "../../../../lib/data/get-item";
+import { getSlotField } from "../../../../lib/data/get-slot-field";
 import { getFrame } from "../../../../lib/get-frame";
 import { moveComponent } from "../../../../lib/move-component";
 import { componentDataHasSlots } from "../../../../lib/data/component-has-slots";
@@ -23,6 +24,7 @@ import { OutlineDndStore } from "../store";
 import {
   OutlineDndData,
   OutlineRowDndData,
+  isSourceOrDescendantOfSource,
   zoneAcceptsComponent,
 } from "./compute";
 
@@ -256,12 +258,48 @@ export const onOutlineDragEnd = (
   const outlineDnDState = ctx.outlineDndStore.getState();
   const dragged = outlineDnDState.draggedRow;
   const drop = event.canceled ? null : outlineDnDState.drop;
-  const dispatch = ctx.appStore.getState().dispatch;
+  const app = ctx.appStore.getState();
+  const { dispatch, state, config, permissions } = app;
+
+  // A drag can outlive a permission refresh, config change, or document edit.
+  // Do not use the per-drag collision cache to authorize the final move.
+  const item =
+    dragged &&
+    getItem({ zone: dragged.zoneCompound, index: dragged.index }, state);
+  const sourceZone = dragged && state.indexes.zones[dragged.zoneCompound];
+  const destination = drop && state.indexes.zones[drop.zone];
+  const canMove = Boolean(
+    dragged &&
+      drop &&
+      item &&
+      item.props.id === dragged.itemId &&
+      item.type === dragged.componentType &&
+      permissions.getPermissions({ item }).drag &&
+      sourceZone &&
+      (sourceZone.type !== "slot" ||
+        getSlotField(dragged.zoneCompound, config, state.indexes.nodes)?.type ===
+          "slot") &&
+      destination &&
+      (destination.type !== "slot" ||
+        getSlotField(drop.zone, config, state.indexes.nodes)?.type === "slot") &&
+      Number.isInteger(drop.index) &&
+      drop.index >= 0 &&
+      drop.index <=
+        destination.contentIds.length -
+          (drop.zone === dragged.zoneCompound ? 1 : 0) &&
+      !isSourceOrDescendantOfSource(
+        new Map(),
+        drop.zone.split(":")[0],
+        dragged.itemId,
+        state.indexes.nodes,
+      ) &&
+      zoneAcceptsComponent(new Map(), drop.zone, item.type, config, state.indexes),
+  );
 
   // Make the preview interactive again
   setPreviewFence(false);
 
-  if (dragged && drop) {
+  if (dragged && drop && canMove) {
     // Move the component and select it
     void moveComponent(
       dragged.itemId,
@@ -286,7 +324,7 @@ export const onOutlineDragEnd = (
 
     scrollToComponentWhenSettled(dragged.itemId, ctx.scrollToComponent);
   } else {
-    // Drag was canceled or dropped outside the outline: no move
+    // A canceled, stale, or disallowed drop leaves the document unchanged.
     dispatch({
       type: "setUi",
       ui: { isDragging: false },
