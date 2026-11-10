@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { createAppStore, defaultAppState } from "../../";
-import { ComponentData, Permissions } from "../../../types";
+import { ComponentData, Config, Permissions } from "../../../types";
 import { PermissionResolutionSupersededError, useRegisterPermissionsSlice } from "../permissions";
 import { walkAppState } from "../../../lib/data/walk-app-state";
 
@@ -54,6 +54,62 @@ const refreshRoot = async (store: ReturnType<typeof createAppStore>) => {
 };
 
 describe("permission resolution concurrency", () => {
+  it.each(["item", "root"])("retains the %s candidate refresh query without displacing the committed grant", async (scope) => {
+    const store = createAppStore();
+    const config: Config = {
+      components: { Example: { render: () => <div />, resolvePermissions: async (data) => ({ edit: data.props.value !== "denied" }) } },
+      root: { resolvePermissions: async (data) => ({ edit: data.props?.value !== "denied" }) },
+    };
+    store.setState({ config, state: walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config) });
+    const committed = store.getState().state.indexes.nodes[scope === "root" ? "root" : "one"].data;
+    await resolveItem(store, committed);
+    const oldEntry = store.getState().permissions.cache[committed.props.id];
+    const proposed = { ...committed, props: { ...committed.props, value: "denied" } };
+    await refreshItem(store, proposed);
+
+    const permissions = store.getState().permissions;
+    expect(permissions.cache[committed.props.id]).toBe(oldEntry);
+    expect(permissions.getPermissions({ item: committed }).edit).toBe(true);
+    expect(permissions.getPermissions({ item: { ...proposed, props: { ...proposed.props } } }).edit).toBe(false);
+    const allowed = { ...committed, props: { ...committed.props, value: "allowed" } };
+    await refreshItem(store, allowed);
+    expect(store.getState().permissions.getPermissions({ item: allowed }).edit).toBe(true);
+    await refreshItem(store, committed);
+    expect(store.getState().permissions.getPermissions({ item: allowed }).edit).toBe(false);
+  });
+
+  it("resolves permissions for an inserted child during proposed root data resolution", async () => {
+    const store = createAppStore();
+    const child = item("new-child");
+    const config: Config = {
+      components: { Example: {
+        render: () => <div />,
+        resolveData: async (data) => data,
+        resolvePermissions: async () => ({ edit: true }),
+      } },
+      root: {
+        fields: { children: { type: "slot" as const } },
+        resolveData: async (data) => data,
+        resolvePermissions: async () => ({ edit: true }),
+      },
+    };
+    store.setState({ config, state: walkAppState(defaultAppState, config) });
+    const root = store.getState().state.indexes.nodes.root.data;
+    await resolveItem(store, root);
+    const childDecision = await store.getState().permissions.resolveCandidatePermissions(child);
+    expect(childDecision?.permissions.edit).toBe(true);
+    expect(childDecision?.isCurrent()).toBe(true);
+    const proposed = { ...root, props: { ...root.props, children: [child] } };
+    await store.getState().resolveComponentData(proposed, "replace");
+
+    expect(store.getState().state.indexes.nodes[child.props.id]).toBeUndefined();
+    expect(store.getState().permissions.getPermissions({ item: child }).edit).toBe(true);
+    expect(store.getState().permissions.getPermissions({ item: root }).edit).toBe(true);
+  });
+
   it("keeps candidate decisions separate and invalidates a decision after a current-item refresh", async () => {
     const store = subject(async () => ({ edit: true }));
     const config = store.getState().config;
