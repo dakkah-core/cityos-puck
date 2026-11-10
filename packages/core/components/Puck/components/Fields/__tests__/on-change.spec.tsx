@@ -716,6 +716,114 @@ describe("Fields asynchronous edits", () => {
   );
 
   it.each([
+    ["item", "current", true],
+    ["item", "candidate", true],
+    ["root", "current", true],
+    ["root", "candidate", true],
+    ["item", "current", false],
+    ["item", "candidate", false],
+    ["root", "current", false],
+    ["root", "candidate", false],
+  ])(
+    "reauthorizes queued %s array drafts after UI changes during %s permission (allow=%s)",
+    async (target, phase, allow) => {
+      const { store } = setup();
+      const previous = store.getState();
+      const blocked = deferred();
+      let armed = false;
+      let paused = false;
+      const observedCounts: number[] = [];
+      const decisions: Array<{ count: number; length: number }> = [];
+      const decide = jest.fn(async (item: any, { appState }: any) => {
+        const count = appState.ui.arrayState.items?.items.length ?? 0;
+        observedCounts.push(count);
+        decisions.push({ count, length: item.props.items.length });
+        if (armed && !paused && item.props.items.length === (phase === "current" ? 0 : 1)) {
+          paused = true;
+          await blocked.promise;
+        }
+        return {
+          edit: allow || count < 2 || (phase === "candidate" && item.props.items.length === 0),
+        };
+      });
+      const config = {
+        components: { Example: { render: () => <div />, resolvePermissions: decide } },
+        root: { resolvePermissions: decide },
+      };
+      const items: object[] = [];
+      const parent = { type: "Example", props: { id: "one", items } };
+      const state = walkAppState(
+        {
+          ...previous.state,
+          data: { ...previous.state.data, content: [parent], root: { props: { items } } },
+          ui: { ...previous.state.ui, itemSelector: target === "root" ? null : previous.state.ui.itemSelector },
+        },
+        config,
+      );
+      store.setState({
+        config,
+        state,
+        selectedItem: target === "root" ? null : state.indexes.nodes.one.data,
+        resolveComponentData: (async (data: any) => ({ node: data, didChange: true })) as AppStore["resolveComponentData"],
+      });
+      const fieldStore = createStore<Record<string, any>>(() => ({ items }));
+      const sync = store.subscribe(
+        (s) => s.getCurrentData().props?.items,
+        (value) => fieldStore.setState({ items: value }),
+      );
+      const canceled = jest.fn();
+      const change = createOnChange("items", store, canceled);
+      const edits: Promise<void>[] = [];
+      const view = render(
+        <appStoreContext.Provider value={store}>
+          <fieldContextStore.ctx.Provider value={fieldStore}>
+            <ArrayField
+              id="items"
+              name="items"
+              field={{ type: "array", arrayFields: { title: { type: "text" } } }}
+              value={items}
+              onChange={(value) => {
+                const edit = change(value);
+                edits.push(edit);
+                void edit.catch(() => {});
+              }}
+              Label={({ children }) => <div>{children}</div>}
+            />
+          </fieldContextStore.ctx.Provider>
+        </appStoreContext.Provider>,
+      );
+      // Model another store subscriber issuing a nested notification before
+      // the authorization listener sees the original array UI update.
+      const nested = store.subscribe((next, before) => {
+        if (next.state.ui !== before.state.ui) store.setState({ status: next.status });
+      });
+      try {
+        await store.getState().permissions.resolvePermissions(
+          target === "root" ? { root: true } : { item: store.getState().selectedItem },
+        );
+        armed = true;
+        fireEvent.click(screen.getByRole("button", { name: "Add item" }));
+        await waitFor(() => expect(paused).toBe(true));
+        fireEvent.click(screen.getByRole("button", { name: "Add item" }));
+        await waitFor(() => expect(edits).toHaveLength(2));
+        await act(async () => { await Promise.allSettled(edits); });
+        expect(observedCounts).toContain(2);
+        if (phase === "candidate") {
+          expect(decisions).toContainEqual({ count: 2, length: 1 });
+        }
+        expect(store.getState().getCurrentData().props?.items).toHaveLength(allow ? 2 : 0);
+        expect(canceled).toHaveBeenCalledTimes(allow ? 0 : 1);
+        blocked.resolve();
+      } finally {
+        blocked.resolve();
+        nested();
+        sync();
+        view.unmount();
+      }
+    },
+  );
+
+  it.each([
     ["item", "during resolution"],
     ["root", "during resolution"],
     ["item", "before resolution"],

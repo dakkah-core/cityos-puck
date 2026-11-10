@@ -95,8 +95,9 @@ export const createPermissionsSlice = (
     }
   >();
   // An older grant must not reappear while a newer decision is pending or
-  // after that decision fails. A successful current resolution clears it.
-  const unresolved = new Set<string>();
+  // after that decision fails. Entries are weakly held so discarded item
+  // caches do not leave a separate permanent set of identifiers.
+  const invalidEntries = new WeakSet<Cache[string]>();
   const cancelPending = (id: string) => {
     const request = pending.get(id);
     if (!request) return;
@@ -168,7 +169,7 @@ export const createPermissionsSlice = (
         const inputs = itemCache && cacheInputs.get(itemCache);
         const inputsChanged =
           !inputs ||
-          unresolved.has(item.props.id) ||
+          (itemCache && invalidEntries.has(itemCache)) ||
           inputs.config !== config ||
           inputs.globalPermissions !== globalPermissions ||
           inputs.generation !== policyGeneration ||
@@ -200,7 +201,7 @@ export const createPermissionsSlice = (
           force
         ) {
           cancelPending(item.props.id);
-          unresolved.add(item.props.id);
+          if (itemCache) invalidEntries.add(itemCache);
           let complete!: () => void;
           let fail!: (reason: unknown) => void;
           const completion = new Promise<void>((resolve, reject) => {
@@ -289,7 +290,6 @@ export const createPermissionsSlice = (
                 parent: parentData,
               });
 
-              unresolved.delete(item.props.id);
               set({
                 permissions: {
                   ...latest,
@@ -400,7 +400,8 @@ export const createPermissionsSlice = (
         const parent = parentId ? state.indexes.nodes[parentId]?.data ?? null : null;
         const resolvedForItem =
           componentConfig?.resolvePermissions &&
-          !unresolved.has(item.props.id) &&
+          entry &&
+          !invalidEntries.has(entry) &&
           entry?.lastData?.type === item.type &&
           deepEqual(entry.lastData, item) &&
           entry.lastParentId === parentId &&
@@ -445,7 +446,8 @@ export const createPermissionsSlice = (
           : rootPermissionItem(state.data.root);
         const resolvedForItem =
           rootConfig?.resolvePermissions &&
-          !unresolved.has("root") &&
+          entry &&
+          !invalidEntries.has(entry) &&
           entry?.lastData?.type === "root" &&
           deepEqual(entry.lastData.props, rootItem.props) &&
           deepEqual(entry.lastData.readOnly, rootItem.readOnly) &&

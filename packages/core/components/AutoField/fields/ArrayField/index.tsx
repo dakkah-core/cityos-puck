@@ -392,7 +392,7 @@ export const ArrayField = ({
 
   // Reset array state if number of items changes
   useEffect(() => {
-    const newArrayState = regenerateArrayState(getValue());
+    const newArrayState = regenerateArrayState(getLatestValue());
     setArrayUi(mapArrayStateToUi(newArrayState), false);
   }, [numItems]);
 

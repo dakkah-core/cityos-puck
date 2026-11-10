@@ -43,6 +43,11 @@ export const withArrayFieldUiChange = (
 ) => {
   const depth = arrayUiChanges.get(appStore) ?? 0;
   arrayUiChanges.set(appStore, depth + 1);
+  // Store subscribers can synchronously notify again before later subscribers
+  // see the original UI update, so advance the revision before calling setUi.
+  for (const queue of queues.get(appStore)?.values() ?? []) {
+    queue.arrayUiRevision++;
+  }
   try {
     callback();
   } finally {
@@ -50,6 +55,7 @@ export const withArrayFieldUiChange = (
     else arrayUiChanges.delete(appStore);
   }
 };
+
 type ArrayGuard = { path: string; expected: unknown };
 type ArrayChange = {
   path: string;
@@ -277,10 +283,7 @@ export const createOnChange =
       };
       const active = queue;
       const activeQueues = storeQueues;
-      active.unsubscribe = appStore.subscribe((state, previousState) => {
-        if (arrayUiChanges.has(appStore) && state.state.ui !== previousState.state.ui) {
-          active.arrayUiRevision++;
-        }
+      active.unsubscribe = appStore.subscribe((state) => {
         const current = readTarget(state, active.target);
         const previous = active.snapshot as ReturnType<typeof readTarget>;
         if (
@@ -539,7 +542,11 @@ export const createOnChange =
         while (true) {
           const authorization = await authorize();
           if (authorization === retry) continue;
-          if (authorization && !bindingIsCurrent(authorization) && retryArrayUiChange(authorization)) continue;
+          if (
+            authorization &&
+            !bindingIsCurrent(authorization) &&
+            retryArrayUiChange(authorization)
+          ) continue;
           if (
             !authorization ||
             !bindingIsCurrent(authorization) ||
@@ -578,16 +585,21 @@ export const createOnChange =
             return cancel();
           }
           if (!deepEqual(authorization.target.data, input)) return cancel();
-          const candidateAuthorization = await authorize(resolved.node, authorization);
+          const candidateAuthorization = await authorize(
+            resolved.node,
+            authorization,
+          );
           if (candidateAuthorization === retry) continue;
           if (!candidateAuthorization) return cancel();
           if (!bindingIsCurrent(authorization)) {
             if (retryArrayUiChange(authorization)) continue;
             return cancel();
           }
-          if (appStore.getState().permissions.getPermissions({
-            item: permissionItem(resolved.node),
-          }).edit !== true) return cancel();
+          if (
+            appStore.getState().permissions.getPermissions({
+              item: permissionItem(resolved.node),
+            }).edit !== true
+          ) return cancel();
           break;
         }
         const latest = appStore.getState();
@@ -634,7 +646,11 @@ export const createOnChange =
         while (true) {
           const authorization = await authorize();
           if (authorization === retry) continue;
-          if (authorization && !bindingIsCurrent(authorization) && retryArrayUiChange(authorization)) continue;
+          if (
+            authorization &&
+            !bindingIsCurrent(authorization) &&
+            retryArrayUiChange(authorization)
+          ) continue;
           if (
             !authorization ||
             !bindingIsCurrent(authorization) ||
@@ -675,16 +691,21 @@ export const createOnChange =
             return cancel();
           }
           if (!deepEqual(authorization.target.data, input)) return cancel();
-          const candidateAuthorization = await authorize(candidate, authorization);
+          const candidateAuthorization = await authorize(
+            candidate,
+            authorization,
+          );
           if (candidateAuthorization === retry) continue;
           if (!candidateAuthorization) return cancel();
           if (!bindingIsCurrent(authorization)) {
             if (retryArrayUiChange(authorization)) continue;
             return cancel();
           }
-          if (appStore.getState().permissions.getPermissions({
-            item: permissionItem(candidate),
-          }).edit !== true) return cancel();
+          if (
+            appStore.getState().permissions.getPermissions({
+              item: permissionItem(candidate),
+            }).edit !== true
+          ) return cancel();
           break;
         }
         const latest = appStore.getState();
