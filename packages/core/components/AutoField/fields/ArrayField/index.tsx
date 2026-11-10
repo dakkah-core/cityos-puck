@@ -184,7 +184,7 @@ const ArrayFieldItemInternal = ({
                       localName={localName}
                       field={subField}
                       onChange={onChange}
-                      forceReadOnly={!canEdit}
+                      forceReadOnly={!!readOnly || !canEdit}
                     />
                   );
                 })}

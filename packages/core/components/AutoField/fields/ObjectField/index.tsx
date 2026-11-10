@@ -92,7 +92,7 @@ export const ObjectField = ({
               subName={subName}
               localName={localName}
               field={subField}
-              forceReadOnly={!canEdit}
+              forceReadOnly={!!readOnly || !canEdit}
               onChange={(subValue, ui, subName) => {
                 const topLevelName = name.split(/[.[]/, 1)[0];
                 const pending = getPendingFieldValue(appStore, topLevelName);

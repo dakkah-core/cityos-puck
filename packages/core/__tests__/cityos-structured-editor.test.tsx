@@ -43,6 +43,7 @@ async function fixture(
   readOnly = false,
   type = "GeneratedProfile",
   dictionary: Dictionary = {},
+  readOnlyFields: Record<string, boolean> = {},
 ) {
   const source = structuredRegistration(undefined, type);
   const installed: CityOSPuckInstalledRenderer = {
@@ -62,6 +63,7 @@ async function fixture(
     content: [
       {
         type,
+        readOnly: readOnlyFields,
         props: {
           id: "stable-component",
           profile: { name: "Before", id: "domain-id" },
@@ -182,6 +184,37 @@ describe("generated structured fields in the actual editor", () => {
     })) as HTMLInputElement;
     expect(input.disabled || input.readOnly).toBe(true);
     expect(screen.queryByRole("button", { name: /add/i })).toBeNull();
+  });
+
+  it("propagates a read-only object to its fields without locking siblings", async () => {
+    const f = await fixture(false, "GeneratedProfile", {}, {
+      profile: true,
+      "profile.name": false,
+    });
+    const input = (await screen.findByRole("textbox", {
+      name: "Display name",
+    })) as HTMLInputElement;
+    expect(input.disabled || input.readOnly).toBe(true);
+    const sibling = screen.getByRole("radio", { name: "No" });
+    expect((sibling as HTMLInputElement).disabled).toBe(false);
+    fireEvent.click(sibling);
+    await waitFor(() => {
+      const calls = f.change.mock.calls;
+      expect(calls[calls.length - 1]?.[0].content[0].props.enabled).toBe(false);
+    });
+  });
+
+  it("propagates a read-only array to fields inside its items", async () => {
+    await fixture(false, "GeneratedProfile", {}, { rows: true });
+    fireEvent.click(await screen.findByText("Item #0"));
+    const input = (await screen.findByRole("textbox", {
+      name: "Value",
+    })) as HTMLTextAreaElement;
+    expect(input.disabled || input.readOnly).toBe(true);
+    expect(screen.queryByRole("button", { name: /add/i })).toBeNull();
+    expect(
+      (screen.getByRole("radio", { name: "No" }) as HTMLInputElement).disabled,
+    ).toBe(false);
   });
 
   it("uses the same field editor for a newly named registered component", async () => {

@@ -679,7 +679,7 @@
     {
       "id": "puck-registration",
       "purpose": "Preserve public registration and independently bundled custom fields.",
-      "invariant": "Versioned registration, current permissions, renderer identity, structured values and creation defaults remain compatible.",
+      "invariant": "Versioned registration, current permissions, renderer identity, structured values and creation defaults remain compatible; read-only object and array fields keep their nested controls read-only.",
       "paths": [
         "packages/core/__helpers__/cityos-editor-environment.ts",
         "packages/core/__helpers__/cityos-structured-registration.ts",
@@ -1237,6 +1237,17 @@
         "packages/core/components/AutoField/__tests__/root-permissions.spec.tsx",
         "packages/core/store/slices/__tests__/permissions.spec.tsx",
         "packages/core/store/slices/__tests__/permissions-races.spec.tsx"
+      ]
+    },
+    {
+      "id": "cityos-outline-drop-revalidation",
+      "purpose": "Preserve current permissions and slot rules when an outline drag finishes after editor state changes.",
+      "invariant": "A stale source, revoked drag permission, missing destination or source/destination slot field, out-of-range destination, disallowed slot or descendant target does not move a component.",
+      "paths": [
+        "packages/core/components/LayerTree/lib/__tests__/drag-end.spec.tsx"
+      ],
+      "tests": [
+        "packages/core/components/LayerTree/lib/__tests__/drag-end.spec.tsx"
       ]
     },
     {
