@@ -28,6 +28,12 @@ export type UsePuckData<
   dispatch: AppStore["dispatch"];
   getPermissions: GetPermissions<UserConfig>;
   refreshPermissions: RefreshPermissions<UserConfig>;
+  /**
+   * Re-evaluate resolveData readOnly across the document and the selected
+   * resolveFields after host policy changes. Call separately from
+   * refreshPermissions; resolver failures reject this promise.
+   */
+  refreshFieldPolicy: AppStore["refreshFieldPolicy"];
   resolveDataById: (id: string, trigger?: ResolveDataTrigger) => Promise<void>;
   resolveDataBySelector: (
     selector: ItemSelector,
@@ -64,6 +70,7 @@ type PickedStore = Pick<
   | "dispatch"
   | "selectedItem"
   | "permissions"
+  | "refreshFieldPolicy"
   | "history"
   | "state"
   | "dictionary"
@@ -90,6 +97,7 @@ export const generateUsePuck = (
     dispatch: store.dispatch,
     getPermissions: store.permissions.getPermissions,
     refreshPermissions: store.permissions.refreshPermissions,
+    refreshFieldPolicy: store.refreshFieldPolicy,
     resolveDataById: (id, trigger) => resolveDataById(id, getState, trigger),
     resolveDataBySelector: (selector, trigger) =>
       resolveDataBySelector(selector, getState, trigger),
@@ -126,6 +134,7 @@ const convertToPickedStore = (store: AppStore): PickedStore => {
     config: store.config,
     dispatch: store.dispatch,
     permissions: store.permissions,
+    refreshFieldPolicy: store.refreshFieldPolicy,
     history: store.history,
     selectedItem: store.selectedItem,
     dictionary: store.dictionary,

@@ -1,7 +1,7 @@
 import { ComponentData } from "../../types";
 import type { Fields } from "../../types";
 import { AppStore, useAppStoreApi } from "../";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { getChanged } from "../../lib/get-changed";
 import { makeStatePublic } from "../../lib/data/make-state-public";
 
@@ -12,6 +12,9 @@ export type FieldsSlice = {
   loading: boolean;
   lastResolvedData: Partial<ComponentOrRootData>;
   id: string | undefined; // The item the fields belong to ("root" for root). Undefined until registered.
+  policyRevision: number;
+  policyPending: boolean;
+  refreshPolicyFields?: () => Promise<void>;
 };
 
 export const createFieldsSlice = (
@@ -23,6 +26,8 @@ export const createFieldsSlice = (
     loading: false,
     lastResolvedData: {},
     id: undefined,
+    policyRevision: 0,
+    policyPending: false,
   };
 };
 
@@ -31,9 +36,11 @@ export const useRegisterFieldsSlice = (
   id?: string,
 ) => {
   const nodeId = id || "root";
+  const request = useRef(0);
 
   const resolveFields = useCallback(
     async (reset?: boolean) => {
+      const version = ++request.current;
       const { fields, lastResolvedData } = appStore.getState().fields;
       const metadata = appStore.getState().metadata;
       const nodes = appStore.getState().state.indexes.nodes;
@@ -62,6 +69,7 @@ export const useRegisterFieldsSlice = (
 
       if (resolver) {
         const timeout = setTimeout(() => {
+          if (request.current !== version) return;
           appStore.setState((s) => ({
             fields: { ...s.fields, loading: true },
           }));
@@ -72,20 +80,30 @@ export const useRegisterFieldsSlice = (
 
         const changed = getChanged(componentData, lastData);
 
-        const newFields = await resolver(componentData, {
-          changed,
-          fields: defaultFields,
-          lastFields,
-          metadata: { ...metadata, ...componentConfig.metadata },
-          lastData: lastData as ComponentOrRootData,
-          appState: makeStatePublic(state),
-          parent,
-        });
-
-        clearTimeout(timeout);
+        let newFields: Fields;
+        try {
+          newFields = await resolver(componentData, {
+            changed,
+            fields: defaultFields,
+            lastFields,
+            metadata: { ...metadata, ...componentConfig.metadata },
+            lastData: lastData as ComponentOrRootData,
+            appState: makeStatePublic(state),
+            parent,
+          });
+        } finally {
+          clearTimeout(timeout);
+          if (request.current === version) {
+            appStore.setState((s) => ({ fields: { ...s.fields, loading: false } }));
+          }
+        }
 
         // Abort if item has changed during resolution (happens with history)
-        if (appStore.getState().selectedItem?.props.id !== id) {
+        if (
+          request.current !== version ||
+          appStore.getState().fields.policyPending ||
+          appStore.getState().selectedItem?.props.id !== id
+        ) {
           return;
         }
 
@@ -103,6 +121,9 @@ export const useRegisterFieldsSlice = (
             loading: false,
             lastResolvedData: componentData,
             id: nodeId,
+            policyRevision: appStore.getState().fields.policyRevision,
+            policyPending: false,
+            refreshPolicyFields: appStore.getState().fields.refreshPolicyFields,
           },
         });
       } else {
@@ -115,6 +136,8 @@ export const useRegisterFieldsSlice = (
   );
 
   useEffect(() => {
+    const refreshPolicyFields = () => resolveFields(true);
+    appStore.setState((s) => ({ fields: { ...s.fields, refreshPolicyFields } }));
     resolveFields(true);
 
     const unsubscribeData = appStore.subscribe(
@@ -131,9 +154,24 @@ export const useRegisterFieldsSlice = (
       () => resolveFields(true),
     );
 
+    const unsubscribePolicy = appStore.subscribe(
+      (s) => s.fields.policyRevision,
+      () => {
+        if (appStore.getState().fields.policyPending) {
+          request.current++;
+          appStore.setState((s) => ({ fields: { ...s.fields, loading: false } }));
+        }
+      },
+    );
+
     return () => {
       unsubscribeData();
       unsubscribeConfig();
+      unsubscribePolicy();
+      request.current++;
+      if (appStore.getState().fields.refreshPolicyFields === refreshPolicyFields) {
+        appStore.setState((s) => ({ fields: { ...s.fields, refreshPolicyFields: undefined } }));
+      }
     };
   }, [id]);
 };

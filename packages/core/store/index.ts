@@ -32,6 +32,7 @@ import {
   type PermissionsSlice,
 } from "./slices/permissions";
 import { createFieldsSlice, type FieldsSlice } from "./slices/fields";
+import { createFieldPolicyRefresh } from "./slices/field-policy";
 import { resolveComponentData } from "../lib/resolve-component-data";
 import { walkAppState } from "../lib/data/walk-app-state";
 import { toRoot } from "../lib/data/to-root";
@@ -95,6 +96,7 @@ export type AppStore<
   dictionary: Dictionary;
   dnd?: DndConfig;
   fields: FieldsSlice;
+  refreshFieldPolicy: () => Promise<void>;
   history: HistorySlice;
   nodes: NodesSlice;
   permissions: PermissionsSlice;
@@ -138,6 +140,7 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) => {
       fieldTransforms: {},
       ...initialAppStore,
       fields: createFieldsSlice(set, get),
+      refreshFieldPolicy: createFieldPolicyRefresh(set, get),
       history: createHistorySlice(set, get),
       nodes: createNodesSlice(set, get),
       permissions: createPermissionsSlice(set, get, (invalidate) => {
