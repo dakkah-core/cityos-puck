@@ -36,6 +36,7 @@ import { deepEqual } from "fast-equals";
 import {
   getPendingFieldValue,
   withArrayFieldChange,
+  withArrayFieldUiChange,
   withArrayItemChange,
 } from "../../../Puck/components/Fields/on-change";
 
@@ -210,6 +211,11 @@ export const ArrayField = ({
 }: FieldPropsInternal<object[], ArrayFieldType>) => {
   const setUi = useAppStore((s) => s.setUi);
   const appStoreApi = useAppStoreApi();
+  const setArrayUi = useCallback(
+    (...args: Parameters<typeof setUi>) =>
+      withArrayFieldUiChange(appStoreApi, () => setUi(...args)),
+    [appStoreApi, setUi],
+  );
   const fieldStore = useFieldStoreApi();
   const { localName = name } = useNestedFieldContext();
 
@@ -361,7 +367,7 @@ export const ArrayField = ({
       },
     };
 
-    setUi(newUi, false);
+    setArrayUi(newUi, false);
   }, []);
 
   const updateValue = useCallback(
@@ -372,7 +378,7 @@ export const ArrayField = ({
     ) => {
       const newArrayState = regenerateArrayState(newValue);
 
-      setUi(mapArrayStateToUi(newArrayState), false);
+      setArrayUi(mapArrayStateToUi(newArrayState), false);
       withArrayFieldChange(
         appStoreApi,
         name,
@@ -381,13 +387,13 @@ export const ArrayField = ({
         expected,
       );
     },
-    [regenerateArrayState, setUi, mapArrayStateToUi, onChange, appStoreApi, name],
+    [regenerateArrayState, setArrayUi, mapArrayStateToUi, onChange, appStoreApi, name],
   );
 
   // Reset array state if number of items changes
   useEffect(() => {
     const newArrayState = regenerateArrayState(getValue());
-    setUi(mapArrayStateToUi(newArrayState), false);
+    setArrayUi(mapArrayStateToUi(newArrayState), false);
   }, [numItems]);
 
   const addLabel = useMessage("field-arrayitem-add");
@@ -467,7 +473,7 @@ export const ArrayField = ({
             },
           };
 
-          setUi(newUi, false);
+          setArrayUi(newUi, false);
           valueRef.current = newValue;
         }}
       >
@@ -521,13 +527,13 @@ export const ArrayField = ({
                     }}
                     onToggleExpand={(id, isExpanded) => {
                       if (isExpanded) {
-                        setUi(
+                        setArrayUi(
                           mapArrayStateToUi({
                             openId: "",
                           }),
                         );
                       } else {
-                        setUi(
+                        setArrayUi(
                           mapArrayStateToUi({
                             openId: id,
                           }),

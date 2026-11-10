@@ -54,6 +54,32 @@ const refreshRoot = async (store: ReturnType<typeof createAppStore>) => {
 };
 
 describe("permission resolution concurrency", () => {
+  it.each(["resolve", "refresh"])("coalesces synchronous %s reentry during loading registration", async (mode) => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValue(pending.promise);
+    const store = subject(resolver);
+    const current = item("one");
+    const nested: Promise<void>[] = [];
+    const unsubscribe = store.subscribe((state, previous) => {
+      if (
+        state.pendingLoadTimeouts !== previous.pendingLoadTimeouts &&
+        Object.keys(state.pendingLoadTimeouts).length > 0
+      ) {
+        nested.push(mode === "refresh" ? refreshItem(store, current) : resolveItem(store, current));
+      }
+    });
+    try {
+      const initial = resolveItem(store, current);
+      expect(resolver).toHaveBeenCalledTimes(1);
+      expect(nested).toHaveLength(1);
+      pending.resolve({ edit: true });
+      await Promise.all([initial, ...nested]);
+      expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(true);
+    } finally {
+      unsubscribe();
+    }
+  });
+
   it("waits for a forced current-item refresh before returning its decision", async () => {
     const pending = deferred<Partial<Permissions>>();
     const resolver = jest.fn().mockReturnValueOnce({ edit: true }).mockReturnValueOnce(pending.promise);
@@ -524,13 +550,14 @@ describe("permission resolution concurrency", () => {
     const resolver = jest
       .fn()
       .mockReturnValueOnce({ edit: false })
-      .mockReturnValueOnce(pending.promise);
+      .mockReturnValueOnce(pending.promise)
+      .mockReturnValueOnce({ edit: false });
     const store = subject(resolver);
     const accepted = item("one", "a");
     await store.getState().permissions.resolvePermissions({ item: accepted });
     const pendingCall = resolveItem(store, item("one", "b"));
     await store.getState().permissions.resolvePermissions({ item: accepted });
-    expect(resolver).toHaveBeenCalledTimes(2);
+    expect(resolver).toHaveBeenCalledTimes(3);
     pending.resolve({ edit: true });
     await pendingCall;
     expect(store.getState().permissions.getPermissions({ item: accepted }).edit).toBe(false);
@@ -547,9 +574,9 @@ describe("permission resolution concurrency", () => {
     const current = item("one");
     await store.getState().permissions.resolvePermissions({ item: current });
     const refresh = refreshItem(store, current);
-    await store.getState().permissions.resolvePermissions({ item: current });
+    const observed = store.getState().permissions.resolvePermissions({ item: current });
     pending.resolve({ edit: false });
-    await refresh;
+    await Promise.all([refresh, observed]);
     expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
     expect(resolver).toHaveBeenCalledTimes(2);
   });

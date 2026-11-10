@@ -90,7 +90,8 @@ export const createPermissionsSlice = (
       appState: AppState;
       parent: ComponentData | null;
       cleanup: () => void;
-      completion?: Promise<void>;
+      completion: Promise<void>;
+      starting: boolean;
     }
   >();
   // An older grant must not reappear while a newer decision is pending or
@@ -101,7 +102,7 @@ export const createPermissionsSlice = (
     if (!request) return;
     pending.delete(id);
     // Resolution may be triggered by a synchronous store subscriber.
-    queueMicrotask(request.cleanup);
+    queueMicrotask(() => request.cleanup());
   };
   let policyGeneration = 0;
   registerInvalidation(() => {
@@ -177,8 +178,8 @@ export const createPermissionsSlice = (
 
         const existing = pending.get(item.props.id);
         if (
-          !force &&
-          existing?.completion &&
+          existing &&
+          (!force || existing.starting) &&
           deepEqual(existing.item, item) &&
           existing.parentId === parentId &&
           existing.config === config &&
@@ -200,22 +201,12 @@ export const createPermissionsSlice = (
         ) {
           cancelPending(item.props.id);
           unresolved.add(item.props.id);
-          const clearTimeout = setComponentLoading(item.props.id, true, 50);
-          // Loading bookkeeping notifies subscribers synchronously; a host
-          // may replace the policy during that notification.
-          const afterLoading = get();
-          if (
-            afterLoading.config !== config ||
-            afterLoading.permissions.globalPermissions !== globalPermissions ||
-            !sameAppState(makeStatePublic(afterLoading.state), publicState) ||
-            (item.type === "root"
-              ? afterLoading.config.root?.resolvePermissions
-              : afterLoading.config.components[item.type]?.resolvePermissions) !==
-              resolveForItem
-          ) {
-            clearTimeout();
-            return;
-          }
+          let complete!: () => void;
+          let fail!: (reason: unknown) => void;
+          const completion = new Promise<void>((resolve, reject) => {
+            complete = resolve;
+            fail = reject;
+          });
           const request = {
             item,
             parentId,
@@ -224,13 +215,32 @@ export const createPermissionsSlice = (
             resolver: componentConfig.resolvePermissions,
             appState: publicState,
             parent: parentData,
-            cleanup: clearTimeout,
-            completion: undefined as Promise<void> | undefined,
+            cleanup: () => {},
+            completion,
+            starting: true,
           };
+          // Register before loading and the host callback: both can notify
+          // subscribers synchronously and reenter permission resolution.
           pending.set(item.props.id, request);
 
-          const completion = (async () => {
+          const work = (async () => {
             try {
+              request.cleanup = setComponentLoading(item.props.id, true, 50);
+              // Loading bookkeeping notifies subscribers synchronously; a host
+              // may replace the policy during that notification.
+              const afterLoading = get();
+              if (
+                pending.get(item.props.id) !== request ||
+                afterLoading.config !== config ||
+                afterLoading.permissions.globalPermissions !== globalPermissions ||
+                !sameAppState(makeStatePublic(afterLoading.state), publicState) ||
+                (item.type === "root"
+                  ? afterLoading.config.root?.resolvePermissions
+                  : afterLoading.config.components[item.type]?.resolvePermissions) !==
+                  resolveForItem
+              ) {
+                return;
+              }
               const resolvedPermissions = await resolveForItem(
                 item,
                 {
@@ -297,10 +307,11 @@ export const createPermissionsSlice = (
               if (pending.get(item.props.id) === request) {
                 pending.delete(item.props.id);
               }
-              clearTimeout();
+              request.cleanup();
             }
           })();
-          request.completion = completion;
+          request.starting = false;
+          void work.then(complete, fail);
           await completion;
         } else {
           // Returning to the accepted input must supersede a different

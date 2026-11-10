@@ -18,6 +18,7 @@ type Queue = {
   valid: boolean;
   applying: boolean;
   slotRevision: number;
+  arrayUiRevision: number;
   cancelPending: Set<() => void>;
   values: Map<
     string,
@@ -32,6 +33,23 @@ type Queue = {
 };
 
 const queues = new WeakMap<StoreApi<AppStore>, Map<string, Queue>>();
+const arrayUiChanges = new WeakMap<StoreApi<AppStore>, number>();
+
+// The marker identifies the source of a synchronous notification, not a
+// permission dependency. Any interrupted decision must be resolved again.
+export const withArrayFieldUiChange = (
+  appStore: StoreApi<AppStore>,
+  callback: () => void,
+) => {
+  const depth = arrayUiChanges.get(appStore) ?? 0;
+  arrayUiChanges.set(appStore, depth + 1);
+  try {
+    callback();
+  } finally {
+    if (depth) arrayUiChanges.set(appStore, depth);
+    else arrayUiChanges.delete(appStore);
+  }
+};
 type ArrayGuard = { path: string; expected: unknown };
 type ArrayChange = {
   path: string;
@@ -252,13 +270,17 @@ export const createOnChange =
         valid: true,
         applying: false,
         slotRevision: 0,
+        arrayUiRevision: 0,
         cancelPending: new Set(),
         values: new Map(),
         unsubscribe: () => {},
       };
       const active = queue;
       const activeQueues = storeQueues;
-      active.unsubscribe = appStore.subscribe((state) => {
+      active.unsubscribe = appStore.subscribe((state, previousState) => {
+        if (arrayUiChanges.has(appStore) && state.state.ui !== previousState.state.ui) {
+          active.arrayUiRevision++;
+        }
         const current = readTarget(state, active.target);
         const previous = active.snapshot as ReturnType<typeof readTarget>;
         if (
@@ -374,6 +396,7 @@ export const createOnChange =
         data: AppStore["state"]["data"];
         ui: AppStore["state"]["ui"];
         target: NonNullable<ReturnType<typeof readTarget>>;
+        arrayUiRevision: number;
       }) => {
         const latest = appStore.getState();
         return (
@@ -387,6 +410,19 @@ export const createOnChange =
         );
       };
       type Binding = Parameters<typeof bindingIsCurrent>[0];
+      const retryArrayUiChange = (binding: Binding) => {
+        const latest = appStore.getState();
+        return (
+          !canceled &&
+          active.valid &&
+          active.arrayUiRevision !== binding.arrayUiRevision &&
+          latest.config === binding.config &&
+          latest.permissions.globalPermissions === binding.global &&
+          latest.state.data === binding.data &&
+          deepEqual(readTarget(latest, active.target), binding.target)
+        );
+      };
+      const retry = Symbol("retry array UI authorization");
       const permissionItem = (input: ComponentData | RootData) =>
         active.target.kind === "root"
           ? toComponent({
@@ -397,21 +433,20 @@ export const createOnChange =
       const authorize = async (
         candidate?: ComponentData | RootData,
         expected?: Binding,
-      ): Promise<Binding | undefined> => {
+      ): Promise<Binding | typeof retry | undefined> => {
         const before = appStore.getState();
         const targetData = readTarget(before, active.target);
-        if (
-          !active.valid ||
-          !targetData ||
-          (expected && !bindingIsCurrent(expected))
-        )
-          return;
+        if (!active.valid || !targetData) return;
+        if (expected && !bindingIsCurrent(expected)) {
+          return retryArrayUiChange(expected) ? retry : undefined;
+        }
         const snapshot = {
           config: before.config,
           global: before.permissions.globalPermissions,
           data: before.state.data,
           ui: before.state.ui,
           target: targetData,
+          arrayUiRevision: active.arrayUiRevision,
         };
         const input = candidate ?? targetData.data;
         const item = permissionItem(input);
@@ -427,25 +462,39 @@ export const createOnChange =
         )
           return;
         // Report a superseded decision even if the resolver never settles.
+        let interrupt!: () => void;
+        const interrupted = new Promise<typeof retry>((resolve) => {
+          interrupt = () => resolve(retry);
+        });
         const unsubscribe = appStore.subscribe(() => {
           if (bindingIsCurrent(snapshot)) return;
           unsubscribe();
+          if (arrayUiChanges.has(appStore) && retryArrayUiChange(snapshot)) {
+            interrupt();
+            return;
+          }
           active.valid = false;
           active.unsubscribe();
           if (activeQueues.get(key) === active) activeQueues.delete(key);
           for (const cancelPending of active.cancelPending) cancelPending();
         });
         try {
-          await before.permissions.resolvePermissions({ item });
+          const result = await Promise.race([
+            before.permissions.resolvePermissions({ item }),
+            interrupted,
+          ]);
+          if (result === retry) return retry;
         } finally {
           unsubscribe();
         }
         const latest = appStore.getState();
-        if (
-          !bindingIsCurrent(snapshot) ||
-          (expected && !bindingIsCurrent(expected)) ||
-          latest.permissions.getPermissions({ item }).edit !== true
-        ) return;
+        if (!bindingIsCurrent(snapshot)) {
+          return retryArrayUiChange(snapshot) ? retry : undefined;
+        }
+        if (expected && !bindingIsCurrent(expected)) {
+          return retryArrayUiChange(expected) ? retry : undefined;
+        }
+        if (latest.permissions.getPermissions({ item }).edit !== true) return;
         return snapshot;
       };
 
@@ -489,6 +538,8 @@ export const createOnChange =
         let resolved;
         while (true) {
           const authorization = await authorize();
+          if (authorization === retry) continue;
+          if (authorization && !bindingIsCurrent(authorization) && retryArrayUiChange(authorization)) continue;
           if (
             !authorization ||
             !bindingIsCurrent(authorization) ||
@@ -518,17 +569,27 @@ export const createOnChange =
           input = latestTarget.data;
         }
         if (!active.valid) return cancel();
-        const authorization = await authorize();
-        if (
-          !authorization ||
-          !bindingIsCurrent(authorization) ||
-          !deepEqual(authorization.target.data, input) ||
-          !(await authorize(resolved.node, authorization)) ||
-          !bindingIsCurrent(authorization) ||
-          appStore.getState().permissions.getPermissions({
+        while (true) {
+          const authorization = await authorize();
+          if (authorization === retry) continue;
+          if (!authorization) return cancel();
+          if (!bindingIsCurrent(authorization)) {
+            if (retryArrayUiChange(authorization)) continue;
+            return cancel();
+          }
+          if (!deepEqual(authorization.target.data, input)) return cancel();
+          const candidateAuthorization = await authorize(resolved.node, authorization);
+          if (candidateAuthorization === retry) continue;
+          if (!candidateAuthorization) return cancel();
+          if (!bindingIsCurrent(authorization)) {
+            if (retryArrayUiChange(authorization)) continue;
+            return cancel();
+          }
+          if (appStore.getState().permissions.getPermissions({
             item: permissionItem(resolved.node),
-          }).edit !== true
-        ) return cancel();
+          }).edit !== true) return cancel();
+          break;
+        }
         const latest = appStore.getState();
         const node = latest.state.indexes.nodes[active.target.id];
         const zone = node && `${node.parentId}:${node.zone}`;
@@ -572,6 +633,8 @@ export const createOnChange =
         let resolved;
         while (true) {
           const authorization = await authorize();
+          if (authorization === retry) continue;
+          if (authorization && !bindingIsCurrent(authorization) && retryArrayUiChange(authorization)) continue;
           if (
             !authorization ||
             !bindingIsCurrent(authorization) ||
@@ -603,17 +666,27 @@ export const createOnChange =
         }
         if (!active.valid) return cancel();
         const candidate = resolved ? resolved.node : newProps;
-        const authorization = await authorize();
-        if (
-          !authorization ||
-          !bindingIsCurrent(authorization) ||
-          !deepEqual(authorization.target.data, input) ||
-          !(await authorize(candidate, authorization)) ||
-          !bindingIsCurrent(authorization) ||
-          appStore.getState().permissions.getPermissions({
+        while (true) {
+          const authorization = await authorize();
+          if (authorization === retry) continue;
+          if (!authorization) return cancel();
+          if (!bindingIsCurrent(authorization)) {
+            if (retryArrayUiChange(authorization)) continue;
+            return cancel();
+          }
+          if (!deepEqual(authorization.target.data, input)) return cancel();
+          const candidateAuthorization = await authorize(candidate, authorization);
+          if (candidateAuthorization === retry) continue;
+          if (!candidateAuthorization) return cancel();
+          if (!bindingIsCurrent(authorization)) {
+            if (retryArrayUiChange(authorization)) continue;
+            return cancel();
+          }
+          if (appStore.getState().permissions.getPermissions({
             item: permissionItem(candidate),
-          }).edit !== true
-        ) return cancel();
+          }).edit !== true) return cancel();
+          break;
+        }
         const latest = appStore.getState();
         active.applying = true;
         try {
