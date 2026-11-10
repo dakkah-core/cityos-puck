@@ -54,6 +54,37 @@ const refreshRoot = async (store: ReturnType<typeof createAppStore>) => {
 };
 
 describe("permission resolution concurrency", () => {
+  it("fails closed for unregistered candidate types, including indexed nodes", async () => {
+    const store = subject(async () => ({ edit: true }));
+    const config = store.getState().config;
+    store.setState({ state: walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config) });
+    const indexed = store.getState().state.indexes.nodes.one.data;
+    store.setState({ config: { components: {} } });
+    expect(await store.getState().permissions.resolveCandidatePermissions(indexed)).toBeUndefined();
+    expect(await store.getState().permissions.resolveCandidatePermissions(item("new"))).toBeUndefined();
+  });
+
+  it("allows candidate checks for the optional default root configuration", async () => {
+    const store = createAppStore();
+    const config = store.getState().config;
+    store.setState({ state: walkAppState(defaultAppState, config) });
+    const root = store.getState().state.indexes.nodes.root.data;
+    const decision = await store.getState().permissions.resolveCandidatePermissions(root);
+    expect(decision?.permissions.edit).toBe(true);
+    expect(decision?.isCurrent()).toBe(true);
+  });
+
+  it("invalidates an existing candidate decision if its type is removed in place", async () => {
+    const store = subject(async () => ({ edit: true }));
+    const decision = await store.getState().permissions.resolveCandidatePermissions(item("new"));
+    expect(decision?.isCurrent()).toBe(true);
+    delete store.getState().config.components.Example;
+    expect(decision?.isCurrent()).toBe(false);
+  });
+
   it.each(["item", "root"])("retains the %s candidate refresh query without displacing the committed grant", async (scope) => {
     const store = createAppStore();
     const config: Config = {

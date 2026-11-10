@@ -118,6 +118,8 @@ export const createPermissionsSlice = (
   // even when a refresh subsequently restores the same permissions.
   const requestVersions = new WeakMap<ComponentData, number>();
   const candidateVersions = new WeakMap<ComponentData, number>();
+  // An uncommitted node has no stable object in the index to key a weak map.
+  let permissionRequestGeneration = 0;
   const candidateCache = new WeakMap<ComponentData, {
     item: ComponentData;
     permissions: Permissions;
@@ -162,6 +164,7 @@ export const createPermissionsSlice = (
       item: ComponentData,
       force: boolean = false,
     ): Promise<void> => {
+      permissionRequestGeneration++;
       const committed = get().state.indexes.nodes[item.props.id]?.data;
       if (committed) {
         requestVersions.set(committed, (requestVersions.get(committed) ?? 0) + 1);
@@ -434,15 +437,19 @@ export const createPermissionsSlice = (
     const { config, state, permissions } = before;
     const id = item.props.id;
     const node = state.indexes.nodes[id];
-    if (!node || node.data.type !== item.type) return undefined;
-    const parentId = node.parentId;
+    if (node && node.data.type !== item.type) return undefined;
+    const committed = node?.data;
+    const parentId = node?.parentId;
     const parent = parentId ? state.indexes.nodes[parentId]?.data ?? null : null;
     const componentConfig = item.type === "root" ? config.root : config.components[item.type];
+    // Root configuration is optional, but a component type must be registered.
+    if (item.type !== "root" && !componentConfig) return undefined;
     const resolver = componentConfig?.resolvePermissions;
     const entry = permissions.cache[id];
     const decision = permissions.resolvedPermissions[id];
-    const version = requestVersions.get(node.data) ?? 0;
-    const candidateVersion = candidateVersions.get(node.data) ?? 0;
+    const version = committed ? requestVersions.get(committed) ?? 0 : 0;
+    const candidateVersion = committed ? candidateVersions.get(committed) ?? 0 : 0;
+    const requestGeneration = permissionRequestGeneration;
     const generation = policyGeneration;
     const publicState = makeStatePublic(state);
     const initialPermissions = { ...permissions.globalPermissions, ...componentConfig?.permissions } as Permissions;
@@ -464,16 +471,21 @@ export const createPermissionsSlice = (
       const latestParent = latestNode?.parentId
         ? latest.state.indexes.nodes[latestNode.parentId]?.data ?? null
         : null;
+      const latestComponentConfig = item.type === "root"
+        ? latest.config.root
+        : latest.config.components[item.type];
       return (
         latest.config === config &&
+        latestComponentConfig === componentConfig &&
         latest.permissions.globalPermissions === permissions.globalPermissions &&
         policyGeneration === generation &&
-        (requestVersions.get(node.data) ?? 0) === version &&
-        (candidateVersions.get(node.data) ?? 0) === candidateVersion &&
+        (!committed || (requestVersions.get(committed) ?? 0) === version) &&
+        (!committed || (candidateVersions.get(committed) ?? 0) === candidateVersion) &&
+        (committed || permissionRequestGeneration === requestGeneration) &&
         latest.permissions.cache[id] === entry &&
         latest.permissions.resolvedPermissions[id] === decision &&
         sameAppState(makeStatePublic(latest.state), publicState) &&
-        latestNode?.data === node.data && latestNode?.parentId === parentId &&
+        latestNode?.data === committed && latestNode?.parentId === parentId &&
         deepEqual(latestParent, parent) &&
         deepEqual(initialPermissions, {
           ...latest.permissions.globalPermissions,
