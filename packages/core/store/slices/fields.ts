@@ -139,7 +139,13 @@ export const useRegisterFieldsSlice = (
   useEffect(() => {
     const refreshPolicyFields = () => resolveFields(true, true);
     appStore.setState((s) => ({ fields: { ...s.fields, refreshPolicyFields } }));
-    resolveFields(true);
+    if (appStore.getState().fields.policyPending) {
+      // A selected-field resolver can be superseded by navigation during a
+      // policy refresh. Restart the current selection under the closed gate.
+      void appStore.getState().refreshFieldPolicy().catch(() => {});
+    } else {
+      resolveFields(true);
+    }
 
     const unsubscribeData = appStore.subscribe(
       (s) => s.state.indexes.nodes[nodeId],

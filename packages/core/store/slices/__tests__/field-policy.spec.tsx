@@ -30,6 +30,35 @@ function setup(config: Config) {
 }
 
 describe("host field policy refresh", () => {
+  it("restarts a superseded selected-field refresh after navigation", async () => {
+    const slow = deferred<any>();
+    let held = false;
+    const config: Config = { components: { Box: {
+      render: () => <div />,
+      fields: { title: { type: "text" }, children: { type: "slot" } },
+      resolveData: (data: any) => {
+        if (data.props.id === "box" && !held) { held = true; return slow.promise; }
+        return { readOnly: undefined };
+      },
+    } } };
+    const store = setup(config);
+    const { rerender } = renderHook(
+      ({ id }: { id: string }) => useRegisterFieldsSlice(store, id),
+      { initialProps: { id: "box" } },
+    );
+    await waitFor(() => expect(store.getState().fields.id).toBe("box"));
+
+    const superseded = store.getState().refreshFieldPolicy();
+    const rejected = expect(superseded).rejects.toBeInstanceOf(FieldPolicyRefreshSupersededError);
+    store.setState({ selectedItem: store.getState().state.indexes.nodes.child.data });
+    rerender({ id: "child" });
+
+    await waitFor(() => expect(store.getState().fields.policyPending).toBe(false));
+    expect(store.getState().fields.id).toBe("child");
+    slow.resolve({ readOnly: undefined });
+    await rejected;
+  });
+
   it("refreshes root, nested nodes and selected fields without writing props or history", async () => {
     let locked = false;
     const resolveData = jest.fn((data: any) => ({
