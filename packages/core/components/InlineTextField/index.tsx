@@ -6,9 +6,9 @@ import { registerOverlayPortal } from "../../lib/overlay-portal";
 import { useAppStoreApi } from "../../store";
 
 import getClassNameFactory from "../../lib/get-class-name-factory";
-import { resolveAndReplaceData } from "../../lib/data/resolve-and-replace-data";
+import { resolveAndReplaceInlineData } from "../../lib/data/resolve-and-replace-data";
 import { getSelectorForId } from "../../lib/get-selector-for-id";
-import { setDeep } from "../../lib/data/set-deep";
+import { getDeep } from "../../lib/data/get-deep";
 
 import styles from "./styles.module.css";
 
@@ -32,6 +32,17 @@ const InlineTextFieldInternal = ({
   const ref = useRef<HTMLHeadingElement>(null);
   const appStoreApi = useAppStoreApi();
   const disableLineBreaks = opts.disableLineBreaks ?? false;
+  const editState = useRef({ isReadOnly, revision: 0, input: 0 });
+  if (editState.current.isReadOnly !== isReadOnly) {
+    editState.current.isReadOnly = isReadOnly;
+    editState.current.revision++;
+  }
+  useEffect(
+    () => () => {
+      editState.current.revision++;
+    },
+    [],
+  );
 
   useEffect(() => {
     const appStore = appStoreApi.getState();
@@ -58,24 +69,38 @@ const InlineTextFieldInternal = ({
 
       const cleanupPortal = registerOverlayPortal(ref.current);
 
-      const handleInput = async (e: any) => {
-        const appStore = appStoreApi.getState();
-        const node = appStore.state.indexes.nodes[componentId];
-
+      const handleInput = (e: any) => {
+        if (isReadOnly) return;
         let value = e.target.innerText;
 
         if (disableLineBreaks) {
           value = value.replaceAll(/\n/gm, "");
         }
 
-        const newProps = setDeep(node.data.props, propPath, value);
-
-        await resolveAndReplaceData(
-          { ...node.data, props: newProps },
-          appStoreApi.getState,
-          "replace",
-          true,
-        );
+        const revision = editState.current.revision;
+        const input = ++editState.current.input;
+        const restore = () => {
+          if (input !== editState.current.input || !ref.current) return;
+          const node = appStoreApi.getState().state.indexes.nodes[componentId];
+          if (node)
+            ref.current.replaceChildren(getDeep(node.data.props, propPath) ?? "");
+        };
+        void resolveAndReplaceInlineData(
+          appStoreApi,
+          componentId,
+          propPath,
+          value,
+          () =>
+            !editState.current.isReadOnly &&
+            editState.current.revision === revision,
+        )
+          .then((applied) => {
+            if (!applied) restore();
+          })
+          .catch(() => {
+            restore();
+            console.error("Puck could not apply the inline text edit.");
+          });
       };
 
       ref.current.addEventListener("input", handleInput);
@@ -86,7 +111,15 @@ const InlineTextFieldInternal = ({
         cleanupPortal?.();
       };
     }
-  }, [appStoreApi, ref.current, value, disableLineBreaks]);
+  }, [
+    appStoreApi,
+    componentId,
+    propPath,
+    ref.current,
+    value,
+    isReadOnly,
+    disableLineBreaks,
+  ]);
 
   // We disable contentEditable when not hovering or already focused,
   // otherwise Safari focuses the element during drag. Related:
@@ -99,7 +132,9 @@ const InlineTextFieldInternal = ({
       className={getClassName()}
       data-placeholder={placeholder}
       ref={ref}
-      contentEditable={isHovering || isFocused ? "plaintext-only" : "false"}
+      contentEditable={
+        !isReadOnly && (isHovering || isFocused) ? "plaintext-only" : "false"
+      }
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();

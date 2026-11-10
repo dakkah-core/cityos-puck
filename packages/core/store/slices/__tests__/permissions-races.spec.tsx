@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { createAppStore } from "../../";
 import { ComponentData, Permissions } from "../../../types";
-import { useRegisterPermissionsSlice } from "../permissions";
+import { PermissionResolutionSupersededError, useRegisterPermissionsSlice } from "../permissions";
 import { walkAppState } from "../../../lib/data/walk-app-state";
 
 function deferred<T>() {
@@ -54,6 +54,76 @@ const refreshRoot = async (store: ReturnType<typeof createAppStore>) => {
 };
 
 describe("permission resolution concurrency", () => {
+  it("preserves a reentrant loading update when a superseded request cleans up", async () => {
+    jest.useFakeTimers();
+    const old = deferred<Partial<Permissions>>();
+    const store = subject(jest.fn().mockReturnValue(old.promise));
+    const current = item("one");
+    const first = refreshItem(store, current);
+    const rejection = expect(first).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
+    jest.advanceTimersByTime(50);
+    expect(store.getState().componentState.one.loadingCount).toBe(1);
+
+    let updated = false;
+    const unsubscribe = store.subscribe((state, previous) => {
+      if (!updated && state.pendingLoadTimeouts !== previous.pendingLoadTimeouts &&
+          Object.keys(state.pendingLoadTimeouts).length === 0) {
+        updated = true;
+        store.setState({
+          componentState: {
+            ...state.componentState,
+            one: { ...state.componentState.one, loadingCount: 2 },
+          },
+        });
+      }
+    });
+    try {
+      store.setState({ config: { components: {} } });
+      await rejection;
+      // Let the canceled request's deferred cleanup run without waiting for
+      // the obsolete resolver.
+      await Promise.resolve();
+      expect(updated).toBe(true);
+      expect(store.getState().componentState.one.loadingCount).toBe(1);
+      old.resolve({ edit: true });
+      await old.promise;
+    } finally {
+      unsubscribe();
+      jest.useRealTimers();
+    }
+  });
+
+  it("supersedes a decision when cleanup synchronously starts a refresh", async () => {
+    const firstDecision = deferred<Partial<Permissions>>();
+    const secondDecision = deferred<Partial<Permissions>>();
+    const store = subject(
+      jest.fn().mockReturnValueOnce(firstDecision.promise).mockReturnValueOnce(secondDecision.promise),
+    );
+    const current = item("one");
+    let second: Promise<void> | undefined;
+    const unsubscribe = store.subscribe((state, previous) => {
+      if (!second && state.pendingLoadTimeouts !== previous.pendingLoadTimeouts &&
+          Object.keys(state.pendingLoadTimeouts).length === 0) {
+        // Mark reentry before refresh registers its own loading timeout.
+        second = Promise.resolve();
+        second = refreshItem(store, current);
+      }
+    });
+    try {
+      const first = refreshItem(store, current);
+      const rejection = expect(first).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
+      firstDecision.resolve({ edit: true });
+      await rejection;
+      expect(second).toBeDefined();
+      expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+      secondDecision.resolve({ edit: false });
+      await second;
+      expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    } finally {
+      unsubscribe();
+    }
+  });
+
   it.each(["resolve", "refresh"])("coalesces synchronous %s reentry during loading registration", async (mode) => {
     const pending = deferred<Partial<Permissions>>();
     const resolver = jest.fn().mockReturnValue(pending.promise);
@@ -78,6 +148,79 @@ describe("permission resolution concurrency", () => {
     } finally {
       unsubscribe();
     }
+  });
+
+  it("runs a new forced decision after synchronous resolver reentry", async () => {
+    let allowed = true;
+    let nested: Promise<void> | undefined;
+    const fresh = deferred<Partial<Permissions>>();
+    const current = item("one");
+    let store: ReturnType<typeof createAppStore>;
+    const resolver = jest.fn(() => {
+      const captured = allowed;
+      if (!nested) {
+        allowed = false;
+        nested = refreshItem(store, current);
+        return { edit: captured };
+      }
+      return fresh.promise;
+    });
+    store = subject(resolver);
+    const initial = refreshItem(store, current);
+    const initialRejection = expect(initial).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
+    expect(nested).toBeDefined();
+    await initialRejection;
+    expect(resolver).toHaveBeenCalledTimes(2);
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+    fresh.resolve({ edit: allowed });
+    await nested;
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+  });
+
+  it("does not let deferred reentry supersede a later forced request", async () => {
+    let nested: Promise<void> | undefined;
+    let store: ReturnType<typeof createAppStore>;
+    const current = item("one");
+    const latest = deferred<Partial<Permissions>>();
+    const resolver = jest.fn(() => {
+      if (!nested) {
+        nested = refreshItem(store, current);
+        return { edit: true };
+      }
+      return latest.promise;
+    });
+    store = subject(resolver);
+    const initial = refreshItem(store, current);
+    const initialRejection = expect(initial).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
+    const nestedRejection = expect(nested).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
+    const newest = refreshItem(store, current);
+    await Promise.all([initialRejection, nestedRejection]);
+    expect(resolver).toHaveBeenCalledTimes(2);
+    latest.resolve({ edit: false });
+    await newest;
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
+  });
+
+  it("does not deadlock if a resolver awaits its reentrant forced refresh", async () => {
+    let nested: Promise<void> | undefined;
+    let store: ReturnType<typeof createAppStore>;
+    const current = item("one");
+    const fresh = deferred<Partial<Permissions>>();
+    const resolver = jest.fn(() => {
+      if (!nested) {
+        nested = refreshItem(store, current);
+        return nested.then(() => ({ edit: true }));
+      }
+      return fresh.promise;
+    });
+    store = subject(resolver);
+    const initial = refreshItem(store, current);
+    const rejection = expect(initial).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
+    await rejection;
+    expect(resolver).toHaveBeenCalledTimes(2);
+    fresh.resolve({ edit: false });
+    await nested;
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
   });
 
   it("waits for a forced current-item refresh before returning its decision", async () => {
@@ -125,9 +268,17 @@ describe("permission resolution concurrency", () => {
     await resolveItem(store, current);
     const oldRefresh = refreshItem(store, current);
     const authorization = resolveItem(store, current);
+    const oldRejection = expect(oldRefresh).rejects.toMatchObject({
+      name: "PermissionResolutionSupersededError",
+      code: "PUCK_PERMISSION_SUPERSEDED",
+    });
+    const authorizationRejection = expect(authorization).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
     const latestRefresh = refreshItem(store, current);
+    await Promise.all([oldRejection, authorizationRejection]);
+    // Neither the old resolver nor the replacement has settled yet.
+    expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
     old.resolve({ edit: true });
-    await Promise.all([oldRefresh, authorization]);
+    await old.promise;
     expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
     latest.resolve({ edit: false });
     await latestRefresh;
@@ -163,7 +314,7 @@ describe("permission resolution concurrency", () => {
         return cleanup;
       },
     });
-    await resolveItem(store, item("one"));
+    await expect(resolveItem(store, item("one"))).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
     expect(resolver).not.toHaveBeenCalled();
     expect(cleanup).toHaveBeenCalledTimes(1);
   });
@@ -324,11 +475,12 @@ describe("permission resolution concurrency", () => {
     const store = subject(resolver);
     const current = item("one");
     const oldCall = refreshItem(store, current);
+    const oldRejection = expect(oldCall).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
     const { state } = store.getState();
     store.setState({ state: { ...state, ui: { ...state.ui, previewMode: "interactive" } } });
     await resolveItem(store, current);
     old.resolve({ edit: true });
-    await oldCall;
+    await oldRejection;
     expect(resolver).toHaveBeenCalledTimes(2);
     expect(resolver.mock.calls[1][1].appState.ui.previewMode).toBe("interactive");
     expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
@@ -481,12 +633,13 @@ describe("permission resolution concurrency", () => {
     const store = subject(jest.fn().mockReturnValue(pending.promise));
     const current = item("one");
     const call = refreshItem(store, current);
+    const rejection = expect(call).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
     const component = store.getState().config.components.Example;
     component.permissions = { edit: false };
     component.resolvePermissions = jest.fn().mockResolvedValue({ edit: false });
 
     pending.resolve({ edit: true });
-    await call;
+    await rejection;
     expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
     expect(store.getState().permissions.resolvedPermissions.one).toBeUndefined();
   });
@@ -503,11 +656,12 @@ describe("permission resolution concurrency", () => {
     const second = item("one", "new");
 
     const firstCall = resolveItem(store, first);
+    const firstRejection = expect(firstCall).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
     const secondCall = resolveItem(store, second);
     newer.resolve({ edit: false });
     await secondCall;
     older.resolve({ edit: true });
-    await firstCall;
+    await firstRejection;
 
     expect(store.getState().permissions.getPermissions({ item: second }).edit).toBe(
       false,
@@ -532,13 +686,14 @@ describe("permission resolution concurrency", () => {
     const accepted = store.getState().permissions.cache.one;
 
     const olderCall = refreshItem(store, current);
+    const olderRejection = expect(olderCall).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
     const newerCall = refreshItem(store, current);
     const rejection = expect(newerCall).rejects.toThrow("denied refresh");
     expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
     newer.reject(new Error("denied refresh"));
     await rejection;
     older.resolve({ edit: true });
-    await olderCall;
+    await olderRejection;
 
     expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(false);
     expect(store.getState().permissions.cache.one).toBe(accepted);
@@ -556,10 +711,11 @@ describe("permission resolution concurrency", () => {
     const accepted = item("one", "a");
     await store.getState().permissions.resolvePermissions({ item: accepted });
     const pendingCall = resolveItem(store, item("one", "b"));
+    const pendingRejection = expect(pendingCall).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
     await store.getState().permissions.resolvePermissions({ item: accepted });
     expect(resolver).toHaveBeenCalledTimes(3);
     pending.resolve({ edit: true });
-    await pendingCall;
+    await pendingRejection;
     expect(store.getState().permissions.getPermissions({ item: accepted }).edit).toBe(false);
     expect(store.getState().permissions.cache.one.lastData).toEqual(accepted);
   });
@@ -643,9 +799,11 @@ describe("permission resolution concurrency", () => {
     const first = item("config");
     const second = item("global");
     const firstCall = refreshItem(store, first);
+    const firstRejection = expect(firstCall).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
     store.setState({ config: { components: {} } });
     store.setState({ config });
     const secondCall = refreshItem(store, second);
+    const secondRejection = expect(secondCall).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
     store.setState({
       permissions: {
         ...store.getState().permissions,
@@ -655,9 +813,11 @@ describe("permission resolution concurrency", () => {
     store.setState({
       permissions: { ...store.getState().permissions, globalPermissions: globals },
     });
+    // Invalidation settles both callers without waiting for their resolvers.
+    await Promise.all([firstRejection, secondRejection]);
     configRequest.resolve({ edit: true });
     globalRequest.resolve({ edit: true });
-    await Promise.all([firstCall, secondCall]);
+    await Promise.all([configRequest.promise, globalRequest.promise]);
     expect(store.getState().permissions.resolvedPermissions.config).toBeUndefined();
     expect(store.getState().permissions.resolvedPermissions.global).toBeUndefined();
   });
@@ -713,13 +873,14 @@ describe("permission resolution concurrency", () => {
     const firstCall = refreshItem(store, first);
     const secondCall = refreshItem(store, second);
     const oldRootCall = refreshRoot(store);
+    const oldRootRejection = expect(oldRootCall).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
     const newRootCall = refreshRoot(store);
     rootNew.resolve({ edit: false });
     two.resolve({ edit: false });
     await Promise.all([newRootCall, secondCall]);
     rootOld.resolve({ edit: true });
     one.resolve({ delete: false });
-    await Promise.all([oldRootCall, firstCall]);
+    await Promise.all([oldRootRejection, firstCall]);
     expect(store.getState().permissions.getPermissions({ root: true }).edit).toBe(false);
     expect(store.getState().permissions.getPermissions({ item: first }).delete).toBe(false);
     expect(store.getState().permissions.getPermissions({ item: second }).edit).toBe(false);
@@ -776,6 +937,35 @@ describe("permission resolution concurrency", () => {
     expect(store.getState().componentState.root?.loadingCount || 0).toBe(0);
   });
 
+  it("propagates supersession through component-data resolution and cleans up loading", async () => {
+    const first = deferred<Partial<Permissions>>();
+    const replacement = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValueOnce(first.promise).mockReturnValueOnce(replacement.promise);
+    const store = createAppStore();
+    store.setState({
+      config: {
+        components: {},
+        root: {
+          resolveData: (data) => ({ props: data.props }),
+          resolvePermissions: resolver,
+        },
+      },
+    });
+    const data = store.getState().resolveComponentData({ props: { title: "root" } }, "force");
+    const dataRejection = expect(data).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
+    await waitFor(() => expect(resolver).toHaveBeenCalledTimes(1));
+    const refresh = refreshRoot(store);
+    await dataRejection;
+    expect(store.getState().permissions.getPermissions({ root: true }).edit).toBe(false);
+    replacement.resolve({ edit: false });
+    await refresh;
+    first.resolve({ edit: true });
+    await first.promise;
+    expect(store.getState().permissions.getPermissions({ root: true }).edit).toBe(false);
+    expect(store.getState().pendingLoadTimeouts).toEqual({});
+    expect(store.getState().componentState.root?.loadingCount || 0).toBe(0);
+  });
+
   it("cleans up parent loading when a child resolver rejects", async () => {
     const store = createAppStore();
     store.setState({
@@ -820,6 +1010,7 @@ describe("permission resolution concurrency", () => {
       );
       const current = item("one");
       const slowCall = refreshItem(store, current);
+      const slowRejection = expect(slowCall).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
       jest.advanceTimersByTime(50);
       expect(store.getState().componentState.one.loadingCount).toBe(1);
       const fastCall = refreshItem(store, current);
@@ -828,7 +1019,7 @@ describe("permission resolution concurrency", () => {
       await rejection;
       expect(store.getState().componentState.one.loadingCount).toBe(0);
       slow.resolve({ edit: true });
-      await slowCall;
+      await slowRejection;
       expect(store.getState().componentState.one.loadingCount).toBe(0);
       expect(store.getState().pendingLoadTimeouts).toEqual({});
       jest.advanceTimersByTime(50);
@@ -847,13 +1038,14 @@ describe("permission resolution concurrency", () => {
       );
       const current = item("one");
       const oldCall = refreshItem(store, current);
+      const oldRejection = expect(oldCall).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
       jest.advanceTimersByTime(50);
       expect(store.getState().componentState.one.loadingCount).toBe(1);
       await refreshItem(store, current);
       expect(store.getState().componentState.one.loadingCount).toBe(0);
       expect(store.getState().permissions.getPermissions({ item: current }).edit).toBe(true);
       old.resolve({ edit: false });
-      await oldCall;
+      await oldRejection;
       expect(store.getState().componentState.one.loadingCount).toBe(0);
     } finally {
       jest.useRealTimers();

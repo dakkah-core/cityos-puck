@@ -56,6 +56,17 @@ export type RefreshPermissions<UserConfig extends Config = Config> = (
   force?: boolean,
 ) => Promise<void>;
 
+// A rejected request did not complete with a current decision. Callers may retry
+// against the latest inputs; the replacement request remains independent.
+export class PermissionResolutionSupersededError extends Error {
+  readonly code = "PUCK_PERMISSION_SUPERSEDED";
+
+  constructor() {
+    super("Permission resolution was superseded before completion.");
+    this.name = "PermissionResolutionSupersededError";
+  }
+}
+
 type Cache = Record<
   string,
   {
@@ -91,7 +102,9 @@ export const createPermissionsSlice = (
       parent: ComponentData | null;
       cleanup: () => void;
       completion: Promise<void>;
+      reject: (reason: unknown) => void;
       starting: boolean;
+      invokingResolver: boolean;
     }
   >();
   // An older grant must not reappear while a newer decision is pending or
@@ -102,6 +115,7 @@ export const createPermissionsSlice = (
     const request = pending.get(id);
     if (!request) return;
     pending.delete(id);
+    request.reject(new PermissionResolutionSupersededError());
     // Resolution may be triggered by a synchronous store subscriber.
     queueMicrotask(() => request.cleanup());
   };
@@ -110,6 +124,9 @@ export const createPermissionsSlice = (
     const obsolete = [...pending.values()];
     pending.clear();
     policyGeneration++;
+    obsolete.forEach((request) =>
+      request.reject(new PermissionResolutionSupersededError()),
+    );
     // Invalidation is called by a store subscriber; clean up after the
     // current notification instead of issuing nested store notifications.
     queueMicrotask(() => obsolete.forEach((request) => request.cleanup()));
@@ -132,7 +149,7 @@ export const createPermissionsSlice = (
     const resolvePermissionsForItem = async (
       item: ComponentData,
       force: boolean = false,
-    ) => {
+    ): Promise<void> => {
       const {
         config,
         state: appState,
@@ -178,6 +195,15 @@ export const createPermissionsSlice = (
           inputs.resolver !== componentConfig.resolvePermissions;
 
         const existing = pending.get(item.props.id);
+        // Avoid recursive resolver calls while ensuring a forced reentry does
+        // not reuse external policy already captured by the running resolver.
+        if (force && existing?.invokingResolver) {
+          await Promise.resolve();
+          if (pending.get(item.props.id) !== existing) {
+            throw new PermissionResolutionSupersededError();
+          }
+          return resolvePermissionsForItem(item, true);
+        }
         if (
           existing &&
           (!force || existing.starting) &&
@@ -218,7 +244,9 @@ export const createPermissionsSlice = (
             parent: parentData,
             cleanup: () => {},
             completion,
+            reject: fail,
             starting: true,
+            invokingResolver: false,
           };
           // Register before loading and the host callback: both can notify
           // subscribers synchronously and reenter permission resolution.
@@ -226,7 +254,13 @@ export const createPermissionsSlice = (
 
           const work = (async () => {
             try {
-              request.cleanup = setComponentLoading(item.props.id, true, 50);
+              const clearLoading = setComponentLoading(item.props.id, true, 50);
+              let cleaned = false;
+              request.cleanup = () => {
+                if (cleaned) return;
+                cleaned = true;
+                clearLoading();
+              };
               // Loading bookkeeping notifies subscribers synchronously; a host
               // may replace the policy during that notification.
               const afterLoading = get();
@@ -240,19 +274,24 @@ export const createPermissionsSlice = (
                   : afterLoading.config.components[item.type]?.resolvePermissions) !==
                   resolveForItem
               ) {
-                return;
+                throw new PermissionResolutionSupersededError();
               }
-              const resolvedPermissions = await resolveForItem(
-                item,
-                {
+              request.starting = false;
+              request.invokingResolver = true;
+              let decision: ReturnType<typeof resolveForItem>;
+              try {
+                decision = resolveForItem(item, {
                   changed,
                   lastPermissions: itemCache?.lastPermissions || null,
                   permissions: initialPermissions,
                   appState: publicState,
                   lastData: itemCache?.lastData || null,
                   parent: parentData,
-                },
-              );
+                });
+              } finally {
+                request.invokingResolver = false;
+              }
+              const resolvedPermissions = await decision;
 
               const latestState = get();
               const latestParentId =
@@ -272,7 +311,7 @@ export const createPermissionsSlice = (
                   : latestState.config.components[item.type]?.resolvePermissions) !==
                   request.resolver
               ) {
-                return;
+                throw new PermissionResolutionSupersededError();
               }
 
               const latest = latestState.permissions;
@@ -304,13 +343,18 @@ export const createPermissionsSlice = (
                 },
               });
             } finally {
-              if (pending.get(item.props.id) === request) {
-                pending.delete(item.props.id);
+              // Cleanup notifies subscribers synchronously. Keep the request
+              // registered until afterward so a reentrant refresh can
+              // supersede its completion.
+              try {
+                request.cleanup();
+              } finally {
+                if (pending.get(item.props.id) === request) {
+                  pending.delete(item.props.id);
+                }
               }
-              request.cleanup();
             }
           })();
-          request.starting = false;
           void work.then(complete, fail);
           await completion;
         } else {
@@ -480,7 +524,8 @@ export const useRegisterPermissionsSlice = (
   globalPermissions: Partial<Permissions>,
 ) => {
   const refresh = () => {
-    void appStore.getState().permissions.resolvePermissions().catch(() => {
+    void appStore.getState().permissions.resolvePermissions().catch((error) => {
+      if (error instanceof PermissionResolutionSupersededError) return;
       // Resolver errors may contain host data. Do not expose their contents.
       console.error("Puck could not resolve editor permissions.");
     });

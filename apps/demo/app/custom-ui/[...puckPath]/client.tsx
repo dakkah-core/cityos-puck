@@ -446,7 +446,11 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
               if (selectedItem) {
                 // We have to force refresh the permission resolver to refresh, since it relies on lockedComponents state
                 // Without this, the resolver won't trigger as no props will have changed
-                refreshPermissions({ item: selectedItem });
+                void refreshPermissions({ item: selectedItem }).catch((error) => {
+                  if (error?.code !== "PUCK_PERMISSION_SUPERSEDED") {
+                    console.error("Puck could not refresh permissions.");
+                  }
+                });
               }
               // eslint-disable-next-line react-hooks/exhaustive-deps
             }, [lockedComponents, selectedItem?.props.id, refreshPermissions]);
@@ -480,7 +484,11 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
                           [selectedItem.props.id as string]: !isLocked,
                         });
 
-                        refreshPermissions({ item: selectedItem });
+                        void refreshPermissions({ item: selectedItem }).catch((error) => {
+                          if (error?.code !== "PUCK_PERMISSION_SUPERSEDED") {
+                            console.error("Puck could not refresh permissions.");
+                          }
+                        });
                       }}
                       label={isLocked ? "Unlock component" : "Lock component"}
                     >

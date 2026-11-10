@@ -15,7 +15,7 @@ import { resolveAndReplaceData } from "../../data/resolve-and-replace-data";
 import { EditorFallback } from "../../../components/RichTextEditor/components/EditorFallback";
 import { RichTextRenderFallback } from "../../../components/RichTextEditor/components/RenderFallback";
 import { FieldTransforms } from "../../../types/API/FieldTransforms";
-import { useAppStoreApi } from "../../../store";
+import { useAppStore, useAppStoreApi } from "../../../store";
 
 import { RichtextField, UiState } from "../../../types";
 
@@ -52,6 +52,16 @@ const InlineEditorWrapper = memo(
   }) => {
     const portalRef = useRef<HTMLDivElement>(null);
     const appStoreApi = useAppStoreApi();
+    const canEdit = useAppStore((store) => {
+      const item = store.state.indexes.nodes[componentId]?.data;
+      const wildcardPath = propPath.replace(/\[\d+\]/g, "[*]");
+      return (
+        !!item &&
+        !item.readOnly?.[propPath] &&
+        !item.readOnly?.[wildcardPath] &&
+        store.permissions.getPermissions({ item }).edit === true
+      );
+    });
 
     const onClickHandler = (e: MouseEvent) => {
       e.preventDefault();
@@ -80,19 +90,30 @@ const InlineEditorWrapper = memo(
     }, [portalRef.current]);
 
     const handleChange = useCallback(
-      async (content: string | JSONContent, ui?: Partial<UiState>) => {
+      (content: string | JSONContent, ui?: Partial<UiState>) => {
         const appStore = appStoreApi.getState();
         const node = appStore.state.indexes.nodes[componentId];
+        const wildcardPath = propPath.replace(/\[\d+\]/g, "[*]");
+        if (
+          !node ||
+          node.data.readOnly?.[propPath] ||
+          node.data.readOnly?.[wildcardPath] ||
+          appStore.permissions.getPermissions({ item: node.data }).edit !== true
+        ) {
+          return;
+        }
 
         const newProps = setDeep(node.data.props, propPath, content);
 
-        await resolveAndReplaceData(
+        void resolveAndReplaceData(
           { ...node.data, props: newProps },
           appStoreApi.getState,
           "replace",
           true,
           ui,
-        );
+        ).catch(() => {
+          console.error("Puck could not apply the inline rich text edit.");
+        });
       },
       [appStoreApi, componentId, propPath],
     );
@@ -112,7 +133,7 @@ const InlineEditorWrapper = memo(
       [field, componentId],
     );
 
-    if (!field.contentEditable)
+    if (!field.contentEditable || !canEdit)
       return (
         <Suspense fallback={<RichTextRenderFallback content={value} />}>
           <RichTextRender content={value} field={field} />

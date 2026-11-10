@@ -1,6 +1,7 @@
-import { render } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { InlineTextField } from "../index";
+import { resolveAndReplaceInlineData } from "../../../lib/data/resolve-and-replace-data";
 
 // useAppStoreApi reads from a Zustand-style API; we only need a getState() that
 // returns the slice InlineTextField touches in its effect.
@@ -27,9 +28,43 @@ jest.mock("../../../lib/overlay-portal", () => ({
   registerOverlayPortal: () => () => undefined,
 }));
 
+jest.mock("../../../lib/data/resolve-and-replace-data", () => ({
+  resolveAndReplaceInlineData: jest.fn(),
+}));
+
 jest.mock("../styles.module.css");
 
 describe("InlineTextField", () => {
+  it("stops accepting input when the field becomes read-only while focused", () => {
+    const props = {
+      propPath: "subtitle",
+      componentId: "comp-1",
+      value: "Initial",
+    };
+    const { container, rerender } = render(
+      <InlineTextField {...props} isReadOnly={false} />,
+    );
+    const span = container.querySelector("span")!;
+    fireEvent.focus(span);
+    expect(span).toHaveAttribute("contenteditable", "plaintext-only");
+
+    rerender(<InlineTextField {...props} isReadOnly />);
+    expect(span).toHaveAttribute("contenteditable", "false");
+    fireEvent.input(span);
+    expect(resolveAndReplaceInlineData).not.toHaveBeenCalled();
+  });
+
+  it("restores the committed value when an inline edit is canceled", async () => {
+    jest.mocked(resolveAndReplaceInlineData).mockResolvedValueOnce(false);
+    const { container } = render(
+      <InlineTextField propPath="subtitle" componentId="comp-1" value="Initial" isReadOnly={false} />,
+    );
+    const span = container.querySelector("span")!;
+    span.innerText = "draft";
+    fireEvent.input(span);
+    await waitFor(() => expect(span.textContent).toBe(""));
+  });
+
   it("renders empty when value is null instead of the literal string 'null'", () => {
     const { container } = render(
       <InlineTextField

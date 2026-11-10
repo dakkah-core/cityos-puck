@@ -263,12 +263,14 @@ export const onOutlineDragEnd = (
 
   if (dragged && drop) {
     // Move the component and select it
-    moveComponent(
+    void moveComponent(
       dragged.itemId,
       { zone: dragged.zoneCompound, index: dragged.index },
       { zone: drop.zone, index: drop.index },
       ctx.appStore,
-    );
+    ).catch(() => {
+      console.error("Puck could not finish resolving the moved component.");
+    });
 
     const moved =
       drop.zone !== dragged.zoneCompound || drop.index !== dragged.index;

@@ -28,11 +28,11 @@ export type UsePuckData<
   dispatch: AppStore["dispatch"];
   getPermissions: GetPermissions<UserConfig>;
   refreshPermissions: RefreshPermissions<UserConfig>;
-  resolveDataById: (id: string, trigger?: ResolveDataTrigger) => void;
+  resolveDataById: (id: string, trigger?: ResolveDataTrigger) => Promise<void>;
   resolveDataBySelector: (
     selector: ItemSelector,
     trigger?: ResolveDataTrigger,
-  ) => void;
+  ) => Promise<void>;
   selectedItem: G["UserComponentData"] | null;
   getItemBySelector: (
     selector: ItemSelector,

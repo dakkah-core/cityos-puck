@@ -715,7 +715,7 @@ describe("Fields asynchronous edits", () => {
     },
   );
 
-  it.each([
+  it.each<["item" | "root", "current" | "candidate", boolean]>([
     ["item", "current", true],
     ["item", "candidate", true],
     ["root", "current", true],

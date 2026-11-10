@@ -473,19 +473,23 @@ const DragDropContextClient = ({
               zoneStore.setState({ previewIndex: {} });
 
               if (thisPreview.type === "insert") {
-                insertComponent(
+                void insertComponent(
                   thisPreview.componentType,
                   thisPreview.zone,
                   thisPreview.index,
                   appStore,
-                );
+                ).catch(() => {
+                  console.error("Puck could not finish resolving the inserted component.");
+                });
               } else if (initialSelector.current) {
-                moveComponent(
+                void moveComponent(
                   thisPreview.props.id,
                   initialSelector.current,
                   { ...thisPreview, index: commitIndex },
                   appStore,
-                );
+                ).catch(() => {
+                  console.error("Puck could not finish resolving the moved component.");
+                });
               }
 
               playCommitFlip?.();

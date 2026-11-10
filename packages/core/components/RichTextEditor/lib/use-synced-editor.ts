@@ -1,7 +1,7 @@
 import { useEditor } from "@tiptap/react";
 import type { Extensions, JSONContent, Editor } from "@tiptap/react";
-import { useEffect, useRef } from "react";
-import { useDebounce } from "use-debounce";
+import { useEffect, useLayoutEffect, useRef } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import { UiState } from "../../../types";
 import { useAppStoreApi } from "../../../store";
 
@@ -20,19 +20,29 @@ export function useSyncedEditor({
   onFocusChange?: (editor: Editor | null) => void;
   name: string | undefined;
 }) {
-  const [debouncedState, setDebouncedState] = useDebounce<{
-    from: number;
-    to: number;
-    html: string;
-  } | null>(null, 50, {
-    leading: true,
-    maxWait: 200,
-  });
+  const appStoreApi = useAppStoreApi();
+  const editableRef = useRef(editable);
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  const publishChange = useDebouncedCallback(
+    (draft: { from: number; to: number; html: string }) => {
+      if (!editableRef.current) return;
+      const { ui } = appStoreApi.getState().state;
+      onChangeRef.current(draft.html, {
+        field: {
+          ...ui.field,
+          metadata: { from: draft.from, to: draft.to },
+        },
+      });
+    },
+    50,
+    { leading: true, maxWait: 200 },
+  );
 
   const syncingRef = useRef(false);
   const lastSyncedRef = useRef("");
   const editTimer = useRef<NodeJS.Timeout>(null);
-  const isPending = !!editTimer.current;
 
   const resetTimer = (clearOn: string) => {
     if (editTimer.current) {
@@ -46,8 +56,6 @@ export function useSyncedEditor({
     }, 200);
   };
 
-  const appStoreApi = useAppStoreApi();
-
   const editor = useEditor({
     extensions,
     content,
@@ -58,7 +66,7 @@ export function useSyncedEditor({
       const isFocused = appStoreApi.getState().state.ui.field.focus === name;
 
       // This can trigger during undo/redo history loads
-      if (syncingRef.current || !isFocused) {
+      if (syncingRef.current || !isFocused || !editableRef.current) {
         return;
       }
 
@@ -66,7 +74,7 @@ export function useSyncedEditor({
 
       const { from, to } = editor.state.selection;
 
-      setDebouncedState({ from, to, html });
+      publishChange({ from, to, html });
       resetTimer(html);
 
       lastSyncedRef.current = html;
@@ -86,22 +94,27 @@ export function useSyncedEditor({
     };
   }, [editor, onFocusChange]);
 
-  // Push debounced changes up to parent
-  useEffect(() => {
-    if (debouncedState) {
-      const { ui } = appStoreApi.getState().state;
-
-      onChange(debouncedState.html, {
-        field: {
-          ...ui.field,
-          metadata: { from: debouncedState.from, to: debouncedState.to },
-        },
-      });
+  useLayoutEffect(() => {
+    editableRef.current = editable;
+    if (!editable) {
+      publishChange.cancel();
+      if (editTimer.current) clearTimeout(editTimer.current);
+      editTimer.current = null;
+      lastSyncedRef.current = "";
     }
-  }, [editor, debouncedState, onChange, appStoreApi, name]);
+  }, [editable, publishChange]);
+
+  useLayoutEffect(
+    () => () => {
+      publishChange.cancel();
+      if (editTimer.current) clearTimeout(editTimer.current);
+    },
+    [publishChange],
+  );
 
   useEffect(() => {
-    editor?.setEditable(editable);
+    // Changing editability must not emit an update containing a canceled draft.
+    editor?.setEditable(editable, false);
   }, [editor, editable]);
 
   // Bring in external content changes without causing flicker on blur
@@ -109,7 +122,7 @@ export function useSyncedEditor({
     if (!editor) return;
 
     // If the editor currently has pending changes, don't stomp what the user is typing
-    if (isPending) {
+    if (editable && editTimer.current) {
       return;
     }
 
@@ -132,7 +145,7 @@ export function useSyncedEditor({
     }
 
     syncingRef.current = false;
-  }, [content, editor, appStoreApi]);
+  }, [content, editor, appStoreApi, editable]);
 
   return editor;
 }

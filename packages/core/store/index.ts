@@ -28,6 +28,7 @@ import { createHistorySlice, type HistorySlice } from "./slices/history";
 import { createNodesSlice, type NodesSlice } from "./slices/nodes";
 import {
   createPermissionsSlice,
+  PermissionResolutionSupersededError,
   type PermissionsSlice,
 } from "./slices/permissions";
 import { createFieldsSlice, type FieldsSlice } from "./slices/fields";
@@ -219,13 +220,14 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) => {
         const unsetLoading = () => {
           if (finished) return;
           finished = true;
-          const { componentState } = get();
-
           clearTimeout(timeout);
           removeTimeout();
 
           if (loading && !started) return;
 
+          // Removing the timeout notifies subscribers synchronously. Read the
+          // count afterward so a reentrant loading update is not overwritten.
+          const { componentState } = get();
           setComponentState({
             ...componentState,
             [id]: {
@@ -338,7 +340,7 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) => {
             // Perf: wasteful to use walkAppState, which walks the entire tree
             if (path.length > 1) return childItem;
 
-            resolveComponentData(childItem, "load").then((resolved) => {
+            void resolveComponentData(childItem, "load").then((resolved) => {
               const { state } = get();
 
               const node = state.indexes.nodes[resolved.node.props.id];
@@ -367,6 +369,10 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) => {
                   });
                 }
               }
+            }).catch((error) => {
+              if (error instanceof PermissionResolutionSupersededError) return;
+              // Resolver errors may contain host data.
+              console.error("Puck could not resolve component data.");
             });
 
             return childItem;
