@@ -86,6 +86,102 @@ describe("permission resolution concurrency", () => {
     expect(decision?.isCurrent()).toBe(false);
   });
 
+  it("fails closed when public queries use an unregistered or mismatched type", () => {
+    const store = subject(() => ({ edit: true }));
+    const config = store.getState().config;
+    store.setState({ state: walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config) });
+    expect(store.getState().permissions.getPermissions({ item: { type: "toString", props: { id: "new" } } }).edit).toBe(false);
+    expect(store.getState().permissions.getPermissions({ type: "toString" }).edit).toBe(false);
+    store.setState({ config: { components: {
+      ...config.components,
+      Other: { render: () => <div /> },
+    } } });
+    expect(store.getState().permissions.getPermissions({ item: { type: "Other", props: { id: "one" } } }).edit).toBe(false);
+  });
+
+  it("rejects candidate grants while a committed refresh is pending or has failed", async () => {
+    const revocation = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValueOnce({ edit: true }).mockReturnValueOnce(revocation.promise);
+    const store = subject(resolver);
+    const config = store.getState().config;
+    store.setState({ state: walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config) });
+    const committed = store.getState().state.indexes.nodes.one.data;
+    await resolveItem(store, committed);
+    const candidate = item("one", "draft");
+    const refresh = refreshItem(store, committed);
+    const rejected = expect(refresh).rejects.toThrow("revocation failed");
+    expect(await store.getState().permissions.resolveCandidatePermissions(candidate)).toBeUndefined();
+    expect(store.getState().permissions.getPermissions({ item: candidate }).edit).toBe(false);
+    expect(resolver).toHaveBeenCalledTimes(2);
+    revocation.reject(new Error("revocation failed"));
+    await rejected;
+    expect(await store.getState().permissions.resolveCandidatePermissions(candidate)).toBeUndefined();
+    expect(store.getState().permissions.getPermissions({ item: committed }).edit).toBe(false);
+  });
+
+  it("rejects candidates after the first committed decision fails without creating a cache entry", async () => {
+    const resolver = jest.fn().mockRejectedValue(new Error("first decision failed"));
+    const store = subject(resolver);
+    const config = store.getState().config;
+    store.setState({ state: walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config) });
+    const committed = store.getState().state.indexes.nodes.one.data;
+    await expect(refreshItem(store, committed)).rejects.toThrow("first decision failed");
+    expect(store.getState().permissions.cache.one).toBeUndefined();
+    expect(await store.getState().permissions.resolveCandidatePermissions(item("one", "draft"))).toBeUndefined();
+    expect(resolver).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not expose a root candidate grant for different root metadata", async () => {
+    const store = createAppStore();
+    const config: Config = {
+      components: {},
+      root: { resolvePermissions: (data) => ({ edit: (data as any).marker === "candidate" }) },
+    };
+    store.setState({ config, state: walkAppState(defaultAppState, config) });
+    const committed = store.getState().state.indexes.nodes.root.data;
+    await resolveItem(store, committed);
+    const candidate = { ...committed, marker: "candidate" };
+    await refreshItem(store, candidate);
+    expect(store.getState().permissions.getPermissions({ item: candidate }).edit).toBe(true);
+    expect(store.getState().permissions.getPermissions({ item: committed }).edit).toBe(false);
+    expect(store.getState().permissions.getPermissions({ root: true }).edit).toBe(false);
+  });
+
+  it("retains the committed cache entry during a mounted editor candidate refresh", async () => {
+    const candidateDecision = deferred<Partial<Permissions>>();
+    const store = subject((data) => data.props.value === "draft" ? candidateDecision.promise : { edit: true });
+    const config = store.getState().config;
+    store.setState({ state: walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config) });
+    const hook = renderHook(() => useRegisterPermissionsSlice(store, {}));
+    try {
+      await waitFor(() => expect(store.getState().permissions.getPermissions({ item: item("one") }).edit).toBe(true));
+      const committed = store.getState().state.indexes.nodes.one.data;
+      const entry = store.getState().permissions.cache.one;
+      let refresh!: Promise<void>;
+      act(() => { refresh = refreshItem(store, item("one", "draft")); });
+      expect(store.getState().permissions.cache.one).toBe(entry);
+      expect(store.getState().permissions.getPermissions({ item: committed }).edit).toBe(true);
+      await act(async () => { candidateDecision.resolve({ edit: false }); await refresh; });
+      expect(store.getState().permissions.cache.one).toBe(entry);
+      expect(store.getState().permissions.getPermissions({ item: committed }).edit).toBe(true);
+      expect(store.getState().permissions.getPermissions({ item: item("one", "draft") }).edit).toBe(false);
+    } finally {
+      hook.unmount();
+    }
+  });
+
   it.each(["item", "root"])("retains the %s candidate refresh query without displacing the committed grant", async (scope) => {
     const store = createAppStore();
     const config: Config = {

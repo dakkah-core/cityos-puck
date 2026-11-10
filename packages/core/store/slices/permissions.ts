@@ -114,6 +114,8 @@ export const createPermissionsSlice = (
   // after that decision fails. Entries are weakly held so discarded item
   // caches do not leave a separate permanent set of identifiers.
   const invalidEntries = new WeakSet<Cache[string]>();
+  // The first request may fail before an entry exists to invalidate.
+  const invalidCommitted = new WeakSet<ComponentData>();
   // A new committed-item request invalidates in-flight candidate decisions,
   // even when a refresh subsequently restores the same permissions.
   const requestVersions = new WeakMap<ComponentData, number>();
@@ -247,6 +249,7 @@ export const createPermissionsSlice = (
         ) {
           cancelPending(item.props.id);
           if (itemCache) invalidEntries.add(itemCache);
+          if (committed) invalidCommitted.add(committed);
           let complete!: () => void;
           let fail!: (reason: unknown) => void;
           const completion = new Promise<void>((resolve, reject) => {
@@ -347,6 +350,8 @@ export const createPermissionsSlice = (
                 appState: publicState,
                 parent: parentData,
               });
+
+              if (committed) invalidCommitted.delete(committed);
 
               set({
                 permissions: {
@@ -452,7 +457,7 @@ export const createPermissionsSlice = (
     // A candidate cannot outlive a committed decision that is already being
     // refreshed or has failed. A request version alone only detects refreshes
     // that start after the candidate.
-    if (committed && (pending.has(id) || (entry && invalidEntries.has(entry)))) {
+    if (committed && (pending.has(id) || (resolver && (invalidCommitted.has(committed) || (entry && invalidEntries.has(entry)))))) {
       return undefined;
     }
     const decision = permissions.resolvedPermissions[id];
@@ -492,7 +497,7 @@ export const createPermissionsSlice = (
         (!committed || (requestVersions.get(committed) ?? 0) === version) &&
         (!committed || (candidateVersions.get(committed) ?? 0) === candidateVersion) &&
         (committed || permissionRequestGeneration === requestGeneration) &&
-        (!committed || (!pending.has(id) && (!entry || !invalidEntries.has(entry)))) &&
+        (!committed || (!pending.has(id) && (!resolver || (!invalidCommitted.has(committed) && (!entry || !invalidEntries.has(entry)))))) &&
         latest.permissions.cache[id] === entry &&
         latest.permissions.resolvedPermissions[id] === decision &&
         sameAppState(makeStatePublic(latest.state), publicState) &&
