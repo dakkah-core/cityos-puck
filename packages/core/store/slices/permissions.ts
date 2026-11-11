@@ -95,6 +95,7 @@ export const createPermissionsSlice = (
   registerItemLifetime: (
     observe: (id: string, previous: ComponentData | undefined, current: ComponentData | undefined) => void,
   ) => void = () => {},
+  registerFieldPolicySettlement: (register: (notify: () => void) => void) => void = () => {},
 ): PermissionsSlice => {
   const pending = new Map<
     string,
@@ -117,15 +118,35 @@ export const createPermissionsSlice = (
   // after that decision fails. Entries are weakly held so discarded item
   // caches do not leave a separate permanent set of identifiers.
   const invalidEntries = new WeakSet<Cache[string]>();
-  // The first request may fail before an entry exists to invalidate.
-  const invalidCommitted = new WeakSet<ComponentData>();
+  // Indexed objects exchanged without a removal share one decision lifetime.
+  // Weak keys avoid retaining removed item identifiers or discarded objects.
+  const itemLifetimes = new WeakMap<ComponentData, { unresolved: boolean; invalid: boolean }>();
+  const fieldPolicyWaiters = new WeakMap<{ unresolved: boolean; invalid: boolean }, () => void>();
+  let fieldPolicySettlements = 0;
+  registerFieldPolicySettlement(() => {
+    fieldPolicySettlements++;
+    for (const node of Object.values(get().state.indexes.nodes)) {
+      const lifetime = itemLifetimes.get(node.data);
+      const wake = lifetime && fieldPolicyWaiters.get(lifetime);
+      if (lifetime && wake) {
+        fieldPolicyWaiters.delete(lifetime);
+        queueMicrotask(wake);
+      }
+    }
+  });
+  const lifetimeFor = (item: ComponentData) => {
+    let lifetime = itemLifetimes.get(item);
+    if (!lifetime) {
+      lifetime = { unresolved: false, invalid: false };
+      itemLifetimes.set(item, lifetime);
+    }
+    return lifetime;
+  };
   // A new committed-item request invalidates in-flight candidate decisions,
   // even when a refresh subsequently restores the same permissions.
   const requestVersions = new WeakMap<ComponentData, number>();
   const candidateVersions = new WeakMap<ComponentData, number>();
-  // New or restored indexed items require a committed decision. Weak keys
-  // follow the indexed object instead of retaining removed identifiers.
-  const unresolvedLifetime = new WeakSet<ComponentData>();
+  const objectVersions = new WeakMap<ComponentData, number>();
   const resetHistoryEntries = new WeakSet<Cache[string]>();
   // An uncommitted node has no stable object in the index to key a weak map.
   let permissionRequestGeneration = 0;
@@ -147,16 +168,75 @@ export const createPermissionsSlice = (
   };
   registerItemLifetime((id, previous, current) => {
     if (previous && current) {
-      if (unresolvedLifetime.has(previous)) unresolvedLifetime.add(current);
+      objectVersions.set(previous, (objectVersions.get(previous) ?? 0) + 1);
+      requestVersions.set(previous, (requestVersions.get(previous) ?? 0) + 1);
+      candidateVersions.set(previous, (candidateVersions.get(previous) ?? 0) + 1);
+      candidateCache.delete(previous);
+      const lifetime = lifetimeFor(previous);
+      itemLifetimes.set(current, lifetime);
+      if (pending.has(id)) lifetime.unresolved = true;
+      if (pending.has(id)) {
+        cancelPending(id);
+        // Index-only replacements do not trigger the React data subscriber.
+        // Let the current synchronous notification finish before refreshing.
+        const captured = get();
+        const capturedState = makeStatePublic(captured.state);
+        const capturedPolicy = policyGeneration;
+        const capturedResolver = captured.config.components[current.type]?.resolvePermissions;
+        const capturedFieldRevision = captured.fields.policyRevision;
+        const capturedSettlements = fieldPolicySettlements;
+        const retry = (mayWait: boolean, afterPolicy: boolean) => {
+          const latest = get();
+          const latestItem = latest.state.indexes.nodes[id]?.data;
+          const settledPolicy = afterPolicy || (
+            latest.fields.policyRevision !== capturedFieldRevision &&
+            fieldPolicySettlements !== capturedSettlements
+          );
+          if (
+            !latestItem || itemLifetimes.get(latestItem) !== lifetime || !lifetime.unresolved ||
+            latest.config !== captured.config ||
+            latest.permissions.globalPermissions !== captured.permissions.globalPermissions ||
+            latest.config.components[latestItem.type]?.resolvePermissions !== capturedResolver ||
+            policyGeneration !== capturedPolicy
+          ) return;
+          if (latest.fields.policyPending) {
+            fieldPolicyWaiters.set(lifetime, () => retry(mayWait, true));
+            return;
+          }
+          if (latest.fields.policyRevision !== capturedFieldRevision &&
+              fieldPolicySettlements === capturedSettlements) return;
+          if (!settledPolicy && (latestItem !== current ||
+              !sameAppState(makeStatePublic(latest.state), capturedState))) return;
+          const competing = pending.get(id);
+          if (competing) {
+            if (mayWait) {
+              void competing.completion.then(
+                () => retry(false, settledPolicy),
+                () => { if (!deepEqual(competing.item, latestItem)) retry(false, settledPolicy); },
+              );
+            }
+            return;
+          }
+          void resolvePermissions({ item: latestItem }).catch((error) => {
+            if (!(error instanceof PermissionResolutionSupersededError)) {
+              console.error("Puck could not resolve editor permissions.");
+            }
+          });
+        };
+        queueMicrotask(() => retry(true, false));
+      }
       return;
     }
     itemLifetimeGeneration++;
     if (previous) itemRemovalGeneration++;
-    if (current) unresolvedLifetime.add(current);
+    if (current) itemLifetimes.set(current, { unresolved: true, invalid: false });
     if (previous) {
+      const lifetime = itemLifetimes.get(previous);
+      if (lifetime) fieldPolicyWaiters.delete(lifetime);
+      objectVersions.set(previous, (objectVersions.get(previous) ?? 0) + 1);
       requestVersions.set(previous, (requestVersions.get(previous) ?? 0) + 1);
       candidateVersions.set(previous, (candidateVersions.get(previous) ?? 0) + 1);
-      invalidCommitted.add(previous);
+      lifetimeFor(previous).invalid = true;
       candidateCache.delete(previous);
     }
     const entry = get().permissions.cache[id];
@@ -199,6 +279,7 @@ export const createPermissionsSlice = (
     ): Promise<void> => {
       permissionRequestGeneration++;
       const committed = get().state.indexes.nodes[item.props.id]?.data;
+      const objectVersion = committed ? objectVersions.get(committed) ?? 0 : 0;
       const lifetimeGeneration = itemLifetimeGeneration;
       const removalGeneration = itemRemovalGeneration;
       if (committed) {
@@ -242,7 +323,7 @@ export const createPermissionsSlice = (
         const inputsChanged =
           !inputs ||
           (itemCache && invalidEntries.has(itemCache)) ||
-          (committed && unresolvedLifetime.has(committed)) ||
+          (committed && itemLifetimes.get(committed)?.unresolved) ||
           inputs.config !== config ||
           inputs.globalPermissions !== globalPermissions ||
           inputs.generation !== policyGeneration ||
@@ -284,7 +365,7 @@ export const createPermissionsSlice = (
         ) {
           cancelPending(item.props.id);
           if (itemCache) invalidEntries.add(itemCache);
-          if (committed) invalidCommitted.add(committed);
+          if (committed) lifetimeFor(committed).invalid = true;
           let complete!: () => void;
           let fail!: (reason: unknown) => void;
           const completion = new Promise<void>((resolve, reject) => {
@@ -387,12 +468,12 @@ export const createPermissionsSlice = (
               });
 
               if (committed) {
-                invalidCommitted.delete(committed);
+                lifetimeFor(committed).invalid = false;
                 if (
                   latestState.state.indexes.nodes[item.props.id]?.data === committed &&
                   deepEqual(item, committed)
                 ) {
-                  unresolvedLifetime.delete(committed);
+                  lifetimeFor(committed).unresolved = false;
                 }
               }
 
@@ -410,21 +491,16 @@ export const createPermissionsSlice = (
                 },
               });
             } finally {
-              // Cleanup notifies subscribers synchronously. Keep the request
-              // registered until afterward so a reentrant refresh can
-              // supersede its completion.
-              try {
-                request.cleanup();
-              } finally {
-                if (pending.get(item.props.id) === request) {
-                  pending.delete(item.props.id);
-                }
-              }
+              // Keep the request registered through settlement: a queued
+              // replacement can still supersede it after cleanup.
+              request.cleanup();
             }
           })();
           void work.then(() => {
+            if (pending.get(item.props.id) === request) pending.delete(item.props.id);
             if (
               item.type !== "root" && (
+                (committed && (objectVersions.get(committed) ?? 0) !== objectVersion) ||
                 itemRemovalGeneration !== removalGeneration ||
                 (!committed && itemLifetimeGeneration !== lifetimeGeneration)
               )
@@ -433,7 +509,10 @@ export const createPermissionsSlice = (
             } else {
               complete();
             }
-          }, fail);
+          }, (error) => {
+            if (pending.get(item.props.id) === request) pending.delete(item.props.id);
+            fail(error);
+          });
           await completion;
         } else {
           // Returning to the accepted input must supersede a different
@@ -515,7 +594,7 @@ export const createPermissionsSlice = (
     // refreshed or has failed. A request version alone only detects refreshes
     // that start after the candidate.
     if (committed && (pending.has(id) || (resolver && (
-      unresolvedLifetime.has(committed) || invalidCommitted.has(committed) || (entry && invalidEntries.has(entry))
+      itemLifetimes.get(committed)?.unresolved || itemLifetimes.get(committed)?.invalid || (entry && invalidEntries.has(entry))
     )))) {
       return undefined;
     }
@@ -523,7 +602,7 @@ export const createPermissionsSlice = (
     const version = committed ? requestVersions.get(committed) ?? 0 : 0;
     const candidateVersion = committed ? candidateVersions.get(committed) ?? 0 : 0;
     const requestGeneration = permissionRequestGeneration;
-    const lifetimeGeneration = itemLifetimeGeneration;
+    const removalGeneration = itemRemovalGeneration;
     const generation = policyGeneration;
     const publicState = makeStatePublic(state);
     const initialPermissions = { ...permissions.globalPermissions, ...componentConfig?.permissions } as Permissions;
@@ -559,9 +638,9 @@ export const createPermissionsSlice = (
         (!committed || (requestVersions.get(committed) ?? 0) === version) &&
         (!committed || (candidateVersions.get(committed) ?? 0) === candidateVersion) &&
         (committed || permissionRequestGeneration === requestGeneration) &&
-        (committed || item.type === "root" || itemLifetimeGeneration === lifetimeGeneration) &&
+        (committed || item.type === "root" || itemRemovalGeneration === removalGeneration) &&
         (!committed || (!pending.has(id) && (!resolver || (
-          !unresolvedLifetime.has(committed) && !invalidCommitted.has(committed) && (!entry || !invalidEntries.has(entry))
+          !itemLifetimes.get(committed)?.unresolved && !itemLifetimes.get(committed)?.invalid && (!entry || !invalidEntries.has(entry))
         )))) &&
         latest.permissions.cache[id] === entry &&
         latest.permissions.resolvedPermissions[id] === decision &&
@@ -650,7 +729,7 @@ export const createPermissionsSlice = (
         const parent = parentId ? state.indexes.nodes[parentId]?.data ?? null : null;
         const resolvedForItem =
           componentConfig?.resolvePermissions &&
-          (!committed || !unresolvedLifetime.has(committed)) &&
+          (!committed || !itemLifetimes.get(committed)?.unresolved) &&
           entry &&
           !invalidEntries.has(entry) &&
           entry?.lastData?.type === item.type &&

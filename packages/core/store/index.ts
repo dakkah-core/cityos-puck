@@ -121,6 +121,7 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) => {
     _previous: ComponentData | undefined,
     _current: ComponentData | undefined,
   ) => {};
+  let notifyFieldPolicySettled = () => {};
   const store = create<AppStore>()(
     subscribeWithSelector((set, get) => ({
       instanceId: generateId(),
@@ -156,6 +157,9 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) => {
         },
         (invalidate) => {
           observePermissionItem = invalidate;
+        },
+        (notify) => {
+          notifyFieldPolicySettled = notify;
         },
       ),
       getCurrentData: () => {
@@ -420,6 +424,10 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) => {
           observePermissionItem(id, undefined, node.data);
         }
       }
+    }
+    if (previous.fields.policyPending && !state.fields.policyPending &&
+        state.fields.policyRevision !== previous.fields.policyRevision) {
+      notifyFieldPolicySettled();
     }
   });
 

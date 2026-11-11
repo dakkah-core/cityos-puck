@@ -19,6 +19,16 @@ const item = (id: string, value = "a") => ({
   props: { id, value },
 });
 
+const withoutContent = (state: Parameters<typeof walkAppState>[0], config: Config) => {
+  const removed = walkAppState({
+    ...state,
+    indexes: { ...state.indexes, nodes: {} },
+    data: { ...state.data, content: [] },
+  }, config);
+  expect(removed.indexes.nodes.one).toBeUndefined();
+  return removed;
+};
+
 function subject(
   resolver: (
     data: Omit<ComponentData, "type">,
@@ -54,6 +64,200 @@ const refreshRoot = async (store: ReturnType<typeof createAppStore>) => {
 };
 
 describe("permission resolution concurrency", () => {
+  it("rebuilds node indexes when set replaces data without an index", () => {
+    const store = subject(async () => ({ edit: true }));
+    const config = store.getState().config;
+    const mounted = walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config);
+    store.setState({ state: mounted });
+    const warning = jest.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      store.getState().dispatch({ type: "set", state: { data: { ...mounted.data, content: [] } } });
+      expect(store.getState().state.indexes.nodes.one).toBeUndefined();
+    } finally {
+      warning.mockRestore();
+    }
+  });
+
+  it("rebuilds node indexes when function-form set replaces data", () => {
+    const store = subject(async () => ({ edit: true }));
+    const config = store.getState().config;
+    const mounted = walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config);
+    store.setState({ state: mounted });
+    store.getState().dispatch({
+      type: "set",
+      state: (previous) => ({ data: { ...previous.data, content: [] } }),
+    });
+    expect(store.getState().state.indexes.nodes.one).toBeUndefined();
+  });
+
+  it.each(["object", "callback"])("invalidates removal through setData's %s form", async (form) => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValueOnce({ edit: true }).mockReturnValueOnce({ edit: true }).mockReturnValueOnce(pending.promise);
+    const store = subject(resolver);
+    const config = store.getState().config;
+    const mounted = walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config);
+    store.setState({ state: mounted });
+    const committed = mounted.indexes.nodes.one.data;
+    await resolveItem(store, committed);
+    const decision = await store.getState().permissions.resolveCandidatePermissions(item("one", "draft"));
+    const request = refreshItem(store, committed);
+    const rejection = expect(request).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
+    const warning = jest.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      store.getState().dispatch({ type: "setData", data: form === "object" ? { content: [] } : () => ({ content: [] }) });
+      expect(store.getState().state.indexes.nodes.one).toBeUndefined();
+      await rejection;
+      expect(decision?.isCurrent()).toBe(false);
+      pending.resolve({ edit: true });
+      await pending.promise;
+      store.setState({ state: mounted });
+      expect(store.getState().permissions.getPermissions({ item: committed }).edit).toBe(false);
+    } finally {
+      warning.mockRestore();
+    }
+  });
+
+  it("does not revive a candidate after indexed object A is replaced by B and restored", async () => {
+    const store = subject(async () => ({ edit: true }));
+    const config = store.getState().config;
+    const mounted = walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config);
+    store.setState({ state: mounted });
+    await resolveItem(store, mounted.indexes.nodes.one.data);
+    const decision = await store.getState().permissions.resolveCandidatePermissions(item("one", "draft"));
+    expect(decision?.isCurrent()).toBe(true);
+    const node = mounted.indexes.nodes.one;
+    const changed = { ...mounted, indexes: { ...mounted.indexes, nodes: {
+      ...mounted.indexes.nodes,
+      one: { ...node, data: { ...node.data, props: { ...node.data.props } } },
+    } } };
+    store.setState({ state: changed });
+    store.setState({ state: mounted });
+    expect(decision?.isCurrent()).toBe(false);
+  });
+
+  it("supersedes an initial request and refreshes an index-only replacement", async () => {
+    const old = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValueOnce(old.promise).mockResolvedValue({ edit: true });
+    const store = subject(resolver);
+    const config = store.getState().config;
+    const mounted = walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config);
+    store.setState({ state: mounted });
+    const original = mounted.indexes.nodes.one;
+    const request = refreshItem(store, original.data);
+    const rejection = expect(request).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
+    const replacement = { ...original.data, props: { ...original.data.props } };
+    store.setState({ state: { ...mounted, indexes: { ...mounted.indexes, nodes: {
+      ...mounted.indexes.nodes, one: { ...original, data: replacement },
+    } } } });
+    await rejection;
+    await waitFor(() => expect(store.getState().permissions.getPermissions({ item: replacement }).edit).toBe(true));
+    old.resolve({ edit: false });
+    await old.promise;
+    expect(store.getState().permissions.getPermissions({ item: replacement }).edit).toBe(true);
+    store.setState({ state: mounted });
+    expect(store.getState().permissions.getPermissions({ item: original.data }).edit).toBe(true);
+    expect(resolver).toHaveBeenCalledTimes(2);
+    expect((await store.getState().permissions.resolveCandidatePermissions(item("one", "draft")))?.permissions.edit).toBe(true);
+  });
+
+  it("retries the committed replacement after a reentrant proposed-item request settles", async () => {
+    const old = deferred<Partial<Permissions>>();
+    const proposedDecision = deferred<Partial<Permissions>>();
+    const resolver = jest.fn()
+      .mockReturnValueOnce(old.promise)
+      .mockReturnValueOnce(proposedDecision.promise)
+      .mockResolvedValue({ edit: true });
+    const store = subject(resolver);
+    const config = store.getState().config;
+    const mounted = walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config);
+    store.setState({ state: mounted });
+    const original = mounted.indexes.nodes.one;
+    const request = refreshItem(store, original.data);
+    const rejected = expect(request).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
+    const replacement = { ...original.data, props: { ...original.data.props } };
+    let proposed!: Promise<void>;
+    let reentered = false;
+    const unsubscribe = store.subscribe((state, previous) => {
+      if (!reentered && state.state.indexes.nodes.one?.data === replacement &&
+          previous.state.indexes.nodes.one?.data === original.data) {
+        reentered = true;
+        proposed = state.permissions.resolvePermissions({ item: item("one", "draft") });
+      }
+    });
+    store.setState({ state: { ...mounted, indexes: { ...mounted.indexes, nodes: {
+      ...mounted.indexes.nodes, one: { ...original, data: replacement },
+    } } } });
+    unsubscribe();
+    await rejected;
+    await Promise.resolve();
+    expect(reentered).toBe(true);
+    expect(resolver).toHaveBeenCalledTimes(2);
+    proposedDecision.resolve({ edit: true });
+    await proposed;
+    await waitFor(() => expect(store.getState().permissions.getPermissions({ item: replacement }).edit).toBe(true));
+    expect(resolver).toHaveBeenCalledTimes(3);
+    old.resolve({ edit: false });
+    await old.promise;
+    expect(store.getState().permissions.getPermissions({ item: replacement }).edit).toBe(true);
+  });
+
+  it("retries the current replacement after field policy settles and reindexes it", async () => {
+    const old = deferred<Partial<Permissions>>();
+    const fieldDecision = deferred<any>();
+    const resolver = jest.fn().mockReturnValueOnce(old.promise).mockResolvedValue({ edit: true });
+    const store = subject(resolver);
+    const priorConfig = store.getState().config;
+    const config: Config = { ...priorConfig, components: { Example: {
+      ...priorConfig.components.Example,
+      resolveData: () => fieldDecision.promise,
+    } } };
+    store.setState({ config });
+    const mounted = walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config);
+    store.setState({ state: mounted });
+    const original = mounted.indexes.nodes.one;
+    const pending = refreshItem(store, original.data);
+    const rejected = expect(pending).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
+    const replacement = { ...original.data, props: { ...original.data.props } };
+    store.setState({ state: { ...mounted, indexes: { ...mounted.indexes, nodes: {
+      ...mounted.indexes.nodes, one: { ...original, data: replacement },
+    } } } });
+    const policy = store.getState().refreshFieldPolicy();
+    await rejected;
+    await Promise.resolve();
+    expect(store.getState().fields.policyPending).toBe(true);
+    expect(resolver).toHaveBeenCalledTimes(1);
+    fieldDecision.resolve({ props: {}, readOnly: { value: true } });
+    await policy;
+    await waitFor(() => expect(store.getState().permissions.getPermissions({
+      item: store.getState().state.indexes.nodes.one.data,
+    }).edit).toBe(true));
+    expect(resolver).toHaveBeenCalledTimes(2);
+    old.resolve({ edit: false });
+    await old.promise;
+    expect(store.getState().permissions.getPermissions({ item: store.getState().state.indexes.nodes.one.data }).edit).toBe(true);
+  });
+
   it("rejects completion when publication queues replacement and removal under the same ID", async () => {
     const store = subject(async () => ({ edit: true }));
     const config = store.getState().config;
@@ -69,10 +273,7 @@ describe("permission resolution concurrency", () => {
         one: { ...mounted.indexes.nodes.one, data: { ...committed, props: { ...committed.props } } },
       } },
     };
-    const removed = walkAppState({
-      ...mounted,
-      data: { ...mounted.data, content: [] },
-    }, config);
+    const removed = withoutContent(mounted, config);
     store.setState({ state: mounted });
     let queued = false;
     const unsubscribe = store.subscribe((state, previous) => {
@@ -140,6 +341,33 @@ describe("permission resolution concurrency", () => {
     expect((await store.getState().permissions.resolveCandidatePermissions(item("other")))?.permissions.edit).toBe(true);
   });
 
+  it("shares the resolved lifetime when an indexed object is replaced and restored", async () => {
+    const resolver = jest.fn().mockResolvedValue({ edit: true });
+    const store = subject(resolver);
+    const config = store.getState().config;
+    const mounted = walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config);
+    store.setState({ state: mounted });
+    const original = mounted.indexes.nodes.one.data;
+    const replacement = { ...original, props: { ...original.props } };
+    store.setState({ state: {
+      ...mounted,
+      indexes: { ...mounted.indexes, nodes: {
+        ...mounted.indexes.nodes,
+        one: { ...mounted.indexes.nodes.one, data: replacement },
+      } },
+    } });
+    expect(await store.getState().permissions.resolveCandidatePermissions(item("one", "draft"))).toBeUndefined();
+    await resolveItem(store, replacement);
+    expect(store.getState().permissions.getPermissions({ item: replacement }).edit).toBe(true);
+    store.setState({ state: mounted });
+    expect(store.getState().permissions.getPermissions({ item: original }).edit).toBe(true);
+    expect(resolver).toHaveBeenCalledTimes(1);
+    expect((await store.getState().permissions.resolveCandidatePermissions(item("one", "draft")))?.permissions.edit).toBe(true);
+  });
+
   it("does not revive an absent candidate after insert and removal restore the old state", async () => {
     const store = subject(async () => ({ edit: true }));
     const config = store.getState().config;
@@ -163,10 +391,7 @@ describe("permission resolution concurrency", () => {
       ...defaultAppState,
       data: { ...defaultAppState.data, content: [item("one")] },
     }, config);
-    const removed = walkAppState({
-      ...mounted,
-      data: { ...mounted.data, content: [] },
-    }, config);
+    const removed = withoutContent(mounted, config);
     store.setState({ state: mounted });
     let queued = false;
     const unsubscribe = store.subscribe((state, previous) => {
@@ -194,10 +419,7 @@ describe("permission resolution concurrency", () => {
     store.setState({ state: mounted });
     const committed = mounted.indexes.nodes.one.data;
     await resolveItem(store, committed);
-    store.setState({ state: walkAppState({
-      ...mounted,
-      data: { ...mounted.data, content: [] },
-    }, config) });
+    store.setState({ state: withoutContent(mounted, config) });
     await store.getState().permissions.resolveCandidatePermissions(item("one"));
     await refreshItem(store, item("one"));
     store.setState({ state: mounted });
@@ -218,10 +440,7 @@ describe("permission resolution concurrency", () => {
       data: { ...defaultAppState.data, content: [item("one")] },
     }, staticConfig);
     store.setState({ config: staticConfig, state: mounted });
-    store.setState({ state: walkAppState({
-      ...mounted,
-      data: { ...mounted.data, content: [] },
-    }, staticConfig) });
+    store.setState({ state: withoutContent(mounted, staticConfig) });
     const config: Config = { components: { Example: {
       render: () => <div />,
       resolvePermissions: () => ({ edit: true }),
@@ -240,10 +459,7 @@ describe("permission resolution concurrency", () => {
       data: { ...defaultAppState.data, content: [item("one")] },
     }, config);
     store.setState({ state: mounted });
-    store.setState({ state: walkAppState({
-      ...mounted,
-      data: { ...mounted.data, content: [] },
-    }, config) });
+    store.setState({ state: withoutContent(mounted, config) });
     store.setState({ state: walkAppState(mounted, config) });
     expect(await store.getState().permissions.resolveCandidatePermissions(item("one", "draft"))).toBeUndefined();
     const committed = store.getState().state.indexes.nodes.one.data;
@@ -269,10 +485,7 @@ describe("permission resolution concurrency", () => {
     await resolveItem(store, committed);
     const pending = refreshItem(store, committed);
     const rejected = expect(pending).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
-    const removed = walkAppState({
-      ...mounted,
-      data: { ...mounted.data, content: [] },
-    }, config);
+    const removed = withoutContent(mounted, config);
     let deniedDuringNotification = false;
     const unsubscribe = store.subscribe((state) => {
       if (!state.state.indexes.nodes.one) {
@@ -317,10 +530,7 @@ describe("permission resolution concurrency", () => {
     expect(decision?.isCurrent()).toBe(true);
     expect(store.getState().permissions.getPermissions({ item: candidate }).edit).toBe(true);
 
-    store.setState({ state: walkAppState({
-      ...mounted,
-      data: { ...mounted.data, content: [] },
-    }, config) });
+    store.setState({ state: withoutContent(mounted, config) });
     expect(decision?.isCurrent()).toBe(false);
     expect((await store.getState().permissions.resolveCandidatePermissions(candidate))?.permissions.edit).toBe(true);
     store.setState({ state: mounted });
@@ -346,10 +556,7 @@ describe("permission resolution concurrency", () => {
     }, config);
     store.setState({ state: mounted });
     await resolveItem(store, mounted.indexes.nodes.one.data);
-    store.setState({ state: walkAppState({
-      ...mounted,
-      data: { ...mounted.data, content: [] },
-    }, config) });
+    store.setState({ state: withoutContent(mounted, config) });
     const restored = walkAppState({
       ...mounted,
       data: { ...mounted.data, content: [item("one")] },

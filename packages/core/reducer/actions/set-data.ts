@@ -17,6 +17,7 @@ export const setDataAction = <UserData extends Data>(
     return walkAppState(
       {
         ...state,
+        indexes: { ...state.indexes, nodes: {} },
         data: {
           ...state.data,
           ...action.data,
@@ -29,6 +30,7 @@ export const setDataAction = <UserData extends Data>(
   return walkAppState(
     {
       ...state,
+      indexes: { ...state.indexes, nodes: {} },
       data: {
         ...state.data,
         ...action.data(state.data),

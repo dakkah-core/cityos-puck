@@ -23,8 +23,19 @@ export const setAction = <UserData extends Data>(
       "`set` is expensive and may cause unnecessary re-renders. Consider using a more atomic action instead.",
     );
 
-    return walkAppState(newState, appStore.config);
+    return walkAppState({
+      ...newState,
+      indexes: { ...newState.indexes, nodes: {} },
+    }, appStore.config);
   }
 
-  return { ...state, ...action.state(state) };
+  const update = action.state(state);
+  const newState = { ...state, ...update };
+  if (update.data && !update.indexes) {
+    return walkAppState({
+      ...newState,
+      indexes: { ...newState.indexes, nodes: {} },
+    }, appStore.config);
+  }
+  return newState;
 };
