@@ -17,6 +17,7 @@ import { Puck } from "../components/Puck";
 import { Render } from "../components/Render";
 import type { Data, DefaultComponents } from "../types";
 import type { Dictionary } from "../lib/dictionary";
+import { createCityOSStringListField } from "../../../extensions/cityos/cityos-string-list-field";
 import {
   bindCityOSPuckRegistration,
   digestCityOSPuckRegistration,
@@ -105,20 +106,22 @@ async function fixture({
     ],
   };
   const change = jest.fn<void, [Data]>();
+  const editor = (currentConfig: typeof config) => (
+    <Puck
+      config={currentConfig}
+      data={data}
+      onChange={change}
+      dictionary={dictionary}
+      ui={{ itemSelector: { index: 0 } }}
+      permissions={{ edit: !readOnly }}
+      iframe={{ enabled: false }}
+    >
+      <Puck.Fields />
+    </Puck>
+  );
+  let view: ReturnType<typeof render>;
   await act(async () => {
-    render(
-      <Puck
-        config={config}
-        data={data}
-        onChange={change}
-        dictionary={dictionary}
-        ui={{ itemSelector: { index: 0 } }}
-        permissions={{ edit: !readOnly }}
-        iframe={{ enabled: false }}
-      >
-        <Puck.Fields />
-      </Puck>,
-    );
+    view = render(editor(config));
   });
   // The existing Jest CSS mock does not load the real visibility rule.
   // Model that rule only; do not modify application permission or validation.
@@ -127,11 +130,14 @@ async function fixture({
     "utf8",
   );
   expect(css).toMatch(/\.Puck\s*\{[^}]*visibility:\s*visible\s*!important/);
-  const editor = document.querySelector<HTMLElement>(".Puck");
-  if (!editor) throw new Error("Puck editor fixture did not mount");
-  editor.style.visibility = "visible";
+  const editorElement = document.querySelector<HTMLElement>(".Puck");
+  if (!editorElement) throw new Error("Puck editor fixture did not mount");
+  editorElement.style.visibility = "visible";
   const latest = () => change.mock.calls[change.mock.calls.length - 1]?.[0];
-  return { config, data, change, latest };
+  const rerenderConfig = async (currentConfig: typeof config) => {
+    await act(async () => view.rerender(editor(currentConfig)));
+  };
+  return { config, data, change, latest, rerenderConfig };
 }
 
 describe("compiler-admitted scalar lists in real Puck field controls", () => {
@@ -166,6 +172,61 @@ describe("compiler-admitted scalar lists in real Puck field controls", () => {
     expect(f.latest()?.content[0].props.id).toBe("stable-list");
     expect(f.latest()?.content[0].props.sibling).toBe("preserved");
     expect(initialValues[1]).toBe("same");
+  });
+
+  it("refreshes a mounted custom list's label and limits without losing values", async () => {
+    const f = await fixture({ value: ["first", "second"], maximum: 3 });
+    const input = await screen.findByRole("textbox", {
+      name: "List items: Item #1",
+    });
+    act(() => input.focus());
+    expect((input as HTMLTextAreaElement).maxLength).toBe(80);
+    expect(screen.getByRole("button", { name: "Add item" })).toBeTruthy();
+    fireEvent.change(input, { target: { value: "edited" } });
+    await waitFor(() => {
+      expect(f.latest()?.content[0].props.items).toEqual(["edited", "second"]);
+    });
+    expect(screen.getByRole("textbox", { name: "List items: Item #1" })).toBe(
+      input,
+    );
+    expect(document.activeElement).toBe(input);
+
+    const component = f.config.components.FutureScalarList;
+    const updatedConfig = {
+      ...f.config,
+      components: {
+        ...f.config.components,
+        FutureScalarList: {
+          ...component,
+          fields: {
+            ...component.fields,
+            items: createCityOSStringListField({
+              type: "string-list",
+              label: "Updated items",
+              maxItems: 2,
+              maxItemLength: 12,
+            }),
+          },
+        },
+      },
+    };
+    const changesBeforeRefresh = f.change.mock.calls.length;
+    await f.rerenderConfig(updatedConfig);
+    const refreshed = await screen.findByRole("textbox", {
+      name: "Updated items: Item #1",
+    });
+    expect((refreshed as HTMLTextAreaElement).value).toBe("edited");
+    expect((refreshed as HTMLTextAreaElement).maxLength).toBe(12);
+    expect((screen.getByRole("textbox", {
+      name: "Updated items: Item #2",
+    }) as HTMLTextAreaElement).value).toBe("second");
+    expect(screen.queryByRole("button", { name: "Add item" })).toBeNull();
+    expect(f.change.mock.calls).toHaveLength(changesBeforeRefresh);
+    fireEvent.change(refreshed, { target: { value: "updated" } });
+    await waitFor(() => {
+      expect(f.latest()?.content[0].props.items).toEqual(["updated", "second"]);
+    });
+    expect(f.latest()?.content[0].props.sibling).toBe("preserved");
   });
 
   it("adds only on explicit action and respects the declared capacity", async () => {

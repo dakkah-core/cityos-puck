@@ -226,19 +226,22 @@ function AutoFieldInternal<
   }, [field.type]);
 
   const fieldKey = field.type === "custom" ? field.key : undefined;
+  // Render custom fields as React components: their renderers may use hooks.
+  // A changed renderer must be selected again, even when its key is unchanged.
+  const customRender = field.type === "custom" ? field.render : undefined;
 
   let FieldComponent: React.ComponentType<any> | null | undefined =
     useMemo(() => {
       // if there's an override provided for custom fields, fallback to standard behavior
       if (field.type === "custom" && !render[field.type]) {
-        if (!field.render) {
+        if (!customRender) {
           return null;
         }
-        return field.render;
+        return customRender;
       } else if (field.type !== "slot") {
         return render[field.type];
       }
-    }, [field.type, fieldKey, render]);
+    }, [field.type, fieldKey, customRender, render]);
 
   if (!isFieldVisible(overrides.fieldTypes, field)) {
     return null;
