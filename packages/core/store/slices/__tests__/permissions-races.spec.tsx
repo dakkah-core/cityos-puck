@@ -64,6 +64,26 @@ const refreshRoot = async (store: ReturnType<typeof createAppStore>) => {
 };
 
 describe("permission resolution concurrency", () => {
+  it.each(["object", "callback"])("keeps a pending refresh when %s set does not change data", async (form) => {
+    const pending = deferred<Partial<Permissions>>();
+    const store = subject(() => pending.promise);
+    const mounted = walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, store.getState().config);
+    store.setState({ state: mounted });
+    const committed = mounted.indexes.nodes.one.data;
+    const request = refreshItem(store, committed);
+
+    store.getState().dispatch({ type: "set", state: form === "object" ? {} : () => ({}) });
+    expect(store.getState().state.indexes).toBe(mounted.indexes);
+    expect(store.getState().state.indexes.nodes.one.data).toBe(committed);
+
+    pending.resolve({ edit: true });
+    await expect(request).resolves.toBeUndefined();
+    expect(store.getState().permissions.getPermissions({ item: committed }).edit).toBe(true);
+  });
+
   it("rebuilds node indexes when set replaces data without an index", () => {
     const store = subject(async () => ({ edit: true }));
     const config = store.getState().config;
@@ -94,6 +114,154 @@ describe("permission resolution concurrency", () => {
       state: (previous) => ({ data: { ...previous.data, content: [] } }),
     });
     expect(store.getState().state.indexes.nodes.one).toBeUndefined();
+  });
+
+  it.each(["object", "callback"])("invalidates a candidate when %s set supplies a stale index", async (form) => {
+    const store = subject(async () => ({ edit: true }));
+    const config = store.getState().config;
+    const mounted = walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, config);
+    store.setState({ state: mounted });
+    const committed = mounted.indexes.nodes.one.data;
+    const candidate = item("one", "draft");
+    await resolveItem(store, committed);
+    const decision = await store.getState().permissions.resolveCandidatePermissions(candidate);
+    expect(decision?.isCurrent()).toBe(true);
+
+    const update = { data: { ...mounted.data, content: [] }, indexes: mounted.indexes };
+    store.getState().dispatch({ type: "set", state: form === "object" ? update : () => update });
+    expect(store.getState().state.indexes.nodes.one).toBeUndefined();
+    expect(decision?.isCurrent()).toBe(false);
+
+    store.setState({ state: mounted });
+    expect(decision?.isCurrent()).toBe(false);
+    expect(store.getState().permissions.getPermissions({ item: committed }).edit).toBe(false);
+  });
+
+  it.each(["object", "callback"])("supersedes a pending refresh when %s set supplies a stale index", async (form) => {
+    const pending = deferred<Partial<Permissions>>();
+    const resolver = jest.fn().mockReturnValueOnce({ edit: true }).mockReturnValueOnce(pending.promise);
+    const store = subject(resolver);
+    const mounted = walkAppState({
+      ...defaultAppState,
+      data: { ...defaultAppState.data, content: [item("one")] },
+    }, store.getState().config);
+    store.setState({ state: mounted });
+    const committed = mounted.indexes.nodes.one.data;
+    await resolveItem(store, committed);
+    const request = refreshItem(store, committed);
+    const rejection = expect(request).rejects.toBeInstanceOf(PermissionResolutionSupersededError);
+
+    const update = {
+      data: { ...mounted.data, content: [] },
+      indexes: { ...mounted.indexes, nodes: { ...mounted.indexes.nodes } },
+    };
+    store.getState().dispatch({ type: "set", state: form === "object" ? update : () => update });
+    expect(store.getState().state.indexes.nodes.one).toBeUndefined();
+    await rejection;
+    store.setState({ state: mounted });
+    pending.resolve({ edit: true });
+    await pending.promise;
+    expect(store.getState().permissions.getPermissions({ item: committed }).edit).toBe(false);
+  });
+
+  it.each(["object", "callback"])("rebuilds %s set zones while retaining authored zone content", (form) => {
+    const store = subject(async () => ({ edit: true }));
+    const mounted = walkAppState({
+      ...defaultAppState,
+      data: {
+        ...defaultAppState.data,
+        content: [item("one")],
+        zones: { "one:children": [item("child")], "old:children": [item("removed")] },
+      },
+    }, store.getState().config);
+    store.setState({ state: mounted });
+    expect(mounted.indexes.zones["old:children"]?.contentIds).toEqual(["removed"]);
+    const update = {
+      data: {
+        ...mounted.data,
+        content: [],
+        zones: { "one:children": [item("child")] },
+        custom: { revision: 1 },
+      },
+      indexes: mounted.indexes,
+    };
+    store.getState().dispatch({
+      type: "set",
+      state: form === "object" ? update : () => update,
+    });
+    expect(store.getState().state.data).toMatchObject({ custom: { revision: 1 } });
+    expect(store.getState().state.data.zones?.["one:children"]).toEqual([item("child")]);
+    expect(store.getState().state.indexes.nodes.one).toBeUndefined();
+    expect(store.getState().state.indexes.nodes.child).toBeDefined();
+    expect(store.getState().state.indexes.zones["one:children"]?.contentIds).toEqual(["child"]);
+    expect(store.getState().state.data.zones?.["old:children"]).toBeUndefined();
+    expect(store.getState().state.indexes.zones["old:children"]).toBeUndefined();
+    expect(store.getState().state.indexes.nodes.removed).toBeUndefined();
+  });
+
+  it("preserves custom data fields when restoring history snapshots", () => {
+    const store = subject(async () => ({ edit: true }));
+    const indexed = walkAppState(defaultAppState, store.getState().config);
+    const first = { ...indexed, data: { ...indexed.data, custom: { revision: 1 } } };
+    const second = { ...indexed, data: { ...indexed.data, custom: { revision: 2 } } };
+
+    store.getState().history.setHistories([
+      { id: "first", state: first },
+      { id: "second", state: second },
+    ]);
+    store.getState().history.setHistoryIndex(1);
+    expect(store.getState().history.index).toBe(1);
+    expect(store.getState().state.data).toMatchObject({ custom: { revision: 2 } });
+    store.getState().history.back();
+    expect(store.getState().history.index).toBe(0);
+    expect(store.getState().state.data).toMatchObject({ custom: { revision: 1 } });
+    store.getState().history.forward();
+    expect(store.getState().history.index).toBe(1);
+    expect(store.getState().state.data).toMatchObject({ custom: { revision: 2 } });
+    store.getState().history.setHistoryIndex(0);
+    expect(store.getState().history.index).toBe(0);
+    expect(store.getState().state.data).toMatchObject({ custom: { revision: 1 } });
+  });
+
+  it("restores data and indexes from recorded history without pruning authored zones", () => {
+    jest.useFakeTimers();
+    try {
+      const store = subject(async () => ({ edit: true }));
+      const first = walkAppState({
+        ...defaultAppState,
+        data: {
+          ...defaultAppState.data,
+          content: [item("one")],
+          zones: { "orphan:children": [item("child")] },
+        },
+      }, store.getState().config);
+      store.setState({ state: first });
+      store.getState().history.record(first);
+      jest.advanceTimersByTime(250);
+
+      const secondData = { ...first.data, content: [], zones: {} };
+      store.getState().dispatch({ type: "set", state: { data: secondData, indexes: first.indexes } });
+      store.getState().history.record(store.getState().state);
+      jest.advanceTimersByTime(250);
+      expect(store.getState().history.histories).toHaveLength(2);
+
+      store.getState().history.back();
+      expect(store.getState().state.data.zones?.["orphan:children"]).toEqual([item("child")]);
+      expect(store.getState().state.indexes.zones["orphan:children"]?.contentIds).toEqual(["child"]);
+      expect(store.getState().state.indexes.nodes.one).toBeDefined();
+      expect(store.getState().state.indexes.nodes.child).toBeDefined();
+
+      store.getState().history.forward();
+      expect(store.getState().state.data.zones?.["orphan:children"]).toBeUndefined();
+      expect(store.getState().state.indexes.zones["orphan:children"]).toBeUndefined();
+      expect(store.getState().state.indexes.nodes.one).toBeUndefined();
+      expect(store.getState().state.indexes.nodes.child).toBeUndefined();
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it.each(["object", "callback"])("invalidates removal through setData's %s form", async (form) => {
