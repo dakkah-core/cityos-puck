@@ -116,6 +116,11 @@ const defaultPageFields: Record<string, Field> = {
 
 export const createAppStore = (initialAppStore?: Partial<AppStore>) => {
   let invalidatePermissionRequests = () => {};
+  let observePermissionItem = (
+    _id: string,
+    _previous: ComponentData | undefined,
+    _current: ComponentData | undefined,
+  ) => {};
   const store = create<AppStore>()(
     subscribeWithSelector((set, get) => ({
       instanceId: generateId(),
@@ -143,9 +148,16 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) => {
       refreshFieldPolicy: createFieldPolicyRefresh(set, get),
       history: createHistorySlice(set, get),
       nodes: createNodesSlice(set, get),
-      permissions: createPermissionsSlice(set, get, (invalidate) => {
-        invalidatePermissionRequests = invalidate;
-      }),
+      permissions: createPermissionsSlice(
+        set,
+        get,
+        (invalidate) => {
+          invalidatePermissionRequests = invalidate;
+        },
+        (invalidate) => {
+          observePermissionItem = invalidate;
+        },
+      ),
       getCurrentData: () => {
         const s = get();
 
@@ -385,7 +397,7 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) => {
     })),
   );
 
-  // Observe replacements even when no React permission subscription is mounted.
+  // Observe policy and item lifetimes without a React subscription.
   store.subscribe((state, previous) => {
     if (
       state.config !== previous.config ||
@@ -393,6 +405,21 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) => {
         previous.permissions.globalPermissions
     ) {
       invalidatePermissionRequests();
+    }
+    if (state.state.indexes.nodes !== previous.state.indexes.nodes) {
+      const nodes = state.state.indexes.nodes;
+      for (const [id, node] of Object.entries(previous.state.indexes.nodes)) {
+        if (id !== "root" && !Object.prototype.hasOwnProperty.call(nodes, id)) {
+          observePermissionItem(id, node.data, undefined);
+        } else if (id !== "root" && nodes[id]?.data !== node.data) {
+          observePermissionItem(id, node.data, nodes[id]?.data);
+        }
+      }
+      for (const [id, node] of Object.entries(nodes)) {
+        if (id !== "root" && !Object.prototype.hasOwnProperty.call(previous.state.indexes.nodes, id)) {
+          observePermissionItem(id, undefined, node.data);
+        }
+      }
     }
   });
 

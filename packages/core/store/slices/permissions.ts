@@ -92,6 +92,9 @@ export const createPermissionsSlice = (
   set: (newState: Partial<AppStore>) => void,
   get: () => AppStore,
   registerInvalidation: (invalidate: () => void) => void = () => {},
+  registerItemLifetime: (
+    observe: (id: string, previous: ComponentData | undefined, current: ComponentData | undefined) => void,
+  ) => void = () => {},
 ): PermissionsSlice => {
   const pending = new Map<
     string,
@@ -120,8 +123,15 @@ export const createPermissionsSlice = (
   // even when a refresh subsequently restores the same permissions.
   const requestVersions = new WeakMap<ComponentData, number>();
   const candidateVersions = new WeakMap<ComponentData, number>();
+  // New or restored indexed items require a committed decision. Weak keys
+  // follow the indexed object instead of retaining removed identifiers.
+  const unresolvedLifetime = new WeakSet<ComponentData>();
+  const resetHistoryEntries = new WeakSet<Cache[string]>();
   // An uncommitted node has no stable object in the index to key a weak map.
   let permissionRequestGeneration = 0;
+  // Absent candidates have no committed object on which to track a lifetime.
+  let itemLifetimeGeneration = 0;
+  let itemRemovalGeneration = 0;
   const candidateCache = new WeakMap<ComponentData, {
     item: ComponentData;
     permissions: Permissions;
@@ -135,6 +145,27 @@ export const createPermissionsSlice = (
     // Resolution may be triggered by a synchronous store subscriber.
     queueMicrotask(() => request.cleanup());
   };
+  registerItemLifetime((id, previous, current) => {
+    if (previous && current) {
+      if (unresolvedLifetime.has(previous)) unresolvedLifetime.add(current);
+      return;
+    }
+    itemLifetimeGeneration++;
+    if (previous) itemRemovalGeneration++;
+    if (current) unresolvedLifetime.add(current);
+    if (previous) {
+      requestVersions.set(previous, (requestVersions.get(previous) ?? 0) + 1);
+      candidateVersions.set(previous, (candidateVersions.get(previous) ?? 0) + 1);
+      invalidCommitted.add(previous);
+      candidateCache.delete(previous);
+    }
+    const entry = get().permissions.cache[id];
+    if (entry) {
+      invalidEntries.add(entry);
+      resetHistoryEntries.add(entry);
+    }
+    cancelPending(id);
+  });
   let policyGeneration = 0;
   registerInvalidation(() => {
     const obsolete = [...pending.values()];
@@ -168,6 +199,8 @@ export const createPermissionsSlice = (
     ): Promise<void> => {
       permissionRequestGeneration++;
       const committed = get().state.indexes.nodes[item.props.id]?.data;
+      const lifetimeGeneration = itemLifetimeGeneration;
+      const removalGeneration = itemRemovalGeneration;
       if (committed) {
         requestVersions.set(committed, (requestVersions.get(committed) ?? 0) + 1);
       }
@@ -180,6 +213,7 @@ export const createPermissionsSlice = (
       const { globalPermissions } = permissions;
       const itemCache: Cache[string] | undefined =
         permissions.cache[item.props.id];
+      const previousCache = itemCache && !resetHistoryEntries.has(itemCache) ? itemCache : undefined;
       const nodes = appState.indexes.nodes;
       const parentId = nodes[item.props.id]?.parentId;
       const parentNode = parentId ? nodes[parentId] : null;
@@ -201,13 +235,14 @@ export const createPermissionsSlice = (
 
       if (componentConfig.resolvePermissions) {
         const resolveForItem = componentConfig.resolvePermissions;
-        const changed = getChanged(item, itemCache?.lastData);
+        const changed = getChanged(item, previousCache?.lastData);
         const itemChanged = !deepEqual(item, itemCache?.lastData);
         const parentChanged = itemCache?.lastParentId !== parentId;
         const inputs = itemCache && cacheInputs.get(itemCache);
         const inputsChanged =
           !inputs ||
           (itemCache && invalidEntries.has(itemCache)) ||
+          (committed && unresolvedLifetime.has(committed)) ||
           inputs.config !== config ||
           inputs.globalPermissions !== globalPermissions ||
           inputs.generation !== policyGeneration ||
@@ -304,10 +339,10 @@ export const createPermissionsSlice = (
               try {
                 decision = resolveForItem(item, {
                   changed,
-                  lastPermissions: itemCache?.lastPermissions || null,
+                  lastPermissions: previousCache?.lastPermissions || null,
                   permissions: initialPermissions,
                   appState: publicState,
-                  lastData: itemCache?.lastData || null,
+                  lastData: previousCache?.lastData || null,
                   parent: parentData,
                 });
               } finally {
@@ -351,7 +386,15 @@ export const createPermissionsSlice = (
                 parent: parentData,
               });
 
-              if (committed) invalidCommitted.delete(committed);
+              if (committed) {
+                invalidCommitted.delete(committed);
+                if (
+                  latestState.state.indexes.nodes[item.props.id]?.data === committed &&
+                  deepEqual(item, committed)
+                ) {
+                  unresolvedLifetime.delete(committed);
+                }
+              }
 
               set({
                 permissions: {
@@ -379,7 +422,18 @@ export const createPermissionsSlice = (
               }
             }
           })();
-          void work.then(complete, fail);
+          void work.then(() => {
+            if (
+              item.type !== "root" && (
+                itemRemovalGeneration !== removalGeneration ||
+                (!committed && itemLifetimeGeneration !== lifetimeGeneration)
+              )
+            ) {
+              fail(new PermissionResolutionSupersededError());
+            } else {
+              complete();
+            }
+          }, fail);
           await completion;
         } else {
           // Returning to the accepted input must supersede a different
@@ -456,27 +510,31 @@ export const createPermissionsSlice = (
     }
     const resolver = componentConfig?.resolvePermissions;
     const entry = permissions.cache[id];
+    const previousEntry = entry && !resetHistoryEntries.has(entry) ? entry : undefined;
     // A candidate cannot outlive a committed decision that is already being
     // refreshed or has failed. A request version alone only detects refreshes
     // that start after the candidate.
-    if (committed && (pending.has(id) || (resolver && (invalidCommitted.has(committed) || (entry && invalidEntries.has(entry)))))) {
+    if (committed && (pending.has(id) || (resolver && (
+      unresolvedLifetime.has(committed) || invalidCommitted.has(committed) || (entry && invalidEntries.has(entry))
+    )))) {
       return undefined;
     }
     const decision = permissions.resolvedPermissions[id];
     const version = committed ? requestVersions.get(committed) ?? 0 : 0;
     const candidateVersion = committed ? candidateVersions.get(committed) ?? 0 : 0;
     const requestGeneration = permissionRequestGeneration;
+    const lifetimeGeneration = itemLifetimeGeneration;
     const generation = policyGeneration;
     const publicState = makeStatePublic(state);
     const initialPermissions = { ...permissions.globalPermissions, ...componentConfig?.permissions } as Permissions;
 
     const resolved = resolver
       ? await resolver(item, {
-          changed: getChanged(item, entry?.lastData),
-          lastPermissions: entry?.lastPermissions || null,
+          changed: getChanged(item, previousEntry?.lastData),
+          lastPermissions: previousEntry?.lastPermissions || null,
           permissions: initialPermissions,
           appState: publicState,
-          lastData: entry?.lastData || null,
+          lastData: previousEntry?.lastData || null,
           parent,
         })
       : {};
@@ -501,7 +559,10 @@ export const createPermissionsSlice = (
         (!committed || (requestVersions.get(committed) ?? 0) === version) &&
         (!committed || (candidateVersions.get(committed) ?? 0) === candidateVersion) &&
         (committed || permissionRequestGeneration === requestGeneration) &&
-        (!committed || (!pending.has(id) && (!resolver || (!invalidCommitted.has(committed) && (!entry || !invalidEntries.has(entry)))))) &&
+        (committed || item.type === "root" || itemLifetimeGeneration === lifetimeGeneration) &&
+        (!committed || (!pending.has(id) && (!resolver || (
+          !unresolvedLifetime.has(committed) && !invalidCommitted.has(committed) && (!entry || !invalidEntries.has(entry))
+        )))) &&
         latest.permissions.cache[id] === entry &&
         latest.permissions.resolvedPermissions[id] === decision &&
         sameAppState(makeStatePublic(latest.state), publicState) &&
@@ -589,6 +650,7 @@ export const createPermissionsSlice = (
         const parent = parentId ? state.indexes.nodes[parentId]?.data ?? null : null;
         const resolvedForItem =
           componentConfig?.resolvePermissions &&
+          (!committed || !unresolvedLifetime.has(committed)) &&
           entry &&
           !invalidEntries.has(entry) &&
           entry?.lastData?.type === item.type &&
